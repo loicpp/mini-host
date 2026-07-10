@@ -72,6 +72,11 @@
         Votre réponse : <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
       </div>
     </div>
+    <!-- Status: Finished -->
+    <div v-else-if="game.status === 'finished'" class="status-card card glass">
+      <h3 style="color: #00e676; font-size: 1.5rem;">🏆 Partie Terminée !</h3>
+      <p>Regardez le projecteur pour découvrir le podium final.</p>
+    </div>
   </div>
 </template>
 

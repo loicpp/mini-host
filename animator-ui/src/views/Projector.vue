@@ -80,6 +80,28 @@
           </ul>
         </div>
       </div>
+      <div v-else-if="game.status === 'finished'" class="state-panel finished-state">
+        <h1 class="text-success" style="font-size: 4rem; margin-bottom: 2rem;">🏆 Podium Final 🏆</h1>
+        
+        <div class="podium-container">
+          <div v-for="(player, index) in topThreePlayers" :key="player.id" :class="'podium-place place-' + (index + 1)">
+            <div class="medal">{{ ['🥇', '🥈', '🥉'][index] }}</div>
+            <div class="podium-name">{{ player.name }}</div>
+            <div class="podium-score">{{ player.score || 0 }} pts</div>
+          </div>
+        </div>
+        
+        <div class="other-players" v-if="otherPlayers.length > 0">
+          <h3>Le reste du classement :</h3>
+          <ul class="leaderboard-list">
+            <li v-for="(player, index) in otherPlayers" :key="player.id" class="leaderboard-item">
+              <span class="rank">#{{ index + 4 }}</span>
+              <span class="name">{{ player.name }}</span>
+              <span class="score">{{ player.score || 0 }} pts</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </main>
   </div>
 </template>
@@ -116,6 +138,9 @@ const allPlayersSorted = computed(() => {
   }));
   return p.sort((a, b) => (b.score || 0) - (a.score || 0));
 });
+
+const topThreePlayers = computed(() => allPlayersSorted.value.slice(0, 3));
+const otherPlayers = computed(() => allPlayersSorted.value.slice(3));
 
 const dashOffset = computed(() => {
   const c = Math.PI * (45 * 2);
@@ -436,5 +461,72 @@ const startTimer = (startTime: number, duration: number) => {
 .leaderboard-item .score {
   font-weight: bold;
   color: #00e676;
+}
+
+/* Podium */
+.podium-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 2vw;
+  margin-bottom: 5vh;
+  height: 40vh;
+}
+.podium-place {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2vh 2vh 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 2vh;
+  width: 20vw;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+  position: relative;
+  border-top: 4px solid #ffc700;
+  animation: fadeIn 1s ease-out;
+}
+.podium-place.place-1 {
+  height: 100%;
+  border-color: #ffd700;
+  background: linear-gradient(to top, rgba(255,215,0,0.1), rgba(255,215,0,0.3));
+  z-index: 3;
+}
+.podium-place.place-2 {
+  height: 75%;
+  border-color: #c0c0c0;
+  background: linear-gradient(to top, rgba(192,192,192,0.1), rgba(192,192,192,0.3));
+  z-index: 2;
+}
+.podium-place.place-3 {
+  height: 55%;
+  border-color: #cd7f32;
+  background: linear-gradient(to top, rgba(205,127,50,0.1), rgba(205,127,50,0.3));
+  z-index: 1;
+}
+.medal {
+  font-size: 6vh;
+  margin-bottom: 1vh;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+}
+.podium-name {
+  font-size: 3.5vh;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  word-break: break-word;
+}
+.podium-score {
+  font-size: 2.5vh;
+  color: rgba(255,255,255,0.8);
+  margin-top: 1vh;
+}
+.other-players {
+  margin-top: 2vh;
+}
+.other-players h3 {
+  font-size: 3vh;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 2vh;
 }
 </style>

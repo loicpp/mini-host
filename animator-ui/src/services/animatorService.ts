@@ -77,5 +77,20 @@ export const animatorService = {
       });
       await update(playersRef, updates);
     }
+  },
+
+  // Reset all players' scores and guesses
+  async resetPlayers(gameId: string) {
+    const playersRef = ref(db, `games/${gameId}/players`);
+    const snapshot = await get(playersRef);
+    if (snapshot.exists()) {
+      const players = snapshot.val();
+      const updates: any = {};
+      Object.keys(players).forEach(playerId => {
+        updates[`${playerId}/currentGuess`] = "";
+        updates[`${playerId}/score`] = 0;
+      });
+      await update(playersRef, updates);
+    }
   }
 };

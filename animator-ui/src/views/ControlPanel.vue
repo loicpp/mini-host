@@ -56,6 +56,14 @@
           <div class="header-bar">
             <h3>Joueurs connectés ({{ Object.keys(players).length }})</h3>
             <span class="status-badge" :class="status">{{ statusDisplay }}</span>
+            <div style="margin-left: auto; display: flex; gap: 10px;">
+              <button class="btn warning" @click="restartGame">
+                Recommencer
+              </button>
+              <button class="btn danger" @click="endGame" v-if="status !== 'finished'">
+                Arrêter la partie
+              </button>
+            </div>
           </div>
 
           <LocalTracksView 
@@ -118,6 +126,7 @@ const statusDisplay = computed(() => {
   if (status.value === 'playing') return 'Lecture en cours';
   if (status.value === 'reviewing') return 'Correction';
   if (status.value === 'results') return 'Résultats';
+  if (status.value === 'finished') return 'Terminée';
   return status.value;
 });
 
@@ -456,8 +465,29 @@ const nextRound = async () => {
   }
   selectedTrack.value = null;
   await animatorService.updateGameState(gameId.value, 'waiting');
-  
-  // Clear player guesses
+};
+
+const endGame = async () => {
+  if (confirm('Voulez-vous vraiment arrêter la partie et afficher le podium final ?')) {
+    status.value = 'finished';
+    await animatorService.updateGameState(gameId.value, 'finished');
+  }
+};
+
+const restartGame = async () => {
+  if (confirm('Voulez-vous vraiment recommencer la partie à zéro (les joueurs seront conservés) ?')) {
+    status.value = 'waiting';
+    nextTrackInfo.value.answer = '';
+    searchQuery.value = '';
+    selectedTrack.value = null;
+    
+    try {
+      await animatorService.resetPlayers(gameId.value);
+    } catch (e) {
+      console.warn("Could not reset players", e);
+    }
+    await animatorService.updateGameState(gameId.value, 'waiting', null);
+  }
 };
 const loadPlaylist = async (tracks: Track[]) => {
   localTracks.value = tracks;
