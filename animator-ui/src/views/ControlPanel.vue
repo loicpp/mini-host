@@ -54,13 +54,15 @@
 
         <div v-else-if="viewState === 'game' && gameId" class="game-panel">
           <div class="header-bar">
-            <h3>Joueurs connectés ({{ Object.keys(players).length }})</h3>
+            <h3 @click="isPlayersModalOpen = true" style="cursor: pointer; text-decoration: underline;" title="Voir et gérer les joueurs">
+              Joueurs connectés ({{ Object.keys(players).length }})
+            </h3>
             <span class="status-badge" :class="status">{{ statusDisplay }}</span>
             <div style="margin-left: auto; display: flex; gap: 10px;">
-              <button class="btn warning" @click="restartGame">
+              <button class="btn btn-warning" @click="restartGame">
                 Recommencer
               </button>
-              <button class="btn danger" @click="endGame" v-if="status !== 'finished'">
+              <button class="btn btn-danger" @click="endGame" v-if="status !== 'finished'">
                 Arrêter la partie
               </button>
             </div>
@@ -84,6 +86,25 @@
             @award="award"
           />
         </div>
+
+        <!-- Players Modal -->
+        <div v-if="isPlayersModalOpen" class="modal-overlay" @click="isPlayersModalOpen = false">
+          <div class="modal-content" @click.stop>
+            <h2>Gestion des Joueurs</h2>
+            <div class="players-list">
+              <div v-if="Object.keys(players).length === 0" class="no-players">
+                Aucun joueur connecté.
+              </div>
+              <div v-for="(player, playerId) in players" :key="playerId" class="player-item">
+                <span class="player-name">{{ player.name || 'Anonyme' }}</span>
+                <span class="player-score">{{ player.score || 0 }} pts</span>
+                <button class="btn btn-sm btn-danger" @click="removePlayer(playerId)">Supprimer</button>
+              </div>
+            </div>
+            <button class="btn secondary" style="width: 100%; margin-top: 20px;" @click="isPlayersModalOpen = false">Fermer</button>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
@@ -119,6 +140,7 @@ const searchQuery = ref('');
 const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
 const isProjectorOpen = ref(false);
+const isPlayersModalOpen = ref(false);
 
 
 const statusDisplay = computed(() => {
@@ -147,36 +169,6 @@ onMounted(() => {
         // Load preferred source
       if (config && config.preferredSource) {
         preferredSource.value = config.preferredSource;
-      }
-      
-      // Auto-cleanup games older than 24h
-      if (config && config.gameHistory) {
-        const now = Date.now();
-        const validHistory = [];
-        let updated = false;
-        
-        for (const game of config.gameHistory) {
-          if (now - game.createdAt > 24 * 60 * 60 * 1000) {
-            try {
-              await animatorService.deleteGame(game.id);
-              updated = true;
-              // Successfully deleted, do not push to validHistory
-            } catch(e) {
-              console.error("Failed to delete game on server:", e);
-              validHistory.push(game); // Keep it to try again next time
-            }
-          } else {
-            validHistory.push(game);
-          }
-        }
-        
-        if (updated) {
-          await fetch('http://127.0.0.1:5000/api/config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gameHistory: validHistory })
-          });
-        }
       }
     } catch(e) {
       console.warn("Could not load config", e);
@@ -226,6 +218,13 @@ const login = async (loginEmail?: string, loginPassword?: string) => {
       if (config.lastGameId) {
         lastGameId.value = config.lastGameId;
       }
+      
+      // Cleanup old games in Firebase
+      try {
+        await animatorService.cleanupOldGames(config.lastGameId);
+      } catch (e) {
+        console.warn("Could not cleanup old games", e);
+      }
     } catch (e) {
       console.warn("Backend not available, running in local-only mode", e);
       viewState.value = 'settings';
@@ -244,22 +243,16 @@ const createNewGame = async () => {
   viewState.value = 'game';
   
   try {
-    const configRes = await fetch('http://127.0.0.1:5000/api/config');
-    const config = await configRes.json();
-    const history = config.gameHistory || [];
-    history.push({ id: game.gameId, createdAt: Date.now() });
-    
     await fetch('http://127.0.0.1:5000/api/config', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        lastGameId: game.gameId,
-        gameHistory: history
+        lastGameId: game.gameId
       })
     });
     lastGameId.value = game.gameId;
   } catch (e) {
-    console.warn("Could not save history to backend", e);
+    console.warn("Could not save lastGameId to backend", e);
   }
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
@@ -502,6 +495,16 @@ const loadPlaylist = async (tracks: Track[]) => {
     }
   }
 };
+
+const removePlayer = async (playerId: string) => {
+  if (confirm('Voulez-vous vraiment supprimer ce joueur ?')) {
+    try {
+      await animatorService.removePlayer(gameId.value, playerId);
+    } catch(e) {
+      console.error("Impossible de supprimer le joueur:", e);
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -515,5 +518,63 @@ const loadPlaylist = async (tracks: Track[]) => {
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #1e1e2d;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.modal-content h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #fff;
+}
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2b2b40;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+.player-name {
+  font-weight: 600;
+  flex: 1;
+}
+.player-score {
+  margin-right: 15px;
+  color: #ffc700;
+  font-weight: bold;
+}
+.no-players {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 20px;
 }
 </style>

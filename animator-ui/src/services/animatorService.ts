@@ -92,5 +92,33 @@ export const animatorService = {
       });
       await update(playersRef, updates);
     }
+  },
+
+  // Remove a player from the game
+  async removePlayer(gameId: string, playerId: string) {
+    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
+    await remove(playerRef);
+  },
+
+  // Cleanup old games
+  async cleanupOldGames(excludeGameId: string) {
+    const gamesRef = ref(db, 'games');
+    const snapshot = await get(gamesRef);
+    if (snapshot.exists()) {
+      const games = snapshot.val();
+      const now = Date.now();
+      const updates: any = {};
+      Object.keys(games).forEach(gameId => {
+        if (gameId !== excludeGameId) {
+          const game = games[gameId];
+          if (game.createdAt && (now - game.createdAt > 24 * 60 * 60 * 1000)) {
+            updates[gameId] = null; // Setting to null in an update removes the key
+          }
+        }
+      });
+      if (Object.keys(updates).length > 0) {
+        await update(gamesRef, updates);
+      }
+    }
   }
 };
