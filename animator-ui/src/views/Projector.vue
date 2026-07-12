@@ -9,8 +9,9 @@
           <h2>{{ gameId }}</h2>
         </div>
       </div>
-      <div class="title-box">
-        <h1>🎶 Blind Test</h1>
+      <div class="title-box" style="display: flex; align-items: center; gap: 15px;">
+        <img src="/favicon.jpg" alt="Logo" class="projector-logo" style="height: 7vh; width: 7vh; border-radius: 1.5vh; object-fit: cover; border: 2px solid #ffc700; box-shadow: 0 0 15px rgba(255, 199, 0, 0.4);" />
+        <h1>Blind Test</h1>
       </div>
     </header>
 

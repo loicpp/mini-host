@@ -195,6 +195,17 @@ if __name__ == '__main__':
     root.title("MiniHost - Serveur")
     root.geometry("400x200")
     
+    # Set window icon
+    try:
+        if getattr(sys, 'frozen', False):
+            ico_path = os.path.join(sys._MEIPASS, 'favicon.ico')
+        else:
+            ico_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'favicon.ico')
+        if os.path.exists(ico_path):
+            root.iconbitmap(ico_path)
+    except Exception as e:
+        print("Could not set window icon:", e)
+    
     lbl = tk.Label(root, text="Le serveur MiniHost est en cours d'exécution.\n\nFermez cette fenêtre pour tout arrêter.", justify="center", padx=20, pady=50)
     lbl.pack(expand=True)
     

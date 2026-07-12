@@ -23,6 +23,8 @@ rm -rf build dist MiniHost.spec
 # --add-data includes projector.py script since it's called as a subprocess
 pyinstaller --noconfirm \
     --name MiniHost \
+    --icon="favicon.ico" \
+    --add-data "favicon.ico:." \
     --add-data "../animator-ui/dist:animator-ui/dist" \
     --hidden-import "flask" \
     --hidden-import "flask_cors" \
