@@ -4,6 +4,7 @@ import jsmediatags from 'jsmediatags';
 export class LocalAdapter implements MusicProvider {
   readonly name = 'local';
   private audio: HTMLAudioElement | null = null;
+  private playTimeout: any = null;
 
   async init(): Promise<void> {
     if (!this.audio) {
@@ -88,9 +89,15 @@ export class LocalAdapter implements MusicProvider {
     if (!this.audio) throw new Error("Audio player not initialized");
     this.audio.src = trackId;
     
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
+    
     if (delayMs > 0) {
-      setTimeout(() => {
+      this.playTimeout = setTimeout(() => {
         if (this.audio) this.audio.play();
+        this.playTimeout = null;
       }, delayMs);
     } else {
       this.audio.play();
@@ -104,12 +111,20 @@ export class LocalAdapter implements MusicProvider {
   }
 
   async pause(): Promise<void> {
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
     if (this.audio) {
       this.audio.pause();
     }
   }
 
   async stop(): Promise<void> {
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
     if (this.audio) {
       this.audio.pause();
       this.audio.currentTime = 0;

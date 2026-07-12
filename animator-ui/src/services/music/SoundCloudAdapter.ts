@@ -4,6 +4,7 @@ export class SoundCloudAdapter implements MusicProvider {
   readonly name = 'soundcloud';
 
   private widget: any = null;
+  private playTimeout: any = null;
 
   async init(): Promise<void> {
     return new Promise((resolve) => {
@@ -74,6 +75,11 @@ export class SoundCloudAdapter implements MusicProvider {
       return;
     }
     
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
+    
     if (delayMs > 0) {
       // Load muted or not autoplaying
       this.widget.load(trackUrl, {
@@ -84,8 +90,9 @@ export class SoundCloudAdapter implements MusicProvider {
         show_reposts: false,
         visual: false
       });
-      setTimeout(() => {
+      this.playTimeout = setTimeout(() => {
         this.widget.play();
+        this.playTimeout = null;
       }, delayMs);
     } else {
       // Play immediately synchronously
@@ -101,10 +108,18 @@ export class SoundCloudAdapter implements MusicProvider {
   }
 
   async pause(): Promise<void> {
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
     if (this.widget) this.widget.pause();
   }
 
   async stop(): Promise<void> {
+    if (this.playTimeout) {
+      clearTimeout(this.playTimeout);
+      this.playTimeout = null;
+    }
     if (this.widget) this.widget.pause();
   }
 }
