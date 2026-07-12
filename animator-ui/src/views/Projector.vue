@@ -1,5 +1,5 @@
 <template>
-  <div class="projector-view">
+  <div class="projector-view" @dblclick="toggleFullscreen">
     <!-- Header with QR Code -->
     <header class="projector-header">
       <div class="qr-box" v-if="gameId && secret && game?.status !== 'waiting'">
@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
@@ -116,6 +116,7 @@ import { signInAnonymously } from 'firebase/auth';
 const gameId = ref('');
 const secret = ref('');
 const game = ref<Record<string, any> | null>(null);
+const apiPort = ref<number | null>(null);
 
 const timeLeft = ref(0);
 const bufferTimeLeft = ref(0);
@@ -152,6 +153,10 @@ const dashOffset = computed(() => {
 onMounted(async () => {
   const params = new URLSearchParams(window.location.search);
   gameId.value = params.get('game') || '';
+  const portParam = params.get('api_port');
+  if (portParam) {
+    apiPort.value = parseInt(portParam);
+  }
   
   if (!gameId.value) return;
 
@@ -218,6 +223,38 @@ const startTimer = (startTime: number, duration: number) => {
   updateTimer();
   timerInterval.value = setInterval(updateTimer, 100);
 };
+
+const toggleFullscreen = () => {
+  if (apiPort.value) {
+    fetch(`http://127.0.0.1:${apiPort.value}/toggle`).catch((err) => {
+      console.error("Échec de l'appel API plein écran :", err);
+    });
+  } else {
+    // Fallback standard pour navigateur
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error("Échec du plein écran HTML5 :", err.message);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+};
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'F11') {
+    event.preventDefault();
+    toggleFullscreen();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
 </script>
 
 <style>

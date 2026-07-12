@@ -1,6 +1,50 @@
 import sys
-import json
 import os
+import threading
+import time
+
+if len(sys.argv) > 1 and sys.argv[1] == '--projector':
+    # We are launched as a subprocess for the projector window
+    import webview
+    import logging
+    from flask import Flask
+    from flask_cors import CORS
+    from urllib.parse import urlparse, parse_qs
+    
+    logging.getLogger('pywebview').setLevel(logging.CRITICAL)
+    if len(sys.argv) > 2:
+        url = sys.argv[2]
+        
+        parsed_url = urlparse(url)
+        params = parse_qs(parsed_url.query)
+        api_port = int(params.get('api_port', [5001])[0])
+        
+        proj_app = Flask('projector_api')
+        CORS(proj_app)
+        
+        window = None
+        
+        @proj_app.route('/toggle')
+        def toggle():
+            global window
+            if window:
+                def run():
+                    time.sleep(0.05)
+                    window.toggle_fullscreen()
+                threading.Thread(target=run, daemon=True).start()
+            return {"status": "ok"}
+            
+        def run_flask():
+            # Run without reloader or debugger
+            proj_app.run(host='127.0.0.1', port=api_port, debug=False, threaded=True)
+            
+        threading.Thread(target=run_flask, daemon=True).start()
+        
+        window = webview.create_window('Blind Test - Projecteur', url, fullscreen=False, width=1280, height=720)
+        webview.start()
+    os._exit(0)
+
+import json
 import time
 import webbrowser
 import subprocess
@@ -8,16 +52,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from music_provider import MusicManager
 
-if len(sys.argv) > 1 and sys.argv[1] == '--projector':
-    # We are launched as a subprocess for the projector window
-    import webview
-    import logging
-    logging.getLogger('pywebview').setLevel(logging.CRITICAL)
-    if len(sys.argv) > 2:
-        url = sys.argv[2]
-        webview.create_window('Blind Test - Projecteur', url, fullscreen=False, width=1280, height=720)
-        webview.start()
-    sys.exit(0)
 
 if getattr(sys, 'frozen', False):
     # Running in a PyInstaller bundle
@@ -103,7 +137,17 @@ class AnimatorApi:
         return playlists
     
     def open_projector_window(self, game_id):
-        url = f'http://127.0.0.1:5174/public?game={game_id}' if self.dev_mode else f'http://127.0.0.1:5000/public?game={game_id}'
+        import socket
+        def get_free_port():
+            s = socket.socket()
+            s.bind(('127.0.0.1', 0))
+            port = s.getsockname()[1]
+            s.close()
+            return port
+            
+        api_port = get_free_port()
+        base_url = f'http://127.0.0.1:5174/public?game={game_id}' if self.dev_mode else f'http://127.0.0.1:5000/public?game={game_id}'
+        url = f"{base_url}&api_port={api_port}"
         
         # Stop existing if any
         self.close_projector_window()
@@ -111,9 +155,19 @@ class AnimatorApi:
         # Start a new process for the projector
         # sys.executable points to python normally, or to the MiniHost executable when frozen
         if getattr(sys, 'frozen', False):
-            self.projector_process = subprocess.Popen([sys.executable, "--projector", url])
+            self.projector_process = subprocess.Popen(
+                [sys.executable, "--projector", url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL
+            )
         else:
-            self.projector_process = subprocess.Popen([sys.executable, "main.py", "--projector", url])
+            self.projector_process = subprocess.Popen(
+                [sys.executable, "main.py", "--projector", url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL
+            )
         return {"status": "ok"}
 
     def close_projector_window(self):
@@ -210,9 +264,16 @@ if __name__ == '__main__':
     lbl.pack(expand=True)
     
     def on_close():
-        api.close_projector_window()
+        try:
+            api.close_projector_window()
+        except Exception:
+            pass
+        try:
+            api.music_manager.quit()
+        except Exception:
+            pass
         root.destroy()
-        sys.exit(0)
+        os._exit(0)
         
     root.protocol("WM_DELETE_WINDOW", on_close)
     root.mainloop()
