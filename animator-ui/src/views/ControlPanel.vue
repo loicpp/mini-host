@@ -1,5 +1,10 @@
 <template>
   <div class="animator-app">
+    <!-- Disconnection Warning Banner -->
+    <div v-if="!isBackendConnected" class="backend-warning-banner">
+      <span class="warning-icon">⚠️</span>
+      <span>Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.</span>
+    </div>
     <!-- Login Screen -->
     <LoginScreen 
       v-if="!isLoggedIn" 
@@ -111,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import LoginScreen from '../components/control-panel/LoginScreen.vue';
 import HomeScreen from '../components/control-panel/HomeScreen.vue';
 import SettingsScreen from '../components/control-panel/SettingsScreen.vue';
@@ -156,7 +161,22 @@ const viewState = ref('home');
 const preferredSource = ref('soundcloud');
 const lastGameId = ref('');
 
+const isBackendConnected = ref(true);
+let pingInterval: ReturnType<typeof setInterval> | null = null;
+
+const checkBackendConnection = async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/test_connection');
+    isBackendConnected.value = res.ok;
+  } catch (e) {
+    isBackendConnected.value = false;
+  }
+};
+
 onMounted(() => {
+  // Start connection monitor
+  checkBackendConnection();
+  pingInterval = setInterval(checkBackendConnection, 4000);
   const attemptAutoLogin = async () => {
     try {
       const configRes = await fetch('http://127.0.0.1:5000/api/config');
@@ -517,6 +537,12 @@ const removePlayer = async (playerId: string) => {
     }
   }
 };
+
+onUnmounted(() => {
+  if (pingInterval) {
+    clearInterval(pingInterval);
+  }
+});
 </script>
 
 <style scoped>
@@ -588,5 +614,32 @@ const removePlayer = async (playerId: string) => {
   color: #888;
   font-style: italic;
   padding: 20px;
+}
+
+.backend-warning-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: #ff4d4d;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  z-index: 99999;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  font-size: 14px;
+}
+.warning-icon {
+  font-size: 18px;
+  animation: warning-blink 1s infinite alternate;
+}
+@keyframes warning-blink {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
 }
 </style>
