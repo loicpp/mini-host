@@ -30,6 +30,16 @@ export const animatorService = {
     return { gameId, secret };
   },
 
+  // Get game details
+  async getGame(gameId: string) {
+    const gameRef = ref(db, `games/${gameId}`);
+    const snapshot = await get(gameRef);
+    if (snapshot.exists()) {
+      return snapshot.val();
+    }
+    return null;
+  },
+
   // Update game state
   async updateGameState(gameId: string, status: string, trackInfo: any = null) {
     const updates: any = { status };

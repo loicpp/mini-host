@@ -263,7 +263,19 @@ const createNewGame = async () => {
 const resumeGame = async () => {
   if (!lastGameId.value) return;
   gameId.value = lastGameId.value;
-  status.value = 'waiting';
+  
+  try {
+    const gameData = await animatorService.getGame(gameId.value);
+    if (gameData && gameData.status) {
+      status.value = gameData.status;
+    } else {
+      status.value = 'waiting';
+    }
+  } catch (e) {
+    console.warn("Could not fetch game status from Firebase, falling back to 'waiting'", e);
+    status.value = 'waiting';
+  }
+  
   currentSource.value = preferredSource.value;
   viewState.value = 'game';
   
