@@ -68,8 +68,8 @@ export class LocalAdapter implements MusicProvider {
         const resolvedTracks = await Promise.all(promises);
         
         resolvedTracks.sort((a, b) => {
-          const nameA = `${a.artist} - ${a.title}`.toLowerCase();
-          const nameB = `${b.artist} - ${b.title}`.toLowerCase();
+          const nameA = `${a.title} - ${a.artist}`.toLowerCase();
+          const nameB = `${b.title} - ${b.artist}`.toLowerCase();
           return nameA.localeCompare(nameB);
         });
         

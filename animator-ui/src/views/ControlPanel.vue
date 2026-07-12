@@ -347,7 +347,7 @@ const performSearch = async () => {
 
 const selectTrack = (track: Track) => {
   selectedTrack.value = track;
-  nextTrackInfo.value.answer = `${track.artist} - ${track.title}`;
+  nextTrackInfo.value.answer = `${track.title} - ${track.artist}`;
 };
 
 let currentStartTime = 0;
