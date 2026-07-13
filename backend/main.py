@@ -112,6 +112,21 @@ class AnimatorApi:
             json.dump(playlists_data, f)
         return {"status": "ok"}
 
+    def save_game_state(self, state_data):
+        with open(os.path.join(config_dir, "game.json"), "w") as f:
+            json.dump(state_data, f)
+        return {"status": "ok"}
+
+    def load_game_state(self):
+        try:
+            path = os.path.join(config_dir, "game.json")
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    return json.load(f)
+        except Exception:
+            pass
+        return {}
+
     def load_playlists(self):
         playlists = []
         try:
@@ -200,6 +215,12 @@ def playlists_api():
     if request.method == 'POST':
         return jsonify(api.save_playlists(request.json))
     return jsonify(api.load_playlists())
+
+@app.route('/api/game', methods=['GET', 'POST'])
+def game_state_api():
+    if request.method == 'POST':
+        return jsonify(api.save_game_state(request.json))
+    return jsonify(api.load_game_state())
 
 @app.route('/api/projector/open', methods=['POST'])
 def open_projector():

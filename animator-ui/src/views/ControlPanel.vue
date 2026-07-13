@@ -78,6 +78,7 @@
             :localTracks="localTracks"
             :selectedTrack="selectedTrack"
             :currentSource="currentSource"
+            :playedTracks="playedTracks"
             @select-track="selectTrack"
           />
 
@@ -158,6 +159,7 @@ const currentSource = ref('soundcloud');
 const searchQuery = ref('');
 const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
+const playedTracks = ref<string[]>([]);
 const isProjectorOpen = ref(false);
 const isPlayersModalOpen = ref(false);
 
@@ -291,6 +293,18 @@ const createNewGame = async () => {
   currentSource.value = preferredSource.value;
   viewState.value = 'game';
   
+  playedTracks.value = [];
+  localTracks.value = [];
+  try {
+    await fetch('http://127.0.0.1:5000/api/game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ localTracks: [], playedTracks: [] })
+    });
+  } catch (e) {
+    console.warn("Could not save game.json", e);
+  }
+  
   try {
     await fetch('http://127.0.0.1:5000/api/config', {
       method: 'POST',
@@ -327,6 +341,15 @@ const resumeGame = async () => {
   
   currentSource.value = preferredSource.value;
   viewState.value = 'game';
+  
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/game');
+    const data = await res.json();
+    if (data.localTracks) localTracks.value = data.localTracks;
+    if (data.playedTracks) playedTracks.value = data.playedTracks;
+  } catch(e) {
+    console.warn("Could not load game.json", e);
+  }
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
     players.value = newPlayers;
@@ -436,6 +459,17 @@ const playMusic = async () => {
       duration: 30000,
       answer: nextTrackInfo.value.answer
     });
+    
+    if (!playedTracks.value.includes(selectedTrack.value.id)) {
+      playedTracks.value.push(selectedTrack.value.id);
+      try {
+        await fetch('http://127.0.0.1:5000/api/game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
+        });
+      } catch(e) {}
+    }
     
     const timeToWait = startTime - getServerTime();
     
@@ -562,6 +596,13 @@ const restartGame = async () => {
 };
 const loadPlaylist = async (tracks: Track[]) => {
   localTracks.value = tracks;
+  try {
+    await fetch('http://127.0.0.1:5000/api/game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
+    });
+  } catch (e) {}
   if (tracks.length > 0) {
     const trackSource = tracks[0].source;
     if (musicManager.activeProviderName !== trackSource) {

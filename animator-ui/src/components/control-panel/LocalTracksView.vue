@@ -8,7 +8,7 @@
         v-for="track in localTracks" 
         :key="track.id" 
         class="track-item" 
-        :class="{ active: selectedTrack?.id === track.id }"
+        :class="{ active: selectedTrack?.id === track.id, played: playedTracks.includes(track.id) }"
         @click="$emit('select-track', track)"
       >
         <div class="track-icon">🎵</div>
@@ -28,6 +28,7 @@ defineProps<{
   localTracks: Track[];
   selectedTrack: Track | null;
   currentSource: string;
+  playedTracks: string[];
 }>();
 
 defineEmits<{
@@ -59,6 +60,10 @@ defineEmits<{
 .track-item:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
+}
+.track-item.played {
+  opacity: 0.3;
+  filter: grayscale(100%);
 }
 .track-item.active {
   background: rgba(255, 199, 0, 0.2);
