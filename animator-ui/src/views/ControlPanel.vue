@@ -60,7 +60,7 @@
         <div v-else-if="viewState === 'game' && gameId" class="game-panel">
           <div class="header-bar">
             <h3 @click="isPlayersModalOpen = true" style="cursor: pointer; text-decoration: underline;" title="Voir et gérer les joueurs">
-              Joueurs connectés ({{ Object.keys(players).length }})
+              Joueurs connectés ({{ Object.keys(displayedPlayers).length }})
             </h3>
             <span class="status-badge" :class="status">{{ statusDisplay }}</span>
             <div style="margin-left: auto; display: flex; gap: 10px;">
@@ -87,7 +87,7 @@
 
           <PlayersGrid 
             v-if="status === 'reviewing'"
-            :players="players"
+            :players="displayedPlayers"
             @award="award"
           />
         </div>
@@ -97,10 +97,10 @@
           <div class="modal-content" @click.stop>
             <h2>Gestion des Joueurs</h2>
             <div class="players-list">
-              <div v-if="Object.keys(players).length === 0" class="no-players">
+              <div v-if="Object.keys(displayedPlayers).length === 0" class="no-players">
                 Aucun joueur connecté.
               </div>
-              <div v-for="(player, playerId) in players" :key="playerId" class="player-item">
+              <div v-for="(player, playerId) in displayedPlayers" :key="playerId" class="player-item">
                 <div class="player-info-row">
                   <span class="player-name">
                     {{ player.name || 'Anonyme' }}
@@ -160,6 +160,20 @@ const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
 const isProjectorOpen = ref(false);
 const isPlayersModalOpen = ref(false);
+
+const pendingPoints = ref<Record<string, number>>({});
+
+const displayedPlayers = computed(() => {
+  const result: Record<string, any> = {};
+  for (const id in players.value) {
+    const p = players.value[id];
+    result[id] = {
+      ...p,
+      score: (p.score || 0) + (pendingPoints.value[id] || 0)
+    };
+  }
+  return result;
+});
 
 
 const statusDisplay = computed(() => {
@@ -479,18 +493,31 @@ watch(() => players.value, (newPlayers) => {
   }
 }, { deep: true });
 
-const award = async (playerId: string, points: number) => {
+const award = (playerId: string, points: number) => {
   if (points !== 0) {
     const currentScore = players.value[playerId]?.score || 0;
-    if (currentScore + points >= 0) {
+    const currentPending = pendingPoints.value[playerId] || 0;
+    if (currentScore + currentPending + points >= 0) {
+      pendingPoints.value = {
+        ...pendingPoints.value,
+        [playerId]: currentPending + points
+      };
+    }
+  }
+};
+
+const applyPendingPoints = async () => {
+  for (const [playerId, points] of Object.entries(pendingPoints.value)) {
+    if (points !== 0) {
       await animatorService.awardPoints(gameId.value, playerId, points);
     }
   }
-  // Optional: visually mark it as corrected locally
+  pendingPoints.value = {};
 };
 
 const revealResults = async () => {
   status.value = 'results';
+  await applyPendingPoints();
   await animatorService.updateGameState(gameId.value, 'results');
 };
 
@@ -498,6 +525,7 @@ const nextRound = async () => {
   status.value = 'waiting';
   nextTrackInfo.value.answer = '';
   searchQuery.value = '';
+  pendingPoints.value = {};
   
   try {
     await animatorService.clearPlayerAnswers(gameId.value);
@@ -521,6 +549,7 @@ const restartGame = async () => {
     nextTrackInfo.value.answer = '';
     searchQuery.value = '';
     selectedTrack.value = null;
+    pendingPoints.value = {};
     
     try {
       await animatorService.resetPlayers(gameId.value);
