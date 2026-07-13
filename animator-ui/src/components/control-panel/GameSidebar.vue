@@ -12,22 +12,6 @@
 
       <div class="controls" v-if="status === 'waiting'">
 
-        <div class="input-group" v-if="currentSource === 'soundcloud'">
-          <label>1. Choisir une Playlist SoundCloud :</label>
-          
-          <div v-if="customPlaylists.length > 0" style="display:flex; flex-direction:column; gap:10px; margin-top: 10px; margin-bottom: 20px;">
-            <select v-model="selectedCustomPlaylist" style="padding:10px; background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.2); border-radius:5px; width: 100%; outline:none;">
-              <option value="">-- Sélectionner une playlist --</option>
-              <option v-for="pl in customPlaylists" :key="pl.id" :value="pl.id">{{ pl.name }}</option>
-            </select>
-            <button class="btn btn-secondary btn-block" @click="loadSelectedPlaylist" :disabled="!selectedCustomPlaylist">📥 Charger la playlist</button>
-          </div>
-          <div v-else style="margin-top: 10px;">
-            <button class="btn btn-primary btn-block" @click="$emit('configure-playlists')">⚙️ Configurer une playlist</button>
-          </div>
-
-        </div>
-
         <div class="input-group" v-if="currentSource === 'local'">
           <label>1. Dossier de musiques :</label>
           <button class="btn btn-secondary btn-block" @click="$emit('search')">Sélectionner un dossier...</button>
@@ -40,7 +24,7 @@
         </div>
 
         <div v-if="selectedTrack" class="input-group">
-          <label>{{ currentSource === 'local' ? '3' : '2' }}. Réponse Attendue pour les joueurs :</label>
+          <label>{{ currentSource === 'local' ? '2' : '1' }}. Réponse Attendue pour les joueurs :</label>
           <input type="text" v-model="localNextTrackInfo.answer" placeholder="Titre - Artiste" />
         </div>
 
@@ -65,40 +49,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { Track } from '../../services/music/MusicProvider';
 
-const customPlaylists = ref<any[]>([]);
-const selectedCustomPlaylist = ref('');
-
-onMounted(async () => {
-  try {
-    const configRes = await fetch('http://127.0.0.1:5000/api/playlists');
-    const data = await configRes.json();
-    if (Array.isArray(data)) {
-      customPlaylists.value = data;
-    } else if (data.playlists) {
-      customPlaylists.value = data.playlists; // backward compatibility
-    }
-  } catch(e) {
-    console.warn("Could not load playlists", e);
-  }
-});
-
-
-
-const loadSelectedPlaylist = () => {
-  const pl = customPlaylists.value.find(p => p.id === selectedCustomPlaylist.value);
-  if (pl) {
-    emit('load-playlist', pl.tracks.map((t: any) => {
-      return {
-        ...t,
-        id: t.url,
-        source: 'soundcloud'
-      };
-    }));
-  }
-};
 
 const props = defineProps<{
   status: string;

@@ -41,8 +41,14 @@
           :lastGameId="lastGameId"
           @open-settings="viewState = 'settings'"
           @open-playlists="viewState = 'playlists'"
-          @create-game="createNewGame"
+          @create-game="viewState = 'create-game'"
           @resume-game="resumeGame"
+        />
+
+        <CreateGameScreen
+          v-else-if="viewState === 'create-game'"
+          @back="viewState = 'home'"
+          @start-game="createNewGame"
         />
 
         <SettingsScreen 
@@ -135,6 +141,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import LoginScreen from '../components/control-panel/LoginScreen.vue';
 import HomeScreen from '../components/control-panel/HomeScreen.vue';
 import SettingsScreen from '../components/control-panel/SettingsScreen.vue';
+import CreateGameScreen from '../components/control-panel/CreateGameScreen.vue';
 import GameSidebar from '../components/control-panel/GameSidebar.vue';
 import LocalTracksView from '../components/control-panel/LocalTracksView.vue';
 import PlayersGrid from '../components/control-panel/PlayersGrid.vue';
@@ -162,6 +169,8 @@ const localTracks = ref<Track[]>([]);
 const playedTracks = ref<string[]>([]);
 const isProjectorOpen = ref(false);
 const isPlayersModalOpen = ref(false);
+
+const gameSettings = ref({ duration: 30, mode: 'text' });
 
 const pendingPoints = ref<Record<string, number>>({});
 
@@ -199,6 +208,7 @@ const checkBackendConnection = async () => {
     const res = await fetch('http://127.0.0.1:5000/api/test_connection');
     isBackendConnected.value = res.ok;
   } catch (e) {
+    console.warn(e);
     isBackendConnected.value = false;
   }
 };
@@ -233,7 +243,7 @@ onMounted(() => {
     try {
       await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
     } catch(e) {
-      // ignore
+      console.warn(e);
     }
   });
 });
@@ -277,7 +287,38 @@ const login = async (loginEmail?: string, loginPassword?: string) => {
   }
 };
 
-const createNewGame = async () => {
+const sanitizeTracks = (tracks: any[]): Track[] => {
+  return tracks.map(t => {
+    if (t.id && t.source) return t;
+    
+    let source = 'soundcloud';
+    if (t.url && (t.url.includes('youtube') || t.url.includes('youtu.be'))) source = 'youtube';
+    
+    let id = t.url;
+    if (source === 'youtube' && t.url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = t.url.match(regExp);
+      if (match && match[2].length === 11) {
+        id = match[2];
+      }
+    }
+    
+    return {
+      ...t,
+      id: t.id || id || String(Math.random()),
+      source: t.source || source
+    };
+  });
+};
+
+const createNewGame = async (settings: any) => {
+  if (settings) {
+    gameSettings.value = {
+      duration: settings.duration,
+      mode: settings.mode
+    };
+  }
+
   if (lastGameId.value) {
     try {
       await animatorService.deleteGame(lastGameId.value);
@@ -294,12 +335,12 @@ const createNewGame = async () => {
   viewState.value = 'game';
   
   playedTracks.value = [];
-  localTracks.value = [];
+  localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
   try {
     await fetch('http://127.0.0.1:5000/api/game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ localTracks: [], playedTracks: [] })
+      body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
     });
   } catch (e) {
     console.warn("Could not save game.json", e);
@@ -347,6 +388,7 @@ const resumeGame = async () => {
     const data = await res.json();
     if (data.localTracks) localTracks.value = data.localTracks;
     if (data.playedTracks) playedTracks.value = data.playedTracks;
+    if (data.settings) gameSettings.value = data.settings;
   } catch(e) {
     console.warn("Could not load game.json", e);
   }
@@ -362,6 +404,7 @@ const leaveGame = async () => {
   }
   // Optional: stop listening to players
   gameId.value = '';
+  selectedTrack.value = null;
   viewState.value = 'home';
 };
 
@@ -393,6 +436,7 @@ const toggleProjector = async () => {
         body: JSON.stringify({ game_id: gameId.value })
       });
     } catch (e) {
+      console.warn(e);
       window.open(`/public?game=${gameId.value}`, '_blank', 'width=1280,height=720');
     }
     isProjectorOpen.value = true;
@@ -456,8 +500,9 @@ const playMusic = async () => {
     
     await animatorService.updateGameState(gameId.value, 'playing', {
       startTime: startTime,
-      duration: 30000,
-      answer: nextTrackInfo.value.answer
+      duration: gameSettings.value.duration * 1000,
+      answer: nextTrackInfo.value.answer,
+      mode: gameSettings.value.mode
     });
     
     if (!playedTracks.value.includes(selectedTrack.value.id)) {
@@ -466,9 +511,11 @@ const playMusic = async () => {
         await fetch('http://127.0.0.1:5000/api/game', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
+          body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value, settings: gameSettings.value })
         });
-      } catch(e) {}
+      } catch(e) {
+        console.warn(e);
+      }
     }
     
     const timeToWait = startTime - getServerTime();
@@ -504,7 +551,7 @@ watch(() => status.value, (newStatus) => {
     const checkTimer = () => {
       if (status.value !== 'playing') return;
       const now = getServerTime();
-      if (currentStartTime && now >= currentStartTime + 30000) {
+      if (currentStartTime && now >= currentStartTime + (gameSettings.value.duration * 1000)) {
         stopMusic();
       } else {
         autoStopTimer = setTimeout(checkTimer, 500);
@@ -594,15 +641,17 @@ const restartGame = async () => {
     await animatorService.updateGameState(gameId.value, 'waiting', null);
   }
 };
-const loadPlaylist = async (tracks: Track[]) => {
-  localTracks.value = tracks;
+const loadPlaylist = async (tracks: any[]) => {
+  localTracks.value = sanitizeTracks(tracks);
   try {
     await fetch('http://127.0.0.1:5000/api/game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
+      body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value, settings: gameSettings.value })
     });
-  } catch (e) {}
+  } catch (e) {
+    console.warn(e);
+  }
   if (tracks.length > 0) {
     const trackSource = tracks[0].source;
     if (musicManager.activeProviderName !== trackSource) {

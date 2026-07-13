@@ -79,6 +79,8 @@ defineEmits<{
 }>();
 
 interface Track {
+  id?: string;
+  source?: string;
   title: string;
   artist: string;
   url: string;
@@ -201,13 +203,26 @@ const addTrack = async () => {
   if (!selectedPlaylist.value) return;
   if (!newTrack.value.url.trim()) return;
   
+  const url = newTrack.value.url.trim();
+  const source = getUrlSource(url);
+  let id = null;
+  if (source === 'youtube') id = extractYoutubeId(url);
+  if (source === 'soundcloud') id = extractSoundCloudId(url);
+  
+  if (!id) {
+    alert("URL invalide.");
+    return;
+  }
+  
   selectedPlaylist.value.tracks.push({
+    id: id,
     title: newTrack.value.title.trim() || 'Inconnu',
     artist: newTrack.value.artist.trim() || 'Inconnu',
-    url: newTrack.value.url.trim()
+    source: source as any,
+    url: url
   });
   
-  newTrack.value = { title: '', artist: '', url: '' };
+  newTrack.value = { title: '', artist: '', url: '', id: '', source: 'soundcloud' };
   await saveToConfig();
 };
 
