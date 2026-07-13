@@ -1,6 +1,6 @@
 <template>
   <div class="players-grid">
-    <div v-for="(player, id) in filteredPlayers" :key="id" class="player-card">
+    <div v-for="(player, id) in filteredPlayers" :key="id" class="player-card" :class="{'awarded-points': player.pendingPoints > 0, 'penalized-points': player.pendingPoints < 0}">
       <div class="p-header">
         <h4>{{ player.name }}</h4>
         <span class="score">{{ player.score || 0 }} pts</span>
@@ -60,4 +60,12 @@ const filteredPlayers = computed(() => {
 </script>
 
 <style scoped>
+.awarded-points {
+  border: 2px solid #2ecc71 !important;
+  box-shadow: 0 0 15px rgba(46, 204, 113, 0.4) !important;
+}
+.penalized-points {
+  border: 2px solid #e74c3c !important;
+  box-shadow: 0 0 15px rgba(231, 76, 60, 0.4) !important;
+}
 </style>

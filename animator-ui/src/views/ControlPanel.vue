@@ -34,6 +34,7 @@
         @next-round="nextRound"
         @resume-music="resumeMusic"
         @correct-buzzer="correctBuzzer"
+        @auto-correct="autoCorrect"
       />
 
       <!-- Main Content -->
@@ -215,7 +216,8 @@ const displayedPlayers = computed(() => {
     result[id] = {
       ...p,
       currentGuess: guess,
-      score: (p.score || 0) + (pendingPoints.value[id] || 0)
+      score: (p.score || 0) + (pendingPoints.value[id] || 0),
+      pendingPoints: pendingPoints.value[id] || 0
     };
   }
   return result;
@@ -616,6 +618,28 @@ const correctBuzzer = async () => {
   }
   
   await revealResults();
+};
+
+const autoCorrect = () => {
+  if (!nextTrackInfo.value.answer) return;
+  const target = nextTrackInfo.value.answer.toLowerCase().replace(/[^a-z0-9]/g, '');
+  
+  for (const id in players.value) {
+    const guess = players.value[id]?.currentGuess;
+    if (guess && guess.title) {
+      const gTitle = guess.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const gArtist = (guess.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      
+      const guessFull = gTitle + gArtist;
+      
+      // Basic fuzzy check: if the target includes the main part of the title or vice versa
+      if (gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target))) {
+        if (!pendingPoints.value[id]) award(id, 1);
+      } else if (guessFull.length > 2 && (target.includes(guessFull) || guessFull.includes(target))) {
+        if (!pendingPoints.value[id]) award(id, 1);
+      }
+    }
+  }
 };
 
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;

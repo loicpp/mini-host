@@ -36,6 +36,9 @@
           </button>
         </template>
         <template v-else>
+          <button v-if="gameMode === 'text'" class="btn btn-secondary btn-block" style="margin-bottom: 10px;" @click="$emit('auto-correct')">
+            🤖 Auto-correction
+          </button>
           <button class="btn btn-primary btn-block" @click="$emit('reveal')">
             {{ gameMode === 'buzzer' ? "⏩ Personne n'a trouvé (Dévoiler)" : "🎉 Dévoiler les Résultats" }}
           </button>
@@ -76,6 +79,7 @@ const emit = defineEmits<{
   (e: 'next-round'): void;
   (e: 'resume-music'): void;
   (e: 'correct-buzzer'): void;
+  (e: 'auto-correct'): void;
   (e: 'load-playlist', tracks: Track[]): void;
   (e: 'update:searchQuery', val: string): void;
   (e: 'update:nextTrackInfo', val: { answer: string }): void;
