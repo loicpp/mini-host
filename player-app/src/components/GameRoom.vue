@@ -10,73 +10,87 @@
       </div>
     </div>
 
-    <!-- Status: Waiting -->
-    <div v-if="game.status === 'waiting' || !game.status" class="status-card card glass">
-      <div class="pulse-ring"></div>
-      <h3>En attente...</h3>
-      <p>L'animateur va bientôt lancer la prochaine musique.</p>
-    </div>
+    <!-- Blocked State -->
+    <template v-if="player?.blockedTurns === -1 || player?.blockedTurns > 0">
+      <div class="status-card card" style="border: 2px solid #ff4d4d; margin-bottom: 15px; text-align: center; padding: 30px;">
+        <h3 style="color: #ff4d4d; margin-bottom: 15px; font-size: 1.5rem;">🛑 Vous êtes bloqué</h3>
+        <p v-if="player.blockedTurns === -1" style="font-size: 1.1rem;">L'animateur a bloqué vos réponses pour une durée indéterminée.</p>
+        <p v-else style="font-size: 1.1rem; font-weight: bold; color: #ffc700;">Vous ne pouvez pas jouer pendant {{ player.blockedTurns }} tour(s).</p>
+      </div>
+    </template>
 
-    <!-- Status: Playing -->
-    <div v-else-if="game.status === 'playing'" class="status-card card highlight">
-      <h3 v-if="isBuffering">⏳ Préparez-vous...</h3>
-      <h3 v-else>🎵 À vous de jouer !</h3>
-      
-      <p class="time-left" v-if="timeLeft > 0">{{ timeLeft }}s restantes</p>
-      <p class="time-left text-danger" v-else>Temps écoulé !</p>
+    <template v-else>
+      <!-- Status: Waiting -->
+      <div v-if="game.status === 'waiting' || !game.status" class="status-card card glass">
+        <div class="pulse-ring"></div>
+        <h3>En attente...</h3>
+        <p>L'animateur va bientôt lancer la prochaine musique.</p>
+      </div>
 
-      <div class="guess-container" :style="{ opacity: isBuffering ? 0.5 : 1 }">
-        <!-- Search Input -->
-        <div class="input-group search-group">
-          <input 
-            type="text" 
-            v-model="searchQuery" 
-            @input="handleSearch"
-            placeholder="Tapez un titre ou un artiste..." 
-            autocomplete="off"
-            :disabled="timeLeft <= 0 || hasSubmitted || isBuffering"
-          />
-            <div class="search-loader" v-if="isSearching"></div>
-          </div>
+      <!-- Status: Playing -->
+      <div v-else-if="game.status === 'playing'" class="status-card card highlight">
+        <div style="width: 100%;">
+          <h3 v-if="isBuffering">⏳ Préparez-vous...</h3>
+          <h3 v-else>🎵 À vous de jouer !</h3>
+          
+          <p class="time-left" v-if="timeLeft > 0">{{ timeLeft }}s restantes</p>
+          <p class="time-left text-danger" v-else>Temps écoulé !</p>
 
-          <!-- Autocomplete Results -->
-          <ul class="autocomplete-list" v-if="suggestions.length > 0 && !hasSubmitted">
-            <li 
-              v-for="(item, index) in suggestions" 
-              :key="index"
-              @click="selectSuggestion(item)"
-            >
-              <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="suggestion-cover" />
-              <div class="suggestion-info">
-                <span class="suggestion-title">{{ item.title }}</span>
-                <span class="suggestion-artist">{{ item.artist }}</span>
+          <div class="guess-container" :style="{ opacity: isBuffering ? 0.5 : 1 }">
+            <!-- Search Input -->
+            <div class="input-group search-group">
+              <input 
+                type="text" 
+                v-model="searchQuery" 
+                @input="handleSearch"
+                placeholder="Tapez un titre ou un artiste..." 
+                autocomplete="off"
+                :disabled="timeLeft <= 0 || hasSubmitted || isBuffering"
+              />
+              <div class="search-loader" v-if="isSearching"></div>
+            </div>
+
+            <!-- Autocomplete Results -->
+            <ul class="autocomplete-list" v-if="suggestions.length > 0 && !hasSubmitted">
+              <li 
+                v-for="(item, index) in suggestions" 
+                :key="index"
+                @click="selectSuggestion(item)"
+              >
+                <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="suggestion-cover" />
+                <div class="suggestion-info">
+                  <span class="suggestion-title">{{ item.title }}</span>
+                  <span class="suggestion-artist">{{ item.artist }}</span>
+                </div>
+              </li>
+            </ul>
+
+            <!-- Current Selected Guess -->
+            <div class="current-guess" v-if="hasSubmitted">
+              <p class="success-text">✅ Réponse envoyée !</p>
+              <div class="guess-display">
+                <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
               </div>
-            </li>
-          </ul>
-
-          <!-- Current Selected Guess -->
-          <div class="current-guess" v-if="hasSubmitted">
-            <p class="success-text">✅ Réponse envoyée !</p>
-            <div class="guess-display">
-              <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
             </div>
           </div>
         </div>
       </div>
 
-    <!-- Status: Results / Reviewing -->
-    <div v-else-if="game.status === 'reviewing'" class="status-card card">
-      <h3>⏸️ Fin du morceau</h3>
-      <p>L'animateur corrige les réponses. Préparez-vous !</p>
-      <div class="guess-display" v-if="hasSubmitted">
-        Votre réponse : <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
+      <!-- Status: Results / Reviewing -->
+      <div v-else-if="game.status === 'reviewing'" class="status-card card">
+        <h3>⏸️ Fin du morceau</h3>
+        <p>L'animateur corrige les réponses. Préparez-vous !</p>
+        <div class="guess-display" v-if="hasSubmitted">
+          Votre réponse : <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
+        </div>
       </div>
-    </div>
-    <!-- Status: Finished -->
-    <div v-else-if="game.status === 'finished'" class="status-card card glass">
-      <h3 style="color: #00e676; font-size: 1.5rem;">🏆 Partie Terminée !</h3>
-      <p>Regardez le projecteur pour découvrir le podium final.</p>
-    </div>
+
+      <!-- Status: Finished -->
+      <div v-else-if="game.status === 'finished'" class="status-card card glass">
+        <h3 style="color: #00e676; font-size: 1.5rem;">🏆 Partie Terminée !</h3>
+        <p>Regardez le projecteur pour découvrir le podium final.</p>
+      </div>
+    </template>
   </div>
 </template>
 

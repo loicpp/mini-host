@@ -101,9 +101,23 @@
                 Aucun joueur connecté.
               </div>
               <div v-for="(player, playerId) in players" :key="playerId" class="player-item">
-                <span class="player-name">{{ player.name || 'Anonyme' }}</span>
-                <span class="player-score">{{ player.score || 0 }} pts</span>
-                <button class="btn btn-sm btn-danger" @click="removePlayer(playerId)">Supprimer</button>
+                <div class="player-info-row">
+                  <span class="player-name">
+                    {{ player.name || 'Anonyme' }}
+                    <span v-if="player.blockedTurns === -1" style="color: #ff4d4d; font-size: 0.8em; margin-left: 5px;">(Bloqué)</span>
+                    <span v-else-if="player.blockedTurns > 0" style="color: #ffc700; font-size: 0.8em; margin-left: 5px;">(Bloqué {{ player.blockedTurns }} tour(s))</span>
+                  </span>
+                  <span class="player-score">{{ player.score || 0 }} pts</span>
+                </div>
+                <div class="player-actions-row">
+                  <div class="block-controls">
+                    <button class="btn btn-sm btn-warning" @click="setPlayerBlock(playerId as string, 1)" title="Bloquer pour 1 tour">1 Tour</button>
+                    <button class="btn btn-sm btn-warning" @click="setPlayerBlock(playerId as string, 3)" title="Bloquer pour 3 tours">3 Tours</button>
+                    <button class="btn btn-sm btn-danger" @click="setPlayerBlock(playerId as string, -1)" title="Bloquer indéfiniment">Bloquer</button>
+                    <button class="btn btn-sm btn-success" v-if="player.blockedTurns" @click="setPlayerBlock(playerId as string, 0)">Débloquer</button>
+                  </div>
+                  <button class="btn btn-sm btn-danger" @click="removePlayer(playerId as string)">Supprimer</button>
+                </div>
               </div>
             </div>
             <button class="btn secondary" style="width: 100%; margin-top: 20px;" @click="isPlayersModalOpen = false">Fermer</button>
@@ -429,6 +443,8 @@ const stopMusic = async () => {
   await musicManager.stop();
   status.value = 'reviewing';
   await animatorService.updateGameState(gameId.value, 'reviewing');
+  // Decrement blocked turns after the round has been played/missed
+  await animatorService.decrementBlockedTurns(gameId.value);
 };
 
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
@@ -538,6 +554,14 @@ const removePlayer = async (playerId: string) => {
   }
 };
 
+const setPlayerBlock = async (playerId: string, turns: number) => {
+  try {
+    await animatorService.setPlayerBlock(gameId.value, playerId, turns);
+  } catch(e) {
+    console.error("Impossible de modifier le blocage du joueur:", e);
+  }
+};
+
 onUnmounted(() => {
   if (pingInterval) {
     clearInterval(pingInterval);
@@ -575,8 +599,8 @@ onUnmounted(() => {
   background: #1e1e2d;
   padding: 30px;
   border-radius: 12px;
-  width: 400px;
-  max-width: 90vw;
+  width: 600px;
+  max-width: 95vw;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   border: 1px solid rgba(255,255,255,0.1);
 }
@@ -594,11 +618,33 @@ onUnmounted(() => {
 }
 .player-item {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #2b2b40;
+  padding: 15px;
+  border-radius: 8px;
+}
+.player-info-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #2b2b40;
-  padding: 10px 15px;
-  border-radius: 8px;
+  width: 100%;
+}
+.player-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+}
+.block-controls {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+.block-controls button {
+  flex: 1;
+  white-space: nowrap;
 }
 .player-name {
   font-weight: 600;

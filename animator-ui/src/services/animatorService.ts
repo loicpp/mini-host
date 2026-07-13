@@ -89,7 +89,26 @@ export const animatorService = {
     }
   },
 
-  // Reset all players' scores and guesses
+  // Decrement blocked turns
+  async decrementBlockedTurns(gameId: string) {
+    const playersRef = ref(db, `games/${gameId}/players`);
+    const snapshot = await get(playersRef);
+    if (snapshot.exists()) {
+      const players = snapshot.val();
+      const updates: any = {};
+      Object.keys(players).forEach(playerId => {
+        const blockedTurns = players[playerId].blockedTurns;
+        if (blockedTurns && blockedTurns > 0) {
+          updates[`${playerId}/blockedTurns`] = blockedTurns - 1;
+        }
+      });
+      if (Object.keys(updates).length > 0) {
+        await update(playersRef, updates);
+      }
+    }
+  },
+
+  // Reset all players' scores, guesses, and blocks
   async resetPlayers(gameId: string) {
     const playersRef = ref(db, `games/${gameId}/players`);
     const snapshot = await get(playersRef);
@@ -99,6 +118,7 @@ export const animatorService = {
       Object.keys(players).forEach(playerId => {
         updates[`${playerId}/currentGuess`] = "";
         updates[`${playerId}/score`] = 0;
+        updates[`${playerId}/blockedTurns`] = 0;
       });
       await update(playersRef, updates);
     }
@@ -108,6 +128,12 @@ export const animatorService = {
   async removePlayer(gameId: string, playerId: string) {
     const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
     await remove(playerRef);
+  },
+
+  // Block or unblock a player
+  async setPlayerBlock(gameId: string, playerId: string, turns: number) {
+    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
+    await update(playerRef, { blockedTurns: turns });
   },
 
   // Cleanup old games
