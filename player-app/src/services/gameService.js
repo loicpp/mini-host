@@ -31,7 +31,6 @@ export const gameService = {
     await set(playerRef, {
       name: playerName,
       score: 0,
-      joinedAt: Date.now(),
       secret: secret
     });
     

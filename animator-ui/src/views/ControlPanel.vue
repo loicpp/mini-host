@@ -266,13 +266,6 @@ const login = async (loginEmail?: string, loginPassword?: string) => {
       if (config.lastGameId) {
         lastGameId.value = config.lastGameId;
       }
-      
-      // Cleanup old games in Firebase
-      try {
-        await animatorService.cleanupOldGames(config.lastGameId);
-      } catch (e) {
-        console.warn("Could not cleanup old games", e);
-      }
     } catch (e) {
       console.warn("Backend not available, running in local-only mode", e);
       viewState.value = 'settings';
@@ -283,6 +276,14 @@ const login = async (loginEmail?: string, loginPassword?: string) => {
 };
 
 const createNewGame = async () => {
+  if (lastGameId.value) {
+    try {
+      await animatorService.deleteGame(lastGameId.value);
+    } catch (e) {
+      console.warn("Could not delete previous game", e);
+    }
+  }
+
   const game = await animatorService.createGame();
   gameId.value = game.gameId;
   gameSecret.value = game.secret;
