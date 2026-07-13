@@ -107,6 +107,10 @@ export class SoundCloudAdapter implements MusicProvider {
     }
   }
 
+  async resume(): Promise<void> {
+    if (this.widget) this.widget.play();
+  }
+
   async pause(): Promise<void> {
     if (this.playTimeout) {
       clearTimeout(this.playTimeout);

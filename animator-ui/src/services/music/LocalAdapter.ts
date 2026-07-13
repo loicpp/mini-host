@@ -110,6 +110,12 @@ export class LocalAdapter implements MusicProvider {
     }
   }
 
+  async resume(): Promise<void> {
+    if (this.audio) {
+      this.audio.play();
+    }
+  }
+
   async pause(): Promise<void> {
     if (this.playTimeout) {
       clearTimeout(this.playTimeout);

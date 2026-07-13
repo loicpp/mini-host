@@ -37,7 +37,19 @@
           <p class="time-left text-danger" v-else>Temps écoulé !</p>
 
           <div class="guess-container" :style="{ opacity: isBuffering ? 0.5 : 1 }">
-            <!-- Search Input -->
+            <template v-if="game.settings?.mode === 'buzzer'">
+              <div class="buzzer-mode-container" v-if="!hasSubmitted">
+                <button 
+                  class="btn-buzz" 
+                  @click="handleBuzz" 
+                  :disabled="timeLeft <= 0 || isBuffering"
+                >
+                  BUZZ
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <!-- Search Input -->
             <div class="input-group search-group">
               <input 
                 type="text" 
@@ -63,15 +75,13 @@
                   <span class="suggestion-artist">{{ item.artist }}</span>
                 </div>
               </li>
-            </ul>
+              </ul>
+            </template>
 
             <!-- Current Selected Guess -->
             <div class="current-guess" v-if="hasSubmitted">
               <p class="success-text">✅ Réponse envoyée !</p>
               <div class="guess-display">
-                <strong>{{ currentGuess.title }}</strong> - {{ currentGuess.artist }}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -104,7 +114,7 @@ const props = defineProps({
   playerId: String
 });
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['submit', 'buzz']);
 
 const searchQuery = ref('');
 const suggestions = ref([]);
@@ -204,7 +214,48 @@ const selectSuggestion = (item) => {
   
   emit('submit', item);
 };
+
+const handleBuzz = () => {
+  emit('buzz', (success) => {
+    if (success) {
+      const item = { title: 'BUZZ', artist: 'Appuyé !' };
+      currentGuess.value = item;
+      hasSubmitted.value = true;
+    }
+  });
+};
 </script>
 
 <style scoped>
+.buzzer-mode-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+}
+.btn-buzz {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff4d4d, #cc0000);
+  border: 8px solid #990000;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.4);
+  color: white;
+  font-size: 3.5rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.1s;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+.btn-buzz:active:not(:disabled) {
+  transform: translateY(10px) scale(0.95);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.6);
+}
+.btn-buzz:disabled {
+  background: radial-gradient(circle at 30% 30%, #888, #555);
+  border-color: #333;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 </style>

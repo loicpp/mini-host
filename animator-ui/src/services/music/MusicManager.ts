@@ -43,6 +43,18 @@ class MusicManager {
     await this.currentProvider!.play(track.id, delayMs);
   }
 
+  async resume(): Promise<void> {
+    if (this.currentProvider) {
+      await this.currentProvider.resume();
+    }
+  }
+
+  async pause(): Promise<void> {
+    if (this.currentProvider) {
+      await this.currentProvider.pause();
+    }
+  }
+
   async stop(): Promise<void> {
     if (this.currentProvider) {
       await this.currentProvider.stop();

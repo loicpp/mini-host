@@ -26,6 +26,7 @@
           :game="game" 
           :playerId="playerId" 
           @submit="handleGuess" 
+          @buzz="handleBuzz"
         />
       </div>
     </main>
@@ -111,6 +112,16 @@ const handleGuess = async (guess) => {
     await gameService.submitGuess(gameId.value, guess.title, guess.artist);
   } catch (e) {
     console.error("Failed to submit guess:", e);
+  }
+};
+
+const handleBuzz = async (callback) => {
+  try {
+    const success = await gameService.buzz(gameId.value);
+    callback(success);
+  } catch (e) {
+    console.error("Failed to buzz:", e);
+    callback(false);
   }
 };
 </script>

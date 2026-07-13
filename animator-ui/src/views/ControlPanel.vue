@@ -23,6 +23,8 @@
         v-model:nextTrackInfo="nextTrackInfo"
         :localTracks="localTracks"
         :selectedTrack="selectedTrack"
+        :gameMode="gameSettings.mode"
+        :hasBuzzed="hasBuzzed"
         @toggle-projector="toggleProjector"
         @leave-game="leaveGame"
         @configure-playlists="onConfigurePlaylists"
@@ -30,13 +32,15 @@
         @stop="stopMusic"
         @reveal="revealResults"
         @next-round="nextRound"
+        @resume-music="resumeMusic"
+        @correct-buzzer="correctBuzzer"
       />
 
       <!-- Main Content -->
       <main class="main-content" :class="{ 'full-page': viewState !== 'game' }">
         <HomeScreen 
           v-if="viewState === 'home'"
-          :lastGameId="lastGameId"
+          :lastGameId="lastGameId || ''"
           @open-settings="viewState = 'settings'"
           @open-playlists="viewState = 'playlists'"
           @create-game="viewState = 'create-game'"
@@ -96,6 +100,7 @@
           <PlayersGrid 
             v-if="status === 'reviewing'"
             :players="displayedPlayers"
+            :gameMode="gameSettings.mode"
             @award="award"
           />
         </div>
@@ -174,8 +179,19 @@ const searchQuery = ref('');
 const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
 const playedTracks = ref<string[]>([]);
+
 const isProjectorOpen = ref(false);
 const showDiagnostics = ref(false);
+
+const currentBuzzer = ref<any>(null);
+
+const hasBuzzed = computed(() => {
+  if (gameSettings.value.mode !== 'buzzer') return false;
+  return !!currentBuzzer.value;
+});
+
+
+
 const isPlayersModalOpen = ref(false);
 
 const gameSettings = ref({ duration: 30, mode: 'text' });
@@ -186,8 +202,19 @@ const displayedPlayers = computed(() => {
   const result: Record<string, any> = {};
   for (const id in players.value) {
     const p = players.value[id];
+    let guess = p.currentGuess;
+    
+    if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value && currentBuzzer.value.playerId === id) {
+      guess = {
+        title: 'BUZZ',
+        artist: 'Appuyé !',
+        submittedAt: currentBuzzer.value.submittedAt
+      };
+    }
+    
     result[id] = {
       ...p,
+      currentGuess: guess,
       score: (p.score || 0) + (pendingPoints.value[id] || 0)
     };
   }
@@ -206,7 +233,7 @@ const statusDisplay = computed(() => {
 
 const viewState = ref('home');
 const preferredSource = ref('soundcloud');
-const lastGameId = ref('');
+const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
 
 const isBackendConnected = ref(true);
 let pingInterval: ReturnType<typeof setInterval> | null = null;
@@ -335,7 +362,7 @@ const createNewGame = async (settings: any) => {
     }
   }
 
-  const game = await animatorService.createGame();
+  const game = await animatorService.createGame(gameSettings.value);
   gameId.value = game.gameId;
   gameSecret.value = game.secret;
   status.value = 'waiting';
@@ -383,6 +410,9 @@ const createNewGame = async (settings: any) => {
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
     players.value = newPlayers;
   });
+  animatorService.listenToBuzzer(gameId.value, (buzzerData) => {
+    currentBuzzer.value = buzzerData;
+  });
 };
 
 const resumeGame = async () => {
@@ -416,6 +446,9 @@ const resumeGame = async () => {
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
     players.value = newPlayers;
+  });
+  animatorService.listenToBuzzer(gameId.value, (buzzerData) => {
+    currentBuzzer.value = buzzerData;
   });
 };
 
@@ -504,6 +537,8 @@ const playMusic = async () => {
     const startTime = getServerTime() + delay;
     currentStartTime = startTime;
     
+    await animatorService.clearCurrentBuzzer(gameId.value);
+
     await animatorService.updateGameState(gameId.value, 'playing', {
       startTime: startTime,
       duration: gameSettings.value.duration * 1000,
@@ -545,8 +580,42 @@ const stopMusic = async () => {
   await musicManager.stop();
   status.value = 'reviewing';
   await animatorService.updateGameState(gameId.value, 'reviewing');
-  // Decrement blocked turns after the round has been played/missed
-  await animatorService.decrementBlockedTurns(gameId.value);
+};
+
+const pauseMusic = async () => {
+  await musicManager.pause();
+  status.value = 'reviewing';
+  await animatorService.updateGameState(gameId.value, 'reviewing');
+};
+
+const resumeMusic = async () => {
+  let playerIdToBlock = null;
+  if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value) {
+    playerIdToBlock = currentBuzzer.value.playerId;
+  }
+
+  if (playerIdToBlock) {
+    await setPlayerBlock(playerIdToBlock, 1);
+    await animatorService.clearPlayerGuess(gameId.value, playerIdToBlock);
+    await animatorService.clearCurrentBuzzer(gameId.value);
+  }
+  
+  status.value = 'playing';
+  await animatorService.updateGameState(gameId.value, 'playing');
+  await musicManager.resume();
+};
+
+const correctBuzzer = async () => {
+  let playerIdToReward = null;
+  if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value) {
+    playerIdToReward = currentBuzzer.value.playerId;
+  }
+  
+  if (playerIdToReward) {
+    award(playerIdToReward, 1);
+  }
+  
+  await revealResults();
 };
 
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
@@ -569,13 +638,29 @@ watch(() => status.value, (newStatus) => {
   }
 });
 
+watch(() => currentBuzzer.value, (newBuzzer) => {
+  if (status.value === 'playing' && newBuzzer && gameSettings.value.mode === 'buzzer') {
+    pauseMusic();
+  }
+});
+
 watch(() => players.value, (newPlayers) => {
   if (status.value === 'playing' && newPlayers) {
     const playerIds = Object.keys(newPlayers);
     if (playerIds.length > 0) {
-      const allSubmitted = playerIds.every(id => (newPlayers as Record<string, any>)[id].currentGuess);
-      if (allSubmitted) {
-        stopMusic();
+      if (gameSettings.value.mode === 'buzzer') {
+        const allBlocked = playerIds.every(id => {
+          const p = (newPlayers as Record<string, any>)[id];
+          return p.blockedTurns === -1 || p.blockedTurns > 0;
+        });
+        if (allBlocked && playerIds.length > 0) {
+          stopMusic();
+        }
+      } else {
+        const allSubmitted = playerIds.every(id => (newPlayers as Record<string, any>)[id].currentGuess);
+        if (allSubmitted) {
+          stopMusic();
+        }
       }
     }
   }
@@ -607,6 +692,9 @@ const revealResults = async () => {
   status.value = 'results';
   await applyPendingPoints();
   await animatorService.updateGameState(gameId.value, 'results');
+  
+  // Decrement blocked turns when the round is fully revealed/finished
+  await animatorService.decrementBlockedTurns(gameId.value);
 };
 
 const nextRound = async () => {

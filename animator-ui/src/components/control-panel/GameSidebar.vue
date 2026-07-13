@@ -27,7 +27,19 @@
       </div>
 
       <div class="controls" v-if="status === 'reviewing'">
-        <button class="btn btn-primary btn-block" @click="$emit('reveal')">🎉 Dévoiler les Résultats</button>
+        <template v-if="gameMode === 'buzzer' && hasBuzzed">
+          <button class="btn btn-warning btn-block" style="margin-bottom: 10px;" @click="$emit('resume-music')">
+            ❌ Faux, on reprend (Bloquer)
+          </button>
+          <button class="btn btn-success btn-block" @click="$emit('correct-buzzer')">
+            ✅ Vrai (1 pt & Dévoiler)
+          </button>
+        </template>
+        <template v-else>
+          <button class="btn btn-primary btn-block" @click="$emit('reveal')">
+            {{ gameMode === 'buzzer' ? "⏩ Personne n'a trouvé (Dévoiler)" : "🎉 Dévoiler les Résultats" }}
+          </button>
+        </template>
       </div>
       
       <div class="controls" v-if="status === 'results'">
@@ -50,6 +62,8 @@ const props = defineProps<{
   localTracks: Track[];
   selectedTrack: Track | null;
   nextTrackInfo: { answer: string };
+  gameMode: string;
+  hasBuzzed: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -60,6 +74,8 @@ const emit = defineEmits<{
   (e: 'stop'): void;
   (e: 'reveal'): void;
   (e: 'next-round'): void;
+  (e: 'resume-music'): void;
+  (e: 'correct-buzzer'): void;
   (e: 'load-playlist', tracks: Track[]): void;
   (e: 'update:searchQuery', val: string): void;
   (e: 'update:nextTrackInfo', val: { answer: string }): void;

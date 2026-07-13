@@ -15,7 +15,7 @@ export const animatorService = {
   },
 
   // Create a new game room
-  async createGame() {
+  async createGame(settings: any = {}) {
     const gameId = Math.random().toString(36).substring(2, 6).toUpperCase();
     const secret = Math.random().toString(36).substring(2, 10); // Generate a random secret
     
@@ -23,6 +23,7 @@ export const animatorService = {
     await set(gameRef, {
       status: 'waiting',
       secret: secret,
+      settings: settings,
       players: {}
     });
     
@@ -56,6 +57,26 @@ export const animatorService = {
     return onValue(playersRef, (snapshot) => {
       callback(snapshot.val() || {});
     });
+  },
+
+  // Listen to the central buzzer
+  listenToBuzzer(gameId: string, callback: (buzzer: any) => void) {
+    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
+    return onValue(buzzerRef, (snapshot) => {
+      callback(snapshot.val() || null);
+    });
+  },
+
+  // Clear a specific player's guess
+  async clearPlayerGuess(gameId: string, playerId: string) {
+    const guessRef = ref(db, `games/${gameId}/players/${playerId}/currentGuess`);
+    await remove(guessRef);
+  },
+
+  // Clear the central buzzer winner
+  async clearCurrentBuzzer(gameId: string) {
+    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
+    await remove(buzzerRef);
   },
 
   // Award points to a player

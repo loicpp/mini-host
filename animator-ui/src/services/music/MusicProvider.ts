@@ -33,6 +33,11 @@ export interface MusicProvider {
   play(trackId: string, delayMs?: number): Promise<void>;
 
   /**
+   * Resumes the paused track
+   */
+  resume(): Promise<void>;
+
+  /**
    * Pauses the current track
    */
   pause(): Promise<void>;

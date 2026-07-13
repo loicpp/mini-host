@@ -1,5 +1,5 @@
 import { db, auth } from '../firebase';
-import { ref, set, get, onValue, update, remove } from "firebase/database";
+import { ref, set, get, onValue, update, remove, runTransaction } from "firebase/database";
 import { signInAnonymously } from "firebase/auth";
 
 export const gameService = {
@@ -56,5 +56,24 @@ export const gameService = {
       artist,
       submittedAt: Date.now()
     });
+  },
+
+  // Atomically claim the buzzer
+  async buzz(gameId) {
+    const user = auth.currentUser;
+    if (!user) return false;
+
+    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
+    const result = await runTransaction(buzzerRef, (currentData) => {
+      if (!currentData) {
+        return {
+          playerId: user.uid,
+          submittedAt: Date.now()
+        }; // We are the first!
+      }
+      return; // Someone else already buzzed, abort
+    });
+
+    return result.committed;
   }
 };
