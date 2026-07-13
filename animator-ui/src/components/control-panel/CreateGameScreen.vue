@@ -20,17 +20,33 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label>Playlist :</label>
-        <select v-model="settings.playlist" class="modern-input">
-          <option :value="null">Aucune</option>
-          <option v-for="pl in playlists" :key="pl.id" :value="pl">
-            {{ pl.name }} ({{ pl.tracks.length }} titres)
-          </option>
-        </select>
+      <div class="form-group" v-if="preferredSource === 'soundcloud'">
+        <label>Playlist de départ :</label>
+        <div v-if="playlists.length > 0">
+          <select v-model="settings.playlistId" class="modern-input" style="width: 100%;">
+            <option v-for="pl in playlists" :key="pl.id" :value="pl.id">
+              {{ pl.name }} ({{ pl.tracks.length }} titres)
+            </option>
+          </select>
+        </div>
+        <div v-else style="margin-top: 10px;">
+          <p style="color: rgba(255,255,255,0.7); margin-bottom: 10px; font-size: 0.9rem;">
+            Vous n'avez aucune playlist configurée.
+          </p>
+          <button class="btn btn-secondary" style="width: 100%;" @click="$emit('configure-playlists')">
+            Créer ma première playlist
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group" v-if="preferredSource === 'local'">
+        <label>Dossier de musiques :</label>
+        <button class="btn btn-secondary" @click="selectLocalDirectory">
+          {{ settings.localTracks && settings.localTracks.length > 0 ? `${settings.localTracks.length} fichiers sélectionnés` : 'Sélectionner un dossier...' }}
+        </button>
       </div>
       
-      <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: 20px;" @click="startGame">
+      <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: 20px;" @click="startGame" :disabled="preferredSource === 'soundcloud' && playlists.length === 0">
         Créer la partie
       </button>
     </div>
@@ -39,10 +55,16 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
+import { musicManager } from '../../services/music/MusicManager';
+
+defineProps<{
+  preferredSource: string;
+}>();
 
 const emit = defineEmits<{
   (e: 'back'): void;
   (e: 'start-game', settings: any): void;
+  (e: 'configure-playlists'): void;
 }>();
 
 const playlists = ref<any[]>([]);
@@ -50,17 +72,23 @@ const playlists = ref<any[]>([]);
 const settings = ref({
   duration: 30,
   mode: 'text',
-  playlist: null as any
+  playlistId: '',
+  localTracks: [] as any[]
 });
 
 onMounted(async () => {
   try {
     const res = await fetch('http://127.0.0.1:5000/api/playlists');
     const data = await res.json();
+    let loadedPlaylists = [];
     if (Array.isArray(data)) {
-      playlists.value = data;
+      loadedPlaylists = data;
     } else if (data.playlists) {
-      playlists.value = data.playlists;
+      loadedPlaylists = data.playlists;
+    }
+    playlists.value = loadedPlaylists;
+    if (loadedPlaylists.length > 0 && !settings.value.playlistId) {
+      settings.value.playlistId = loadedPlaylists[0].id;
     }
   } catch(e) {
     console.warn("Could not load playlists for game creation", e);
@@ -89,13 +117,36 @@ watch(() => settings.value.duration, () => {
   }, 2000);
 });
 
+const selectLocalDirectory = async () => {
+  try {
+    if (musicManager.activeProviderName !== 'local') {
+      await musicManager.setProvider('local');
+    }
+    const results = await musicManager.search('');
+    if (results && results.length > 0) {
+      settings.value.localTracks = results;
+    }
+  } catch(e: any) {
+    if (e.message !== "Sélection annulée") {
+      console.warn("Could not load local directory", e);
+    }
+  }
+};
+
 const startGame = () => {
   let duration = Math.floor(Number(settings.value.duration));
   if (isNaN(duration) || duration <= 0) {
-    duration = 1; // force to at least 1 if 0 or invalid
+    duration = 1;
   }
   settings.value.duration = duration;
-  emit('start-game', settings.value);
+  
+  const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
+  const payload = {
+    ...settings.value,
+    playlist: selectedPlaylist
+  };
+  
+  emit('start-game', payload);
 };
 </script>
 
@@ -169,5 +220,8 @@ const startGame = () => {
 }
 .modern-input:focus {
   border-color: #ffc700;
+}
+option {
+  color: black;
 }
 </style>

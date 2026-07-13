@@ -12,19 +12,8 @@
 
       <div class="controls" v-if="status === 'waiting'">
 
-        <div class="input-group" v-if="currentSource === 'local'">
-          <label>1. Dossier de musiques :</label>
-          <button class="btn btn-secondary btn-block" @click="$emit('search')">Sélectionner un dossier...</button>
-        </div>
-
-        <div class="input-group" v-if="currentSource === 'local' && localTracks.length > 0">
-          <p style="color:#ffc700; font-size: 0.9rem; margin-bottom:15px;">
-            👉 Sélectionnez une musique dans le grand panneau à droite.
-          </p>
-        </div>
-
         <div v-if="selectedTrack" class="input-group">
-          <label>{{ currentSource === 'local' ? '2' : '1' }}. Réponse Attendue pour les joueurs :</label>
+          <label>Réponse Attendue pour les joueurs :</label>
           <input type="text" v-model="localNextTrackInfo.answer" placeholder="Titre - Artiste" />
         </div>
 
@@ -67,7 +56,6 @@ const emit = defineEmits<{
   (e: 'leave-game'): void;
   (e: 'configure-playlists'): void;
   (e: 'toggle-projector'): void;
-  (e: 'search'): void;
   (e: 'play'): void;
   (e: 'stop'): void;
   (e: 'reveal'): void;

@@ -26,12 +26,10 @@
         @toggle-projector="toggleProjector"
         @leave-game="leaveGame"
         @configure-playlists="onConfigurePlaylists"
-        @search="performSearch"
         @play="playMusic"
         @stop="stopMusic"
         @reveal="revealResults"
         @next-round="nextRound"
-        @load-playlist="loadPlaylist"
       />
 
       <!-- Main Content -->
@@ -47,7 +45,9 @@
 
         <CreateGameScreen
           v-else-if="viewState === 'create-game'"
+          :preferredSource="preferredSource"
           @back="viewState = 'home'"
+          @configure-playlists="onConfigurePlaylists"
           @start-game="createNewGame"
         />
 
@@ -334,8 +334,21 @@ const createNewGame = async (settings: any) => {
   currentSource.value = preferredSource.value;
   viewState.value = 'game';
   
+  if (musicManager.activeProviderName !== currentSource.value) {
+    try {
+      await musicManager.setProvider(currentSource.value);
+    } catch(e) {
+      console.warn("Could not set music provider", e);
+    }
+  }
+  
   playedTracks.value = [];
-  localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
+  if (currentSource.value === 'local') {
+    localTracks.value = settings?.localTracks || [];
+  } else {
+    localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
+  }
+  
   try {
     await fetch('http://127.0.0.1:5000/api/game', {
       method: 'POST',
@@ -402,7 +415,11 @@ const leaveGame = async () => {
   if (isProjectorOpen.value) {
     await toggleProjector();
   }
-  // Optional: stop listening to players
+  try {
+    await musicManager.stop();
+  } catch(e) {
+    console.warn(e);
+  }
   gameId.value = '';
   selectedTrack.value = null;
   viewState.value = 'home';
@@ -452,26 +469,7 @@ const toggleProjector = async () => {
   }
 };
 
-const performSearch = async () => {
-  if (musicManager.activeProviderName !== currentSource.value) {
-    await musicManager.setProvider(currentSource.value);
-  }
-  try {
-    const results = await musicManager.search(searchQuery.value);
-    if (results.length > 0) {
-      if (currentSource.value === 'local') {
-        localTracks.value = results;
-        selectedTrack.value = null;
-      } else {
-        selectedTrack.value = results[0];
-      }
-    }
-  } catch(e: any) {
-    if (e.message !== "Sélection annulée") {
-      alert(e.message);
-    }
-  }
-};
+
 
 const selectTrack = (track: Track) => {
   selectedTrack.value = track;
@@ -639,28 +637,6 @@ const restartGame = async () => {
       console.warn("Could not reset players", e);
     }
     await animatorService.updateGameState(gameId.value, 'waiting', null);
-  }
-};
-const loadPlaylist = async (tracks: any[]) => {
-  localTracks.value = sanitizeTracks(tracks);
-  try {
-    await fetch('http://127.0.0.1:5000/api/game', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value, settings: gameSettings.value })
-    });
-  } catch (e) {
-    console.warn(e);
-  }
-  if (tracks.length > 0) {
-    const trackSource = tracks[0].source;
-    if (musicManager.activeProviderName !== trackSource) {
-      try {
-        await musicManager.setProvider(trackSource);
-      } catch(e) {
-        console.error(e);
-      }
-    }
   }
 };
 

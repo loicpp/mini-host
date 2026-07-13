@@ -17,7 +17,7 @@ export class LocalAdapter implements MusicProvider {
       jsmediatags.read(file, {
         onSuccess: (tag: any) => {
           resolve({
-            title: tag.tags.title || file.name.replace(/\.[^/.]+$/, ""),
+            title: file.name.replace(/\.[^/.]+$/, ""),
             artist: tag.tags.artist || "Artiste Inconnu"
           });
         },
