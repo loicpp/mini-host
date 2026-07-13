@@ -41,6 +41,7 @@
           @open-playlists="viewState = 'playlists'"
           @create-game="viewState = 'create-game'"
           @resume-game="resumeGame"
+          @run-diagnostics="showDiagnostics = true"
         />
 
         <CreateGameScreen
@@ -132,6 +133,11 @@
         </div>
 
       </main>
+
+      <DiagnosticsModal 
+        v-if="showDiagnostics" 
+        @close="showDiagnostics = false"
+      />
     </div>
   </div>
 </template>
@@ -146,6 +152,7 @@ import GameSidebar from '../components/control-panel/GameSidebar.vue';
 import LocalTracksView from '../components/control-panel/LocalTracksView.vue';
 import PlayersGrid from '../components/control-panel/PlayersGrid.vue';
 import PlaylistScreen from '../components/control-panel/PlaylistScreen.vue';
+import DiagnosticsModal from '../components/control-panel/DiagnosticsModal.vue';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
@@ -168,6 +175,7 @@ const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
 const playedTracks = ref<string[]>([]);
 const isProjectorOpen = ref(false);
+const showDiagnostics = ref(false);
 const isPlayersModalOpen = ref(false);
 
 const gameSettings = ref({ duration: 30, mode: 'text' });

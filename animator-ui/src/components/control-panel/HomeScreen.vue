@@ -20,6 +20,10 @@
         <button class="btn btn-action btn-lg" @click="$emit('open-playlists')">
           📋 Mise en place (Playlists)
         </button>
+
+        <button class="btn btn-warning btn-lg" style="margin-top: 20px;" @click="$emit('run-diagnostics')">
+          🧪 Lancer les diagnostics
+        </button>
       </div>
     </div>
   </div>
@@ -35,6 +39,7 @@ defineEmits<{
   (e: 'create-game'): void;
   (e: 'resume-game'): void;
   (e: 'open-playlists'): void;
+  (e: 'run-diagnostics'): void;
 }>();
 </script>
 
