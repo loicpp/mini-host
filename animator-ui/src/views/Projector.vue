@@ -59,11 +59,23 @@
               <circle class="bg" cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle>
               
               <g mask="url(#drain-mask)">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#ffc700" stroke-width="8"></circle>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#00d2ff" stroke-width="8"></circle>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#ffc700" stroke-width="8" :stroke-dasharray="unblockedDashArray"></circle>
                 <circle cx="50" cy="50" r="45" fill="none" stroke="#ff4d4d" stroke-width="8" :stroke-dasharray="reflectionDashArray"></circle>
               </g>
             </svg>
             <div class="time-text">{{ timeLeft }}</div>
+          </div>
+          <div class="timer-legend" v-if="game.status === 'playing'">
+            <div class="legend-item" v-if="blockTotalTime > 0">
+              <span class="color-dot" style="background: #00d2ff;"></span> Blocage
+            </div>
+            <div class="legend-item" v-if="musicTotalTime > blockTotalTime">
+              <span class="color-dot" style="background: #ffc700;"></span> Musique
+            </div>
+            <div class="legend-item" v-if="totalTime > musicTotalTime">
+              <span class="color-dot" style="background: #ff4d4d;"></span> Réflexion
+            </div>
           </div>
           <h1>À vous de jouer !</h1>
         </div>
@@ -133,6 +145,7 @@ const bufferTimeLeft = ref(0);
 const isBuffering = ref(false);
 const totalTime = ref(30);
 const musicTotalTime = ref(15);
+const blockTotalTime = ref(0);
 const timerInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 const baseUrl = "https://minihostapp-1.web.app"; 
@@ -159,6 +172,14 @@ const dashOffsetTotal = computed(() => {
   const c = Math.PI * (45 * 2);
   const pct = timeLeft.value / totalTime.value;
   return ((1 - pct) * c);
+});
+
+const unblockedDashArray = computed(() => {
+  const c = Math.PI * (45 * 2);
+  const unblockedTime = Math.max(0, totalTime.value - blockTotalTime.value);
+  const ratio = Math.min(1, Math.max(0, unblockedTime / Math.max(1, totalTime.value)));
+  const dashLength = ratio * c;
+  return `${dashLength} ${c}`;
 });
 
 const reflectionDashArray = computed(() => {
@@ -203,7 +224,9 @@ watch(() => game.value?.status, (newStatus) => {
     if (track && track.startTime && track.duration) {
       totalTime.value = track.duration / 1000;
       const mDuration = track.musicDuration || track.duration;
+      const bDuration = track.blockDuration || 0;
       musicTotalTime.value = mDuration / 1000;
+      blockTotalTime.value = bDuration / 1000;
       startTimer(track.startTime, track.duration, mDuration);
     }
   } else {
@@ -390,6 +413,29 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   font-size: 15vh;
   font-weight: bold;
+}
+
+.timer-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2vw;
+  margin-bottom: 2vh;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  font-size: 2.5vh;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.color-dot {
+  width: 2vh;
+  height: 2vh;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 .buffering h1 { font-size: 5vh; color: #ffc700; margin-bottom: 3vh; }

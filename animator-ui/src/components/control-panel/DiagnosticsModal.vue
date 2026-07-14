@@ -60,7 +60,7 @@ const runDiagnostics = async () => {
     await fetch('https://www.google.com', { mode: 'no-cors' });
     steps.value[0].status = 'success';
     steps.value[0].message = 'Connecté au réseau public';
-  } catch (e: any) {
+  } catch (_e: any) {
     steps.value[0].status = 'error';
     steps.value[0].message = 'Pas de connexion Internet';
     isRunning.value = false;
@@ -78,7 +78,7 @@ const runDiagnostics = async () => {
     if (!res.ok) throw new Error();
     steps.value[1].status = 'success';
     steps.value[1].message = 'Sauvegardes possibles';
-  } catch (e: any) {
+  } catch (_e: any) {
     steps.value[1].status = 'error';
     steps.value[1].message = 'Dossier en lecture seule ?';
     isRunning.value = false;
@@ -93,7 +93,7 @@ const runDiagnostics = async () => {
     if (!res.ok) throw new Error();
     steps.value[2].status = 'success';
     steps.value[2].message = 'Prêt à projeter';
-  } catch (e: any) {
+  } catch (_e: any) {
     steps.value[2].status = 'error';
     steps.value[2].message = 'Erreur d\'API Projecteur';
     isRunning.value = false;

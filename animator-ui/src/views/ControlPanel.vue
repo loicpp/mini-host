@@ -195,7 +195,7 @@ const hasBuzzed = computed(() => {
 
 const isPlayersModalOpen = ref(false);
 
-const gameSettings = ref({ musicDuration: 15, duration: 30, mode: 'text' });
+const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text' });
 
 const pendingPoints = ref<Record<string, number>>({});
 
@@ -351,6 +351,7 @@ const sanitizeTracks = (tracks: any[]): Track[] => {
 const createNewGame = async (settings: any) => {
   if (settings) {
     gameSettings.value = {
+      blockDuration: settings.blockDuration || 0,
       musicDuration: settings.musicDuration || 15,
       duration: settings.duration,
       mode: settings.mode
@@ -549,6 +550,7 @@ const playMusic = async () => {
       startTime: startTime,
       duration: gameSettings.value.duration * 1000,
       musicDuration: gameSettings.value.musicDuration * 1000,
+      blockDuration: (gameSettings.value.blockDuration || 0) * 1000,
       answer: nextTrackInfo.value.answer,
       mode: gameSettings.value.mode
     });

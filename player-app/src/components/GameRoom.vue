@@ -31,6 +31,7 @@
       <div v-else-if="game.status === 'playing'" class="status-card card highlight">
         <div style="width: 100%;">
           <h3 v-if="isBuffering">⏳ Préparez-vous...</h3>
+          <h3 v-else-if="isDelaying" class="text-warning">⏳ Patientez : {{ delayTimeLeft }}s</h3>
           <h3 v-else>🎵 À vous de jouer !</h3>
           
           <p class="time-left" v-if="timeLeft > 0">{{ timeLeft }}s restantes</p>
@@ -42,7 +43,7 @@
                 <button 
                   class="btn-buzz" 
                   @click="handleBuzz" 
-                  :disabled="timeLeft <= 0 || isBuffering"
+                  :disabled="timeLeft <= 0 || isBuffering || isDelaying"
                 >
                   BUZZ
                 </button>
@@ -57,7 +58,7 @@
                 @input="handleSearch"
                 placeholder="Tapez un titre ou un artiste..." 
                 autocomplete="off"
-                :disabled="timeLeft <= 0 || hasSubmitted || isBuffering"
+                :disabled="timeLeft <= 0 || hasSubmitted || isBuffering || isDelaying"
               />
               <div class="search-loader" v-if="isSearching"></div>
             </div>
@@ -82,6 +83,9 @@
             <div class="current-guess" v-if="hasSubmitted">
               <p class="success-text">✅ Réponse envoyée !</p>
               <div class="guess-display">
+                <strong>{{ currentGuess?.title }}</strong> <span v-if="currentGuess?.artist">- {{ currentGuess?.artist }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -124,6 +128,8 @@ const searchTimeout = ref(null);
 const currentGuess = ref(null);
 const hasSubmitted = ref(false);
 const isBuffering = ref(false);
+const isDelaying = ref(false);
+const delayTimeLeft = ref(0);
 const timeLeft = ref(0);
 const timerInterval = ref(null);
 
@@ -131,7 +137,7 @@ const player = computed(() => {
   return props.game?.players?.[props.playerId];
 });
 
-const startTimer = (startTime, duration) => {
+const startTimer = (startTime, duration, blockDuration = 0) => {
   clearInterval(timerInterval.value);
   
   const updateTimer = () => {
@@ -139,12 +145,23 @@ const startTimer = (startTime, duration) => {
     
     if (now < startTime) {
       isBuffering.value = true;
+      isDelaying.value = false;
       timeLeft.value = Math.ceil(duration / 1000);
+      delayTimeLeft.value = Math.ceil(blockDuration / 1000);
     } else {
       isBuffering.value = false;
       const elapsed = now - startTime;
       const remaining = Math.max(0, duration - elapsed);
+      const remainingDelay = Math.max(0, blockDuration - elapsed);
       timeLeft.value = Math.ceil(remaining / 1000);
+      
+      if (remainingDelay > 0) {
+        isDelaying.value = true;
+        delayTimeLeft.value = Math.ceil(remainingDelay / 1000);
+      } else {
+        isDelaying.value = false;
+        delayTimeLeft.value = 0;
+      }
       
       if (remaining <= 0) {
         clearInterval(timerInterval.value);
@@ -175,7 +192,7 @@ watch(() => props.game?.status, (newStatus, oldStatus) => {
     // Start timer if provided
     const track = props.game.currentTrack;
     if (track && track.startTime && track.duration) {
-      startTimer(track.startTime, track.duration);
+      startTimer(track.startTime, track.duration, track.blockDuration || 0);
     }
   } else if (newStatus !== 'playing') {
     clearInterval(timerInterval.value);
@@ -257,5 +274,11 @@ const handleBuzz = () => {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+input:disabled {
+  opacity: 0.3 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
 }
 </style>

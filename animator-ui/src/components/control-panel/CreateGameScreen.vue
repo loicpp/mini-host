@@ -8,6 +8,11 @@
       <p class="settings-desc">Configurez les paramètres de votre partie.</p>
       
       <div class="form-group">
+        <label>Temps de blocage initial (secondes) : <span class="highlight-value">{{ settings.blockDuration }}s</span></label>
+        <input type="range" v-model.number="settings.blockDuration" min="0" max="30" step="1" class="modern-slider" />
+      </div>
+
+      <div class="form-group">
         <label>Temps de la musique (secondes) : <span class="highlight-value">{{ settings.musicDuration }}s</span></label>
         <input type="range" v-model.number="settings.musicDuration" min="1" max="100" step="1" class="modern-slider" />
       </div>
@@ -75,6 +80,7 @@ const emit = defineEmits<{
 const playlists = ref<any[]>([]);
 
 const settings = ref({
+  blockDuration: 0,
   musicDuration: 15,
   duration: 30,
   mode: 'text',
@@ -105,10 +111,19 @@ watch(() => settings.value.musicDuration, (newVal) => {
   if (settings.value.duration < newVal) {
     settings.value.duration = newVal;
   }
+  if (settings.value.blockDuration > newVal) {
+    settings.value.blockDuration = newVal;
+  }
 });
 
 watch(() => settings.value.duration, (newVal) => {
   if (settings.value.musicDuration > newVal) {
+    settings.value.musicDuration = newVal;
+  }
+});
+
+watch(() => settings.value.blockDuration, (newVal) => {
+  if (settings.value.musicDuration < newVal) {
     settings.value.musicDuration = newVal;
   }
 });
@@ -144,8 +159,17 @@ const startGame = () => {
     duration = musicDuration;
   }
   
+  let blockDuration = Math.floor(Number(settings.value.blockDuration));
+  if (isNaN(blockDuration) || blockDuration < 0) {
+    blockDuration = 0;
+  }
+  if (blockDuration > musicDuration) {
+    blockDuration = musicDuration;
+  }
+  
   settings.value.musicDuration = musicDuration;
   settings.value.duration = duration;
+  settings.value.blockDuration = blockDuration;
   
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
   const payload = {
