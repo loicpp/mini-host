@@ -51,8 +51,17 @@
         <div v-else>
           <div class="countdown-circle">
             <svg viewBox="0 0 100 100">
-              <circle class="bg" cx="50" cy="50" r="45"></circle>
-              <circle class="progress" cx="50" cy="50" r="45" :stroke-dashoffset="dashOffset"></circle>
+              <defs>
+                <mask id="drain-mask">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="white" stroke-width="10" stroke-dasharray="283" :stroke-dashoffset="dashOffsetTotal" style="transition: stroke-dashoffset 0.1s linear;"></circle>
+                </mask>
+              </defs>
+              <circle class="bg" cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle>
+              
+              <g mask="url(#drain-mask)">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#ffc700" stroke-width="8"></circle>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#ff4d4d" stroke-width="8" :stroke-dasharray="reflectionDashArray"></circle>
+              </g>
             </svg>
             <div class="time-text">{{ timeLeft }}</div>
           </div>
@@ -119,9 +128,11 @@ const game = ref<Record<string, any> | null>(null);
 const apiPort = ref<number | null>(null);
 
 const timeLeft = ref(0);
+const timeLeftMusic = ref(0);
 const bufferTimeLeft = ref(0);
 const isBuffering = ref(false);
 const totalTime = ref(30);
+const musicTotalTime = ref(15);
 const timerInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 const baseUrl = "https://minihostapp-1.web.app"; 
@@ -144,10 +155,18 @@ const allPlayersSorted = computed(() => {
 const topThreePlayers = computed(() => allPlayersSorted.value.slice(0, 3));
 const otherPlayers = computed(() => allPlayersSorted.value.slice(3));
 
-const dashOffset = computed(() => {
+const dashOffsetTotal = computed(() => {
   const c = Math.PI * (45 * 2);
   const pct = timeLeft.value / totalTime.value;
   return ((1 - pct) * c);
+});
+
+const reflectionDashArray = computed(() => {
+  const c = Math.PI * (45 * 2);
+  const reflectionTime = Math.max(0, totalTime.value - musicTotalTime.value);
+  const ratio = Math.min(1, Math.max(0, reflectionTime / Math.max(1, totalTime.value)));
+  const dashLength = ratio * c;
+  return `${dashLength} ${c}`;
 });
 
 onMounted(async () => {
@@ -183,7 +202,9 @@ watch(() => game.value?.status, (newStatus) => {
     const track = game.value?.currentTrack;
     if (track && track.startTime && track.duration) {
       totalTime.value = track.duration / 1000;
-      startTimer(track.startTime, track.duration);
+      const mDuration = track.musicDuration || track.duration;
+      musicTotalTime.value = mDuration / 1000;
+      startTimer(track.startTime, track.duration, mDuration);
     }
   } else {
     if (timerInterval.value) {
@@ -193,7 +214,7 @@ watch(() => game.value?.status, (newStatus) => {
   }
 });
 
-const startTimer = (startTime: number, duration: number) => {
+const startTimer = (startTime: number, duration: number, musicDuration: number) => {
   if (timerInterval.value) {
     clearInterval(timerInterval.value);
   }
@@ -204,12 +225,15 @@ const startTimer = (startTime: number, duration: number) => {
     if (now < startTime) {
       isBuffering.value = true;
       timeLeft.value = Math.ceil(duration / 1000);
+      timeLeftMusic.value = Math.ceil(musicDuration / 1000);
       bufferTimeLeft.value = Math.ceil((startTime - now) / 1000);
     } else {
       isBuffering.value = false;
       const elapsed = now - startTime;
       const remaining = Math.max(0, duration - elapsed);
+      const remainingMusic = Math.max(0, musicDuration - elapsed);
       timeLeft.value = Math.ceil(remaining / 1000);
+      timeLeftMusic.value = Math.ceil(remainingMusic / 1000);
       
       if (remaining <= 0) {
         if (timerInterval.value) {
@@ -357,11 +381,7 @@ onUnmounted(() => {
   stroke: rgba(255, 255, 255, 0.1);
 }
 
-.countdown-circle .progress {
-  stroke: #00e676;
-  stroke-dasharray: 283; /* 2 * PI * 45 */
-  transition: stroke-dashoffset 1s linear;
-}
+
 
 .time-text {
   position: absolute;

@@ -133,9 +133,9 @@ const runDiagnostics = async () => {
     
     const results = await musicManager.search(track.url);
     if (results.length > 0) {
-      steps.value[4].message = 'Lecture en cours (5s)...';
+      steps.value[4].message = 'Lecture en cours (3s)...';
       await musicManager.play(results[0], 0);
-      await wait(5000);
+      await wait(3000);
       await musicManager.stop();
       steps.value[4].status = 'success';
       steps.value[4].message = 'Lecture réussie';

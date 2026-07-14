@@ -195,7 +195,7 @@ const hasBuzzed = computed(() => {
 
 const isPlayersModalOpen = ref(false);
 
-const gameSettings = ref({ duration: 30, mode: 'text' });
+const gameSettings = ref({ musicDuration: 15, duration: 30, mode: 'text' });
 
 const pendingPoints = ref<Record<string, number>>({});
 
@@ -351,6 +351,7 @@ const sanitizeTracks = (tracks: any[]): Track[] => {
 const createNewGame = async (settings: any) => {
   if (settings) {
     gameSettings.value = {
+      musicDuration: settings.musicDuration || 15,
       duration: settings.duration,
       mode: settings.mode
     };
@@ -520,6 +521,7 @@ const selectTrack = (track: Track) => {
 };
 
 let currentStartTime = 0;
+let hasMusicStopped = false;
 
 const playMusic = async () => {
   if (!selectedTrack.value) return;
@@ -541,9 +543,12 @@ const playMusic = async () => {
     
     await animatorService.clearCurrentBuzzer(gameId.value);
 
+    hasMusicStopped = false;
+
     await animatorService.updateGameState(gameId.value, 'playing', {
       startTime: startTime,
       duration: gameSettings.value.duration * 1000,
+      musicDuration: gameSettings.value.musicDuration * 1000,
       answer: nextTrackInfo.value.answer,
       mode: gameSettings.value.mode
     });
@@ -604,7 +609,15 @@ const resumeMusic = async () => {
   
   status.value = 'playing';
   await animatorService.updateGameState(gameId.value, 'playing');
-  await musicManager.resume();
+  
+  const now = getServerTime();
+  if (currentStartTime && now >= currentStartTime + (gameSettings.value.musicDuration * 1000)) {
+    hasMusicStopped = true;
+  }
+  
+  if (!hasMusicStopped) {
+    await musicManager.resume();
+  }
 };
 
 const correctBuzzer = async () => {
@@ -650,6 +663,12 @@ watch(() => status.value, (newStatus) => {
     const checkTimer = () => {
       if (status.value !== 'playing') return;
       const now = getServerTime();
+      
+      if (currentStartTime && !hasMusicStopped && now >= currentStartTime + (gameSettings.value.musicDuration * 1000)) {
+        musicManager.pause();
+        hasMusicStopped = true;
+      }
+
       if (currentStartTime && now >= currentStartTime + (gameSettings.value.duration * 1000)) {
         stopMusic();
       } else {

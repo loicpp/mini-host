@@ -8,8 +8,13 @@
       <p class="settings-desc">Configurez les paramètres de votre partie.</p>
       
       <div class="form-group">
-        <label>Temps de réponse (secondes) :</label>
-        <input type="number" v-model.number="settings.duration" min="1" max="120" step="1" class="modern-input" />
+        <label>Temps de la musique (secondes) : <span class="highlight-value">{{ settings.musicDuration }}s</span></label>
+        <input type="range" v-model.number="settings.musicDuration" min="1" max="100" step="1" class="modern-slider" />
+      </div>
+
+      <div class="form-group">
+        <label>Temps total de réflexion (secondes) : <span class="highlight-value">{{ settings.duration }}s</span></label>
+        <input type="range" v-model.number="settings.duration" min="1" max="100" step="1" class="modern-slider" />
       </div>
 
       <div class="form-group">
@@ -70,6 +75,7 @@ const emit = defineEmits<{
 const playlists = ref<any[]>([]);
 
 const settings = ref({
+  musicDuration: 15,
   duration: 30,
   mode: 'text',
   playlistId: '',
@@ -95,26 +101,16 @@ onMounted(async () => {
   }
 });
 
-let durationTimeout: ReturnType<typeof setTimeout> | null = null;
-
-watch(() => settings.value.duration, () => {
-  if (durationTimeout) {
-    clearTimeout(durationTimeout);
+watch(() => settings.value.musicDuration, (newVal) => {
+  if (settings.value.duration < newVal) {
+    settings.value.duration = newVal;
   }
+});
 
-  durationTimeout = setTimeout(() => {
-    if ((settings.value.duration as any) === '' || (settings.value.duration as any) === null) {
-      settings.value.duration = 1;
-      return;
-    }
-    
-    const num = Number(settings.value.duration);
-    if (num < 1) {
-      settings.value.duration = 1;
-    } else if (!Number.isInteger(num)) {
-      settings.value.duration = Math.floor(num);
-    }
-  }, 2000);
+watch(() => settings.value.duration, (newVal) => {
+  if (settings.value.musicDuration > newVal) {
+    settings.value.musicDuration = newVal;
+  }
 });
 
 const selectLocalDirectory = async () => {
@@ -134,10 +130,21 @@ const selectLocalDirectory = async () => {
 };
 
 const startGame = () => {
+  let musicDuration = Math.floor(Number(settings.value.musicDuration));
+  if (isNaN(musicDuration) || musicDuration <= 0) {
+    musicDuration = 1;
+  }
+  
   let duration = Math.floor(Number(settings.value.duration));
   if (isNaN(duration) || duration <= 0) {
     duration = 1;
   }
+  
+  if (duration < musicDuration) {
+    duration = musicDuration;
+  }
+  
+  settings.value.musicDuration = musicDuration;
   settings.value.duration = duration;
   
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
@@ -220,6 +227,17 @@ const startGame = () => {
 }
 .modern-input:focus {
   border-color: #ffc700;
+}
+.modern-slider {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  accent-color: #ffc700;
+}
+.highlight-value {
+  color: #ffc700;
+  font-weight: bold;
 }
 option {
   color: black;
