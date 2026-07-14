@@ -15,6 +15,7 @@
       <div class="status-card card" style="border: 2px solid #ff4d4d; margin-bottom: 15px; text-align: center; padding: 30px;">
         <h3 style="color: #ff4d4d; margin-bottom: 15px; font-size: 1.5rem;">🛑 Vous êtes bloqué</h3>
         <p v-if="player.blockedTurns === -1" style="font-size: 1.1rem;">L'animateur a bloqué vos réponses pour une durée indéterminée.</p>
+        <p v-else-if="player.blockedTurns === 1" style="font-size: 1.1rem; font-weight: bold; color: #ffc700;">Vous êtes bloqué jusqu'à la fin de ce tour.</p>
         <p v-else style="font-size: 1.1rem; font-weight: bold; color: #ffc700;">Vous ne pouvez pas jouer pendant {{ player.blockedTurns }} tour(s).</p>
       </div>
     </template>

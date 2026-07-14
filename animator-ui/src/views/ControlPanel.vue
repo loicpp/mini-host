@@ -778,6 +778,17 @@ const restartGame = async () => {
       console.warn("Could not reset players", e);
     }
     await animatorService.updateGameState(gameId.value, 'waiting', null);
+    
+    playedTracks.value = [];
+    try {
+      await fetch('http://127.0.0.1:5000/api/game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
+      });
+    } catch(e) {
+      console.warn("Could not reset game.json", e);
+    }
   }
 };
 
