@@ -14,7 +14,11 @@
 
       <div class="settings-actions">
         <button class="btn btn-secondary" @click="$emit('back')">⬅️ Retour</button>
-        <button class="btn btn-primary" @click="$emit('save')">Sauvegarder</button>
+        <button class="btn btn-primary" @click="handleSave">Sauvegarder</button>
+      </div>
+      
+      <div class="app-version">
+        Version : {{ appVersion }}
       </div>
     </div>
   </div>
@@ -22,6 +26,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+
+const appVersion = import.meta.env.VITE_APP_VERSION || 'inconnue';
 
 const props = defineProps<{
   preferredSource: string;
@@ -35,12 +41,14 @@ const emit = defineEmits<{
 
 const localSource = ref(props.preferredSource);
 
-watch(localSource, (newVal) => {
-  emit('update:preferredSource', newVal);
-});
 watch(() => props.preferredSource, (newVal) => {
   localSource.value = newVal;
 });
+
+const handleSave = () => {
+  emit('update:preferredSource', localSource.value);
+  emit('save');
+};
 </script>
 
 <style scoped>
@@ -92,5 +100,12 @@ watch(() => props.preferredSource, (newVal) => {
 }
 .btn-block {
   width: 100%;
+}
+.app-version {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  margin-top: 25px;
+  font-family: monospace;
 }
 </style>

@@ -7,7 +7,7 @@
       </p>
 
       <ul class="diagnostic-list">
-        <li v-for="(step, index) in steps" :key="index" class="diagnostic-item" :class="step.status">
+        <li v-for="(step, index) in steps" :key="index" :id="'step-' + index" class="diagnostic-item" :class="step.status">
           <span class="icon">
             {{ step.status === 'pending' ? '⏳' : step.status === 'running' ? '🔄' : step.status === 'success' ? '✅' : '❌' }}
           </span>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { animatorService } from '../../services/animatorService';
 
@@ -45,17 +45,27 @@ const steps = ref([
   { name: 'Connexion au Backend Local', status: 'pending', message: '' },
   { name: 'Test de Lecture', status: 'pending', message: '' },
   { name: 'Création d\'une partie Firebase', status: 'pending', message: '' },
+  { name: 'Test d\'accès joueur (URL)', status: 'pending', message: '' },
   { name: 'Récupération de la partie', status: 'pending', message: '' },
   { name: 'Nettoyage (Suppression)', status: 'pending', message: '' }
 ]);
 
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
 
+const setStepRunning = async (index: number) => {
+  steps.value[index].status = 'running';
+  await nextTick();
+  const el = document.getElementById('step-' + index);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+};
+
 const runDiagnostics = async () => {
   isRunning.value = true;
 
   // Step 1: Internet
-  steps.value[0].status = 'running';
+  await setStepRunning(0);
   try {
     await fetch('https://www.google.com', { mode: 'no-cors' });
     steps.value[0].status = 'success';
@@ -68,7 +78,7 @@ const runDiagnostics = async () => {
   }
 
   // Step 2: Local Permissions
-  steps.value[1].status = 'running';
+  await setStepRunning(1);
   try {
     const res = await fetch('http://127.0.0.1:5000/api/config', {
       method: 'POST',
@@ -86,7 +96,7 @@ const runDiagnostics = async () => {
   }
 
   // Step 3: Projector
-  steps.value[2].status = 'running';
+  await setStepRunning(2);
   try {
     // Just test if the endpoint is there and returns
     const res = await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
@@ -101,7 +111,7 @@ const runDiagnostics = async () => {
   }
 
   // Step 4: Backend
-  steps.value[3].status = 'running';
+  await setStepRunning(3);
   try {
     const res = await fetch('http://127.0.0.1:5000/api/test_connection');
     if (!res.ok) throw new Error("Backend indisponible");
@@ -115,7 +125,7 @@ const runDiagnostics = async () => {
   }
 
   // Step 5: Music Playback
-  steps.value[4].status = 'running';
+  await setStepRunning(4);
   steps.value[4].message = 'Chargement de la piste...';
   try {
     const originalProvider = musicManager.activeProviderName;
@@ -154,7 +164,7 @@ const runDiagnostics = async () => {
   }
 
   // Step 6: Firebase Create
-  steps.value[5].status = 'running';
+  await setStepRunning(5);
   let testGameId = '';
   try {
     const game = await animatorService.createGame();
@@ -168,27 +178,40 @@ const runDiagnostics = async () => {
     return;
   }
 
-  // Step 7: Firebase Retrieve
-  steps.value[6].status = 'running';
+  // Step 7: Player App Reachability
+  await setStepRunning(6);
+  try {
+    // Generate a test URL. Note: we just check network reachability here
+    const playerUrl = `https://minihostapp-1.web.app/?game=${testGameId}&secret=test`;
+    await fetch(playerUrl, { mode: 'no-cors' });
+    steps.value[6].status = 'success';
+    steps.value[6].message = 'Interface joueur en ligne';
+  } catch (_e: any) {
+    steps.value[6].status = 'error';
+    steps.value[6].message = 'Interface joueur inaccessible';
+  }
+
+  // Step 8: Firebase Retrieve
+  await setStepRunning(7);
   try {
     const fetchedGame = await animatorService.getGame(testGameId);
     if (!fetchedGame) throw new Error("Partie non trouvée");
-    steps.value[6].status = 'success';
-    steps.value[6].message = `Données synchronisées`;
-  } catch (e: any) {
-    steps.value[6].status = 'error';
-    steps.value[6].message = e.message || "Erreur de récupération";
+    steps.value[7].status = 'success';
+    steps.value[7].message = `Données synchronisées`;
+  } catch (_e: any) {
+    steps.value[7].status = 'error';
+    steps.value[7].message = _e.message || "Erreur de récupération";
   }
 
-  // Step 8: Firebase Clean
-  steps.value[7].status = 'running';
+  // Step 9: Firebase Clean
+  await setStepRunning(8);
   try {
     await animatorService.deleteGame(testGameId);
-    steps.value[7].status = 'success';
-    steps.value[7].message = 'Partie supprimée';
-  } catch (e: any) {
-    steps.value[7].status = 'error';
-    steps.value[7].message = e.message || "Erreur de nettoyage";
+    steps.value[8].status = 'success';
+    steps.value[8].message = 'Partie supprimée';
+  } catch (_e: any) {
+    steps.value[8].status = 'error';
+    steps.value[8].message = _e.message || "Erreur de nettoyage";
   }
 
   isRunning.value = false;
@@ -227,6 +250,19 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+  padding-bottom: 20px;
+  scroll-padding-bottom: 20px;
+  scroll-padding-top: 20px;
+}
+.diagnostic-list::-webkit-scrollbar {
+  width: 6px;
+}
+.diagnostic-list::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 4px;
 }
 .diagnostic-item {
   display: flex;
