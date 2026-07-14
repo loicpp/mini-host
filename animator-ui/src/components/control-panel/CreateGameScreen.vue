@@ -13,7 +13,7 @@
         <div class="preset-group">
           <span class="preset-label">Buzzer :</span>
           <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 15, 15)">Normal</button>
-          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 1, 10)">Quick</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 2, 10)">Quick</button>
           <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 30, 30)">Fun</button>
           <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 10, 30, 30)">Peaceful</button>
         </div>
@@ -21,7 +21,7 @@
         <div class="preset-group">
           <span class="preset-label">Saisie :</span>
           <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 15, 15)">Normal</button>
-          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 1, 10)">Quick</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 2, 10)">Quick</button>
           <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 30, 30)">Fun</button>
           <button class="btn btn-sm preset-btn" @click="applyPreset('text', 10, 30, 30)">Peaceful</button>
         </div>

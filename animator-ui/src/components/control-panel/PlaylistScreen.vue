@@ -51,16 +51,23 @@
         <div v-if="selectedPlaylist.tracks.length === 0" class="empty-state">
           Cette playlist est vide.
         </div>
-        <div v-else class="tracks-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
-          <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="track-item" style="justify-content: space-between; padding: 10px;">
-            <div>
-              <h4 style="margin:0; color:white;">{{ track.title }} - {{ track.artist }}</h4>
-              <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; max-width: 400px; white-space: nowrap;">{{ track.url }}</p>
-            </div>
-            <div style="display: flex; gap: 5px;">
-              <button class="btn-sm btn-secondary" v-if="testingTrackUrl !== track.url" @click="testTrack(track.url)">Tester</button>
-              <button class="btn-sm btn-action" v-else @click="stopTest">Stop</button>
-              <button class="btn-sm btn-danger" @click="removeTrack(index)">Retirer</button>
+        <div v-else>
+          <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom: 10px; gap:10px;">
+            <label style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">Durée d'écoute (Test) :</label>
+            <input type="number" v-model.number="testDuration" min="1" max="100" step="1" class="modern-input" style="width: 80px; padding: 5px; text-align: center;" />
+            <span style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">secondes</span>
+          </div>
+          <div class="tracks-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
+            <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="track-item" style="justify-content: space-between; padding: 10px;">
+              <div>
+                <h4 style="margin:0; color:white;">{{ track.title }} - {{ track.artist }}</h4>
+                <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; max-width: 400px; white-space: nowrap;">{{ track.url }}</p>
+              </div>
+              <div style="display: flex; gap: 5px;">
+                <button class="btn-sm btn-secondary" v-if="testingTrackUrl !== track.url" @click="testTrack(track.url)">Tester</button>
+                <button class="btn-sm btn-action" v-else @click="stopTest">Stop</button>
+                <button class="btn-sm btn-danger" @click="removeTrack(index)">Retirer</button>
+              </div>
             </div>
           </div>
         </div>
@@ -101,6 +108,8 @@ const newTrack = ref<Track>({ title: '', artist: '', url: '' });
 const testingTrackUrl = ref<string | null>(null);
 const testingTrackId = ref<string | null>(null);
 const testingTrackSource = ref<string>('youtube');
+const testDuration = ref<number>(30);
+const testTimeout = ref<number | null>(null);
 
 const getUrlSource = (url: string) => {
   if (url.includes("soundcloud.com")) return "soundcloud";
@@ -125,17 +134,32 @@ const testTrack = async (url: string) => {
   if (source === 'soundcloud') id = extractSoundCloudId(url);
   
   if (id) {
-    testingTrackUrl.value = url;
-    testingTrackId.value = id;
-    testingTrackSource.value = source;
+    let dur = Math.floor(testDuration.value);
+    if (isNaN(dur) || dur < 1) dur = 1;
+    if (dur > 100) dur = 100;
+    testDuration.value = dur;
+
     try {
+      if (testingTrackUrl.value) {
+        await stopTest();
+      }
+      testingTrackUrl.value = url;
+      testingTrackId.value = id;
+      testingTrackSource.value = source;
+      
       await musicManager.play({
         id: id,
         title: "Test",
         artist: "Test",
-        duration: 30000,
+        duration: dur * 1000,
         source: source as 'soundcloud'
       });
+      
+      testTimeout.value = window.setTimeout(() => {
+        if (testingTrackUrl.value === url) {
+          stopTest();
+        }
+      }, dur * 1000);
     } catch(err) {
       console.error(err);
     }
@@ -147,6 +171,10 @@ const testTrack = async (url: string) => {
 const stopTest = async () => {
   testingTrackUrl.value = null;
   testingTrackId.value = null;
+  if (testTimeout.value !== null) {
+    window.clearTimeout(testTimeout.value);
+    testTimeout.value = null;
+  }
   await musicManager.stop();
 };
 
