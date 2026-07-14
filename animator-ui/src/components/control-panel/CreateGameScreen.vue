@@ -7,6 +7,26 @@
       <h2>Nouvelle Partie</h2>
       <p class="settings-desc">Configurez les paramètres de votre partie.</p>
       
+      <div class="presets-section">
+        <p class="presets-title">Modes de jeu rapides :</p>
+        
+        <div class="preset-group">
+          <span class="preset-label">Buzzer :</span>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 15, 15)">Normal</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 1, 10)">Quick</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 0, 30, 30)">Fun</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('buzzer', 10, 30, 30)">Peaceful</button>
+        </div>
+
+        <div class="preset-group">
+          <span class="preset-label">Saisie :</span>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 15, 15)">Normal</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 1, 10)">Quick</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 0, 30, 30)">Fun</button>
+          <button class="btn btn-sm preset-btn" @click="applyPreset('text', 10, 30, 30)">Peaceful</button>
+        </div>
+      </div>
+      
       <div class="form-group">
         <label>Temps de blocage initial (secondes) : <span class="highlight-value">{{ settings.blockDuration }}s</span></label>
         <input type="range" v-model.number="settings.blockDuration" min="0" max="30" step="1" class="modern-slider" />
@@ -127,6 +147,13 @@ watch(() => settings.value.blockDuration, (newVal) => {
     settings.value.musicDuration = newVal;
   }
 });
+
+const applyPreset = (mode: string, block: number, music: number, total: number) => {
+  settings.value.mode = mode;
+  settings.value.blockDuration = block;
+  settings.value.musicDuration = music;
+  settings.value.duration = total;
+};
 
 const selectLocalDirectory = async () => {
   try {
@@ -265,5 +292,42 @@ const startGame = () => {
 }
 option {
   color: black;
+}
+.presets-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.presets-title {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #ffc700;
+}
+.preset-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.preset-group:last-child {
+  margin-bottom: 0;
+}
+.preset-label {
+  font-weight: bold;
+  min-width: 65px;
+  white-space: nowrap;
+}
+.preset-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: background 0.2s, border-color 0.2s;
+}
+.preset-btn:hover {
+  background: rgba(255, 199, 0, 0.2);
+  border-color: #ffc700;
 }
 </style>
