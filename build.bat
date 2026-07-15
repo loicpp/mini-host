@@ -70,7 +70,6 @@ pyinstaller --noconfirm ^
     --add-data "..\animator-ui\dist;animator-ui\dist" ^
     --hidden-import "flask" ^
     --hidden-import "flask_cors" ^
-    --hidden-import "webview" ^
     --hidden-import "core" ^
     --hidden-import "infrastructure" ^
     --hidden-import "controllers" ^
