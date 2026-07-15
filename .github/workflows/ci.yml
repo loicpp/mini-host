@@ -29,7 +29,13 @@ jobs:
       - name: Type-Check
         run: npm run type-check
       - name: Run Tests & Coverage
-        run: npx vitest run --coverage
+        run: |
+          set -o pipefail
+          NO_COLOR=1 npx vitest run --coverage | tee coverage-output.txt
+          echo "### 📱 Player App Coverage" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          cat coverage-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         if: always() # Upload même si les tests échouent
@@ -59,7 +65,13 @@ jobs:
       - name: Type-Check
         run: npm run type-check
       - name: Run Tests & Coverage
-        run: npx vitest run --coverage
+        run: |
+          set -o pipefail
+          NO_COLOR=1 npx vitest run --coverage | tee coverage-output.txt
+          echo "### 🎛️ Animator UI Coverage" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          cat coverage-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -91,8 +103,13 @@ jobs:
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - name: Run Tests with Coverage
         run: |
+          set -o pipefail
           export PYTHONPATH=.
-          pytest --cov=core --cov-report=html tests/
+          pytest --cov=core --cov-report=html --cov-report=term tests/ | tee coverage.txt
+          echo "### 🐍 Backend Coverage" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          cat coverage.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         if: always()
