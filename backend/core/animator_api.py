@@ -1,0 +1,43 @@
+from typing import Dict, Any, List
+from core.ports.storage_port import StoragePort
+from core.ports.projector_port import ProjectorPort
+try:
+    from music_provider import MusicManager
+except ImportError:
+    # Fallback for old import structure if needed
+    from music_provider import MusicManager
+
+class AnimatorApi:
+    def __init__(self, storage_port: StoragePort, projector_port: ProjectorPort):
+        self.storage_port = storage_port
+        self.projector_port = projector_port
+        self.music_manager = MusicManager()
+    
+    def save_config(self, config_data: Dict[str, Any]) -> Dict[str, str]:
+        self.storage_port.save_config(config_data)
+        return {"status": "ok"}
+        
+    def load_config(self) -> Dict[str, Any]:
+        return self.storage_port.load_config()
+
+    def save_playlists(self, playlists_data: List[Dict[str, Any]]) -> Dict[str, str]:
+        self.storage_port.save_playlists(playlists_data)
+        return {"status": "ok"}
+
+    def save_game_state(self, state_data: Dict[str, Any]) -> Dict[str, str]:
+        self.storage_port.save_game_state(state_data)
+        return {"status": "ok"}
+
+    def load_game_state(self) -> Dict[str, Any]:
+        return self.storage_port.load_game_state()
+
+    def load_playlists(self) -> List[Dict[str, Any]]:
+        return self.storage_port.load_playlists()
+    
+    def open_projector_window(self, game_id: str) -> Dict[str, str]:
+        self.projector_port.open_window(game_id)
+        return {"status": "ok"}
+
+    def close_projector_window(self) -> Dict[str, str]:
+        self.projector_port.close_window()
+        return {"status": "ok"}
