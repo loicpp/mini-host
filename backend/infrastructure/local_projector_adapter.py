@@ -1,4 +1,5 @@
 import sys
+import os
 import subprocess
 from core.ports.projector_port import ProjectorPort
 
