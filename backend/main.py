@@ -79,6 +79,14 @@ if __name__ == '__main__':
     import tkinter as tk
     
     def run_flask():
+        import logging
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
+        try:
+            from flask import cli
+            cli.show_server_banner = lambda *x: None
+        except Exception:
+            pass
         app.run(port=5000, use_reloader=False)
         
     threading.Thread(target=run_flask, daemon=True).start()
@@ -94,14 +102,17 @@ if __name__ == '__main__':
     root.geometry("400x200")
     
     try:
-        if getattr(sys, 'frozen', False):
-            ico_path = os.path.join(sys._MEIPASS, 'favicon.ico')
+        if sys.platform.startswith('linux'):
+            png_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.png')
+            if os.path.exists(png_path):
+                img = tk.PhotoImage(file=png_path)
+                root.iconphoto(True, img)
         else:
-            ico_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'favicon.ico')
-        if os.path.exists(ico_path):
-            root.iconbitmap(ico_path)
+            ico_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.ico')
+            if os.path.exists(ico_path):
+                root.iconbitmap(ico_path)
     except Exception as e:
-        print("Could not set window icon:", e)
+        print("Erreur icône:", e)
     
     lbl = tk.Label(root, text="Le serveur MiniHost est en cours d'exécution.\n\nFermez cette fenêtre pour tout arrêter.", justify="center", padx=20, pady=50)
     lbl.pack(expand=True)

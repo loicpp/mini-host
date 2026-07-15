@@ -66,6 +66,7 @@ pyinstaller --noconfirm ^
     --name MiniHost ^
     --icon="favicon.ico" ^
     --add-data "favicon.ico;." ^
+    --add-data "favicon.png;." ^
     --add-data "..\animator-ui\dist;animator-ui\dist" ^
     --hidden-import "flask" ^
     --hidden-import "flask_cors" ^
