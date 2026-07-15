@@ -26,7 +26,6 @@ if __name__ == '__main__':
     
     @proj_app.route('/toggle')
     def toggle():
-        global window
         if window:
             def run():
                 time.sleep(0.05)

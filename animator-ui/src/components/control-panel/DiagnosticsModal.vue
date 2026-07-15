@@ -70,7 +70,7 @@ const runDiagnostics = async () => {
     await fetch('https://www.google.com', { mode: 'no-cors' });
     steps.value[0].status = 'success';
     steps.value[0].message = 'Connecté au réseau public';
-  } catch (_e: any) {
+  } catch {
     steps.value[0].status = 'error';
     steps.value[0].message = 'Pas de connexion Internet';
     isRunning.value = false;
@@ -88,7 +88,7 @@ const runDiagnostics = async () => {
     if (!res.ok) throw new Error();
     steps.value[1].status = 'success';
     steps.value[1].message = 'Sauvegardes possibles';
-  } catch (_e: any) {
+  } catch {
     steps.value[1].status = 'error';
     steps.value[1].message = 'Dossier en lecture seule ?';
     isRunning.value = false;
@@ -103,7 +103,7 @@ const runDiagnostics = async () => {
     if (!res.ok) throw new Error();
     steps.value[2].status = 'success';
     steps.value[2].message = 'Prêt à projeter';
-  } catch (_e: any) {
+  } catch {
     steps.value[2].status = 'error';
     steps.value[2].message = 'Erreur d\'API Projecteur';
     isRunning.value = false;
@@ -186,7 +186,7 @@ const runDiagnostics = async () => {
     await fetch(playerUrl, { mode: 'no-cors' });
     steps.value[6].status = 'success';
     steps.value[6].message = 'Interface joueur en ligne';
-  } catch (_e: any) {
+  } catch {
     steps.value[6].status = 'error';
     steps.value[6].message = 'Interface joueur inaccessible';
   }
@@ -198,9 +198,9 @@ const runDiagnostics = async () => {
     if (!fetchedGame) throw new Error("Partie non trouvée");
     steps.value[7].status = 'success';
     steps.value[7].message = `Données synchronisées`;
-  } catch (_e: any) {
+  } catch (e: any) {
     steps.value[7].status = 'error';
-    steps.value[7].message = _e.message || "Erreur de récupération";
+    steps.value[7].message = e?.message || "Erreur de récupération";
   }
 
   // Step 9: Firebase Clean
@@ -209,9 +209,9 @@ const runDiagnostics = async () => {
     await animatorService.deleteGame(testGameId);
     steps.value[8].status = 'success';
     steps.value[8].message = 'Partie supprimée';
-  } catch (_e: any) {
+  } catch (e: any) {
     steps.value[8].status = 'error';
-    steps.value[8].message = _e.message || "Erreur de nettoyage";
+    steps.value[8].message = e?.message || "Erreur de nettoyage";
   }
 
   isRunning.value = false;

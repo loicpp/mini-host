@@ -26,7 +26,6 @@ if len(sys.argv) > 1 and sys.argv[1] == '--projector':
         
         @proj_app.route('/toggle')
         def toggle():
-            global window
             if window:
                 def run():
                     time.sleep(0.05)
