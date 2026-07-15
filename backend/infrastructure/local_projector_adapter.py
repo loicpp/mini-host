@@ -25,17 +25,11 @@ class LocalProjectorAdapter(ProjectorPort):
         
         if getattr(sys, 'frozen', False):
             self.projector_process = subprocess.Popen(
-                [sys.executable, "--projector", url],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                stdin=subprocess.DEVNULL
+                [sys.executable, "--projector", url]
             )
         else:
             self.projector_process = subprocess.Popen(
-                [sys.executable, "main.py", "--projector", url],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                stdin=subprocess.DEVNULL
+                [sys.executable, "main.py", "--projector", url]
             )
 
     def close_window(self) -> None:
