@@ -3,20 +3,33 @@ import re
 import subprocess
 import sys
 
+def get_latest_git_tag():
+    try:
+        result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], capture_output=True, text=True, check=True)
+        tag = result.stdout.strip()
+        if tag.startswith('v'):
+            return tag[1:]
+        return tag
+    except subprocess.CalledProcessError:
+        return "0.0.0"
+
 def get_current_version(env_path):
     if not os.path.exists(env_path):
-        return "0.0.0"
+        return None
     with open(env_path, 'r', encoding='utf-8') as f:
         for line in f:
             if line.startswith('VITE_APP_VERSION='):
                 return line.strip().split('=', 1)[1]
-    return "0.0.0"
+    return None
 
 def update_env_version(env_path, new_version):
-    if not os.path.exists(env_path):
-        return
-    with open(env_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    # Create the directory if it doesn't exist just in case
+    os.makedirs(os.path.dirname(env_path), exist_ok=True)
+    
+    lines = []
+    if os.path.exists(env_path):
+        with open(env_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
     
     with open(env_path, 'w', encoding='utf-8') as f:
         found = False
@@ -36,16 +49,23 @@ def main():
     animator_env = os.path.join('animator-ui', '.env')
     player_env = os.path.join('player-app', '.env')
 
+    git_v = get_latest_git_tag()
     v_animator = get_current_version(animator_env)
     v_player = get_current_version(player_env)
+    
+    base_v = v_animator if v_animator else (v_player if v_player else git_v)
+    if base_v == "0.0.0":
+        base_v = "1.0.0"
 
     print("======================================")
     print("Dernières versions trouvées :")
-    print(f" - Animator UI : {v_animator}")
-    print(f" - Player App  : {v_player}")
+    print(f" - Git Tag     : {git_v}")
+    print(f" - Animator UI : {v_animator or 'Aucune'}")
+    print(f" - Player App  : {v_player or 'Aucune'}")
+    print(f" -> Version de base utilisée : {base_v}")
     print("======================================")
 
-    parts = v_animator.split('.')
+    parts = base_v.split('.')
     if len(parts) == 3 and all(p.isdigit() for p in parts):
         v_major, v_minor, v_patch = map(int, parts)
         opt_major = f"{v_major + 1}.0.0"
@@ -77,10 +97,10 @@ def main():
 
     # Check if new version is greater
     try:
-        old_tuple = parse_version(v_animator)
+        old_tuple = parse_version(base_v)
         new_tuple = parse_version(new_v)
         if new_tuple <= old_tuple:
-            print(f"❌ La nouvelle version ({new_v}) doit être supérieure à l'ancienne ({v_animator}).")
+            print(f"❌ La nouvelle version ({new_v}) doit être supérieure à l'ancienne ({base_v}).")
             sys.exit(1)
     except ValueError:
         pass
@@ -88,26 +108,22 @@ def main():
     print(f"\nMise à jour des fichiers .env vers la version {new_v}...")
     update_env_version(animator_env, new_v)
     update_env_version(player_env, new_v)
-    print("✅ Versions mises à jour !")
+    print("✅ Versions mises à jour dans les .env locaux !")
 
-    confirm = input(f"\nVoulez-vous commit, créer le tag v{new_v} et push ? (y/N) : ").strip().lower()
+    confirm = input(f"\nVoulez-vous créer le tag v{new_v} et push ? (y/N) : ").strip().lower()
     if confirm not in ['y', 'yes', 'o', 'oui']:
         print("Opération annulée.")
         sys.exit(0)
 
     try:
-        # Note: .env files are often in .gitignore, so we force add them if needed, 
-        subprocess.run(['git', 'commit', '-a', '-m', f"Bump version to {new_v}"], check=False)
-        
-        # Create tag
+        # Create tag directly (no git commit)
         subprocess.run(['git', 'tag', '-a', f"v{new_v}", '-m', f"Release v{new_v}"], check=True)
         print(f"✅ Tag v{new_v} créé.")
 
-        push_confirm = input("\nVoulez-vous pousser le code et le tag sur GitHub pour déclencher la Release ? (y/N) : ").strip().lower()
+        push_confirm = input("\nVoulez-vous pousser le tag sur GitHub pour déclencher la Release ? (y/N) : ").strip().lower()
         if push_confirm in ['y', 'yes', 'o', 'oui']:
-            subprocess.run(['git', 'push', 'origin', 'main'], check=True)
             subprocess.run(['git', 'push', 'origin', f"v{new_v}"], check=True)
-            print("🚀 Push terminé ! La pipeline de release GitHub Actions va se lancer d'ici quelques secondes.")
+            print("🚀 Push du tag terminé ! La pipeline de release GitHub Actions va se lancer.")
         else:
             print("Push annulé.")
             
