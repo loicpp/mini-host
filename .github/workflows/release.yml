@@ -1,0 +1,111 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*' # Se lance lors de la création d'un tag version, ex: v1.0.0
+
+jobs:
+  deploy-player:
+    name: Deploy Player App to Firebase
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: player-app
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deploy Player App
+        run: bash deploy.sh
+        env:
+          # Assurez-vous d'ajouter ce secret dans les Settings > Secrets de votre dépôt GitHub
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  build-linux:
+    name: Build Linux Executable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js (for animator-ui compilation)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install system dependencies for Pygame/Webview
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0 gir1.2-webkit2-4.0
+      - name: Build Linux Executable
+        run: bash build.sh
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniHost-Linux
+          path: backend/dist/MiniHost/
+
+  build-windows:
+    name: Build Windows Executable
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js (for animator-ui compilation)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build Windows Executable
+        run: build.bat
+        shell: cmd
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniHost-Windows
+          path: backend/dist/MiniHost/
+
+  release:
+    name: Create GitHub Release
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: MiniHost-Linux
+          path: MiniHost-Linux
+          
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: MiniHost-Windows
+          path: MiniHost-Windows
+          
+      - name: Zip Artifacts for Release
+        run: |
+          cd MiniHost-Linux
+          zip -r ../MiniHost-Linux.zip .
+          cd ../MiniHost-Windows
+          zip -r ../MiniHost-Windows.zip .
+          cd ..
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            MiniHost-Linux.zip
+            MiniHost-Windows.zip
+          generate_release_notes: true

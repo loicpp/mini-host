@@ -2,3 +2,6 @@ flask
 flask-cors
 pygame
 pywebview
+pytest
+pytest-cov
+pytest-mock

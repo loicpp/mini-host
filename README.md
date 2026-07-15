@@ -60,6 +60,18 @@ Ces scripts se chargeront d'installer les dépendances, de compiler l'interface 
 
 ---
 
+## 🧪 Tests Unitaires et Couverture
+
+L'application suit les principes du Clean Code et de l'Architecture Hexagonale. Pour assurer sa robustesse, une couverture de test d'au moins 70% est garantie sur la logique métier. 
+Chaque application a ses propres environnements et commandes de tests :
+
+- **Backend** : Tests avec `pytest` et `pytest-cov`
+- **Player App & Animator UI** : Tests avec `Vitest` et `@vitest/coverage-v8`
+
+Pour consulter les commandes exactes de lancement des tests et obtenir les rapports de coverage, référez-vous aux fichiers `README.md` présents dans chacun des sous-dossiers (`backend/`, `player-app/`, `animator-ui/`).
+
+---
+
 ## 🛠️ Développement Actif
 
 Si vous souhaitez modifier le code et tester en direct sans recompiler tout l'exécutable à chaque fois :
