@@ -30,6 +30,12 @@ jobs:
         run: npm run type-check
       - name: Run Tests & Coverage
         run: npx vitest run --coverage
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always() # Upload même si les tests échouent
+        with:
+          name: coverage-player-app
+          path: player-app/coverage/
 
   animator-ui-ci:
     name: Animator UI CI
@@ -54,6 +60,12 @@ jobs:
         run: npm run type-check
       - name: Run Tests & Coverage
         run: npx vitest run --coverage
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-animator-ui
+          path: animator-ui/coverage/
 
   backend-ci:
     name: Backend CI
@@ -80,4 +92,10 @@ jobs:
       - name: Run Tests with Coverage
         run: |
           export PYTHONPATH=.
-          pytest --cov=core tests/
+          pytest --cov=core --cov-report=html tests/
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-backend
+          path: backend/htmlcov/
