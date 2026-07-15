@@ -1,6 +1,10 @@
-import { db, auth } from '../firebase';
-import { ref, set, get, onValue, update, remove } from "firebase/database";
+import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { GameRepository } from '../core/ports/GameRepository';
+import { FirebaseGameRepository } from '../infrastructure/FirebaseGameRepository';
+
+// Injection de dépendance basique pour ce service
+const gameRepo: GameRepository = new FirebaseGameRepository();
 
 export const animatorService = {
   // Login with email and password
@@ -14,146 +18,59 @@ export const animatorService = {
     }
   },
 
-  // Create a new game room
   async createGame(settings: any = {}) {
-    const gameId = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const secret = Math.random().toString(36).substring(2, 10); // Generate a random secret
-    
-    const gameRef = ref(db, `games/${gameId}`);
-    await set(gameRef, {
-      status: 'waiting',
-      secret: secret,
-      settings: settings,
-      players: {}
-    });
-    
-    return { gameId, secret };
+    return gameRepo.createGame(settings);
   },
 
-  // Get game details
   async getGame(gameId: string) {
-    const gameRef = ref(db, `games/${gameId}`);
-    const snapshot = await get(gameRef);
-    if (snapshot.exists()) {
-      return snapshot.val();
-    }
-    return null;
+    return gameRepo.getGame(gameId);
   },
 
-  // Update game state
   async updateGameState(gameId: string, status: string, trackInfo: any = null) {
-    const updates: any = { status };
-    if (trackInfo) {
-      updates.currentTrack = trackInfo;
-    }
-    
-    const gameRef = ref(db, `games/${gameId}`);
-    await update(gameRef, updates);
+    return gameRepo.updateGameState(gameId, status, trackInfo);
   },
 
-  // Listen to players joining and their answers
   listenToPlayers(gameId: string, callback: (players: any) => void) {
-    const playersRef = ref(db, `games/${gameId}/players`);
-    return onValue(playersRef, (snapshot) => {
-      callback(snapshot.val() || {});
-    });
+    return gameRepo.listenToPlayers(gameId, callback);
   },
 
-  // Listen to the central buzzer
   listenToBuzzer(gameId: string, callback: (buzzer: any) => void) {
-    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
-    return onValue(buzzerRef, (snapshot) => {
-      callback(snapshot.val() || null);
-    });
+    return gameRepo.listenToBuzzer(gameId, callback);
   },
 
-  // Clear a specific player's guess
   async clearPlayerGuess(gameId: string, playerId: string) {
-    const guessRef = ref(db, `games/${gameId}/players/${playerId}/currentGuess`);
-    await remove(guessRef);
+    return gameRepo.clearPlayerGuess(gameId, playerId);
   },
 
-  // Clear the central buzzer winner
   async clearCurrentBuzzer(gameId: string) {
-    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
-    await remove(buzzerRef);
+    return gameRepo.clearCurrentBuzzer(gameId);
   },
 
-  // Award points to a player
   async awardPoints(gameId: string, playerId: string, points: number) {
-    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
-    const snapshot = await get(playerRef);
-    if (snapshot.exists()) {
-      const currentScore = snapshot.val().score || 0;
-      await update(playerRef, { score: currentScore + points });
-    }
+    return gameRepo.awardPoints(gameId, playerId, points);
   },
 
-  // Delete a game permanently
   async deleteGame(gameId: string) {
-    const gameRef = ref(db, `games/${gameId}`);
-    await remove(gameRef);
+    return gameRepo.deleteGame(gameId);
   },
 
-  // Clear all players' current guesses
   async clearPlayerAnswers(gameId: string) {
-    const playersRef = ref(db, `games/${gameId}/players`);
-    const snapshot = await get(playersRef);
-    if (snapshot.exists()) {
-      const players = snapshot.val();
-      const updates: any = {};
-      Object.keys(players).forEach(playerId => {
-        updates[`${playerId}/currentGuess`] = "";
-      });
-      await update(playersRef, updates);
-    }
+    return gameRepo.clearPlayerAnswers(gameId);
   },
 
-  // Decrement blocked turns
   async decrementBlockedTurns(gameId: string) {
-    const playersRef = ref(db, `games/${gameId}/players`);
-    const snapshot = await get(playersRef);
-    if (snapshot.exists()) {
-      const players = snapshot.val();
-      const updates: any = {};
-      Object.keys(players).forEach(playerId => {
-        const blockedTurns = players[playerId].blockedTurns;
-        if (blockedTurns && blockedTurns > 0) {
-          updates[`${playerId}/blockedTurns`] = blockedTurns - 1;
-        }
-      });
-      if (Object.keys(updates).length > 0) {
-        await update(playersRef, updates);
-      }
-    }
+    return gameRepo.decrementBlockedTurns(gameId);
   },
 
-  // Reset all players' scores, guesses, and blocks
   async resetPlayers(gameId: string) {
-    const playersRef = ref(db, `games/${gameId}/players`);
-    const snapshot = await get(playersRef);
-    if (snapshot.exists()) {
-      const players = snapshot.val();
-      const updates: any = {};
-      Object.keys(players).forEach(playerId => {
-        updates[`${playerId}/currentGuess`] = "";
-        updates[`${playerId}/score`] = 0;
-        updates[`${playerId}/blockedTurns`] = 0;
-      });
-      await update(playersRef, updates);
-    }
+    return gameRepo.resetPlayers(gameId);
   },
 
-  // Remove a player from the game
   async removePlayer(gameId: string, playerId: string) {
-    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
-    await remove(playerRef);
+    return gameRepo.removePlayer(gameId, playerId);
   },
 
-  // Block or unblock a player
   async setPlayerBlock(gameId: string, playerId: string, turns: number) {
-    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
-    await update(playerRef, { blockedTurns: turns });
-  },
-
+    return gameRepo.setPlayerBlock(gameId, playerId, turns);
+  }
 };
