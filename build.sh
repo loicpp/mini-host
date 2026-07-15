@@ -44,8 +44,15 @@ rm -f dist/MiniHost/_internal/libglib-2.0.so* \
       dist/MiniHost/_internal/libgtk-3.so* \
       dist/MiniHost/_internal/libgdk-3.so* \
       dist/MiniHost/_internal/libX*.so* \
+      dist/MiniHost/_internal/libwayland*.so* \
+      dist/MiniHost/_internal/libxkbcommon*.so* \
+      dist/MiniHost/_internal/libdrm*.so* \
       dist/MiniHost/_internal/libffi.so* \
-      dist/MiniHost/_internal/libstdc++.so*
+      dist/MiniHost/_internal/libstdc++.so* \
+      dist/MiniHost/_internal/libgcc_s.so*
+
+echo "==> Suppression des définitions WebKit embarquées pour forcer l'usage de la version locale (4.0 ou 4.1)..."
+find dist/MiniHost -name "WebKit2*.typelib" -delete
 
 echo "==> Build complete!"
 echo "Your executable is located at: backend/dist/MiniHost/MiniHost"
