@@ -100,20 +100,22 @@ def main():
         old_tuple = parse_version(base_v)
         new_tuple = parse_version(new_v)
         if new_tuple <= old_tuple:
-            print(f"❌ La nouvelle version ({new_v}) doit être supérieure à l'ancienne ({base_v}).")
-            sys.exit(1)
+            downgrade_confirm = input(f"⚠️ La nouvelle version ({new_v}) est inférieure ou égale à l'ancienne ({base_v}). Êtes-vous sûr de vouloir continuer ? (y/N) : ").strip().lower()
+            if downgrade_confirm not in ['y', 'yes', 'o', 'oui']:
+                print("Opération annulée.")
+                sys.exit(0)
     except ValueError:
         pass
-
-    print(f"\nMise à jour des fichiers .env vers la version {new_v}...")
-    update_env_version(animator_env, new_v)
-    update_env_version(player_env, new_v)
-    print("✅ Versions mises à jour dans les .env locaux !")
 
     confirm = input(f"\nVoulez-vous créer le tag v{new_v} et push ? (y/N) : ").strip().lower()
     if confirm not in ['y', 'yes', 'o', 'oui']:
         print("Opération annulée.")
         sys.exit(0)
+
+    print(f"\nMise à jour des fichiers .env vers la version {new_v}...")
+    update_env_version(animator_env, new_v)
+    update_env_version(player_env, new_v)
+    print("✅ Versions mises à jour dans les .env locaux !")
 
     try:
         # Create tag directly (no git commit)

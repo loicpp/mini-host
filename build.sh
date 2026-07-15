@@ -29,6 +29,10 @@ pyinstaller --noconfirm \
     --hidden-import "flask" \
     --hidden-import "flask_cors" \
     --hidden-import "webview" \
+    --hidden-import "core" \
+    --hidden-import "infrastructure" \
+    --hidden-import "controllers" \
+    --paths "." \
     main.py
 
 echo "==> Build complete!"
