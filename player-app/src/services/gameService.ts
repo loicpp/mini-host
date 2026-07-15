@@ -20,7 +20,7 @@ export const gameService = {
   },
 
   // Join a game using gameId and the secret passcode
-  async joinGame(gameId, secret, playerName) {
+  async joinGame(gameId: string, secret: string, playerName: string) {
     const user = auth.currentUser;
     if (!user) throw new Error("Not authenticated");
 
@@ -38,7 +38,7 @@ export const gameService = {
   },
 
   // Listen to game state
-  listenToGame(gameId, callback) {
+  listenToGame(gameId: string, callback: (game: any) => void) {
     const gameRef = ref(db, `games/${gameId}`);
     return onValue(gameRef, (snapshot) => {
       callback(snapshot.val());
@@ -46,7 +46,7 @@ export const gameService = {
   },
 
   // Submit a guess
-  async submitGuess(gameId, title, artist) {
+  async submitGuess(gameId: string, title: string, artist: string) {
     const user = auth.currentUser;
     if (!user) return;
 
@@ -59,7 +59,7 @@ export const gameService = {
   },
 
   // Atomically claim the buzzer
-  async buzz(gameId) {
+  async buzz(gameId: string) {
     const user = auth.currentUser;
     if (!user) return false;
 

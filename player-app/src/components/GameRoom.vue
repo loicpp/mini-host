@@ -110,9 +110,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { itunesService } from '../services/itunesService';
 import { getServerTime } from '../firebase';
+import { useGameTimer } from '../composables/useGameTimer';
 
 const props = defineProps({
   game: Object,
@@ -128,51 +129,12 @@ const searchTimeout = ref(null);
 
 const currentGuess = ref(null);
 const hasSubmitted = ref(false);
-const isBuffering = ref(false);
-const isDelaying = ref(false);
-const delayTimeLeft = ref(0);
-const timeLeft = ref(0);
-const timerInterval = ref(null);
+
+const { isBuffering, isDelaying, delayTimeLeft, timeLeft, startTimer, stopTimer } = useGameTimer(getServerTime);
 
 const player = computed(() => {
   return props.game?.players?.[props.playerId];
 });
-
-const startTimer = (startTime, duration, blockDuration = 0) => {
-  clearInterval(timerInterval.value);
-  
-  const updateTimer = () => {
-    const now = getServerTime();
-    
-    if (now < startTime) {
-      isBuffering.value = true;
-      isDelaying.value = false;
-      timeLeft.value = Math.ceil(duration / 1000);
-      delayTimeLeft.value = Math.ceil(blockDuration / 1000);
-    } else {
-      isBuffering.value = false;
-      const elapsed = now - startTime;
-      const remaining = Math.max(0, duration - elapsed);
-      const remainingDelay = Math.max(0, blockDuration - elapsed);
-      timeLeft.value = Math.ceil(remaining / 1000);
-      
-      if (remainingDelay > 0) {
-        isDelaying.value = true;
-        delayTimeLeft.value = Math.ceil(remainingDelay / 1000);
-      } else {
-        isDelaying.value = false;
-        delayTimeLeft.value = 0;
-      }
-      
-      if (remaining <= 0) {
-        clearInterval(timerInterval.value);
-      }
-    }
-  };
-  
-  updateTimer();
-  timerInterval.value = setInterval(updateTimer, 100);
-};
 
 // Watch for game status changes
 watch(() => props.game?.status, (newStatus, oldStatus) => {
@@ -196,15 +158,9 @@ watch(() => props.game?.status, (newStatus, oldStatus) => {
       startTimer(track.startTime, track.duration, track.blockDuration || 0);
     }
   } else if (newStatus !== 'playing') {
-    clearInterval(timerInterval.value);
+    stopTimer();
   }
 }, { immediate: true });
-
-
-
-onUnmounted(() => {
-  clearInterval(timerInterval.value);
-});
 
 const handleSearch = () => {
   if (hasSubmitted.value) return;

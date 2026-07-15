@@ -1,5 +1,5 @@
 export const itunesService = {
-  async search(query) {
+  async search(query: string) {
     if (!query || query.length < 2) return [];
     
     try {
