@@ -3,6 +3,28 @@ import os
 import threading
 import time
 
+try:
+    import gi
+    print("[DEBUG] gi importé avec succès.")
+    try:
+        gi.require_version('Gtk', '3.0')
+        print("[DEBUG] GTK 3.0 trouvé.")
+    except Exception as e:
+        print("[DEBUG] Erreur GTK 3.0:", type(e), e)
+        
+    try:
+        gi.require_version('WebKit2', '4.1')
+        print("[DEBUG] WebKit2 4.1 trouvé.")
+    except Exception as e:
+        print("[DEBUG] Erreur WebKit2 4.1:", type(e), e)
+        try:
+            gi.require_version('WebKit2', '4.0')
+            print("[DEBUG] WebKit2 4.0 trouvé.")
+        except Exception as e:
+            print("[DEBUG] Erreur WebKit2 4.0:", type(e), e)
+except Exception as e:
+    print("[DEBUG] ERREUR FATALE GI:", type(e), e)
+
 if len(sys.argv) > 1 and sys.argv[1] == '--projector':
     # We are launched as a subprocess for the projector window
     import webview
