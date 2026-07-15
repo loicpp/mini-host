@@ -37,15 +37,15 @@ pyinstaller --noconfirm \
     main.py
 
 echo "==> Nettoyage des bibliothèques systèmes en conflit (Linux)..."
-rm -f dist/MiniHost/libglib-2.0.so* \
-      dist/MiniHost/libgobject-2.0.so* \
-      dist/MiniHost/libgio-2.0.so* \
-      dist/MiniHost/libgmodule-2.0.so* \
-      dist/MiniHost/libgtk-3.so* \
-      dist/MiniHost/libgdk-3.so* \
-      dist/MiniHost/libX*.so* \
-      dist/MiniHost/libffi.so* \
-      dist/MiniHost/libstdc++.so*
+rm -f dist/MiniHost/_internal/libglib-2.0.so* \
+      dist/MiniHost/_internal/libgobject-2.0.so* \
+      dist/MiniHost/_internal/libgio-2.0.so* \
+      dist/MiniHost/_internal/libgmodule-2.0.so* \
+      dist/MiniHost/_internal/libgtk-3.so* \
+      dist/MiniHost/_internal/libgdk-3.so* \
+      dist/MiniHost/_internal/libX*.so* \
+      dist/MiniHost/_internal/libffi.so* \
+      dist/MiniHost/_internal/libstdc++.so*
 
 echo "==> Build complete!"
 echo "Your executable is located at: backend/dist/MiniHost/MiniHost"
