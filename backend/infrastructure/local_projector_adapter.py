@@ -23,28 +23,19 @@ class LocalProjectorAdapter(ProjectorPort):
         
         self.close_window()
         
-        # Restore original environment for the subprocess
-        env = os.environ.copy()
-        if 'LD_LIBRARY_PATH_ORIG' in env:
-            env['LD_LIBRARY_PATH'] = env['LD_LIBRARY_PATH_ORIG']
-        elif 'LD_LIBRARY_PATH' in env:
-            del env['LD_LIBRARY_PATH']
-
         if getattr(sys, 'frozen', False):
             self.projector_process = subprocess.Popen(
                 [sys.executable, "--projector", url],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                stdin=subprocess.DEVNULL,
-                env=env
+                stdin=subprocess.DEVNULL
             )
         else:
             self.projector_process = subprocess.Popen(
                 [sys.executable, "main.py", "--projector", url],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                stdin=subprocess.DEVNULL,
-                env=env
+                stdin=subprocess.DEVNULL
             )
 
     def close_window(self) -> None:
