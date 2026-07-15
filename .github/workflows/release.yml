@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*' # Se lance lors de la création d'un tag version, ex: v1.0.0
 
+permissions:
+  contents: write
+
 jobs:
   deploy-player:
     name: Deploy Player App to Firebase
@@ -18,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Inject Environment Variables
         run: |
           VERSION=${GITHUB_REF_NAME#v}
@@ -48,7 +51,7 @@ jobs:
       - name: Setup Node.js (for animator-ui compilation)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -88,7 +91,7 @@ jobs:
       - name: Setup Node.js (for animator-ui compilation)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
