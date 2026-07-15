@@ -2,68 +2,6 @@ import sys
 import os
 import threading
 import time
-
-try:
-    import gi
-    print("[DEBUG] gi importé avec succès.", flush=True)
-    try:
-        gi.require_version('Gtk', '3.0')
-        print("[DEBUG] GTK 3.0 trouvé.", flush=True)
-    except Exception as e:
-        print("[DEBUG] Erreur GTK 3.0:", type(e), e, flush=True)
-        
-    try:
-        gi.require_version('WebKit2', '4.1')
-        print("[DEBUG] WebKit2 4.1 trouvé.", flush=True)
-    except Exception as e:
-        print("[DEBUG] Erreur WebKit2 4.1:", type(e), e, flush=True)
-        try:
-            gi.require_version('WebKit2', '4.0')
-            print("[DEBUG] WebKit2 4.0 trouvé.", flush=True)
-        except Exception as e:
-            print("[DEBUG] Erreur WebKit2 4.0:", type(e), e, flush=True)
-except Exception as e:
-    print("[DEBUG] ERREUR FATALE GI:", type(e), e, flush=True)
-
-if len(sys.argv) > 1 and sys.argv[1] == '--projector':
-    # We are launched as a subprocess for the projector window
-    import webview
-    import logging
-    from flask import Flask
-    from flask_cors import CORS
-    from urllib.parse import urlparse, parse_qs
-    
-    logging.getLogger('pywebview').setLevel(logging.DEBUG)
-    if len(sys.argv) > 2:
-        url = sys.argv[2]
-        
-        parsed_url = urlparse(url)
-        params = parse_qs(parsed_url.query)
-        api_port = int(params.get('api_port', [5001])[0])
-        
-        proj_app = Flask('projector_api')
-        CORS(proj_app)
-        
-        window = None
-        
-        @proj_app.route('/toggle')
-        def toggle():
-            if window:
-                def run():
-                    time.sleep(0.05)
-                    window.toggle_fullscreen()
-                threading.Thread(target=run, daemon=True).start()
-            return {"status": "ok"}
-            
-        def run_flask():
-            proj_app.run(host='127.0.0.1', port=api_port, debug=False, threaded=True)
-            
-        threading.Thread(target=run_flask, daemon=True).start()
-        
-        window = webview.create_window('Blind Test - Projecteur', url, fullscreen=False, width=1280, height=720)
-        webview.start()
-    os._exit(0)
-
 from flask import Flask
 from flask_cors import CORS
 from core.animator_api import AnimatorApi

@@ -272,19 +272,12 @@ const startTimer = (startTime: number, duration: number, musicDuration: number) 
 };
 
 const toggleFullscreen = () => {
-  if (apiPort.value) {
-    fetch(`http://127.0.0.1:${apiPort.value}/toggle`).catch((err) => {
-      console.error("Échec de l'appel API plein écran :", err);
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.error("Échec du plein écran HTML5 :", err.message);
     });
   } else {
-    // Fallback standard pour navigateur
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((err) => {
-        console.error("Échec du plein écran HTML5 :", err.message);
-      });
-    } else {
-      document.exitFullscreen();
-    }
+    document.exitFullscreen();
   }
 };
 

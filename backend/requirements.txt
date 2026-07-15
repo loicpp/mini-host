@@ -1,8 +1,8 @@
 flask
 flask-cors
 pygame
-pywebview
+PyYAML
+requests
 pytest
 pytest-cov
 pytest-mock
-PyGObject<3.49 ; sys_platform == 'linux'
