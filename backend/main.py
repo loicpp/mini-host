@@ -93,7 +93,21 @@ if __name__ == '__main__':
     
     def open_browser():
         time.sleep(1)
+        
+        # Restore original LD_LIBRARY_PATH for subprocesses to avoid PyInstaller conflicts
+        old_lp = os.environ.get('LD_LIBRARY_PATH')
+        if 'LD_LIBRARY_PATH_ORIG' in os.environ:
+            os.environ['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH_ORIG']
+        elif 'LD_LIBRARY_PATH' in os.environ:
+            del os.environ['LD_LIBRARY_PATH']
+            
         webbrowser.open(url_regie)
+        
+        # Restore PyInstaller's LD_LIBRARY_PATH
+        if old_lp is not None:
+            os.environ['LD_LIBRARY_PATH'] = old_lp
+        elif 'LD_LIBRARY_PATH' in os.environ:
+            del os.environ['LD_LIBRARY_PATH']
         
     threading.Thread(target=open_browser, daemon=True).start()
     
