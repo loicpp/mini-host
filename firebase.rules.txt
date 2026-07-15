@@ -1,0 +1,38 @@
+{
+  "rules": {
+    "games": {
+      "$gameId": {
+        "currentBuzzer": {
+          // Autorise l'écriture si l'utilisateur est connecté
+          ".write": "auth != null",
+          ".read": true
+        },
+        // Anyone can read the game state (to know what music is playing)
+        ".read": "auth != null",
+
+        // Only an animator (non-anonymous user) can create or modify the game itself
+        ".write": "auth != null && auth.provider != 'anonymous'",
+
+        "players": {
+          "$playerId": {
+            // A player can only write to their own node
+            ".write": "auth != null && auth.uid == $playerId",
+
+            // To join, the player MUST send the correct secret code matching the game's secret.
+            // If the data already exists (they already joined), they don't need to resend the secret.
+            ".validate": "newData.child('secret').val() == root.child('games').child($gameId).child('secret').val() || data.exists()",
+
+            "score": {
+              // Players CANNOT modify their own score. Only the animator can.
+              ".write": "auth != null && auth.provider != 'anonymous'"
+            },
+            "currentGuess": {
+              // The player can update their guess during the round
+              ".write": "auth != null && auth.uid == $playerId"
+            }
+          }
+        }
+      }
+    }
+  }
+}
