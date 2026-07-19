@@ -75,13 +75,15 @@ jobs:
           VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}
           EOF
         shell: bash
-      - name: Build Linux Executable
-        run: bash build.sh
+      - name: Build Linux Flatpak
+        run: |
+          chmod +x ./flatpak.sh
+          ./flatpak.sh
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MiniHost-Linux
-          path: backend/dist/MiniHost/
+          path: MiniHost-linux.flatpak
 
   build-windows:
     name: Build Windows Executable
@@ -142,9 +144,7 @@ jobs:
           
       - name: Zip Artifacts for Release
         run: |
-          cd MiniHost-Linux
-          zip -r ../MiniHost-Linux.zip .
-          cd ../MiniHost-Windows
+          cd MiniHost-Windows
           zip -r ../MiniHost-Windows.zip .
           cd ..
           
@@ -152,6 +152,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            MiniHost-Linux.zip
+            MiniHost-Linux/MiniHost-linux.flatpak
             MiniHost-Windows.zip
           generate_release_notes: true
