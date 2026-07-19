@@ -51,6 +51,8 @@
                 "cp -r backend/* /app/share/minihost/backend/",
                 "install -D minihost-start /app/bin/minihost-start",
                 "install -D backend/favicon.png /app/share/icons/hicolor/512x512/apps/com.github.loicpp.MiniHost.png",
+                "install -D backend/favicon.png /app/share/icons/hicolor/256x256/apps/com.github.loicpp.MiniHost.png",
+                "install -D backend/favicon.png /app/share/icons/hicolor/128x128/apps/com.github.loicpp.MiniHost.png",
                 "install -D com.github.loicpp.MiniHost.desktop /app/share/applications/com.github.loicpp.MiniHost.desktop"
             ],
             "sources": [

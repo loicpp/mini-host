@@ -114,10 +114,43 @@ if __name__ == '__main__':
         root.protocol("WM_DELETE_WINDOW", gui_close)
         root.mainloop()
     except ImportError:
-        print("MiniHost fonctionne en arrière-plan (mode sans interface graphique).")
-        print("Appuyez sur Entrée ou Ctrl+C dans ce terminal pour arrêter le serveur.")
         try:
-            input()
-        except KeyboardInterrupt:
-            pass
-        on_close()
+            import pygame
+            import os
+            os.environ['SDL_VIDEO_X11_WMCLASS'] = "com.github.loicpp.MiniHost"
+            pygame.init()
+            pygame.display.set_caption("MiniHost - Serveur")
+            try:
+                png_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.png')
+                if os.path.exists(png_path):
+                    icon = pygame.image.load(png_path)
+                    pygame.display.set_icon(icon)
+            except Exception:
+                pass
+                
+            screen = pygame.display.set_mode((450, 200))
+            screen.fill((30, 30, 30))
+            if pygame.font.get_init():
+                font = pygame.font.SysFont(None, 24)
+                text1 = font.render("Le serveur MiniHost est en cours d'execution.", True, (255, 255, 255))
+                text2 = font.render("Fermez cette fenetre pour tout arreter.", True, (255, 255, 255))
+                screen.blit(text1, (450//2 - text1.get_width()//2, 70))
+                screen.blit(text2, (450//2 - text2.get_width()//2, 110))
+            pygame.display.flip()
+            
+            running = True
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                pygame.time.wait(200)
+            pygame.quit()
+            on_close()
+        except Exception:
+            print("MiniHost fonctionne en arrière-plan (mode sans interface graphique).")
+            print("Appuyez sur Entrée ou Ctrl+C dans ce terminal pour arrêter le serveur.")
+            try:
+                input()
+            except KeyboardInterrupt:
+                pass
+            on_close()

@@ -7,7 +7,10 @@ from core.ports.storage_port import StoragePort
 class FileStorageAdapter(StoragePort):
     def __init__(self, config_dir: str = None):
         if config_dir is None:
-            self.config_dir = os.path.expanduser("~/.minihost/blindtest")
+            if 'XDG_CONFIG_HOME' in os.environ:
+                self.config_dir = os.path.join(os.environ['XDG_CONFIG_HOME'], "minihost", "blindtest")
+            else:
+                self.config_dir = os.path.expanduser("~/.minihost/blindtest")
         else:
             self.config_dir = config_dir
         os.makedirs(self.config_dir, exist_ok=True)
