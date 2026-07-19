@@ -1,6 +1,6 @@
 flask
 flask-cors
-pygame
+pygame-ce
 PyYAML
 requests
 pytest

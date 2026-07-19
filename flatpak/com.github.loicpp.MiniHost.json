@@ -30,7 +30,7 @@
                 "append-ld-library-path": "/usr/lib/sdk/node20/lib"
             },
             "build-commands": [
-                "npm install",
+                "npm install --offline --no-audit",
                 "npm run build",
                 "mkdir -p /app/share/minihost/animator-ui/",
                 "cp -r dist /app/share/minihost/animator-ui/"
