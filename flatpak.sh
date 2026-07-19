@@ -43,7 +43,7 @@ echo "==> Configuration de Flathub..."
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "==> Nettoyage et construction du Flatpak..."
-flatpak-builder --repo=repo build-dir flatpak/com.github.loicpp.MiniHost.json --force-clean --install-deps-from=flathub
+flatpak-builder --repo=repo build-dir flatpak/com.github.loicpp.MiniHost.json --force-clean --user --install-deps-from=flathub
 
 echo "==> Génération du bundle..."
 flatpak build-bundle repo MiniHost-linux.flatpak com.github.loicpp.MiniHost
