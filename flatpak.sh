@@ -39,9 +39,15 @@ grep -v "pytest" backend/requirements.txt > flatpak/requirements-prod.txt
 # On génère le python-deps.json basé sur les dépendances de prod
 python3 flatpak/flatpak-pip-generator.py --output flatpak/python-deps -r flatpak/requirements-prod.txt
 
+echo "==> Configuration de Flathub..."
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 echo "==> Nettoyage et construction du Flatpak..."
-flatpak-builder build-dir flatpak/com.github.loicpp.MiniHost.json --force-clean --user --install --install-deps-from=flathub
+flatpak-builder --repo=repo build-dir flatpak/com.github.loicpp.MiniHost.json --force-clean --install-deps-from=flathub
+
+echo "==> Génération du bundle..."
+flatpak build-bundle repo MiniHost-linux.flatpak com.github.loicpp.MiniHost
 
 echo "==> Construction terminée !"
-echo "Vous pouvez lancer l'application avec :"
-echo "flatpak run com.github.loicpp.MiniHost"
+echo "Vous pouvez installer l'application avec :"
+echo "flatpak install MiniHost-linux.flatpak"
