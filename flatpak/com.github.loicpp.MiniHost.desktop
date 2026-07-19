@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=MiniHost
+Comment=Animator UI and Backend Server
+Exec=minihost-start
+Icon=com.github.loicpp.MiniHost
+Terminal=true
+Type=Application
+Categories=Utility;AudioVideo;

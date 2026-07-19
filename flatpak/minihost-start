@@ -1,0 +1,5 @@
+#!/bin/sh
+# Rendre le dossier courant celui du backend pour que les imports Python fonctionnent
+cd /app/share/minihost/backend
+# Lancer main.py
+python3 main.py

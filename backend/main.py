@@ -12,6 +12,9 @@ from controllers.http_controller import register_routes
 if getattr(sys, 'frozen', False):
     bundle_dir = sys._MEIPASS
     static_folder = os.path.join(bundle_dir, 'animator-ui', 'dist')
+elif os.path.exists('/app/share/minihost/animator-ui/dist'):
+    # Exécution depuis le sandbox Flatpak
+    static_folder = '/app/share/minihost/animator-ui/dist'
 else:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     static_folder = os.path.join(current_dir, '..', 'animator-ui', 'dist')
@@ -36,7 +39,6 @@ if __name__ == '__main__':
         url_regie = 'http://127.0.0.1:5000/'
         
     import webbrowser
-    import tkinter as tk
     
     def run_flask():
         import logging
@@ -71,26 +73,6 @@ if __name__ == '__main__':
         
     threading.Thread(target=open_browser, daemon=True).start()
     
-    root = tk.Tk()
-    root.title("MiniHost - Serveur")
-    root.geometry("400x200")
-    
-    try:
-        if sys.platform.startswith('linux'):
-            png_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.png')
-            if os.path.exists(png_path):
-                img = tk.PhotoImage(file=png_path)
-                root.iconphoto(True, img)
-        else:
-            ico_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.ico')
-            if os.path.exists(ico_path):
-                root.iconbitmap(ico_path)
-    except Exception as e:
-        print("Erreur icône:", e)
-    
-    lbl = tk.Label(root, text="Le serveur MiniHost est en cours d'exécution.\n\nFermez cette fenêtre pour tout arrêter.", justify="center", padx=20, pady=50)
-    lbl.pack(expand=True)
-    
     def on_close():
         try:
             api.close_projector_window()
@@ -100,8 +82,42 @@ if __name__ == '__main__':
             api.music_manager.quit()
         except Exception:
             pass
-        root.destroy()
         os._exit(0)
+
+    try:
+        import tkinter as tk
         
-    root.protocol("WM_DELETE_WINDOW", on_close)
-    root.mainloop()
+        root = tk.Tk()
+        root.title("MiniHost - Serveur")
+        root.geometry("400x200")
+        
+        try:
+            if sys.platform.startswith('linux'):
+                png_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.png')
+                if os.path.exists(png_path):
+                    img = tk.PhotoImage(file=png_path)
+                    root.iconphoto(True, img)
+            else:
+                ico_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.ico')
+                if os.path.exists(ico_path):
+                    root.iconbitmap(ico_path)
+        except Exception as e:
+            print("Erreur icône:", e)
+        
+        lbl = tk.Label(root, text="Le serveur MiniHost est en cours d'exécution.\n\nFermez cette fenêtre pour tout arrêter.", justify="center", padx=20, pady=50)
+        lbl.pack(expand=True)
+        
+        def gui_close():
+            root.destroy()
+            on_close()
+            
+        root.protocol("WM_DELETE_WINDOW", gui_close)
+        root.mainloop()
+    except ImportError:
+        print("MiniHost fonctionne en arrière-plan (mode sans interface graphique).")
+        print("Appuyez sur Entrée ou Ctrl+C dans ce terminal pour arrêter le serveur.")
+        try:
+            input()
+        except KeyboardInterrupt:
+            pass
+        on_close()

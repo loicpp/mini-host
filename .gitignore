@@ -5,6 +5,7 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+.flatpak-builder
 
 # Environment variables
 .env
