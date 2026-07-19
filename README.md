@@ -36,7 +36,7 @@ Exécutez le script `.bat` fourni à la racine :
 ```cmd
 build.bat
 ```
-Une fois terminé, l'exécutable sera disponible dans : `backend\dist\MiniHost\MiniHost.exe`.
+Une fois terminé, l'exécutable sera disponible dans : `backend\dist\MiniHost.exe`.
 
 > **Note :** La compilation croisée n'est pas supportée nativement par PyInstaller. Vous devez exécuter `build.bat` sur une machine Windows pour générer un fichier `.exe`.
 

@@ -120,7 +120,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MiniHost-Windows
-          path: backend/dist/MiniHost/
+          path: backend/dist/MiniHost.exe
 
   release:
     name: Create GitHub Release

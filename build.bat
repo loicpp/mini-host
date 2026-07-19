@@ -62,6 +62,7 @@ if exist MiniHost.spec del MiniHost.spec
 
 :: Note the use of semicolon (;) instead of colon (:) for windows add-data
 pyinstaller --noconfirm ^
+    --onefile ^
     --noconsole ^
     --name MiniHost ^
     --icon="favicon.ico" ^
@@ -85,7 +86,7 @@ if %errorlevel% neq 0 (
 popd
 
 echo ==^> Build complete!
-echo Your executable is located at: backend\dist\MiniHost\MiniHost.exe
+echo Your executable is located at: backend\dist\MiniHost.exe
 pause
 exit /b 0
 

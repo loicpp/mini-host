@@ -42,6 +42,50 @@ class LocalProjectorAdapter(ProjectorPort):
                 executable = shutil.which(b)
                 if executable:
                     break
+
+        # Si non trouvé dans le PATH sur Windows, chercher dans les dossiers d'installation par défaut
+        if not executable and sys.platform.startswith('win'):
+            program_files = os.environ.get("ProgramFiles", "C:\\Program Files")
+            program_files_x86 = os.environ.get("ProgramFiles(x86)", "C:\\Program Files (x86)")
+            local_app_data = os.environ.get("LocalAppData", os.path.expanduser("~\\AppData\\Local"))
+            
+            # Chemins d'installation typiques de Firefox
+            firefox_paths = [
+                os.path.join(program_files, "Mozilla Firefox", "firefox.exe"),
+                os.path.join(program_files_x86, "Mozilla Firefox", "firefox.exe"),
+            ]
+            
+            # Chemins d'installation typiques de Chrome
+            chrome_paths = [
+                os.path.join(program_files, "Google", "Chrome", "Application", "chrome.exe"),
+                os.path.join(program_files_x86, "Google", "Chrome", "Application", "chrome.exe"),
+                os.path.join(local_app_data, "Google", "Chrome", "Application", "chrome.exe"),
+            ]
+            
+            # Chemins d'installation typiques de Microsoft Edge (présent sur toutes les machines Windows)
+            edge_paths = [
+                os.path.join(program_files_x86, "Microsoft", "Edge", "Application", "msedge.exe"),
+                os.path.join(program_files, "Microsoft", "Edge", "Application", "msedge.exe"),
+            ]
+            
+            # Rechercher Firefox en premier, puis Chrome, puis Edge en dernier recours
+            for path in firefox_paths:
+                if os.path.exists(path):
+                    executable = path
+                    is_firefox = True
+                    break
+            
+            if not executable:
+                for path in chrome_paths:
+                    if os.path.exists(path):
+                        executable = path
+                        break
+                        
+            if not executable:
+                for path in edge_paths:
+                    if os.path.exists(path):
+                        executable = path
+                        break
                 
         if executable:
             # Profil temporaire pour isoler le processus
