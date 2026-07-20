@@ -21,24 +21,28 @@ Les fichiers de configuration et les playlists personnelles de l'animateur sont 
 
 ## 🚀 Compiler l'Application Animateur (Desktop)
 
-Pour distribuer ou utiliser l'application de façon fluide (sans ligne de commande), un exécutable peut être généré. 
+Pour distribuer ou utiliser l'application de façon fluide (sans ligne de commande), un exécutable ou un package d'installation peut être généré. 
 Celui-ci inclut automatiquement l'interface graphique de l'animateur (`animator-ui`).
 
-### Sous Linux / macOS :
-Exécutez le script fourni à la racine :
+### Sous Linux (Flatpak) :
+Exécutez le script fourni à la racine pour générer un package Flatpak autonome :
 ```bash
-./build.sh
+chmod +x flatpak.sh
+./flatpak.sh
 ```
-Une fois terminé, l'exécutable sera disponible dans : `backend/dist/MiniHost/MiniHost`.
+Une fois terminé, le package sera disponible sous : `MiniHost-linux.flatpak`.
+Vous pouvez l'installer localement en exécutant : `flatpak install MiniHost-linux.flatpak`.
 
 ### Sous Windows :
 Exécutez le script `.bat` fourni à la racine :
 ```cmd
 build.bat
 ```
-Une fois terminé, l'exécutable sera disponible dans : `backend\dist\MiniHost.exe`.
+Une fois terminé :
+* L'exécutable portable sera disponible dans : `backend\dist\MiniHost.exe`.
+* Si **Inno Setup** est installé sur votre ordinateur (accessible via la commande `iscc`), le script créera également un installateur complet : `installer\MiniHostSetup.exe`. Cet installateur gère le placement dans le dossier des programmes, les raccourcis Démarrer/Bureau et la désinstallation propre via Windows.
 
-> **Note :** La compilation croisée n'est pas supportée nativement par PyInstaller. Vous devez exécuter `build.bat` sur une machine Windows pour générer un fichier `.exe`.
+> **Note :** La compilation croisée n'est pas supportée par PyInstaller. Vous devez exécuter `build.bat` sur une machine Windows pour générer un fichier `.exe`.
 
 ---
 
@@ -47,14 +51,19 @@ Une fois terminé, l'exécutable sera disponible dans : `backend\dist\MiniHost.e
 L'application des joueurs doit être accessible en ligne depuis n'importe quel smartphone.
 Avant toute chose, assurez-vous de bien avoir paramétré vos variables d'environnement dans le fichier `player-app/.env` (clés API Firebase).
 
+Rendez-vous dans le dossier de l'application joueur pour lancer le déploiement :
+
 ### Sous Linux / macOS :
 ```bash
-./deploy_player.sh
+cd player-app
+chmod +x deploy.sh
+./deploy.sh
 ```
 
 ### Sous Windows :
 ```cmd
-deploy_player.bat
+cd player-app
+deploy.bat
 ```
 Ces scripts se chargeront d'installer les dépendances, de compiler l'interface et de pousser les fichiers statiques sur Firebase Hosting (`npx firebase deploy --only hosting`).
 
@@ -95,6 +104,25 @@ source venv/bin/activate
 python main.py --dev
 ```
 *(L'argument `--dev` permet au backend d'indiquer au projecteur de se brancher sur le port de développement de Vite plutôt que sur les fichiers statiques compilés).*
+
+---
+
+## 🏷️ Créer une Nouvelle Release (Assistant de Versionnage)
+
+Le projet intègre un assistant interactif pour automatiser la mise à jour des versions dans les `.env` et générer les tags de release Git :
+
+### Sous Linux / macOS :
+```bash
+chmod +x release.sh
+./release.sh
+```
+
+### Sous Windows :
+```cmd
+release.bat
+```
+
+Ce script vous guide pour mettre à jour la version (Majeure, Mineure ou Patch) et pousse les modifications sur GitHub. La pipeline d'intégration continue de GitHub prendra alors le relais pour compiler l'application Linux (Flatpak), générer la version portable Windows et compiler l'installateur Windows Inno Setup (`MiniHostSetup.exe`) avant de publier le tout sur la page de Release du dépôt.
 
 ---
 
