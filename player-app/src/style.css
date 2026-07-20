@@ -188,7 +188,8 @@ input[type="text"]:disabled {
 /* Autocomplete list */
 .autocomplete-list {
   list-style: none;
-  margin-top: 10px;
+  bottom: 100%;
+  margin-bottom: 10px;
   background: rgba(20, 20, 40, 0.95);
   border: 1px solid var(--glass-border);
   border-radius: 12px;

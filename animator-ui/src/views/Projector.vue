@@ -132,7 +132,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
-import { signInAnonymously } from 'firebase/auth';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
 const gameId = ref('');
 const secret = ref('');
@@ -200,14 +200,22 @@ onMounted(async () => {
   
   if (!gameId.value) return;
 
-  // Make sure we have read access
-  if (!auth.currentUser) {
-    try {
-      await signInAnonymously(auth);
-    } catch(e) {
-      console.error(e);
-    }
-  }
+  // Make sure we have read access. Wait for auth state to resolve first
+  // so we don't accidentally overwrite an existing animator session
+  // if the projector shares the same browser context.
+  await new Promise<void>((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe();
+      if (!user) {
+        try {
+          await signInAnonymously(auth);
+        } catch(e) {
+          console.error(e);
+        }
+      }
+      resolve();
+    });
+  });
 
   const gameNode = dbRef(db, `games/${gameId.value}`);
   onValue(gameNode, (snapshot) => {

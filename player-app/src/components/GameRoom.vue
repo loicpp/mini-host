@@ -34,9 +34,6 @@
           <h3 v-if="isBuffering">⏳ Préparez-vous...</h3>
           <h3 v-else-if="isDelaying" class="text-warning">⏳ Patientez : {{ delayTimeLeft }}s</h3>
           <h3 v-else>🎵 À vous de jouer !</h3>
-          
-          <p class="time-left" v-if="timeLeft > 0">{{ timeLeft }}s restantes</p>
-          <p class="time-left text-danger" v-else>Temps écoulé !</p>
 
           <div class="guess-container" :style="{ opacity: isBuffering ? 0.5 : 1 }">
             <template v-if="game.settings?.mode === 'buzzer'">
@@ -62,22 +59,22 @@
                 :disabled="timeLeft <= 0 || hasSubmitted || isBuffering || isDelaying"
               />
               <div class="search-loader" v-if="isSearching"></div>
-            </div>
 
-            <!-- Autocomplete Results -->
-            <ul class="autocomplete-list" v-if="suggestions.length > 0 && !hasSubmitted">
-              <li 
-                v-for="(item, index) in suggestions" 
-                :key="index"
-                @click="selectSuggestion(item)"
-              >
-                <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="suggestion-cover" />
-                <div class="suggestion-info">
-                  <span class="suggestion-title">{{ item.title }}</span>
-                  <span class="suggestion-artist">{{ item.artist }}</span>
-                </div>
-              </li>
+              <!-- Autocomplete Results -->
+              <ul class="autocomplete-list" v-if="suggestions.length > 0 && !hasSubmitted">
+                <li 
+                  v-for="(item, index) in suggestions" 
+                  :key="index"
+                  @click="selectSuggestion(item)"
+                >
+                  <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="suggestion-cover" />
+                  <div class="suggestion-info">
+                    <span class="suggestion-title">{{ item.title }}</span>
+                    <span class="suggestion-artist">{{ item.artist }}</span>
+                  </div>
+                </li>
               </ul>
+            </div>
             </template>
 
             <!-- Current Selected Guess -->
@@ -88,6 +85,9 @@
               </div>
             </div>
           </div>
+
+          <p class="time-left" v-if="timeLeft > 0">{{ timeLeft }}s restantes</p>
+          <p class="time-left text-danger" v-else>Temps écoulé !</p>
         </div>
       </div>
 
