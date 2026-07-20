@@ -87,10 +87,51 @@ popd
 
 echo ==^> Build complete!
 echo Your executable is located at: backend\dist\MiniHost.exe
-pause
+
+echo.
+echo ==^> Building Windows Installer (Optional)...
+
+:: Extract version from animator-ui\.env
+set "VERSION=1.0.0"
+if exist "animator-ui\.env" (
+    for /f "tokens=2 delims==" %%i in ('findstr "VITE_APP_VERSION" animator-ui\.env') do (
+        set "VERSION=%%i"
+    )
+)
+
+:: Detect Inno Setup Compiler (ISCC)
+set "ISCC_PATH="
+where iscc >nul 2>&1
+if %errorlevel% equ 0 (
+    set "ISCC_PATH=iscc"
+) else if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+    set "ISCC_PATH=C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+) else if exist "C:\Program Files\Inno Setup 6\ISCC.exe" (
+    set "ISCC_PATH=C:\Program Files\Inno Setup 6\ISCC.exe"
+)
+
+if defined ISCC_PATH (
+    echo Found Inno Setup Compiler at: %ISCC_PATH%
+    echo Compiling installer for version %VERSION%...
+    if not exist installer mkdir installer
+    "%ISCC_PATH%" /DMyAppVersion=%VERSION% installer.iss
+    if %errorlevel% neq 0 (
+        echo [WARNING] Installer compilation failed.
+    ) else (
+        echo ==^> Installer created successfully!
+        echo Installer is located at: installer\MiniHostSetup.exe
+    )
+) else (
+    echo [INFO] Inno Setup compiler ISCC.exe was not found.
+    echo To generate the Windows installer, install Inno Setup from:
+    echo https://jrsoftware.org/isdownload.php
+    echo and run 'iscc installer.iss' or re-run this script.
+)
+
+if not "%GITHUB_ACTIONS%"=="true" pause
 exit /b 0
 
 :error
 echo [ERROR] Build failed. Please check the logs above.
-pause
+if not "%GITHUB_ACTIONS%"=="true" pause
 exit /b 1

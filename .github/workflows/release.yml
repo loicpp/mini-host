@@ -116,11 +116,16 @@ jobs:
       - name: Build Windows Executable
         run: build.bat
         shell: cmd
-      - name: Upload Windows Artifact
+      - name: Upload Windows Portable
         uses: actions/upload-artifact@v4
         with:
-          name: MiniHost-Windows
+          name: MiniHost-Windows-Portable
           path: backend/dist/MiniHost.exe
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniHost-Windows-Installer
+          path: installer/MiniHostSetup.exe
 
   release:
     name: Create GitHub Release
@@ -136,15 +141,21 @@ jobs:
           name: MiniHost-Linux
           path: MiniHost-Linux
           
-      - name: Download Windows Artifact
+      - name: Download Windows Portable
         uses: actions/download-artifact@v4
         with:
-          name: MiniHost-Windows
-          path: MiniHost-Windows
+          name: MiniHost-Windows-Portable
+          path: MiniHost-Windows-Portable
+          
+      - name: Download Windows Installer
+        uses: actions/download-artifact@v4
+        with:
+          name: MiniHost-Windows-Installer
+          path: MiniHost-Windows-Installer
           
       - name: Zip Artifacts for Release
         run: |
-          cd MiniHost-Windows
+          cd MiniHost-Windows-Portable
           zip -r ../MiniHost-Windows.zip .
           cd ..
           
@@ -154,4 +165,5 @@ jobs:
           files: |
             MiniHost-Linux/MiniHost-linux.flatpak
             MiniHost-Windows.zip
+            MiniHost-Windows-Installer/MiniHostSetup.exe
           generate_release_notes: true
