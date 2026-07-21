@@ -1,87 +1,123 @@
 <template>
-  <div class="centered-panel">
-    <button class="btn-back top-left-btn" @click="$emit('back')" title="Retourner à l'accueil">
-      ⬅️ Quitter l'édition
+  <div class="flex flex-col items-center justify-start min-h-full w-full relative py-12 px-6">
+    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="handleBack" title="Retourner à l'accueil">
+      <ChevronLeft class="w-4 h-4" /> Quitter l'édition
     </button>
-    <div class="settings-panel card glass" style="max-width: 800px; width: 100%;">
-      <h2>📋 Mes Playlists</h2>
-      <p class="settings-desc">Créez et gérez vos playlists de musiques SoundCloud pour vos Blind Tests.</p>
+    
+    <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-4xl">
+      <h2 class="text-3xl font-black text-primary text-center mb-2 flex items-center justify-center gap-3">
+        <ListMusic class="w-8 h-8 text-[#FFBA49]" /> Mes Playlists
+      </h2>
+      <p class="text-muted-foreground text-center mb-8">Créez et gérez vos playlists de musiques SoundCloud pour vos Blind Tests.</p>
       
-      <div v-if="!selectedPlaylist" class="playlist-list">
-        <div class="input-group" style="display:flex; gap:10px; margin-bottom: 20px;">
-          <input type="text" v-model="newPlaylistName" placeholder="Nom de la nouvelle playlist..." style="flex:1" class="modern-input" />
-          <button class="btn btn-primary" @click="createPlaylist" :disabled="!newPlaylistName.trim()">Créer</button>
+      <div v-if="!selectedPlaylist" class="flex flex-col">
+        <div class="flex gap-4 mb-8">
+          <input type="text" v-model="newPlaylistName" placeholder="Nom de la nouvelle playlist..." class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
+          <Btn variant="primary" @click="createPlaylist" :disabled="!newPlaylistName.trim()">
+            <Plus class="w-4 h-4 mr-2" /> Créer
+          </Btn>
         </div>
 
-        <div v-if="playlists.length === 0" class="empty-state">
+        <div v-if="playlists.length === 0" class="text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
           Aucune playlist pour le moment.
         </div>
-        <div v-else class="tracks-list">
-          <div v-for="pl in playlists" :key="pl.id" class="track-item" style="justify-content: space-between;">
+        <div v-else class="flex flex-col gap-3">
+          <div v-for="pl in playlists" :key="pl.id" class="flex items-center justify-between p-4 bg-muted/50 border border-[rgba(0,0,0,0.05)] rounded-2xl hover:bg-muted transition-colors">
             <div>
-              <h4 style="margin:0; color:white;">{{ pl.name }}</h4>
-              <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.9rem;">{{ pl.tracks.length }} titres</p>
+              <h4 class="font-bold text-primary text-lg m-0">{{ pl.name }}</h4>
+              <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} titres</p>
             </div>
-            <div style="display:flex; gap: 10px;">
-              <button class="btn-sm btn-secondary" @click="editPlaylist(pl)">Éditer</button>
-              <button class="btn-sm btn-danger" @click="deletePlaylist(pl.id)">X</button>
+            <div class="flex gap-2">
+              <Btn variant="ghost-yellow" size="sm" @click="editPlaylist(pl)">
+                <Edit3 class="w-4 h-4 mr-2" /> Éditer
+              </Btn>
+              <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="deletePlaylist(pl.id)" title="Supprimer la playlist">
+                <Trash2 class="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else class="playlist-editor">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3 style="margin:0; color: #ffc700;">Édition : {{ selectedPlaylist.name }} ({{ selectedPlaylist.tracks.length }} titres)</h3>
-          <button class="btn-sm btn-secondary" @click="selectedPlaylist = null">⬅️ Retour aux playlists</button>
+      <div v-else class="flex flex-col">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-[rgba(0,0,0,0.05)]">
+          <Btn variant="soft" size="sm" @click="closeEdition">
+            <ChevronLeft class="w-4 h-4 mr-1" /> Retour aux playlists
+          </Btn>
+          <h3 class="text-xl font-bold text-primary m-0 flex items-center gap-2">
+            <span class="text-[#FFBA49]">Édition :</span> {{ selectedPlaylist.name }} 
+            <Badge color="gray">{{ selectedPlaylist.tracks.length }} titres</Badge>
+          </h3>
         </div>
 
-        <div class="add-track-form" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-          <h4 style="margin-top:0;">Ajouter un titre (SoundCloud)</h4>
-          <div style="display:flex; gap:10px; margin-bottom: 10px;">
-            <input type="text" v-model="newTrack.title" placeholder="Titre du morceau" class="modern-input" style="flex:1" />
-            <input type="text" v-model="newTrack.artist" placeholder="Artiste" class="modern-input" style="flex:1" />
+        <div class="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl mb-8">
+          <h4 class="font-bold text-blue-800 mb-4 flex items-center gap-2"><PlusCircle class="w-4 h-4" /> Ajouter un titre (SoundCloud)</h4>
+          <div class="flex gap-4 mb-4">
+            <input type="text" v-model="newTrack.title" placeholder="Titre du morceau" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+            <input type="text" v-model="newTrack.artist" placeholder="Artiste" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
           </div>
-          <div style="display:flex; gap:10px;">
-            <input type="text" v-model="newTrack.url" placeholder="Lien SoundCloud complet" class="modern-input" style="flex:2" />
-            <button class="btn btn-primary" @click="addTrack" :disabled="!newTrack.url.trim()">Ajouter</button>
+          <div class="flex gap-4">
+            <input type="text" v-model="newTrack.url" placeholder="Lien SoundCloud complet" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+            <Btn variant="primary" @click="addTrack" :disabled="!newTrack.url.trim()">Ajouter</Btn>
           </div>
         </div>
 
-        <div v-if="selectedPlaylist.tracks.length === 0" class="empty-state">
+        <div v-if="selectedPlaylist.tracks.length === 0" class="text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
           Cette playlist est vide.
         </div>
         <div v-else>
-          <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom: 10px; gap:10px;">
-            <label style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">Durée d'écoute (Test) :</label>
-            <input type="number" v-model.number="testDuration" min="1" max="100" step="1" class="modern-input" style="width: 80px; padding: 5px; text-align: center;" />
-            <span style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">secondes</span>
+          <div class="flex justify-end items-center mb-4 gap-3 bg-muted/30 p-3 rounded-xl border border-[rgba(0,0,0,0.03)]">
+            <label class="text-muted-foreground font-bold text-sm flex items-center gap-2"><PlayCircle class="w-4 h-4" /> Durée d'écoute (Test) :</label>
+            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[rgba(0,0,0,0.08)] shadow-sm">
+              <input type="number" v-model.number="testDuration" min="1" max="100" step="1" class="w-12 text-center border-none outline-none font-bold text-primary" />
+              <span class="text-xs text-muted-foreground font-bold uppercase tracking-wider">sec</span>
+            </div>
           </div>
-          <div class="tracks-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
-            <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="track-item" style="justify-content: space-between; padding: 10px;">
-              <div>
-                <h4 style="margin:0; color:white;">{{ track.title }} - {{ track.artist }}</h4>
-                <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; max-width: 400px; white-space: nowrap;">{{ track.url }}</p>
+          
+          <div class="flex flex-col gap-3">
+            <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex flex-col min-w-0 pr-4">
+                <h4 class="font-bold text-primary m-0 truncate">{{ track.title }} - {{ track.artist }}</h4>
+                <p class="text-xs text-muted-foreground m-0 mt-1 truncate max-w-[400px]">{{ track.url }}</p>
               </div>
-              <div style="display: flex; gap: 5px;">
-                <button class="btn-sm btn-secondary" v-if="testingTrackUrl !== track.url" @click="testTrack(track.url)">Tester</button>
-                <button class="btn-sm btn-action" v-else @click="stopTest">Stop</button>
-                <button class="btn-sm btn-danger" @click="removeTrack(index)">Retirer</button>
+              <div class="flex gap-2 shrink-0">
+                <Btn v-if="testingTrackUrl !== track.url" variant="ghost-yellow" size="sm" className="w-[100px]" @click="testTrack(track.url)">
+                  <Play class="w-4 h-4 mr-2 shrink-0" /> Tester
+                </Btn>
+                <Btn v-else variant="dark" size="sm" className="w-[100px] bg-[#FFBA49] hover:bg-[#f0aa30] text-[#3F4739] border-none" @click="stopTest">
+                  <Square class="w-4 h-4 mr-2 shrink-0 fill-current" /> Stop
+                </Btn>
+                <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="removeTrack(index)" title="Supprimer la musique">
+                  <Trash2 class="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
+    <!-- Undo Toast -->
+    <transition enter-active-class="transition ease-out duration-300" enter-from-class="transform translate-y-full opacity-0" enter-to-class="transform translate-y-0 opacity-100" leave-active-class="transition ease-in duration-200" leave-from-class="transform translate-y-0 opacity-100" leave-to-class="transform translate-y-full opacity-0">
+      <div v-if="deletedTrackInfo" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#3F4739] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-4 z-50">
+        <span class="font-medium text-sm">Musique supprimée</span>
+        <button @click="undoDelete" class="font-bold text-[#FFBA49] hover:text-[#ffb02e] hover:underline transition-all text-sm outline-none">Annuler</button>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square } from '@lucide/vue';
+import Btn from '../ui/Btn.vue';
+import Badge from '../ui/Badge.vue';
 import { musicManager } from '../../services/music/MusicManager';
+import { useDialog } from '../../composables/useDialog';
 
-defineEmits<{
+const { showAlert, showConfirm } = useDialog();
+
+const emit = defineEmits<{
   (e: 'back'): void;
 }>();
 
@@ -102,6 +138,9 @@ interface Playlist {
 const playlists = ref<Playlist[]>([]);
 const newPlaylistName = ref('');
 const selectedPlaylist = ref<Playlist | null>(null);
+
+const deletedTrackInfo = ref<{ track: Track, index: number, playlistId: string } | null>(null);
+let deleteToastTimeout: number | null = null;
 
 const newTrack = ref<Track>({ title: '', artist: '', url: '' });
 
@@ -164,7 +203,7 @@ const testTrack = async (url: string) => {
       console.error(err);
     }
   } else {
-    alert("Lien invalide.");
+    await showAlert({ title: "Lien invalide", message: "Le lien fourni n'est pas un lien SoundCloud ou YouTube valide." });
   }
 };
 
@@ -217,13 +256,32 @@ const createPlaylist = async () => {
 };
 
 const deletePlaylist = async (id: string) => {
-  if (confirm("Voulez-vous vraiment supprimer cette playlist ?")) {
+  if (await showConfirm({ title: "Supprimer la playlist ?", message: "Voulez-vous vraiment supprimer cette playlist ? Cette action est irréversible.", confirmText: "Supprimer", confirmVariant: "danger" })) {
     playlists.value = playlists.value.filter(p => p.id !== id);
     await saveToConfig();
   }
 };
 
+const clearToast = () => {
+  deletedTrackInfo.value = null;
+  if (deleteToastTimeout) {
+    clearTimeout(deleteToastTimeout);
+    deleteToastTimeout = null;
+  }
+};
+
+const handleBack = () => {
+  clearToast();
+  emit('back');
+};
+
+const closeEdition = () => {
+  selectedPlaylist.value = null;
+  clearToast();
+};
+
 const editPlaylist = (pl: Playlist) => {
+  clearToast();
   selectedPlaylist.value = pl;
 };
 
@@ -238,7 +296,7 @@ const addTrack = async () => {
   if (source === 'soundcloud') id = extractSoundCloudId(url);
   
   if (!id) {
-    alert("URL invalide.");
+    await showAlert({ title: "URL invalide", message: "Impossible de reconnaître ce lien audio." });
     return;
   }
   
@@ -256,84 +314,33 @@ const addTrack = async () => {
 
 const removeTrack = async (index: number) => {
   if (!selectedPlaylist.value) return;
+  const track = selectedPlaylist.value.tracks[index];
+  
   selectedPlaylist.value.tracks.splice(index, 1);
   await saveToConfig();
+
+  deletedTrackInfo.value = { track, index, playlistId: selectedPlaylist.value.id };
+  
+  if (deleteToastTimeout) clearTimeout(deleteToastTimeout);
+  deleteToastTimeout = window.setTimeout(() => {
+    deletedTrackInfo.value = null;
+  }, 3000);
+};
+
+const undoDelete = async () => {
+  if (!deletedTrackInfo.value) return;
+  
+  const { track, index, playlistId } = deletedTrackInfo.value;
+  
+  const pl = playlists.value.find(p => p.id === playlistId);
+  if (pl) {
+    pl.tracks.splice(index, 0, track);
+    await saveToConfig();
+  }
+  
+  deletedTrackInfo.value = null;
+  if (deleteToastTimeout) clearTimeout(deleteToastTimeout);
 };
 </script>
 
-<style scoped>
-.centered-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: white;
-  width: 100%;
-  position: relative;
-}
-.top-left-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
-.btn-back {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0;
-  transition: color 0.3s;
-}
-.btn-back:hover {
-  color: #f1416c;
-}
-.settings-panel {
-  padding: 40px;
-}
-.settings-panel h2 {
-  font-size: 2rem;
-  color: #ffc700;
-  margin-bottom: 10px;
-}
-.settings-desc {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-}
-.modern-input {
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 8px;
-  outline: none;
-}
-.modern-input:focus {
-  border-color: #ffc700;
-}
-.tracks-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.track-item {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 10px;
-}
-.empty-state {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 20px;
-  font-style: italic;
-}
-</style>
+

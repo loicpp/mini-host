@@ -1,35 +1,43 @@
 <template>
-  <div class="players-grid">
-    <div v-for="(player, id) in filteredPlayers" :key="id" class="player-card" :class="{'awarded-points': player.pendingPoints > 0, 'penalized-points': player.pendingPoints < 0}">
-      <div class="p-header">
-        <h4>{{ player.name }}</h4>
-        <span class="score">{{ player.score || 0 }} pts</span>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+    <Card 
+      v-for="(player, id) in filteredPlayers" :key="id" 
+      :className="`p-4 flex flex-col gap-3 transition-all duration-300 ${
+        player.pendingPoints > 0 ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
+        player.pendingPoints < 0 ? 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 
+        'bg-white'
+      }`"
+    >
+      <div class="flex justify-between items-center pb-2 border-b border-[rgba(0,0,0,0.06)]">
+        <h4 class="font-bold text-primary truncate max-w-[150px]">{{ player.name }}</h4>
+        <span class="font-black text-[#FFBA49] tabular-nums">{{ player.score || 0 }} pts</span>
       </div>
       
-      <div class="p-guess" v-if="player.currentGuess">
-        <p class="guess-title">{{ player.currentGuess.title }}</p>
-        <p class="guess-artist">{{ player.currentGuess.artist }}</p>
-        <p class="guess-time">{{ formatTime(player.currentGuess.submittedAt) }}</p>
+      <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center" v-if="player.currentGuess">
+        <p class="font-bold text-emerald-600 text-sm mb-1 leading-tight">{{ player.currentGuess.title }}</p>
+        <p class="text-xs text-muted-foreground">{{ player.currentGuess.artist }}</p>
+        <p class="text-[10px] text-muted-foreground/60 text-right mt-1">{{ formatTime(player.currentGuess.submittedAt) }}</p>
       </div>
-      <div class="p-guess empty" v-else>
-        <p>Aucune réponse</p>
+      <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center items-center" v-else>
+        <p class="text-muted-foreground text-sm font-medium italic">Aucune réponse</p>
       </div>
 
-      <div class="p-actions" v-if="gameMode !== 'buzzer'">
-        <button @click="$emit('award', id as string, 1)" class="btn-sm btn-success">+1</button>
-        <button @click="$emit('award', id as string, 0.5)" class="btn-sm btn-warning">+0.5</button>
-        <button @click="$emit('award', id as string, -1)" class="btn-sm btn-danger">-1</button>
+      <div class="flex gap-2 justify-center mt-1" v-if="gameMode !== 'buzzer'">
+        <button @click="$emit('award', id as string, 1)" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold hover:bg-emerald-200 transition-colors text-xs flex-1 shadow-sm">+1</button>
+        <button @click="$emit('award', id as string, 0.5)" class="px-3 py-1.5 rounded-lg bg-[#fff6e0] text-[#d97706] font-bold hover:bg-[#fef3c7] transition-colors text-xs flex-1 shadow-sm">+0.5</button>
+        <button @click="$emit('award', id as string, -1)" class="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 font-bold hover:bg-red-200 transition-colors text-xs flex-1 shadow-sm">-1</button>
       </div>
-    </div>
+    </Card>
     
-    <div v-if="Object.keys(filteredPlayers).length === 0 && gameMode === 'buzzer'" style="text-align: center; width: 100%; color: #888; padding: 20px;">
-      Aucun joueur n'a buzzé.
+    <div v-if="Object.keys(filteredPlayers).length === 0 && gameMode === 'buzzer'" class="col-span-full text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium">
+      Aucun joueur n'a buzzé pour le moment.
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import Card from '../ui/Card.vue';
 
 const props = defineProps<{
   players: Record<string, any>;
@@ -58,14 +66,3 @@ const filteredPlayers = computed(() => {
   return props.players;
 });
 </script>
-
-<style scoped>
-.awarded-points {
-  border: 2px solid #2ecc71 !important;
-  box-shadow: 0 0 15px rgba(46, 204, 113, 0.4) !important;
-}
-.penalized-points {
-  border: 2px solid #e74c3c !important;
-  box-shadow: 0 0 15px rgba(231, 76, 60, 0.4) !important;
-}
-</style>

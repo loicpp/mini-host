@@ -1,20 +1,23 @@
 <template>
-  <div class="local-tracks-view">
-    <div v-if="localTracks.length === 0" class="empty-state">
+  <div class="flex-1 overflow-y-auto p-4 bg-muted/30 rounded-2xl border border-[rgba(0,0,0,0.05)] shadow-inner">
+    <div v-if="localTracks.length === 0" class="text-center p-8 text-muted-foreground font-medium italic">
       <p>Aucun dossier chargé. Utilisez le bouton "Sélectionner un dossier..." à gauche.</p>
     </div>
-    <div v-else class="tracks-list">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div 
         v-for="track in localTracks" 
         :key="track.id" 
-        class="track-item" 
-        :class="{ active: selectedTrack?.id === track.id, played: playedTracks.includes(track.id) }"
+        :class="[
+          'flex items-center p-4 bg-white border rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-1',
+          selectedTrack?.id === track.id ? 'border-[#FFBA49] bg-amber-50/50 shadow-[0_4px_15px_rgba(255,186,73,0.2)]' : 'border-[rgba(0,0,0,0.08)]',
+          playedTracks.includes(track.id) ? 'opacity-40 grayscale' : ''
+        ]"
         @click="$emit('select-track', track)"
       >
-        <div class="track-icon">🎵</div>
-        <div class="track-info">
-          <h4>{{ track.title }}</h4>
-          <p>{{ track.artist }}</p>
+        <div class="text-3xl mr-4">🎵</div>
+        <div class="flex flex-col min-w-0">
+          <h4 class="m-0 text-primary font-bold truncate">{{ track.title }}</h4>
+          <p class="m-0 text-muted-foreground text-xs truncate">{{ track.artist }}</p>
         </div>
       </div>
     </div>
@@ -36,60 +39,3 @@ defineEmits<{
 }>();
 </script>
 
-<style scoped>
-.local-tracks-view {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-.tracks-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-}
-.track-item {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.track-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-.track-item.played {
-  opacity: 0.3;
-  filter: grayscale(100%);
-}
-.track-item.active {
-  background: rgba(255, 199, 0, 0.2);
-  border-color: #ffc700;
-}
-.track-icon {
-  font-size: 2rem;
-  margin-right: 15px;
-}
-.track-info h4 {
-  margin: 0 0 5px 0;
-  color: white;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-.track-info p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-}
-.empty-state {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 50px;
-  font-size: 1.2rem;
-}
-</style>

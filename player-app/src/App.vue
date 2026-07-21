@@ -1,35 +1,41 @@
 <template>
-  <div id="app" class="app-container">
-    <div class="app-version">v{{ version }}</div>
-    <header>
-      <h1>🎶 Blind Test</h1>
-    </header>
+  <div class="min-h-screen bg-[#f5f6fa] dark:bg-background flex items-start justify-center p-4 pt-8 md:pt-16 font-sans text-foreground">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-[rgba(0,0,0,0.05)] overflow-hidden relative">
+      <div class="absolute top-3 right-4 text-xs font-bold text-muted-foreground z-10">v{{ version }}</div>
+      
+      <!-- Header -->
+      <header class="pt-8 pb-4 text-center">
+        <h1 class="text-3xl font-black text-primary tracking-tight">🎶 Blind Test</h1>
+      </header>
 
-    <main>
-      <!-- Error messages -->
-      <div v-if="error" class="error-banner">{{ error }}</div>
+      <main class="p-6 pt-2">
+        <!-- Error messages -->
+        <div v-if="error" class="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-100 flex items-center gap-2">
+          <span>⚠️</span> {{ error }}
+        </div>
 
-      <!-- State: Loading -->
-      <div v-if="state === 'loading'" class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Connexion en cours...</p>
-      </div>
+        <!-- State: Loading -->
+        <div v-if="state === 'loading'" class="flex flex-col items-center justify-center py-10 gap-4">
+          <div class="w-10 h-10 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
+          <p class="text-muted-foreground font-medium">Connexion en cours...</p>
+        </div>
 
-      <!-- State: Login -->
-      <div v-else-if="state === 'login'">
-        <Login @join="handleJoin" :gameId="gameId" />
-      </div>
+        <!-- State: Login -->
+        <div v-else-if="state === 'login'">
+          <Login @join="handleJoin" :gameId="gameId" />
+        </div>
 
-      <!-- State: Game Room -->
-      <div v-else-if="state === 'in-game'">
-        <GameRoom 
-          :game="game" 
-          :playerId="playerId" 
-          @submit="handleGuess" 
-          @buzz="handleBuzz"
-        />
-      </div>
-    </main>
+        <!-- State: Game Room -->
+        <div v-else-if="state === 'in-game'">
+          <GameRoom 
+            :game="game" 
+            :playerId="playerId" 
+            @submit="handleGuess" 
+            @buzz="handleBuzz"
+          />
+        </div>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -48,7 +54,6 @@ const game = ref(null);
 const version = import.meta.env.VITE_APP_VERSION || '0.0.0';
 
 onMounted(async () => {
-  // Extract gameId and secret from URL e.g. ?game=1234&secret=abcd
   const params = new URLSearchParams(window.location.search);
   const id = params.get('game');
   const sec = params.get('secret');
@@ -63,22 +68,16 @@ onMounted(async () => {
   secret.value = sec;
 
   try {
-    // Authenticate anonymously (restores existing session if available)
     await gameService.signIn();
-    
-    // Start listening to the game state immediately
     gameService.listenToGame(gameId.value, (newGameState) => {
       if (newGameState) {
         game.value = newGameState;
-        
-        // Check if player is already registered in this game
         const uid = gameService.getCurrentUserId();
         if (uid && newGameState.players && newGameState.players[uid]) {
           playerId.value = uid;
           state.value = 'in-game';
           error.value = '';
         } else if (state.value === 'loading' || state.value === 'error') {
-          // If not registered, show login screen
           state.value = 'login';
         }
       } else {
@@ -96,10 +95,7 @@ const handleJoin = async (playerName) => {
   try {
     state.value = 'loading';
     error.value = '';
-    
-    // Pass the secret to the database. If it's wrong, Firebase rules will reject the write.
     playerId.value = await gameService.joinGame(gameId.value, secret.value, playerName);
-    // The listenToGame callback will automatically switch state to 'in-game' once the DB updates
   } catch (e) {
     console.error(e);
     error.value = "Code secret invalide ou partie inexistante. Veuillez rescanner le QR Code.";
@@ -126,24 +122,3 @@ const handleBuzz = async (callback) => {
 };
 </script>
 
-<style>
-/* Global CSS in style.css */
-.error-banner {
-  background: var(--danger-color, #ff1744);
-  color: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: bold;
-}
-.app-version {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 0.8rem;
-  font-weight: bold;
-  z-index: 100;
-}
-</style>

@@ -1,34 +1,62 @@
 <template>
-  <div class="modal-overlay">
-    <div class="modal-content">
-      <h2 style="color: #ffc700; margin-top: 0;">🧪 Diagnostics du Système</h2>
-      <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">
+  <Modal @close="!isRunning && $emit('close')" maxW="max-w-xl">
+    <div class="p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 bg-[#fff6e0] rounded-xl flex items-center justify-center shadow-sm">
+          <Activity class="w-5 h-5 text-[#FFBA49]" />
+        </div>
+        <h2 class="text-2xl font-black text-primary m-0">Diagnostics du Système</h2>
+      </div>
+      <p class="text-muted-foreground mb-6">
         Vérification en cours des différents services et de la lecture audio...
       </p>
 
-      <ul class="diagnostic-list">
-        <li v-for="(step, index) in steps" :key="index" :id="'step-' + index" class="diagnostic-item" :class="step.status">
-          <span class="icon">
-            {{ step.status === 'pending' ? '⏳' : step.status === 'running' ? '🔄' : step.status === 'success' ? '✅' : '❌' }}
-          </span>
-          <div class="details">
-            <span class="title">{{ step.name }}</span>
-            <span v-if="step.message" class="message">{{ step.message }}</span>
+      <div ref="containerRef" class="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-2 mb-8 py-2">
+        <div 
+          v-for="(step, index) in steps" 
+          :key="index" 
+          :id="'step-' + index" 
+          :class="[
+            'flex items-center gap-4 p-4 rounded-xl border transition-colors duration-300',
+            step.status === 'success' ? 'bg-emerald-50/50 border-emerald-100' :
+            step.status === 'error' ? 'bg-red-50/50 border-red-100' :
+            step.status === 'running' ? 'bg-amber-50/50 border-amber-100 shadow-sm' :
+            'bg-muted/30 border-[rgba(0,0,0,0.05)]'
+          ]"
+        >
+          <div class="text-2xl flex-shrink-0">
+            <Loader2 v-if="step.status === 'running'" class="w-6 h-6 text-amber-500 animate-spin" />
+            <CheckCircle2 v-else-if="step.status === 'success'" class="w-6 h-6 text-emerald-500" />
+            <AlertCircle v-else-if="step.status === 'error'" class="w-6 h-6 text-red-500" />
+            <Hourglass v-else class="w-6 h-6 text-muted-foreground/50" />
           </div>
-        </li>
-      </ul>
+          <div class="flex flex-col min-w-0">
+            <span class="font-bold text-primary text-sm">{{ step.name }}</span>
+            <span v-if="step.message" :class="[
+              'text-xs truncate mt-0.5',
+              step.status === 'success' ? 'text-emerald-700' :
+              step.status === 'error' ? 'text-red-700' :
+              step.status === 'running' ? 'text-amber-700 font-medium' :
+              'text-muted-foreground'
+            ]">{{ step.message }}</span>
+          </div>
+        </div>
+      </div>
 
-      <div style="margin-top: 30px; text-align: right;">
-        <button class="btn btn-secondary" @click="$emit('close')" :disabled="isRunning">
+      <div class="flex justify-end">
+        <Btn variant="dark" @click="$emit('close')" :disabled="isRunning">
           Fermer
-        </button>
+        </Btn>
       </div>
     </div>
-  </div>
+  </Modal>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
+import { Activity, Loader2, CheckCircle2, AlertCircle, Hourglass } from '@lucide/vue';
+import Modal from '../ui/Modal.vue';
+import Btn from '../ui/Btn.vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { animatorService } from '../../services/animatorService';
 
@@ -52,13 +80,17 @@ const steps = ref([
 
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
 
+const containerRef = ref<HTMLElement | null>(null);
+
 const setStepRunning = async (index: number) => {
   steps.value[index].status = 'running';
   await nextTick();
-  const el = document.getElementById('step-' + index);
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
+  setTimeout(() => {
+    const el = document.getElementById('step-' + index);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 100);
 };
 
 const runDiagnostics = async () => {
@@ -222,78 +254,3 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-.modal-content {
-  background: #1e1e2e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  color: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.diagnostic-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-height: 350px;
-  overflow-y: auto;
-  padding-right: 10px;
-  padding-bottom: 20px;
-  scroll-padding-bottom: 20px;
-  scroll-padding-top: 20px;
-}
-.diagnostic-list::-webkit-scrollbar {
-  width: 6px;
-}
-.diagnostic-list::-webkit-scrollbar-thumb {
-  background-color: rgba(255,255,255,0.2);
-  border-radius: 4px;
-}
-.diagnostic-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  transition: background 0.3s;
-}
-.diagnostic-item.success {
-  background: rgba(0, 255, 100, 0.1);
-}
-.diagnostic-item.error {
-  background: rgba(255, 50, 50, 0.1);
-}
-.diagnostic-item.running {
-  background: rgba(255, 200, 0, 0.1);
-}
-.icon {
-  font-size: 1.5rem;
-}
-.details {
-  display: flex;
-  flex-direction: column;
-}
-.title {
-  font-weight: 600;
-}
-.message {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.6);
-}
-</style>

@@ -11,8 +11,11 @@
     "lint": "eslint . --ext .js,.cjs,.ts,.vue"
   },
   "dependencies": {
+    "@lucide/vue": "^1.25.0",
+    "@tailwindcss/vite": "^4.3.3",
     "firebase": "^12.15.0",
     "jsmediatags": "^3.9.7",
+    "tailwindcss": "^4.3.3",
     "vue": "^3.5.39",
     "vue-router": "^4.6.4"
   },

@@ -1,23 +1,29 @@
 <template>
-  <div class="centered-panel">
-    <div class="settings-panel card glass">
-      <h2>Paramètres Audio</h2>
-      <p class="settings-desc">Sélectionnez la source de musique qui sera utilisée par défaut pour vos parties.</p>
+  <div class="flex flex-col items-center justify-center min-h-full w-full relative p-6">
+    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
+      <ChevronLeft class="w-4 h-4" /> Retour
+    </button>
+    
+    <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-lg">
+      <h2 class="text-3xl font-black text-primary text-center mb-2 flex items-center justify-center gap-3">
+        <Settings class="w-8 h-8 text-[#FFBA49]" /> Paramètres Audio
+      </h2>
+      <p class="text-muted-foreground text-center mb-8">Sélectionnez la source de musique qui sera utilisée par défaut pour vos parties.</p>
       
-      <div class="input-group">
-        <label>Source Audio :</label>
-        <select v-model="localSource" class="modern-select">
+      <div class="flex flex-col gap-3 mb-8">
+        <label class="font-bold text-primary">Source Audio :</label>
+        <select v-model="localSource" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
           <option value="soundcloud">☁️ Lien SoundCloud</option>
           <option value="local">📁 Fichier Audio (MP3 Local)</option>
         </select>
       </div>
 
-      <div class="settings-actions">
-        <button class="btn btn-secondary" @click="$emit('back')">⬅️ Retour</button>
-        <button class="btn btn-primary" @click="handleSave">Sauvegarder</button>
+      <div class="flex gap-4">
+        <Btn variant="soft" className="flex-1 font-bold" @click="$emit('back')">Annuler</Btn>
+        <Btn variant="primary" className="flex-1 font-bold" @click="handleSave">Sauvegarder</Btn>
       </div>
       
-      <div class="app-version">
+      <div class="text-center text-muted-foreground/50 text-sm mt-8 font-mono">
         Version : {{ appVersion }}
       </div>
     </div>
@@ -26,6 +32,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { ChevronLeft, Settings } from '@lucide/vue';
+import Btn from '../ui/Btn.vue';
 
 const appVersion = import.meta.env.VITE_APP_VERSION || 'inconnue';
 
@@ -51,61 +59,3 @@ const handleSave = () => {
 };
 </script>
 
-<style scoped>
-.centered-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: white;
-  width: 100%;
-  position: relative;
-}
-.settings-panel {
-  max-width: 500px;
-  width: 100%;
-  padding: 40px;
-}
-.settings-panel h2 {
-  font-size: 2rem;
-  color: #ffc700;
-  margin-bottom: 10px;
-}
-.settings-desc {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-}
-.modern-select {
-  width: 100%;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  outline: none;
-}
-.modern-select option {
-  background: #2b2b40;
-}
-.settings-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  gap: 15px;
-}
-.settings-actions .btn {
-  flex: 1;
-}
-.btn-block {
-  width: 100%;
-}
-.app-version {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 0.9rem;
-  margin-top: 25px;
-  font-family: monospace;
-}
-</style>

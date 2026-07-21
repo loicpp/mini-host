@@ -1,8 +1,8 @@
 <template>
-  <div class="animator-app">
+  <div class="flex w-full h-screen bg-muted/30 text-foreground overflow-hidden font-sans">
     <!-- Disconnection Warning Banner -->
-    <div v-if="!isBackendConnected" class="backend-warning-banner">
-      <span class="warning-icon">⚠️</span>
+    <div v-if="!isBackendConnected" class="fixed top-0 left-0 w-full bg-red-500 text-white p-3 text-center font-bold flex justify-center items-center gap-2 z-50 shadow-md text-sm">
+      <span class="animate-pulse text-lg">⚠️</span>
       <span>Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.</span>
     </div>
     <!-- Login Screen -->
@@ -10,10 +10,11 @@
       v-if="!isLoggedIn" 
       :error="loginError"
       @login="login" 
+      class="w-full h-full"
     />
 
     <!-- Main App -->
-    <div v-else class="animator-app-inner">
+    <div v-else class="flex w-full h-full">
       <GameSidebar 
         v-if="viewState === 'game'"
         :status="status"
@@ -25,6 +26,8 @@
         :selectedTrack="selectedTrack"
         :gameMode="gameSettings.mode"
         :hasBuzzed="hasBuzzed"
+        :lastPlayedTrack="lastPlayedTrack"
+        :players="displayedPlayers"
         @toggle-projector="toggleProjector"
         @leave-game="leaveGame"
         @configure-playlists="onConfigurePlaylists"
@@ -38,7 +41,7 @@
       />
 
       <!-- Main Content -->
-      <main class="main-content" :class="{ 'full-page': viewState !== 'game' }">
+      <main :class="['flex-1 overflow-y-auto relative', viewState !== 'game' ? 'p-0' : 'p-8']">
         <HomeScreen 
           v-if="viewState === 'home'"
           :lastGameId="lastGameId || ''"
@@ -69,19 +72,23 @@
           @back="viewState = 'home'"
         />
 
-        <div v-else-if="viewState === 'game' && gameId" class="game-panel">
-          <div class="header-bar">
-            <h3 @click="isPlayersModalOpen = true" style="cursor: pointer; text-decoration: underline;" title="Voir et gérer les joueurs">
-              Joueurs connectés ({{ Object.keys(displayedPlayers).length }})
-            </h3>
-            <span class="status-badge" :class="status">{{ statusDisplay }}</span>
-            <div style="margin-left: auto; display: flex; gap: 10px;">
-              <button class="btn btn-warning" @click="restartGame">
-                Recommencer
+        <div v-else-if="viewState === 'game' && gameId" class="flex flex-col gap-6">
+          <div class="flex items-center justify-between mb-2 pb-4 border-b border-[rgba(0,0,0,0.05)]">
+            <div class="flex items-center gap-3">
+              <Badge :color="status === 'waiting' ? 'gray' : status === 'playing' ? 'blue' : status === 'reviewing' ? 'green' : status === 'results' ? 'pink' : 'gray'" class="px-3 py-1 text-xs uppercase tracking-wider">{{ statusDisplay }}</Badge>
+            </div>
+            <div class="ml-auto flex items-center gap-3">
+              <button @click="isPlayersModalOpen = true" class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold text-primary">
+                <Users class="w-5 h-5" /> 
+                <span>{{ Object.keys(displayedPlayers).length }} joueurs</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 ml-1"></span>
               </button>
-              <button class="btn btn-danger" @click="endGame" v-if="status !== 'finished'">
-                Arrêter la partie
-              </button>
+              <Btn variant="ghost-orange" @click="restartGame">
+                <RefreshCw class="w-4 h-4 mr-2" /> Recommencer
+              </Btn>
+              <Btn variant="ghost-red" @click="endGame" v-if="status !== 'finished'">
+                <Square class="w-4 h-4 mr-2" /> Arrêter
+              </Btn>
             </div>
           </div>
 
@@ -94,8 +101,13 @@
             @select-track="selectTrack"
           />
 
-          <div v-if="status === 'reviewing'" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <h3 style="margin: 0; color: #ffc700;">🎵 Attendu : {{ nextTrackInfo.answer || 'Réponse inconnue' }}</h3>
+          <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-6 rounded-2xl flex flex-wrap items-center justify-center gap-6 mb-4 shadow-sm">
+            <h3 class="text-xl font-bold text-blue-700 m-0 flex items-center gap-2">
+              🎵 Attendu : <span class="px-3 py-1 bg-white rounded-lg border border-blue-200 shadow-sm ml-2">{{ nextTrackInfo.answer || 'Réponse inconnue' }}</span>
+            </h3>
+            <Btn v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md" @click="autoCorrect">
+              <Wand2 class="w-4 h-4 mr-2" /> Auto-correction
+            </Btn>
           </div>
 
           <PlayersGrid 
@@ -107,36 +119,50 @@
         </div>
 
         <!-- Players Modal -->
-        <div v-if="isPlayersModalOpen" class="modal-overlay" @click="isPlayersModalOpen = false">
-          <div class="modal-content" @click.stop>
-            <h2>Gestion des Joueurs</h2>
-            <div class="players-list">
-              <div v-if="Object.keys(displayedPlayers).length === 0" class="no-players">
+        <Modal v-if="isPlayersModalOpen" @close="isPlayersModalOpen = false" maxW="max-w-2xl">
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-[#fff6e0] rounded-xl flex items-center justify-center shadow-sm">
+                  <Users class="w-5 h-5 text-[#FFBA49]" />
+                </div>
+                <h2 class="text-2xl font-bold text-primary">Gestion des Joueurs</h2>
+              </div>
+              <button @click="isPlayersModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
+            </div>
+            
+            <div class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2">
+              <div v-if="Object.keys(displayedPlayers).length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
                 Aucun joueur connecté.
               </div>
-              <div v-for="(player, playerId) in displayedPlayers" :key="playerId" class="player-item">
-                <div class="player-info-row">
-                  <span class="player-name">
-                    {{ player.name || 'Anonyme' }}
-                    <span v-if="player.blockedTurns === -1" style="color: #ff4d4d; font-size: 0.8em; margin-left: 5px;">(Bloqué)</span>
-                    <span v-else-if="player.blockedTurns > 0" style="color: #ffc700; font-size: 0.8em; margin-left: 5px;">(Bloqué {{ player.blockedTurns }} tour(s))</span>
-                  </span>
-                  <span class="player-score">{{ player.score || 0 }} pts</span>
-                </div>
-                <div class="player-actions-row">
-                  <div class="block-controls">
-                    <button class="btn btn-sm btn-warning" @click="setPlayerBlock(playerId as string, 1)" title="Bloquer pour 1 tour">1 Tour</button>
-                    <button class="btn btn-sm btn-warning" @click="setPlayerBlock(playerId as string, 3)" title="Bloquer pour 3 tours">3 Tours</button>
-                    <button class="btn btn-sm btn-danger" @click="setPlayerBlock(playerId as string, -1)" title="Bloquer indéfiniment">Bloquer</button>
-                    <button class="btn btn-sm btn-success" v-if="player.blockedTurns" @click="setPlayerBlock(playerId as string, 0)">Débloquer</button>
+              <div v-for="(player, playerId) in displayedPlayers" :key="playerId" :class="['rounded-xl border p-4 flex flex-col gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-primary text-lg">{{ player.name || 'Anonyme' }}</span>
+                    <Badge v-if="player.blockedTurns === -1" color="red">Bloqué définitivement</Badge>
+                    <Badge v-else-if="player.blockedTurns > 0" color="red">Bloqué ({{ player.blockedTurns }} tour(s))</Badge>
                   </div>
-                  <button class="btn btn-sm btn-danger" @click="removePlayer(playerId as string)">Supprimer</button>
+                  <span class="font-black text-[#FFBA49] tabular-nums text-lg">{{ player.score || 0 }} pts</span>
+                </div>
+                
+                <div class="flex gap-2 flex-wrap items-center justify-between mt-1">
+                  <div class="flex flex-wrap gap-2">
+                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(playerId as string, 1)" title="Bloquer pour 1 tour">+1 Tour</Btn>
+                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(playerId as string, 3)" title="Bloquer pour 3 tours">+3 Tours</Btn>
+                    <Btn :variant="player.blockedTurns ? 'success' : 'danger'" size="sm" @click="setPlayerBlock(playerId as string, player.blockedTurns ? 0 : -1)">
+                      {{ player.blockedTurns ? 'Débloquer' : 'Bloquer définitivement' }}
+                    </Btn>
+                  </div>
+                  <Btn variant="danger" size="sm" @click="removePlayer(playerId as string)">Supprimer</Btn>
                 </div>
               </div>
             </div>
-            <button class="btn secondary" style="width: 100%; margin-top: 20px;" @click="isPlayersModalOpen = false">Fermer</button>
+            
+            <div class="flex justify-end mt-6">
+              <Btn variant="dark" size="md" @click="isPlayersModalOpen = false">Fermer</Btn>
+            </div>
           </div>
-        </div>
+        </Modal>
 
       </main>
 
@@ -150,6 +176,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { Users, X, RefreshCw, Square, Wand2 } from '@lucide/vue';
+import Btn from '../components/ui/Btn.vue';
+import Badge from '../components/ui/Badge.vue';
+import Modal from '../components/ui/Modal.vue';
 import LoginScreen from '../components/control-panel/LoginScreen.vue';
 import HomeScreen from '../components/control-panel/HomeScreen.vue';
 import SettingsScreen from '../components/control-panel/SettingsScreen.vue';
@@ -163,6 +193,9 @@ import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
 import { getServerTime } from '../firebase';
+import { useDialog } from '../composables/useDialog';
+
+const { showAlert, showConfirm } = useDialog();
 
 const email = ref('');
 const password = ref('');
@@ -223,6 +256,11 @@ const displayedPlayers = computed(() => {
   return result;
 });
 
+const lastPlayedTrack = computed(() => {
+  if (playedTracks.value.length === 0) return null;
+  const lastId = playedTracks.value[playedTracks.value.length - 1];
+  return localTracks.value.find(t => t.id === lastId) || null;
+});
 
 const statusDisplay = computed(() => {
   if (status.value === 'waiting') return 'En attente...';
@@ -361,8 +399,8 @@ const createNewGame = async (settings: any) => {
   if (lastGameId.value) {
     try {
       await animatorService.deleteGame(lastGameId.value);
-    } catch (e) {
-      console.warn("Could not delete previous game", e);
+    } catch {
+      console.warn("Could not delete previous game");
     }
   }
 
@@ -376,8 +414,8 @@ const createNewGame = async (settings: any) => {
   if (musicManager.activeProviderName !== currentSource.value) {
     try {
       await musicManager.setProvider(currentSource.value);
-    } catch(e) {
-      console.warn("Could not set music provider", e);
+    } catch {
+      console.warn("Could not set music provider");
     }
   }
   
@@ -394,8 +432,8 @@ const createNewGame = async (settings: any) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
     });
-  } catch (e) {
-    console.warn("Could not save game.json", e);
+  } catch {
+    console.warn("Could not save game.json");
   }
   
   try {
@@ -407,8 +445,8 @@ const createNewGame = async (settings: any) => {
       })
     });
     lastGameId.value = game.gameId;
-  } catch (e) {
-    console.warn("Could not save lastGameId to backend", e);
+  } catch {
+    console.warn("Could not save lastGameId to backend");
   }
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
@@ -427,7 +465,7 @@ const resumeGame = async () => {
     const gameData = await animatorService.getGame(gameId.value);
     
     if (!gameData) {
-      alert("Cette partie n'existe plus !");
+      await showAlert({ title: "Partie introuvable", message: "Cette partie n'existe plus !" });
       lastGameId.value = null;
       return;
     }
@@ -437,8 +475,8 @@ const resumeGame = async () => {
     } else {
       status.value = 'waiting';
     }
-  } catch (e) {
-    console.warn("Could not fetch game status from Firebase, falling back to 'waiting'", e);
+  } catch {
+    console.warn("Could not fetch game status from Firebase, falling back to 'waiting'");
     status.value = 'waiting';
   }
   
@@ -451,8 +489,8 @@ const resumeGame = async () => {
     if (data.localTracks) localTracks.value = data.localTracks;
     if (data.playedTracks) playedTracks.value = data.playedTracks;
     if (data.settings) gameSettings.value = data.settings;
-  } catch(e) {
-    console.warn("Could not load game.json", e);
+  } catch {
+    console.warn("Could not load game.json");
   }
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
@@ -469,8 +507,8 @@ const leaveGame = async () => {
   }
   try {
     await musicManager.stop();
-  } catch(e) {
-    console.warn(e);
+  } catch {
+    console.warn("Could not stop music");
   }
   gameId.value = '';
   selectedTrack.value = null;
@@ -484,8 +522,8 @@ const saveSettings = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ preferredSource: preferredSource.value })
     });
-  } catch (e) {
-    console.warn("Could not save settings to backend", e);
+  } catch {
+    console.warn("Could not save settings to backend");
   }
   
   viewState.value = 'home';
@@ -504,8 +542,8 @@ const toggleProjector = async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ game_id: gameId.value })
       });
-    } catch (e) {
-      console.warn(e);
+    } catch {
+      console.warn("Could not open projector via backend");
       window.open(`/public?game=${gameId.value}`, '_blank', 'width=1280,height=720');
     }
     isProjectorOpen.value = true;
@@ -514,8 +552,8 @@ const toggleProjector = async () => {
       await fetch('http://127.0.0.1:5000/api/projector/close', {
         method: 'POST'
       });
-    } catch (e) {
-      console.warn("Could not close projector via backend", e);
+    } catch {
+      console.warn("Could not close projector via backend");
     }
     isProjectorOpen.value = false;
   }
@@ -540,7 +578,7 @@ const playMusic = async () => {
     // Unlock audio context safely
     if (typeof musicManager.activate === 'function') {
       console.log("Activating music manager...");
-      musicManager.activate().catch(e => console.warn("Activate error:", e));
+      musicManager.activate().catch(() => console.warn("Activate error"));
     }
     
     console.log("Setting status to playing...");
@@ -570,8 +608,8 @@ const playMusic = async () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value, settings: gameSettings.value })
         });
-      } catch(e) {
-        console.warn(e);
+      } catch {
+        console.warn("Could not save played tracks");
       }
     }
     
@@ -584,11 +622,11 @@ const playMusic = async () => {
         await musicManager.play(selectedTrack.value!, Math.max(0, timeToWait));
       }
     } catch (err: any) {
-      alert("Erreur de lecture : " + err.message);
+      await showAlert({ title: "Erreur de lecture", message: "Erreur de lecture : " + err.message });
       stopMusic();
     }
   } catch (err: any) {
-    alert("Erreur lors du lancement : " + err.message);
+    await showAlert({ title: "Erreur lors du lancement", message: "Erreur lors du lancement : " + err.message });
   }
 };
 
@@ -757,23 +795,25 @@ const nextRound = async () => {
   
   try {
     await animatorService.clearPlayerAnswers(gameId.value);
-  } catch (e) {
-    console.warn("Could not clear player answers", e);
+  } catch {
+    console.warn("Could not clear player answers");
   }
   selectedTrack.value = null;
   await animatorService.updateGameState(gameId.value, 'waiting');
 };
 
 const endGame = async () => {
-  if (confirm('Voulez-vous vraiment arrêter la partie et afficher le podium final ?')) {
+  if (await showConfirm({ title: "Arrêter la partie ?", message: "La partie sera définitivement terminée et vous serez redirigé vers les résultats finaux.", confirmText: "Arrêter", confirmVariant: "danger" })) {
     status.value = 'finished';
+    try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
     await animatorService.updateGameState(gameId.value, 'finished');
   }
 };
 
 const restartGame = async () => {
-  if (confirm('Voulez-vous vraiment recommencer la partie à zéro (les joueurs seront conservés) ?')) {
+  if (await showConfirm({ title: "Recommencer la partie ?", message: "Voulez-vous vraiment recommencer la partie à zéro ? Les joueurs connectés seront conservés.", confirmText: "Recommencer", confirmVariant: "primary" })) {
     status.value = 'waiting';
+    try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
     nextTrackInfo.value.answer = '';
     searchQuery.value = '';
     selectedTrack.value = null;
@@ -781,8 +821,8 @@ const restartGame = async () => {
     
     try {
       await animatorService.resetPlayers(gameId.value);
-    } catch (e) {
-      console.warn("Could not reset players", e);
+    } catch {
+      console.warn("Could not reset players");
     }
     await animatorService.updateGameState(gameId.value, 'waiting', null);
     
@@ -800,7 +840,7 @@ const restartGame = async () => {
 };
 
 const removePlayer = async (playerId: string) => {
-  if (confirm('Voulez-vous vraiment supprimer ce joueur ?')) {
+  if (await showConfirm({ title: "Supprimer le joueur ?", message: "Voulez-vous vraiment expulser ce joueur de la partie ?", confirmText: "Supprimer", confirmVariant: "danger" })) {
     try {
       await animatorService.removePlayer(gameId.value, playerId);
     } catch(e) {
@@ -824,123 +864,4 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
-.animator-app-inner {
-  flex: 1;
-  display: flex;
-  width: 100%;
-}
-.main-content.full-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
 
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #1e1e2d;
-  padding: 30px;
-  border-radius: 12px;
-  width: 600px;
-  max-width: 95vw;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.modal-content h2 {
-  margin-bottom: 20px;
-  text-align: center;
-  color: #fff;
-}
-.players-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 50vh;
-  overflow-y: auto;
-}
-.player-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: #2b2b40;
-  padding: 15px;
-  border-radius: 8px;
-}
-.player-info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.player-actions-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 15px;
-}
-.block-controls {
-  display: flex;
-  gap: 8px;
-  flex: 1;
-}
-.block-controls button {
-  flex: 1;
-  white-space: nowrap;
-}
-.player-name {
-  font-weight: 600;
-  flex: 1;
-}
-.player-score {
-  margin-right: 15px;
-  color: #ffc700;
-  font-weight: bold;
-}
-.no-players {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-  padding: 20px;
-}
-
-.backend-warning-banner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  background: #ff4d4d;
-  color: white;
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  z-index: 99999;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  font-size: 14px;
-}
-.warning-icon {
-  font-size: 18px;
-  animation: warning-blink 1s infinite alternate;
-}
-@keyframes warning-blink {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
-}
-</style>

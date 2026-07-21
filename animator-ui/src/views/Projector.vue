@@ -1,125 +1,134 @@
 <template>
-  <div class="projector-view" @dblclick="toggleFullscreen">
+  <div class="flex flex-col h-screen w-screen bg-[#13111C] text-white overflow-hidden font-sans" @dblclick="toggleFullscreen">
     <!-- Header with QR Code -->
-    <header class="projector-header">
-      <div class="qr-box" v-if="gameId && secret && game?.status !== 'waiting'">
-        <img :src="qrCodeUrl" alt="QR Code" class="qr-img" />
-        <div class="qr-text">
-          <p>Scannez pour jouer !</p>
-          <h2>{{ gameId }}</h2>
+    <header class="flex justify-between items-center px-12 py-6">
+      <div v-if="gameId && secret && game?.status !== 'waiting'" class="flex items-center gap-6 bg-white/5 p-3 rounded-2xl backdrop-blur-md border border-white/10">
+        <img :src="qrCodeUrl" alt="QR Code" class="w-20 h-20 bg-white p-1 rounded-xl" />
+        <div class="flex flex-col">
+          <p class="text-white/70 text-sm m-0">Scannez pour jouer !</p>
+          <h2 class="text-[#FFBA49] text-2xl font-black m-0 tracking-widest">{{ gameId }}</h2>
         </div>
       </div>
-      <div class="title-box" style="display: flex; align-items: center; gap: 15px;">
-        <img src="/favicon.jpg" alt="Logo" class="projector-logo" style="height: 7vh; width: 7vh; border-radius: 1.5vh; object-fit: cover; border: 2px solid #ffc700; box-shadow: 0 0 15px rgba(255, 199, 0, 0.4);" />
-        <h1>Blind Test</h1>
+      <div v-else></div> <!-- Placeholder for flex spacing -->
+      <div class="flex items-center gap-4">
+        <img src="/favicon.jpg" alt="Logo" class="h-16 w-16 rounded-2xl object-cover border-2 border-[#FFBA49] shadow-[0_0_15px_rgba(255,186,73,0.4)]" />
+        <h1 class="text-4xl font-black bg-gradient-to-r from-[#FFBA49] to-[#ff4d4d] bg-clip-text text-transparent m-0">Blind Test</h1>
       </div>
     </header>
 
     <!-- Main Display Area -->
-    <main class="projector-main">
-      <div v-if="!game" class="loading">
-        <h1>Connexion à la partie...</h1>
+    <main class="flex-1 flex justify-center items-center text-center overflow-y-auto py-8">
+      <div v-if="!game" class="animate-pulse">
+        <h1 class="text-4xl font-bold text-white/70">Connexion à la partie...</h1>
       </div>
 
-      <div v-else-if="game.status === 'waiting'" class="state-panel waiting-state">
-        <div class="huge-qr-container" v-if="gameId && secret">
-          <img :src="qrCodeUrl" alt="QR Code" class="qr-huge-img" />
-          <div class="huge-qr-text">
-            <h2>Rejoignez la partie</h2>
-            <div class="pin-code">{{ gameId }}</div>
-            <p>Scannez pour participer !</p>
+      <div v-else-if="game.status === 'waiting'" class="w-full max-w-6xl flex flex-col items-center">
+        <div v-if="gameId && secret" class="flex items-center gap-12 bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 mb-8 shadow-2xl">
+          <img :src="qrCodeUrl" alt="QR Code" class="w-64 h-64 bg-white p-4 rounded-3xl m-0 shadow-lg" />
+          <div class="text-left flex flex-col justify-center">
+            <h2 class="text-white text-4xl font-bold mb-2">Rejoignez la partie</h2>
+            <div class="text-[#FFBA49] text-8xl font-black tracking-[0.2em] mb-2 drop-shadow-[0_0_20px_rgba(255,186,73,0.5)]">{{ gameId }}</div>
+            <p class="text-white/80 text-2xl m-0">Scannez pour participer !</p>
           </div>
         </div>
 
-        <h1 class="waiting-title">Préparez-vous !</h1>
+        <h1 class="text-6xl font-black text-white mb-8">Préparez-vous !</h1>
         
-        <div class="players-lobby">
-          <h3>Joueurs présents ({{ Object.keys(game.players || {}).length }})</h3>
-          <div class="lobby-grid">
-            <span v-for="(player, id) in game.players" :key="id" class="lobby-player">
+        <div class="w-full">
+          <h3 class="text-white/80 text-2xl mb-6 font-medium">Joueurs présents ({{ Object.keys(game.players || {}).length }})</h3>
+          <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+            <span v-for="(player, id) in game.players" :key="id" class="bg-white/15 px-6 py-3 rounded-full text-2xl font-bold backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
               {{ player.name }}
             </span>
           </div>
         </div>
       </div>
 
-      <div v-else-if="game.status === 'playing'" class="state-panel playing-state">
-        <div v-if="isBuffering" class="buffering">
-          <h1>La musique démarre dans...</h1>
-          <div class="huge-countdown">{{ bufferTimeLeft }}</div>
+      <div v-else-if="game.status === 'playing'" class="w-full flex flex-col items-center">
+        <div v-if="isBuffering" class="flex flex-col items-center">
+          <h1 class="text-5xl text-[#FFBA49] font-black mb-8">La musique démarre dans...</h1>
+          <div class="text-9xl font-black text-white animate-pulse">{{ bufferTimeLeft }}</div>
         </div>
-        <div v-else>
-          <div class="countdown-circle">
-            <svg viewBox="0 0 100 100">
+        <div v-else class="flex flex-col items-center">
+          <div class="relative w-[40vh] h-[40vh] mb-8">
+            <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
               <defs>
                 <mask id="drain-mask">
                   <circle cx="50" cy="50" r="45" fill="none" stroke="white" stroke-width="10" stroke-dasharray="283" :stroke-dashoffset="dashOffsetTotal" style="transition: stroke-dashoffset 0.1s linear;"></circle>
                 </mask>
               </defs>
-              <circle class="bg" cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle>
+              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle>
               
               <g mask="url(#drain-mask)">
                 <circle cx="50" cy="50" r="45" fill="none" stroke="#00d2ff" stroke-width="8"></circle>
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#ffc700" stroke-width="8" :stroke-dasharray="unblockedDashArray"></circle>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#FFBA49" stroke-width="8" :stroke-dasharray="unblockedDashArray"></circle>
                 <circle cx="50" cy="50" r="45" fill="none" stroke="#ff4d4d" stroke-width="8" :stroke-dasharray="reflectionDashArray"></circle>
               </g>
             </svg>
-            <div class="time-text">{{ timeLeft }}</div>
-          </div>
-          <div class="timer-legend" v-if="game.status === 'playing'">
-            <div class="legend-item" v-if="blockTotalTime > 0">
-              <span class="color-dot" style="background: #00d2ff;"></span> Blocage
-            </div>
-            <div class="legend-item" v-if="musicTotalTime > blockTotalTime">
-              <span class="color-dot" style="background: #ffc700;"></span> Musique
-            </div>
-            <div class="legend-item" v-if="totalTime > musicTotalTime">
-              <span class="color-dot" style="background: #ff4d4d;"></span> Réflexion
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vh] font-black tabular-nums drop-shadow-lg">
+              {{ timeLeft }}
             </div>
           </div>
-          <h1>À vous de jouer !</h1>
+          <div class="flex justify-center gap-6 mb-8 bg-white/5 px-6 py-3 rounded-full backdrop-blur-md">
+            <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="blockTotalTime > 0">
+              <span class="w-4 h-4 rounded-full bg-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.5)]"></span> Blocage
+            </div>
+            <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="musicTotalTime > blockTotalTime">
+              <span class="w-4 h-4 rounded-full bg-[#FFBA49] shadow-[0_0_10px_rgba(255,186,73,0.5)]"></span> Musique
+            </div>
+            <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="totalTime > musicTotalTime">
+              <span class="w-4 h-4 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span> Réflexion
+            </div>
+          </div>
+          <h1 class="text-5xl font-black text-white tracking-wide">À vous de jouer !</h1>
         </div>
       </div>
 
-      <div v-else-if="game.status === 'reviewing'" class="state-panel reviewing-state">
-        <h1 class="text-danger">⏰ Temps écoulé !</h1>
-        <p>L'animateur corrige vos réponses...</p>
+      <div v-else-if="game.status === 'reviewing'" class="w-full flex flex-col items-center">
+        <h1 class="text-7xl font-black text-red-400 mb-6 drop-shadow-md">⏰ Temps écoulé !</h1>
+        <p class="text-3xl text-white/80">L'animateur corrige vos réponses...</p>
       </div>
 
-      <div v-else-if="game.status === 'results'" class="state-panel results-state">
-        <h1 class="text-success">🎉 Résultats</h1>
-        <div class="answer-card">
-          <h2>{{ game.currentTrack?.answer || 'Réponse Inconnue' }}</h2>
+      <div v-else-if="game.status === 'results'" class="w-full max-w-4xl flex flex-col items-center">
+        <h1 class="text-6xl font-black text-emerald-400 mb-8 drop-shadow-md">🎉 Résultats</h1>
+        <div class="bg-white/10 p-10 rounded-3xl mb-12 border-2 border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.3)] w-full">
+          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.currentTrack?.answer || 'Réponse Inconnue' }}</h2>
         </div>
-        <div class="stats-card">
-          <p>Classement Général :</p>
-          <ul class="leaderboard-list">
-            <li v-for="(player, index) in allPlayersSorted" :key="player.id" class="leaderboard-item">
-              <span class="rank">#{{ index + 1 }}</span>
-              <span class="name">{{ player.name }}</span>
-              <span class="score">{{ player.score || 0 }} pts</span>
+        <div class="w-full">
+          <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">Classement Général :</p>
+          <ul class="flex flex-col gap-4 w-full m-0 p-0">
+            <li v-for="(player, index) in allPlayersSorted" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-5 rounded-2xl text-3xl shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4">
+              <span class="font-black text-[#FFBA49] w-16 text-left">#{{ index + 1 }}</span>
+              <span class="flex-1 text-left font-bold">{{ player.name }}</span>
+              <span class="font-black text-emerald-400">{{ player.score || 0 }} pts</span>
             </li>
           </ul>
         </div>
       </div>
-      <div v-else-if="game.status === 'finished'" class="state-panel finished-state">
-        <h1 class="text-success" style="font-size: 4rem; margin-bottom: 2rem;">🏆 Podium Final 🏆</h1>
+      
+      <div v-else-if="game.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
+        <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">🏆 Podium Final 🏆</h1>
         
-        <div class="podium-container">
-          <div v-for="(player, index) in topThreePlayers" :key="player.id" :class="'podium-place place-' + (index + 1)">
-            <div class="medal">{{ ['🥇', '🥈', '🥉'][index] }}</div>
-            <div class="podium-name">{{ player.name }}</div>
-            <div class="podium-score">{{ player.score || 0 }} pts</div>
+        <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
+          <div v-for="(player, index) in topThreePlayers" :key="player.id" :class="[
+            'bg-white/10 rounded-t-3xl flex flex-col items-center pt-6 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] relative w-1/3 animate-in fade-in slide-in-from-bottom-8',
+            index === 0 ? 'h-full border-t-[6px] border-[#ffd700] bg-gradient-to-t from-[#ffd700]/10 to-[#ffd700]/30 z-30' :
+            index === 1 ? 'h-[75%] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
+            'h-[55%] border-t-[6px] border-[#cd7f32] bg-gradient-to-t from-[#cd7f32]/10 to-[#cd7f32]/30 z-10'
+          ]">
+            <div class="text-6xl mb-3 drop-shadow-md">{{ ['🥇', '🥈', '🥉'][index] }}</div>
+            <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
+            <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} pts</div>
           </div>
         </div>
         
-        <div class="other-players" v-if="otherPlayers.length > 0">
-          <h3>Le reste du classement :</h3>
-          <ul class="leaderboard-list">
-            <li v-for="(player, index) in otherPlayers" :key="player.id" class="leaderboard-item">
-              <span class="rank">#{{ index + 4 }}</span>
-              <span class="name">{{ player.name }}</span>
-              <span class="score">{{ player.score || 0 }} pts</span>
+        <div class="w-full max-w-3xl" v-if="otherPlayers.length > 0">
+          <h3 class="text-2xl text-white/70 mb-6 font-medium text-left px-4">Le reste du classement :</h3>
+          <ul class="flex flex-col gap-3 w-full m-0 p-0">
+            <li v-for="(player, index) in otherPlayers" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-4 rounded-2xl text-2xl backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2">
+              <span class="font-bold text-white/50 w-16 text-left">#{{ index + 4 }}</span>
+              <span class="flex-1 text-left font-medium">{{ player.name }}</span>
+              <span class="font-bold text-emerald-400">{{ player.score || 0 }} pts</span>
             </li>
           </ul>
         </div>
@@ -305,333 +314,4 @@ onUnmounted(() => {
 });
 </script>
 
-<style>
-/* Extracted layout for projector */
-.projector-view {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  background: var(--bg-gradient, linear-gradient(135deg, #0f0c29, #302b63, #24243e));
-  color: white;
-  overflow: hidden;
-}
 
-.projector-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 3vh 5vw;
-  align-items: center;
-}
-
-.qr-box {
-  display: flex;
-  align-items: center;
-  gap: 2vw;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1.5vh;
-  border-radius: 1.5vh;
-  backdrop-filter: blur(10px);
-}
-
-.qr-img {
-  width: 10vh;
-  height: 10vh;
-}
-
-.qr-text h2 {
-  color: #ffc700;
-  font-size: 3vh;
-  letter-spacing: 2px;
-}
-
-.title-box h1 {
-  font-size: 5vh;
-  background: -webkit-linear-gradient(45deg, #ff3366, #8c1eff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.projector-main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  overflow-y: auto;
-  padding: 2vh 0;
-}
-
-.state-panel {
-  width: 100%;
-}
-
-.state-panel h1 {
-  font-size: 6vh;
-  margin-bottom: 2vh;
-}
-
-.state-panel p {
-  font-size: 3vh;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.pulse-ring.lg {
-  width: 150px;
-  height: 150px;
-  border-width: 4px;
-}
-
-/* Timer Circle */
-.countdown-circle {
-  position: relative;
-  width: 40vh;
-  height: 40vh;
-  margin: 0 auto 4vh;
-}
-
-.countdown-circle svg {
-  transform: rotate(-90deg);
-  width: 100%;
-  height: 100%;
-}
-
-.countdown-circle circle {
-  fill: none;
-  stroke-width: 8;
-}
-
-.countdown-circle .bg {
-  stroke: rgba(255, 255, 255, 0.1);
-}
-
-
-
-.time-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 15vh;
-  font-weight: bold;
-}
-
-.timer-legend {
-  display: flex;
-  justify-content: center;
-  gap: 2vw;
-  margin-bottom: 2vh;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5vw;
-  font-size: 2.5vh;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.color-dot {
-  width: 2vh;
-  height: 2vh;
-  border-radius: 50%;
-  display: inline-block;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-.buffering h1 { font-size: 5vh; color: #ffc700; margin-bottom: 3vh; }
-.huge-countdown { font-size: 12vh; font-weight: bold; animation: pulse 1s infinite; color: #fff; }
-
-.huge-qr-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5vw;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4vh 5vw;
-  border-radius: 3vh;
-  backdrop-filter: blur(10px);
-  margin: 0 auto 3vh;
-  max-width: 85vw;
-}
-.qr-huge-img {
-  width: 45vh;
-  height: 45vh;
-  background: white;
-  padding: 2vh;
-  border-radius: 3vh;
-  margin: 0;
-}
-.huge-qr-text {
-  text-align: left;
-}
-.huge-qr-text h2 {
-  color: #fff;
-  font-size: 5vh;
-  margin-bottom: 1vh;
-}
-.huge-qr-text .pin-code {
-  color: #ffc700;
-  font-size: 10vh;
-  font-weight: bold;
-  letter-spacing: 5px;
-  margin-bottom: 1vh;
-  text-shadow: 0 0 20px rgba(255, 199, 0, 0.5);
-}
-.huge-qr-text p {
-  font-size: 3vh;
-  color: rgba(255,255,255,0.8);
-}
-
-/* Results */
-.answer-card {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4vh;
-  border-radius: 2vh;
-  margin-bottom: 4vh;
-  font-size: 4vh;
-  border: 2px solid #00e676;
-  box-shadow: 0 0 4vh rgba(0, 230, 118, 0.3);
-}
-
-.top-players {
-  list-style: none;
-  font-size: 3vh;
-}
-
-.top-players li {
-  margin: 1.5vh 0;
-}
-
-/* Lobby */
-.waiting-title {
-  font-size: 6vh;
-  margin: 2vh 0 1vh;
-}
-.players-lobby { margin-top: 1vh; }
-.players-lobby h3 { margin-bottom: 1.5vh; color: rgba(255,255,255,0.8); font-size: 3vh; }
-.lobby-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1vh;
-  justify-content: center;
-  max-width: 90vw;
-  margin: 0 auto;
-}
-.lobby-player {
-  background: rgba(255,255,255,0.15);
-  padding: 1vh 2vw;
-  border-radius: 3vh;
-  font-size: 2.5vh;
-  font-weight: bold;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255,255,255,0.2);
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Leaderboard */
-.leaderboard-list {
-  list-style: none;
-  padding: 0;
-  max-width: 60vw;
-  margin: 0 auto;
-}
-.leaderboard-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255,255,255,0.1);
-  margin: 1vh 0;
-  padding: 1.5vh 2.5vw;
-  border-radius: 1.5vh;
-  font-size: 3vh;
-  animation: fadeIn 0.5s ease-out;
-}
-.leaderboard-item .rank {
-  font-weight: bold;
-  color: #ffc700;
-  width: 5vw;
-  text-align: left;
-}
-.leaderboard-item .name {
-  flex: 1;
-  text-align: left;
-  margin-left: 2vw;
-}
-.leaderboard-item .score {
-  font-weight: bold;
-  color: #00e676;
-}
-
-/* Podium */
-.podium-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 2vw;
-  margin-bottom: 5vh;
-  height: 40vh;
-}
-.podium-place {
-  background: rgba(255,255,255,0.1);
-  border-radius: 2vh 2vh 0 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 2vh;
-  width: 20vw;
-  box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-  position: relative;
-  border-top: 4px solid #ffc700;
-  animation: fadeIn 1s ease-out;
-}
-.podium-place.place-1 {
-  height: 100%;
-  border-color: #ffd700;
-  background: linear-gradient(to top, rgba(255,215,0,0.1), rgba(255,215,0,0.3));
-  z-index: 3;
-}
-.podium-place.place-2 {
-  height: 75%;
-  border-color: #c0c0c0;
-  background: linear-gradient(to top, rgba(192,192,192,0.1), rgba(192,192,192,0.3));
-  z-index: 2;
-}
-.podium-place.place-3 {
-  height: 55%;
-  border-color: #cd7f32;
-  background: linear-gradient(to top, rgba(205,127,50,0.1), rgba(205,127,50,0.3));
-  z-index: 1;
-}
-.medal {
-  font-size: 6vh;
-  margin-bottom: 1vh;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
-}
-.podium-name {
-  font-size: 3.5vh;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  word-break: break-word;
-}
-.podium-score {
-  font-size: 2.5vh;
-  color: rgba(255,255,255,0.8);
-  margin-top: 1vh;
-}
-.other-players {
-  margin-top: 2vh;
-}
-.other-players h3 {
-  font-size: 3vh;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 2vh;
-}
-</style>
