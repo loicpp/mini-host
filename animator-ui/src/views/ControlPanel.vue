@@ -50,6 +50,7 @@
           @create-game="viewState = 'create-game'"
           @resume-game="resumeGame"
           @run-diagnostics="showDiagnostics = true"
+          @logout="logout"
         />
 
         <CreateGameScreen
@@ -65,6 +66,7 @@
           v-model:preferredSource="preferredSource"
           @back="viewState = 'home'"
           @save="saveSettings"
+          @logout="logout"
         />
 
         <PlaylistScreen 
@@ -437,6 +439,35 @@ onMounted(() => {
 
 
 
+
+const logout = async () => {
+  if (await showConfirm({ title: "Se déconnecter ?", message: "Vous devrez vous reconnecter pour utiliser la régie.", confirmText: "Déconnexion", confirmVariant: "danger" })) {
+    email.value = '';
+    password.value = '';
+    
+    try {
+      await fetch('http://127.0.0.1:5000/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: null, password: null })
+      });
+    } catch {
+      console.warn("Could not clear credentials from config.json");
+    }
+    
+    // We try to sign out from firebase if we were authenticated
+    try {
+      if (typeof animatorService.signOut === 'function') {
+        await animatorService.signOut();
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    
+    isLoggedIn.value = false;
+    viewState.value = 'home';
+  }
+};
 
 const login = async (loginEmail?: string, loginPassword?: string) => {
   if (loginEmail) email.value = loginEmail;

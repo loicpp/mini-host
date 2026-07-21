@@ -112,12 +112,26 @@ const runDiagnostics = async () => {
   // Step 2: Local Permissions
   await setStepRunning(1);
   try {
+    const testVal = Date.now().toString();
     const res = await fetch('http://127.0.0.1:5000/api/config', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ diagnostics_test_write: true })
+      body: JSON.stringify({ diagnostics_test_write: testVal })
     });
     if (!res.ok) throw new Error();
+    
+    // Read back to ensure it was actually written
+    const checkRes = await fetch('http://127.0.0.1:5000/api/config');
+    const config = await checkRes.json();
+    if (config.diagnostics_test_write !== testVal) throw new Error();
+    
+    // Clean up our test key
+    await fetch('http://127.0.0.1:5000/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ diagnostics_test_write: null })
+    });
+    
     steps.value[1].status = 'success';
     steps.value[1].message = 'Sauvegardes possibles';
   } catch {

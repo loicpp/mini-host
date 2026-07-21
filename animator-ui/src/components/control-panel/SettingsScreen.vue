@@ -17,6 +17,17 @@
           <option value="local">📁 Fichier Audio (MP3 Local)</option>
         </select>
       </div>
+      <div class="flex flex-col gap-4 mb-8 pt-6 border-t border-[rgba(0,0,0,0.08)]">
+        <button class="flex items-center gap-3 p-4 bg-red-50 hover:bg-red-100 hover:border-red-200 transition-all duration-300 rounded-xl border border-red-100 text-left outline-none group" @click="$emit('logout')">
+          <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-red-500 shrink-0 shadow-sm">
+            <LogOut class="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <span class="block font-bold text-red-600 text-lg">Déconnexion de la régie</span>
+            <span class="text-sm text-red-500/80">Se déconnecter du compte actuel</span>
+          </div>
+        </button>
+      </div>
 
       <div class="flex gap-4">
         <Btn variant="soft" className="flex-1 font-bold" @click="$emit('back')">Annuler</Btn>
@@ -32,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { ChevronLeft, Settings } from '@lucide/vue';
+import { ChevronLeft, Settings, LogOut } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 
 const appVersion = import.meta.env.VITE_APP_VERSION || 'inconnue';
@@ -45,6 +56,7 @@ const emit = defineEmits<{
   (e: 'update:preferredSource', val: string): void;
   (e: 'back'): void;
   (e: 'save'): void;
+  (e: 'logout'): void;
 }>();
 
 const localSource = ref(props.preferredSource);

@@ -18,6 +18,15 @@ export const animatorService = {
     }
   },
 
+  async signOut() {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+      throw error;
+    }
+  },
+
   async createGame(settings: any = {}) {
     return gameRepo.createGame(settings);
   },

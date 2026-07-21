@@ -18,7 +18,11 @@ class FileStorageAdapter(StoragePort):
     def save_config(self, config_data: Dict[str, Any]) -> None:
         try:
             current = self.load_config() or {}
-            current.update(config_data)
+            for k, v in config_data.items():
+                if v is None:
+                    current.pop(k, None)
+                else:
+                    current[k] = v
             with open(os.path.join(self.config_dir, "config.json"), "w") as f:
                 json.dump(current, f)
         except Exception:

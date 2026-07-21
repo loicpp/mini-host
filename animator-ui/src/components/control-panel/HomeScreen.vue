@@ -54,7 +54,6 @@
         <span class="text-lg font-bold text-primary flex-1">Paramètres globaux</span>
         <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
       </button>
-
     </div>
   </div>
 </template>
@@ -63,14 +62,14 @@
 import { Settings, Zap, RefreshCw, ListMusic, ChevronRight, Activity } from '@lucide/vue';
 
 defineProps<{
-  lastGameId: string;
+  lastGameId: string | null;
 }>();
 
 defineEmits<{
-  (e: 'open-settings'): void;
   (e: 'create-game'): void;
   (e: 'resume-game'): void;
   (e: 'open-playlists'): void;
   (e: 'run-diagnostics'): void;
+  (e: 'open-settings'): void;
 }>();
 </script>
