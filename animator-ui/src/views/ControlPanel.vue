@@ -116,6 +116,94 @@
             :gameMode="gameSettings.mode"
             @award="award"
           />
+
+          <!-- PLAYING VIEW -->
+          <div v-if="status === 'playing'" class="flex flex-col gap-6 animate-in fade-in duration-300">
+            <!-- Top Bar: Now Playing & Timer -->
+            <div class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
+                    <Music class="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div>
+                    <h2 class="text-xl font-bold text-primary">Lecture en cours...</h2>
+                  </div>
+                </div>
+                <div class="text-3xl font-black text-primary font-mono bg-slate-50 px-4 py-2 rounded-xl">
+                  {{ musicTimeLeft }}s
+                </div>
+              </div>
+              <!-- Progress Bar -->
+              <div class="h-3 bg-gray-100 rounded-full overflow-hidden relative">
+                <div class="absolute top-0 left-0 h-full bg-[#FFBA49] transition-all duration-100 ease-linear" :style="{ width: musicProgress + '%' }"></div>
+                <div v-if="gameSettings.duration > 0" class="absolute top-0 h-full w-1 bg-red-400 z-10 rounded-full" :style="{ left: (gameSettings.musicDuration / gameSettings.duration * 100) + '%' }" title="Coupure du son"></div>
+              </div>
+            </div>
+
+            <!-- Buzzer Alert (Buzzer Mode) -->
+            <div v-if="gameSettings.mode === 'buzzer' && currentBuzzer" class="flex-1 bg-red-50 border-2 border-red-200 p-8 rounded-3xl flex flex-col items-center justify-center text-center shadow-inner animate-in zoom-in-95 duration-200">
+              <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center text-white shadow-xl mb-6 animate-bounce">
+                <Zap class="w-10 h-10 fill-current" />
+              </div>
+              <h2 class="text-4xl font-black text-red-600 mb-2">{{ displayedPlayers[currentBuzzer.playerId]?.name || 'Un joueur' }} a buzzé !</h2>
+              <p class="text-red-500/80 font-bold text-xl">La musique est en pause. À lui de donner la réponse !</p>
+            </div>
+
+            <!-- Players Grid (Text Mode) -->
+            <div v-if="gameSettings.mode === 'text'" class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
+              <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
+                <Users class="w-5 h-5 text-muted-foreground" /> Statut des joueurs en direct
+              </h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                <div v-for="player in displayedPlayers" :key="player.id" 
+                     :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors', 
+                              player.blockedTurns && player.blockedTurns > 0 ? 'bg-red-50 border-red-200' :
+                              player.hasAnswered ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200']">
+                  <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0', 
+                                player.blockedTurns && player.blockedTurns > 0 ? 'bg-red-200 text-red-500' :
+                                player.hasAnswered ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-400']">
+                    <Ban v-if="player.blockedTurns && player.blockedTurns > 0" class="w-4 h-4" />
+                    <Check v-else-if="player.hasAnswered" class="w-4 h-4" />
+                    <Loader2 v-else class="w-4 h-4 animate-spin" />
+                  </div>
+                  <span :class="['font-bold truncate', 
+                                 player.blockedTurns && player.blockedTurns > 0 ? 'text-red-700 line-through opacity-70' :
+                                 player.hasAnswered ? 'text-emerald-700' : 'text-gray-500']">
+                    {{ player.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESULTS VIEW -->
+          <div v-if="status === 'results'" class="flex flex-col gap-6 animate-in fade-in duration-300">
+            <!-- Points Winners -->
+            <div class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
+              <h3 class="font-bold text-primary mb-6 flex items-center gap-2">
+                <Trophy class="w-5 h-5 text-yellow-500" /> Points remportés (cette manche)
+              </h3>
+              
+              <div class="grid gap-3">
+                <div v-for="player in playersWhoWonPoints" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                  <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
+                    +{{ player.pointsGained }}
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-bold text-lg text-emerald-900 m-0">{{ player.name }}</h4>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <div class="font-black text-xl text-emerald-700">{{ player.score }} pts (Total)</div>
+                  </div>
+                </div>
+                <div v-if="playersWhoWonPoints.length === 0" class="text-center text-muted-foreground py-8 italic bg-gray-50 rounded-xl border border-gray-100">
+                  Personne n'a remporté de points sur cette manche...
+                </div>
+              </div>
+              
+            </div>
+          </div>
         </div>
 
         <!-- Players Modal -->
@@ -176,7 +264,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
-import { Users, X, RefreshCw, Square, Wand2 } from '@lucide/vue';
+import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban } from '@lucide/vue';
 import Btn from '../components/ui/Btn.vue';
 import Badge from '../components/ui/Badge.vue';
 import Modal from '../components/ui/Modal.vue';
@@ -231,11 +319,14 @@ const isPlayersModalOpen = ref(false);
 const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text' });
 
 const pendingPoints = ref<Record<string, number>>({});
+const lastAwardedPoints = ref<Record<string, number>>({});
 
 const displayedPlayers = computed(() => {
   const result: Record<string, any> = {};
   for (const id in players.value) {
     const p = players.value[id];
+    if (p.role === 'animator' || p.role === 'projector') continue;
+    
     let guess = p.currentGuess;
     
     if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value && currentBuzzer.value.playerId === id) {
@@ -256,6 +347,23 @@ const displayedPlayers = computed(() => {
   return result;
 });
 
+
+
+const playersWhoWonPoints = computed(() => {
+  const result = [];
+  for (const [id, points] of Object.entries(lastAwardedPoints.value)) {
+    if (points > 0 && players.value[id]) {
+      result.push({
+        id,
+        name: players.value[id].name,
+        score: players.value[id].score,
+        pointsGained: points
+      });
+    }
+  }
+  return result.sort((a, b) => b.pointsGained - a.pointsGained);
+});
+
 const lastPlayedTrack = computed(() => {
   if (playedTracks.value.length === 0) return null;
   const lastId = playedTracks.value[playedTracks.value.length - 1];
@@ -272,6 +380,10 @@ const statusDisplay = computed(() => {
 });
 
 const viewState = ref('home');
+
+const musicProgress = ref(0);
+const musicTimeLeft = ref(0);
+let animationFrameId: number | null = null;
 const preferredSource = ref('soundcloud');
 const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
 
@@ -704,8 +816,29 @@ const autoCorrect = () => {
 
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
 
+const startProgressLoop = () => {
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
+  
+  const loop = () => {
+    if (status.value !== 'playing') return;
+    
+    const now = getServerTime();
+    if (currentStartTime) {
+      const elapsed = now - currentStartTime;
+      const total = gameSettings.value.duration * 1000;
+      musicProgress.value = Math.min(100, Math.max(0, (elapsed / total) * 100));
+      musicTimeLeft.value = Math.max(0, Math.ceil((total - elapsed) / 1000));
+    }
+    
+    animationFrameId = requestAnimationFrame(loop);
+  };
+  
+  loop();
+};
+
 watch(() => status.value, (newStatus) => {
   if (newStatus === 'playing') {
+    startProgressLoop();
     if (autoStopTimer) clearTimeout(autoStopTimer);
     const checkTimer = () => {
       if (status.value !== 'playing') return;
@@ -725,6 +858,7 @@ watch(() => status.value, (newStatus) => {
     checkTimer();
   } else {
     if (autoStopTimer) clearTimeout(autoStopTimer);
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
   }
 });
 
@@ -770,6 +904,7 @@ const award = (playerId: string, points: number) => {
 };
 
 const applyPendingPoints = async () => {
+  lastAwardedPoints.value = { ...pendingPoints.value };
   for (const [playerId, points] of Object.entries(pendingPoints.value)) {
     if (points !== 0) {
       await animatorService.awardPoints(gameId.value, playerId, points);
