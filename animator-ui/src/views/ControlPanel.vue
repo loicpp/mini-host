@@ -425,7 +425,14 @@ const resumeGame = async () => {
   
   try {
     const gameData = await animatorService.getGame(gameId.value);
-    if (gameData && gameData.status) {
+    
+    if (!gameData) {
+      alert("Cette partie n'existe plus !");
+      lastGameId.value = null;
+      return;
+    }
+
+    if (gameData.status) {
       status.value = gameData.status;
     } else {
       status.value = 'waiting';

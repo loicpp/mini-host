@@ -65,16 +65,25 @@ def main():
     print(f" -> Version de base utilisée : {base_v}")
     print("======================================")
 
+    try:
+        is_missing_tag = False
+        if git_v != "0.0.0" and base_v != "0.0.0":
+            if parse_version(base_v) > parse_version(git_v):
+                is_missing_tag = True
+    except ValueError:
+        is_missing_tag = False
+
     parts = base_v.split('.')
     if len(parts) == 3 and all(p.isdigit() for p in parts):
         v_major, v_minor, v_patch = map(int, parts)
         opt_major = f"{v_major + 1}.0.0"
         opt_minor = f"{v_major}.{v_minor + 1}.0"
-        opt_patch = f"{v_major}.{v_minor}.{v_patch + 1}"
+        opt_patch = base_v if is_missing_tag else f"{v_major}.{v_minor}.{v_patch + 1}"
     else:
-        opt_major, opt_minor, opt_patch = "1.0.0", "0.1.0", "0.0.1"
+        opt_major, opt_minor, opt_patch = "1.0.0", "0.1.0", base_v if is_missing_tag else "0.0.1"
 
     print("\nQuel type de mise à jour souhaitez-vous faire ?")
+    print(f" 0) Actuelle ({base_v}) - Relancer/Recréer le tag")
     print(f" 1) Majeure ({opt_major})")
     print(f" 2) Mineure ({opt_minor})")
     print(f" 3) Patch   ({opt_patch}) - Par défaut")
@@ -84,6 +93,8 @@ def main():
     
     if not choice or choice == '3':
         new_v = opt_patch
+    elif choice == '0':
+        new_v = base_v
     elif choice == '1':
         new_v = opt_major
     elif choice == '2':
@@ -118,13 +129,33 @@ def main():
     print("✅ Versions mises à jour dans les .env locaux !")
 
     try:
-        # Create tag directly (no git commit)
-        subprocess.run(['git', 'tag', '-a', f"v{new_v}", '-m', f"Release v{new_v}"], check=True)
-        print(f"✅ Tag v{new_v} créé.")
+        # Verify if tag already exists locally
+        tag_exists = False
+        try:
+            check = subprocess.run(['git', 'rev-parse', f"v{new_v}"], capture_output=True, text=True)
+            if check.returncode == 0:
+                tag_exists = True
+        except Exception:
+            pass
+
+        if tag_exists:
+            force = input(f"⚠️ Le tag v{new_v} existe déjà localement. Voulez-vous l'écraser (force) ? (y/N) : ").strip().lower()
+            if force in ['y', 'yes', 'o', 'oui']:
+                subprocess.run(['git', 'tag', '-a', '-f', f"v{new_v}", '-m', f"Release v{new_v}"], check=True)
+                print(f"✅ Tag v{new_v} recréé (force).")
+            else:
+                print("Création du tag annulée.")
+                sys.exit(0)
+        else:
+            subprocess.run(['git', 'tag', '-a', f"v{new_v}", '-m', f"Release v{new_v}"], check=True)
+            print(f"✅ Tag v{new_v} créé.")
 
         push_confirm = input("\nVoulez-vous pousser le tag sur GitHub pour déclencher la Release ? (y/N) : ").strip().lower()
         if push_confirm in ['y', 'yes', 'o', 'oui']:
-            subprocess.run(['git', 'push', 'origin', f"v{new_v}"], check=True)
+            if tag_exists:
+                subprocess.run(['git', 'push', '-f', 'origin', f"v{new_v}"], check=True)
+            else:
+                subprocess.run(['git', 'push', 'origin', f"v{new_v}"], check=True)
             print("🚀 Push du tag terminé ! La pipeline de release GitHub Actions va se lancer.")
         else:
             print("Push annulé.")
