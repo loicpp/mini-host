@@ -3,8 +3,8 @@
     <div class="max-w-lg w-full px-4 flex flex-col gap-4">
       <!-- Title -->
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-black text-primary mb-2">Régie</h1>
-        <p class="text-muted-foreground font-medium">Gérez votre partie de Blind Test</p>
+        <h1 class="text-4xl font-black text-primary mb-2">{{ $t('home.title') }}</h1>
+        <p class="text-muted-foreground font-medium">{{ $t('home.subtitle') }}</p>
       </div>
 
       <!-- btn 1: Nouvelle Partie -->
@@ -14,7 +14,7 @@
           <div class="w-12 h-12 rounded-xl bg-white/25 flex items-center justify-center text-[#3F4739] mr-5 shrink-0">
             <Zap class="w-5 h-5" />
           </div>
-          <span class="text-lg font-bold text-[#3F4739] flex-1">Nouvelle Partie</span>
+          <span class="text-lg font-bold text-[#3F4739] flex-1">{{ $t('home.new_game') }}</span>
           <ChevronRight class="w-5 h-5 text-[#3F4739]/50 group-hover:text-[#3F4739]/80 transition-colors mr-2 shrink-0" />
         </div>
       </button>
@@ -24,7 +24,7 @@
         <div class="w-12 h-12 rounded-xl bg-[#fff6e0] flex items-center justify-center text-[#FFBA49] mr-5 shrink-0">
           <RefreshCw class="w-5 h-5" />
         </div>
-        <span class="text-lg font-bold text-primary flex-1">Reprendre la partie</span>
+        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.resume_game') }}</span>
         <span class="px-3 py-1 bg-[#fff6e0] text-[#3F4739] font-bold text-[11px] rounded-lg tracking-wider uppercase mr-2 border border-[#fef3c7]">{{ lastGameId }}</span>
       </button>
 
@@ -33,7 +33,7 @@
         <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 mr-5 shrink-0">
           <ListMusic class="w-5 h-5" />
         </div>
-        <span class="text-lg font-bold text-primary flex-1">Mise en place (Playlists)</span>
+        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.playlists') }}</span>
         <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
       </button>
 
@@ -42,7 +42,7 @@
         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 mr-5 shrink-0">
           <Activity class="w-5 h-5" />
         </div>
-        <span class="text-lg font-bold text-primary flex-1">Lancer les diagnostics</span>
+        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.diagnostics') }}</span>
         <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
       </button>
 
@@ -51,7 +51,7 @@
         <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 mr-5 shrink-0">
           <Settings class="w-5 h-5" />
         </div>
-        <span class="text-lg font-bold text-primary flex-1">Paramètres globaux</span>
+        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.settings') }}</span>
         <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
       </button>
     </div>

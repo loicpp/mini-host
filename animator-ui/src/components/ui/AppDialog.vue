@@ -17,10 +17,10 @@
       
       <div class="flex justify-end gap-3 mt-8">
         <Btn v-if="options.type === 'confirm'" variant="ghost" @click="handleCancel" className="font-semibold text-muted-foreground hover:text-primary">
-          {{ options.cancelText || 'Annuler' }}
+          {{ options.cancelText || $t('app.cancel') }}
         </Btn>
         <Btn :variant="options.confirmVariant || 'primary'" @click="handleConfirm" className="font-bold px-6">
-          {{ options.confirmText || 'OK' }}
+          {{ options.confirmText || $t('app.ok') }}
         </Btn>
       </div>
     </div>

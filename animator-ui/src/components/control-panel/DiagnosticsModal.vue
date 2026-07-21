@@ -5,10 +5,10 @@
         <div class="w-10 h-10 bg-[#fff6e0] rounded-xl flex items-center justify-center shadow-sm">
           <Activity class="w-5 h-5 text-[#FFBA49]" />
         </div>
-        <h2 class="text-2xl font-black text-primary m-0">Diagnostics du Système</h2>
+        <h2 class="text-2xl font-black text-primary m-0">{{ $t('diagnostics.title') }}</h2>
       </div>
       <p class="text-muted-foreground mb-6">
-        Vérification en cours des différents services et de la lecture audio...
+        {{ $t('diagnostics.subtitle') }}
       </p>
 
       <div ref="containerRef" class="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-2 mb-8 py-2">
@@ -45,7 +45,7 @@
 
       <div class="flex justify-end">
         <Btn variant="dark" @click="$emit('close')" :disabled="isRunning">
-          Fermer
+          {{ $t('diagnostics.close') }}
         </Btn>
       </div>
     </div>
@@ -64,18 +64,21 @@ defineEmits<{
   (e: 'close'): void;
 }>();
 
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 const isRunning = ref(true);
 
 const steps = ref([
-  { name: 'Connectivité Internet', status: 'pending', message: '' },
-  { name: 'Droits d\'écriture locaux', status: 'pending', message: '' },
-  { name: 'Communication Projecteur', status: 'pending', message: '' },
-  { name: 'Connexion au Backend Local', status: 'pending', message: '' },
-  { name: 'Test de Lecture', status: 'pending', message: '' },
-  { name: 'Création d\'une partie Firebase', status: 'pending', message: '' },
-  { name: 'Test d\'accès joueur (URL)', status: 'pending', message: '' },
-  { name: 'Récupération de la partie', status: 'pending', message: '' },
-  { name: 'Nettoyage (Suppression)', status: 'pending', message: '' }
+  { name: t('diagnostics.step_internet'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_local_perms'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_projector'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_backend'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_playback'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_create_game'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_player_access'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_fetch_game'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_cleanup'), status: 'pending', message: '' }
 ]);
 
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
@@ -101,10 +104,10 @@ const runDiagnostics = async () => {
   try {
     await fetch('https://www.google.com', { mode: 'no-cors' });
     steps.value[0].status = 'success';
-    steps.value[0].message = 'Connecté au réseau public';
+    steps.value[0].message = t('diagnostics.connected_public');
   } catch {
     steps.value[0].status = 'error';
-    steps.value[0].message = 'Pas de connexion Internet';
+    steps.value[0].message = t('diagnostics.no_internet');
     isRunning.value = false;
     return;
   }
@@ -131,12 +134,16 @@ const runDiagnostics = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ diagnostics_test_write: null })
     });
-    
-    steps.value[1].status = 'success';
-    steps.value[1].message = 'Sauvegardes possibles';
+    if (res.ok) {
+      steps.value[1].status = 'success';
+      steps.value[1].message = t('diagnostics.perms_ok');
+    } else {
+      steps.value[1].status = 'error';
+      steps.value[1].message = t('diagnostics.perms_error');
+    }
   } catch {
     steps.value[1].status = 'error';
-    steps.value[1].message = 'Dossier en lecture seule ?';
+    steps.value[1].message = t('diagnostics.perms_error');
     isRunning.value = false;
     return;
   }
@@ -148,10 +155,10 @@ const runDiagnostics = async () => {
     const res = await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
     if (!res.ok) throw new Error();
     steps.value[2].status = 'success';
-    steps.value[2].message = 'Prêt à projeter';
+    steps.value[2].message = t('diagnostics.proj_ok');
   } catch {
     steps.value[2].status = 'error';
-    steps.value[2].message = 'Erreur d\'API Projecteur';
+    steps.value[2].message = t('diagnostics.proj_error');
     isRunning.value = false;
     return;
   }
@@ -160,19 +167,19 @@ const runDiagnostics = async () => {
   await setStepRunning(3);
   try {
     const res = await fetch('http://127.0.0.1:5000/api/test_connection');
-    if (!res.ok) throw new Error("Backend indisponible");
+    if (!res.ok) throw new Error(t('diagnostics.backend_unavailable'));
     steps.value[3].status = 'success';
-    steps.value[3].message = 'Connecté (127.0.0.1:5000)';
-  } catch (e: any) {
+    steps.value[3].message = t('diagnostics.backend_ok');
+  } catch {
     steps.value[3].status = 'error';
-    steps.value[3].message = e.message;
+    steps.value[3].message = t('diagnostics.backend_error');
     isRunning.value = false;
     return;
   }
 
   // Step 5: Music Playback
   await setStepRunning(4);
-  steps.value[4].message = 'Chargement de la piste...';
+  steps.value[4].message = t('diagnostics.loading_track');
   try {
     const originalProvider = musicManager.activeProviderName;
     await musicManager.setProvider('soundcloud');
@@ -189,14 +196,14 @@ const runDiagnostics = async () => {
     
     const results = await musicManager.search(track.url);
     if (results.length > 0) {
-      steps.value[4].message = 'Lecture en cours (3s)...';
+      steps.value[4].message = t('diagnostics.playing_track');
       await musicManager.play(results[0], 0);
       await wait(3000);
       await musicManager.stop();
       steps.value[4].status = 'success';
-      steps.value[4].message = 'Lecture réussie';
+      steps.value[4].message = t('diagnostics.playback_success');
     } else {
-      throw new Error("Piste introuvable");
+      throw new Error(t('diagnostics.track_not_found'));
     }
 
     if (originalProvider) {
@@ -204,7 +211,7 @@ const runDiagnostics = async () => {
     }
   } catch (e: any) {
     steps.value[4].status = 'error';
-    steps.value[4].message = e.message || 'Erreur de lecture';
+    steps.value[4].message = e.message || t('diagnostics.playback_error');
     isRunning.value = false;
     return;
   }
@@ -216,10 +223,10 @@ const runDiagnostics = async () => {
     const game = await animatorService.createGame();
     testGameId = game.gameId;
     steps.value[5].status = 'success';
-    steps.value[5].message = `Partie créée (${testGameId})`;
+    steps.value[5].message = `${t('diagnostics.game_created')} (${testGameId})`;
   } catch (e: any) {
     steps.value[5].status = 'error';
-    steps.value[5].message = e.message || "Erreur de création";
+    steps.value[5].message = e.message || t('diagnostics.game_create_error');
     isRunning.value = false;
     return;
   }
@@ -230,34 +237,43 @@ const runDiagnostics = async () => {
     // Generate a test URL. Note: we just check network reachability here
     const playerUrl = `https://minihostapp-1.web.app/?game=${testGameId}&secret=test`;
     await fetch(playerUrl, { mode: 'no-cors' });
-    steps.value[6].status = 'success';
-    steps.value[6].message = 'Interface joueur en ligne';
-  } catch {
+    if (playerUrl && playerUrl.includes(testGameId)) {
+      steps.value[6].status = 'success';
+      steps.value[6].message = t('diagnostics.access_ok');
+    } else {
+      steps.value[6].status = 'error';
+      steps.value[6].message = t('diagnostics.access_error');
+    }
+  } catch (e: any) {
     steps.value[6].status = 'error';
-    steps.value[6].message = 'Interface joueur inaccessible';
+    steps.value[6].message = `${t('diagnostics.access_error')}: ${e.message}`;
+    isRunning.value = false;
+    return;
   }
 
   // Step 8: Firebase Retrieve
   await setStepRunning(7);
   try {
     const fetchedGame = await animatorService.getGame(testGameId);
-    if (!fetchedGame) throw new Error("Partie non trouvée");
+    if (!fetchedGame) throw new Error(t('diagnostics.game_not_found'));
     steps.value[7].status = 'success';
-    steps.value[7].message = `Données synchronisées`;
+    steps.value[7].message = t('diagnostics.data_synced');
   } catch (e: any) {
     steps.value[7].status = 'error';
-    steps.value[7].message = e?.message || "Erreur de récupération";
+    steps.value[7].message = e?.message || t('diagnostics.game_fetch_error');
   }
 
   // Step 9: Firebase Clean
   await setStepRunning(8);
   try {
-    await animatorService.deleteGame(testGameId);
-    steps.value[8].status = 'success';
-    steps.value[8].message = 'Partie supprimée';
+    if (testGameId) {
+      await animatorService.deleteGame(testGameId);
+      steps.value[8].status = 'success';
+      steps.value[8].message = t('diagnostics.cleanup_ok');
+    }
   } catch (e: any) {
     steps.value[8].status = 'error';
-    steps.value[8].message = e?.message || "Erreur de nettoyage";
+    steps.value[8].message = `${t('diagnostics.cleanup_error')} ${e.message}`;
   }
 
   isRunning.value = false;

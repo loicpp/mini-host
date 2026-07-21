@@ -1,0 +1,37 @@
+{
+  "app": {
+    "loading": "Connexion en cours...",
+    "invalid_link": "Lien invalide. Veuillez scanner le QR code de l'animateur.",
+    "game_closed": "La partie a été fermée par l'animateur.",
+    "connection_error": "Impossible de se connecter au serveur.",
+    "join_error": "Impossible de rejoindre la partie. Le code est peut-être expiré."
+  },
+  "login": {
+    "title": "Rejoindre la partie",
+    "game": "Partie:",
+    "nickname_label": "Votre Pseudo",
+    "nickname_placeholder": "Ex: Mozart, Daft Punk...",
+    "play": "Jouer !"
+  },
+  "gameroom": {
+    "pts": "pts",
+    "blocked_title": "Vous êtes bloqué",
+    "blocked_forever": "L'animateur a bloqué vos réponses pour une durée indéterminée.",
+    "blocked_turn": "Vous êtes bloqué jusqu'à la fin de ce tour.",
+    "blocked_turns": "Vous ne pouvez pas jouer pendant {n} tour(s).",
+    "waiting_title": "En attente...",
+    "waiting_subtitle": "L'animateur va bientôt lancer la prochaine musique.",
+    "buffering": "⏳ Préparez-vous...",
+    "delaying": "⏳ Patientez : {n}s",
+    "playing": "🎵 À vous de jouer !",
+    "search_placeholder": "Tapez un titre ou un artiste...",
+    "answer_sent": "✅ Réponse envoyée !",
+    "time_left": "⏱️ {n}s restantes",
+    "time_up": "Temps écoulé !",
+    "review_title": "Fin du morceau",
+    "review_subtitle": "L'animateur corrige les réponses. Préparez-vous !",
+    "your_answer": "Votre réponse",
+    "finished_title": "Partie Terminée !",
+    "finished_subtitle": "Regardez le projecteur pour découvrir le podium final."
+  }
+}

@@ -4,7 +4,13 @@
       <div class="absolute top-3 right-4 text-xs font-bold text-muted-foreground z-10">v{{ version }}</div>
       
       <!-- Header -->
-      <header class="pt-8 pb-4 text-center">
+      <header class="pt-8 pb-4 text-center relative">
+        <div class="absolute top-3 left-4 z-10">
+          <select v-model="$i18n.locale" class="bg-transparent text-xs font-bold text-muted-foreground outline-none cursor-pointer">
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+          </select>
+        </div>
         <h1 class="text-3xl font-black text-primary tracking-tight">🎶 Blind Test</h1>
       </header>
 
@@ -17,7 +23,7 @@
         <!-- State: Loading -->
         <div v-if="state === 'loading'" class="flex flex-col items-center justify-center py-10 gap-4">
           <div class="w-10 h-10 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-          <p class="text-muted-foreground font-medium">Connexion en cours...</p>
+          <p class="text-muted-foreground font-medium">{{ $t('app.loading') }}</p>
         </div>
 
         <!-- State: Login -->
@@ -41,10 +47,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { gameService } from './services/gameService';
 import Login from './components/Login.vue';
 import GameRoom from './components/GameRoom.vue';
 
+const { t } = useI18n();
 const state = ref('loading');
 const error = ref('');
 const gameId = ref('');
@@ -59,7 +67,7 @@ onMounted(async () => {
   const sec = params.get('secret');
   
   if (!id || !sec) {
-    error.value = "Lien invalide. Veuillez scanner le QR code de l'animateur.";
+    error.value = t('app.invalid_link');
     state.value = 'error';
     return;
   }
@@ -81,12 +89,12 @@ onMounted(async () => {
           state.value = 'login';
         }
       } else {
-        error.value = "La partie a été fermée par l'animateur.";
+        error.value = t('app.game_closed');
         state.value = 'error';
       }
     });
   } catch (e) {
-    error.value = "Impossible de se connecter au serveur.";
+    error.value = t('app.connection_error');
     state.value = 'error';
   }
 });
@@ -98,7 +106,7 @@ const handleJoin = async (playerName) => {
     playerId.value = await gameService.joinGame(gameId.value, secret.value, playerName);
   } catch (e) {
     console.error(e);
-    error.value = "Code secret invalide ou partie inexistante. Veuillez rescanner le QR Code.";
+    error.value = t('app.join_error');
     state.value = 'login';
   }
 };

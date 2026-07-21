@@ -10,7 +10,7 @@
     >
       <div class="flex justify-between items-center pb-2 border-b border-[rgba(0,0,0,0.06)]">
         <h4 class="font-bold text-primary truncate max-w-[150px]">{{ player.name }}</h4>
-        <span class="font-black text-[#FFBA49] tabular-nums">{{ player.score || 0 }} pts</span>
+        <span class="font-black text-[#FFBA49] tabular-nums">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
       </div>
       
       <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center" v-if="player.currentGuess">
@@ -19,7 +19,7 @@
         <p class="text-[10px] text-muted-foreground/60 text-right mt-1">{{ formatTime(player.currentGuess.submittedAt) }}</p>
       </div>
       <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center items-center" v-else>
-        <p class="text-muted-foreground text-sm font-medium italic">Aucune réponse</p>
+        <p class="text-muted-foreground text-sm font-medium italic">{{ $t('players_grid.no_answer') }}</p>
       </div>
 
       <div class="flex gap-2 justify-center mt-1" v-if="gameMode !== 'buzzer'">
@@ -30,7 +30,7 @@
     </Card>
     
     <div v-if="Object.keys(filteredPlayers).length === 0 && gameMode === 'buzzer'" class="col-span-full text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium">
-      Aucun joueur n'a buzzé pour le moment.
+      {{ $t('players_grid.no_buzzer') }}
     </div>
   </div>
 </template>

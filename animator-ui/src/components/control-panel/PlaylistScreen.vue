@@ -1,29 +1,29 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full w-full relative py-12 px-6">
-    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="handleBack" title="Retourner à l'accueil">
-      <ChevronLeft class="w-4 h-4" /> Quitter l'édition
+    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="handleBack">
+      <ChevronLeft class="w-4 h-4" /> {{ $t('playlists.quit_edition') }}
     </button>
     
     <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-4xl">
       <h2 class="text-3xl font-black text-primary text-center mb-2 flex items-center justify-center gap-3">
-        <ListMusic class="w-8 h-8 text-[#FFBA49]" /> Mes Playlists
+        <ListMusic class="w-8 h-8 text-[#FFBA49]" /> {{ $t('playlists.title') }}
       </h2>
-      <p class="text-muted-foreground text-center mb-8">Créez et gérez vos playlists de musiques SoundCloud pour vos Blind Tests.</p>
+      <p class="text-muted-foreground text-center mb-8">{{ $t('playlists.subtitle') }}</p>
       
       <div v-if="!selectedPlaylist" class="flex flex-col">
         <div class="flex gap-4 mb-8">
-          <input type="text" v-model="newPlaylistName" placeholder="Nom de la nouvelle playlist..." class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
+          <input type="text" v-model="newPlaylistName" :placeholder="$t('playlists.new_placeholder')" class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
           <select v-model="newPlaylistType" class="px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none font-medium font-bold">
-            <option value="soundcloud">☁️ SoundCloud</option>
-            <option value="local">📁 Local (Fichiers)</option>
+            <option value="soundcloud">{{ $t('playlists.type_soundcloud') }}</option>
+            <option value="local">{{ $t('playlists.type_local') }}</option>
           </select>
           <Btn variant="primary" @click="createPlaylist" :disabled="!newPlaylistName.trim()">
-            <Plus class="w-4 h-4 mr-2" /> Créer
+            <Plus class="w-4 h-4 mr-2" /> {{ $t('playlists.create') }}
           </Btn>
         </div>
 
         <div v-if="playlists.length === 0" class="text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
-          Aucune playlist pour le moment.
+          {{ $t('playlists.empty') }}
         </div>
         <div v-else class="flex flex-col gap-3">
           <div v-for="pl in playlists" :key="pl.id" class="flex items-center justify-between p-4 bg-muted/50 border border-[rgba(0,0,0,0.05)] rounded-2xl hover:bg-muted transition-colors">
@@ -33,13 +33,13 @@
                 <span v-else title="Playlist SoundCloud">☁️</span>
                 {{ pl.name }}
               </h4>
-              <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} titres</p>
+              <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} {{ $t('playlists.tracks') }}</p>
             </div>
             <div class="flex gap-2">
               <Btn variant="ghost-yellow" size="sm" @click="editPlaylist(pl)">
-                <Edit3 class="w-4 h-4 mr-2" /> Éditer
+                <Edit3 class="w-4 h-4 mr-2" /> {{ $t('playlists.edit') }}
               </Btn>
-              <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="deletePlaylist(pl.id)" title="Supprimer la playlist">
+              <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="deletePlaylist(pl.id)" :title="$t('playlists.delete')">
                 <Trash2 class="w-4 h-4" />
               </button>
             </div>
@@ -50,50 +50,50 @@
       <div v-else class="flex flex-col">
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-[rgba(0,0,0,0.05)]">
           <Btn variant="soft" size="sm" @click="closeEdition">
-            <ChevronLeft class="w-4 h-4 mr-1" /> Retour aux playlists
+            <ChevronLeft class="w-4 h-4 mr-1" /> {{ $t('playlists.back') }}
           </Btn>
           <h3 class="text-xl font-bold text-primary m-0 flex items-center gap-2">
-            <span class="text-[#FFBA49]">Édition :</span> {{ selectedPlaylist.name }} 
-            <Badge color="gray">{{ selectedPlaylist.tracks.length }} titres</Badge>
+            <span class="text-[#FFBA49]">{{ $t('playlists.editing') }}</span> {{ selectedPlaylist.name }} 
+            <Badge color="gray">{{ selectedPlaylist.tracks.length }} {{ $t('playlists.tracks') }}</Badge>
           </h3>
         </div>
 
         <!-- Add Track Form (SoundCloud) -->
         <div v-if="!selectedPlaylist.type || selectedPlaylist.type === 'soundcloud'" class="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl mb-8">
-          <h4 class="font-bold text-blue-800 mb-4 flex items-center gap-2"><PlusCircle class="w-4 h-4" /> Ajouter un titre (SoundCloud)</h4>
+          <h4 class="font-bold text-blue-800 mb-4 flex items-center gap-2"><PlusCircle class="w-4 h-4" /> {{ $t('playlists.add_sc') }}</h4>
           <div class="flex gap-4 mb-4">
-            <input type="text" v-model="newTrack.title" placeholder="Titre du morceau" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
-            <input type="text" v-model="newTrack.artist" placeholder="Artiste" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+            <input type="text" v-model="newTrack.title" :placeholder="$t('playlists.track_title')" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+            <input type="text" v-model="newTrack.artist" :placeholder="$t('playlists.artist')" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
           </div>
           <div class="flex gap-4">
-            <input type="text" v-model="newTrack.url" placeholder="Lien SoundCloud complet" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
-            <Btn variant="primary" @click="addTrack" :disabled="!newTrack.url.trim()">Ajouter</Btn>
+            <input type="text" v-model="newTrack.url" :placeholder="$t('playlists.sc_url')" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+            <Btn variant="primary" @click="addTrack" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
           </div>
         </div>
 
         <!-- Add Track Form (Local) -->
         <div v-if="selectedPlaylist.type === 'local'" class="bg-amber-50/50 border border-amber-100 p-5 rounded-2xl mb-8">
-          <h4 class="font-bold text-amber-800 mb-4 flex items-center gap-2"><FolderOpen class="w-4 h-4" /> Ajouter des fichiers locaux</h4>
-          <p class="text-sm text-amber-700/80 mb-4">Sélectionnez un ou plusieurs fichiers, ou un dossier entier. Le titre et l'artiste seront extraits automatiquement si possible.</p>
+          <h4 class="font-bold text-amber-800 mb-4 flex items-center gap-2"><FolderOpen class="w-4 h-4" /> {{ $t('playlists.add_local') }}</h4>
+          <p class="text-sm text-amber-700/80 mb-4">{{ $t('playlists.local_help') }}</p>
           <div class="flex gap-4">
             <Btn variant="dark" @click="addLocalFiles">
-              <FileAudio class="w-4 h-4 mr-2" /> Sélectionner des fichiers
+              <FileAudio class="w-4 h-4 mr-2" /> {{ $t('playlists.select_files') }}
             </Btn>
             <Btn variant="secondary" @click="addLocalFolder">
-              <FolderPlus class="w-4 h-4 mr-2" /> Sélectionner un dossier
+              <FolderPlus class="w-4 h-4 mr-2" /> {{ $t('playlists.select_folder') }}
             </Btn>
           </div>
         </div>
 
         <div v-if="selectedPlaylist.tracks.length === 0" class="text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
-          Cette playlist est vide.
+          {{ $t('playlists.playlist_empty') }}
         </div>
         <div v-else>
           <div class="flex justify-end items-center mb-4 gap-3 bg-muted/30 p-3 rounded-xl border border-[rgba(0,0,0,0.03)]">
-            <label class="text-muted-foreground font-bold text-sm flex items-center gap-2"><PlayCircle class="w-4 h-4" /> Durée d'écoute (Test) :</label>
+            <label class="text-muted-foreground font-bold text-sm flex items-center gap-2"><PlayCircle class="w-4 h-4" /> {{ $t('playlists.test_duration') }}</label>
             <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[rgba(0,0,0,0.08)] shadow-sm">
               <input type="number" v-model.number="testDuration" min="1" max="100" step="1" class="w-12 text-center border-none outline-none font-bold text-primary" />
-              <span class="text-xs text-muted-foreground font-bold uppercase tracking-wider">sec</span>
+              <span class="text-xs text-muted-foreground font-bold uppercase tracking-wider">{{ $t('playlists.sec') }}</span>
             </div>
           </div>
           
@@ -101,29 +101,29 @@
             <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div class="flex flex-col min-w-0 pr-4 w-1/2">
                 <div v-if="editingTrackIndex === index" class="flex flex-col gap-2 w-full bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <input type="text" v-model="editingTrackData.title" placeholder="Titre" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary" />
-                  <input type="text" v-model="editingTrackData.artist" placeholder="Artiste" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm text-primary" />
+                  <input type="text" v-model="editingTrackData.title" :placeholder="$t('playlists.track_title')" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary" />
+                  <input type="text" v-model="editingTrackData.artist" :placeholder="$t('playlists.artist')" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm text-primary" />
                   <div class="flex gap-2 mt-1">
-                    <Btn size="sm" variant="primary" @click="saveEditTrack()">Ok</Btn>
-                    <Btn size="sm" variant="soft" @click="editingTrackIndex = null">Annuler</Btn>
+                    <Btn size="sm" variant="primary" @click="saveEditTrack()">{{ $t('playlists.ok') }}</Btn>
+                    <Btn size="sm" variant="soft" @click="editingTrackIndex = null">{{ $t('playlists.cancel') }}</Btn>
                   </div>
                 </div>
                 <div v-else class="flex flex-col gap-1 w-full group">
                   <h4 class="font-bold text-primary m-0 truncate" :title="track.title + ' - ' + track.artist">{{ track.title }} - {{ track.artist }}</h4>
                   <p class="text-xs text-muted-foreground m-0 truncate w-full" :title="track.url" dir="rtl" style="text-align: left;">{{ track.url }}</p>
                   <button @click="startEditTrack(index, track)" class="text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 w-max mt-1 outline-none">
-                    <Edit3 class="w-3 h-3"/> Éditer les infos
+                    <Edit3 class="w-3 h-3"/> {{ $t('playlists.edit_info') }}
                   </button>
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
                 <Btn v-if="testingTrackUrl !== track.url" variant="ghost-yellow" size="sm" className="w-[100px]" @click="testTrack(track.url)">
-                  <Play class="w-4 h-4 mr-2 shrink-0" /> Tester
+                  <Play class="w-4 h-4 mr-2 shrink-0" /> {{ $t('playlists.test') }}
                 </Btn>
                 <Btn v-else variant="dark" size="sm" className="w-[100px] bg-[#FFBA49] hover:bg-[#f0aa30] text-[#3F4739] border-none" @click="stopTest">
-                  <Square class="w-4 h-4 mr-2 shrink-0 fill-current" /> Stop
+                  <Square class="w-4 h-4 mr-2 shrink-0 fill-current" /> {{ $t('playlists.testing') }}
                 </Btn>
-                <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="removeTrack(index)" title="Supprimer la musique">
+                <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="removeTrack(index)" :title="$t('playlists.remove')">
                   <Trash2 class="w-4 h-4" />
                 </button>
               </div>

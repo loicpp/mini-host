@@ -5,7 +5,7 @@
       <div v-if="gameId && secret && game?.status !== 'waiting'" class="flex items-center gap-6 bg-white/5 p-3 rounded-2xl backdrop-blur-md border border-white/10">
         <img :src="qrCodeUrl" alt="QR Code" class="w-20 h-20 bg-white p-1 rounded-xl" />
         <div class="flex flex-col">
-          <p class="text-white/70 text-sm m-0">Scannez pour jouer !</p>
+          <p class="text-white/70 text-sm m-0">{{ $t('projector.scan_to_play') }}</p>
           <h2 class="text-[#FFBA49] text-2xl font-black m-0 tracking-widest">{{ gameId }}</h2>
         </div>
       </div>
@@ -19,23 +19,23 @@
     <!-- Main Display Area -->
     <main class="flex-1 flex justify-center items-center text-center overflow-y-auto py-8">
       <div v-if="!game" class="animate-pulse">
-        <h1 class="text-4xl font-bold text-white/70">Connexion à la partie...</h1>
+        <h1 class="text-4xl font-bold text-white/70">{{ $t('projector.connecting') }}</h1>
       </div>
 
       <div v-else-if="game.status === 'waiting'" class="w-full max-w-6xl flex flex-col items-center">
         <div v-if="gameId && secret" class="flex items-center gap-12 bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 mb-8 shadow-2xl">
           <img :src="qrCodeUrl" alt="QR Code" class="w-64 h-64 bg-white p-4 rounded-3xl m-0 shadow-lg" />
           <div class="text-left flex flex-col justify-center">
-            <h2 class="text-white text-4xl font-bold mb-2">Rejoignez la partie</h2>
+            <h2 class="text-white text-4xl font-bold mb-2">{{ $t('projector.join_game') }}</h2>
             <div class="text-[#FFBA49] text-8xl font-black tracking-[0.2em] mb-2 drop-shadow-[0_0_20px_rgba(255,186,73,0.5)]">{{ gameId }}</div>
-            <p class="text-white/80 text-2xl m-0">Scannez pour participer !</p>
+            <p class="text-white/80 text-2xl m-0">{{ $t('projector.scan_to_join') }}</p>
           </div>
         </div>
 
-        <h1 class="text-6xl font-black text-white mb-8">Préparez-vous !</h1>
+        <h1 class="text-6xl font-black text-white mb-8">{{ $t('projector.get_ready') }}</h1>
         
         <div class="w-full">
-          <h3 class="text-white/80 text-2xl mb-6 font-medium">Joueurs présents ({{ Object.keys(game.players || {}).length }})</h3>
+          <h3 class="text-white/80 text-2xl mb-6 font-medium">{{ $t('projector.players_present') }} ({{ Object.keys(game.players || {}).length }})</h3>
           <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
             <span v-for="(player, id) in game.players" :key="id" class="bg-white/15 px-6 py-3 rounded-full text-2xl font-bold backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
               {{ player.name }}
@@ -46,7 +46,7 @@
 
       <div v-else-if="game.status === 'playing'" class="w-full flex flex-col items-center">
         <div v-if="isBuffering" class="flex flex-col items-center">
-          <h1 class="text-5xl text-[#FFBA49] font-black mb-8">La musique démarre dans...</h1>
+          <h1 class="text-5xl text-[#FFBA49] font-black mb-8">{{ $t('projector.music_starts_in') }}</h1>
           <div class="text-9xl font-black text-white animate-pulse">{{ bufferTimeLeft }}</div>
         </div>
         <div v-else class="flex flex-col items-center">
@@ -71,43 +71,43 @@
           </div>
           <div class="flex justify-center gap-6 mb-8 bg-white/5 px-6 py-3 rounded-full backdrop-blur-md">
             <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="blockTotalTime > 0">
-              <span class="w-4 h-4 rounded-full bg-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.5)]"></span> Blocage
+              <span class="w-4 h-4 rounded-full bg-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.5)]"></span> {{ $t('projector.block') }}
             </div>
             <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="musicTotalTime > blockTotalTime">
-              <span class="w-4 h-4 rounded-full bg-[#FFBA49] shadow-[0_0_10px_rgba(255,186,73,0.5)]"></span> Musique
+              <span class="w-4 h-4 rounded-full bg-[#FFBA49] shadow-[0_0_10px_rgba(255,186,73,0.5)]"></span> {{ $t('projector.music') }}
             </div>
             <div class="flex items-center gap-2 text-xl text-white/90 font-medium" v-if="totalTime > musicTotalTime">
-              <span class="w-4 h-4 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span> Réflexion
+              <span class="w-4 h-4 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span> {{ $t('projector.reflection') }}
             </div>
           </div>
-          <h1 class="text-5xl font-black text-white tracking-wide">À vous de jouer !</h1>
+          <h1 class="text-5xl font-black text-white tracking-wide">{{ $t('projector.your_turn') }}</h1>
         </div>
       </div>
 
       <div v-else-if="game.status === 'reviewing'" class="w-full flex flex-col items-center">
-        <h1 class="text-7xl font-black text-red-400 mb-6 drop-shadow-md">⏰ Temps écoulé !</h1>
-        <p class="text-3xl text-white/80">L'animateur corrige vos réponses...</p>
+        <h1 class="text-7xl font-black text-red-400 mb-6 drop-shadow-md">{{ $t('projector.time_up') }}</h1>
+        <p class="text-3xl text-white/80">{{ $t('projector.reviewing') }}</p>
       </div>
 
       <div v-else-if="game.status === 'results'" class="w-full max-w-4xl flex flex-col items-center">
-        <h1 class="text-6xl font-black text-emerald-400 mb-8 drop-shadow-md">🎉 Résultats</h1>
+        <h1 class="text-6xl font-black text-emerald-400 mb-8 drop-shadow-md">{{ $t('projector.results') }}</h1>
         <div class="bg-white/10 p-10 rounded-3xl mb-12 border-2 border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.3)] w-full">
-          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.currentTrack?.answer || 'Réponse Inconnue' }}</h2>
+          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.currentTrack?.answer || $t('projector.unknown_answer') }}</h2>
         </div>
         <div class="w-full">
-          <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">Classement Général :</p>
+          <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.leaderboard') }}</p>
           <ul class="flex flex-col gap-4 w-full m-0 p-0">
             <li v-for="(player, index) in allPlayersSorted" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-5 rounded-2xl text-3xl shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4">
               <span class="font-black text-[#FFBA49] w-16 text-left">#{{ index + 1 }}</span>
               <span class="flex-1 text-left font-bold">{{ player.name }}</span>
-              <span class="font-black text-emerald-400">{{ player.score || 0 }} pts</span>
+              <span class="font-black text-emerald-400">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
             </li>
           </ul>
         </div>
       </div>
       
       <div v-else-if="game.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
-        <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">🏆 Podium Final 🏆</h1>
+        <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">{{ $t('projector.podium') }}</h1>
         
         <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
           <div v-for="(player, index) in topThreePlayers" :key="player.id" :class="[
@@ -118,17 +118,17 @@
           ]">
             <div class="text-6xl mb-3 drop-shadow-md">{{ ['🥇', '🥈', '🥉'][index] }}</div>
             <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
-            <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} pts</div>
+            <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</div>
           </div>
         </div>
         
         <div class="w-full max-w-3xl" v-if="otherPlayers.length > 0">
-          <h3 class="text-2xl text-white/70 mb-6 font-medium text-left px-4">Le reste du classement :</h3>
+          <h3 class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.rest_of_leaderboard') }}</h3>
           <ul class="flex flex-col gap-3 w-full m-0 p-0">
             <li v-for="(player, index) in otherPlayers" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-4 rounded-2xl text-2xl backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2">
               <span class="font-bold text-white/50 w-16 text-left">#{{ index + 4 }}</span>
               <span class="flex-1 text-left font-medium">{{ player.name }}</span>
-              <span class="font-bold text-emerald-400">{{ player.score || 0 }} pts</span>
+              <span class="font-bold text-emerald-400">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
             </li>
           </ul>
         </div>

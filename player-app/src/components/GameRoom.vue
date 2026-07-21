@@ -10,7 +10,7 @@
       </div>
       <div class="bg-white px-4 py-1.5 rounded-full shadow-sm flex items-center gap-2 border border-yellow-100">
         <span class="font-black text-xl text-[#FFBA49]">{{ player?.score || 0 }}</span>
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">pts</span>
+        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">{{ $t('gameroom.pts') }}</span>
       </div>
     </div>
 
@@ -20,10 +20,10 @@
         <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
           🛑
         </div>
-        <h3 class="text-red-600 font-bold text-xl mb-2">Vous êtes bloqué</h3>
-        <p v-if="player.blockedTurns === -1" class="text-red-700 font-medium">L'animateur a bloqué vos réponses pour une durée indéterminée.</p>
-        <p v-else-if="player.blockedTurns === 1" class="text-[#f0aa30] font-bold">Vous êtes bloqué jusqu'à la fin de ce tour.</p>
-        <p v-else class="text-[#f0aa30] font-bold">Vous ne pouvez pas jouer pendant {{ player.blockedTurns }} tour(s).</p>
+        <h3 class="text-red-600 font-bold text-xl mb-2">{{ $t('gameroom.blocked_title') }}</h3>
+        <p v-if="player.blockedTurns === -1" class="text-red-700 font-medium">{{ $t('gameroom.blocked_forever') }}</p>
+        <p v-else-if="player.blockedTurns === 1" class="text-[#f0aa30] font-bold">{{ $t('gameroom.blocked_turn') }}</p>
+        <p v-else class="text-[#f0aa30] font-bold">{{ $t('gameroom.blocked_turns', { n: player.blockedTurns }) }}</p>
       </div>
     </template>
 
@@ -34,17 +34,17 @@
           <div class="absolute inset-0 rounded-full border-2 border-[#FFBA49] animate-ping opacity-75"></div>
           <span class="text-2xl">⏳</span>
         </div>
-        <h3 class="text-xl font-bold text-primary mb-2">En attente...</h3>
-        <p class="text-muted-foreground text-sm">L'animateur va bientôt lancer la prochaine musique.</p>
+        <h3 class="text-xl font-bold text-primary mb-2">{{ $t('gameroom.waiting_title') }}</h3>
+        <p class="text-muted-foreground text-sm">{{ $t('gameroom.waiting_subtitle') }}</p>
       </div>
 
       <!-- Status: Playing -->
       <div v-else-if="game.status === 'playing'" class="bg-white border-2 border-[#FFBA49] rounded-2xl p-6 shadow-[0_4px_20px_rgba(255,186,73,0.15)] flex flex-col relative overflow-visible">
         
         <div class="text-center mb-6">
-          <h3 v-if="isBuffering" class="text-lg font-bold text-muted-foreground">⏳ Préparez-vous...</h3>
-          <h3 v-else-if="isDelaying" class="text-lg font-bold text-[#FFBA49]">⏳ Patientez : {{ delayTimeLeft }}s</h3>
-          <h3 v-else class="text-2xl font-black text-primary">🎵 À vous de jouer !</h3>
+          <h3 v-if="isBuffering" class="text-lg font-bold text-muted-foreground">{{ $t('gameroom.buffering') }}</h3>
+          <h3 v-else-if="isDelaying" class="text-lg font-bold text-[#FFBA49]">{{ $t('gameroom.delaying', { n: delayTimeLeft }) }}</h3>
+          <h3 v-else class="text-2xl font-black text-primary">{{ $t('gameroom.playing') }}</h3>
         </div>
 
         <div :class="['transition-opacity duration-300', isBuffering ? 'opacity-50 pointer-events-none' : '']">
@@ -67,7 +67,7 @@
                   type="text" 
                   v-model="searchQuery" 
                   @input="handleSearch"
-                  placeholder="Tapez un titre ou un artiste..." 
+                  :placeholder="$t('gameroom.search_placeholder')" 
                   autocomplete="off"
                   :disabled="timeLeft <= 0 || hasSubmitted || isBuffering || isDelaying"
                   class="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
@@ -96,7 +96,7 @@
 
           <!-- Current Selected Guess -->
           <div v-if="hasSubmitted" class="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <p class="text-emerald-500 font-bold text-center mb-3">✅ Réponse envoyée !</p>
+            <p class="text-emerald-500 font-bold text-center mb-3">{{ $t('gameroom.answer_sent') }}</p>
             <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center shadow-sm">
               <strong class="text-emerald-900 block text-lg">{{ currentGuess?.title }}</strong>
               <span v-if="currentGuess?.artist" class="text-emerald-700 text-sm mt-1 block">{{ currentGuess?.artist }}</span>
@@ -106,10 +106,10 @@
 
         <div class="mt-6 flex justify-center">
           <div v-if="timeLeft > 0" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fff6e0] text-[#3F4739] font-bold text-sm">
-            <span>⏱️</span> {{ timeLeft }}s restantes
+            {{ $t('gameroom.time_left', { n: timeLeft }) }}
           </div>
           <div v-else class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-100 text-red-600 font-bold text-sm">
-            Temps écoulé !
+            {{ $t('gameroom.time_up') }}
           </div>
         </div>
       </div>
@@ -117,11 +117,11 @@
       <!-- Status: Results / Reviewing -->
       <div v-else-if="game.status === 'reviewing'" class="bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-6 shadow-sm text-center">
         <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mx-auto mb-4 text-xl">⏸️</div>
-        <h3 class="text-xl font-bold text-primary mb-2">Fin du morceau</h3>
-        <p class="text-muted-foreground text-sm mb-6">L'animateur corrige les réponses. Préparez-vous !</p>
+        <h3 class="text-xl font-bold text-primary mb-2">{{ $t('gameroom.review_title') }}</h3>
+        <p class="text-muted-foreground text-sm mb-6">{{ $t('gameroom.review_subtitle') }}</p>
         
         <div v-if="hasSubmitted" class="bg-muted p-4 rounded-xl border border-[rgba(0,0,0,0.04)]">
-          <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Votre réponse</p>
+          <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('gameroom.your_answer') }}</p>
           <strong class="text-primary block">{{ currentGuess.title }}</strong>
           <span v-if="currentGuess.artist" class="text-muted-foreground text-sm block mt-1">{{ currentGuess.artist }}</span>
         </div>
@@ -130,8 +130,8 @@
       <!-- Status: Finished -->
       <div v-else-if="game.status === 'finished'" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center shadow-sm">
         <div class="text-5xl mb-4">🏆</div>
-        <h3 class="text-2xl font-black text-emerald-600 mb-2">Partie Terminée !</h3>
-        <p class="text-emerald-700 font-medium">Regardez le projecteur pour découvrir le podium final.</p>
+        <h3 class="text-2xl font-black text-emerald-600 mb-2">{{ $t('gameroom.finished_title') }}</h3>
+        <p class="text-emerald-700 font-medium">{{ $t('gameroom.finished_subtitle') }}</p>
       </div>
     </template>
   </div>

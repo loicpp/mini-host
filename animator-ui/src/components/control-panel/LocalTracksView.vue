@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-y-auto p-4 bg-muted/30 rounded-2xl border border-[rgba(0,0,0,0.05)] shadow-inner">
     <div v-if="localTracks.length === 0" class="text-center p-8 text-muted-foreground font-medium italic">
-      <p>Aucun dossier chargé. Utilisez le bouton "Sélectionner un dossier..." à gauche.</p>
+      <p>{{ $t('local_tracks.no_folder') }}</p>
     </div>
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div 

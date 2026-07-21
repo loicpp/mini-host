@@ -2,13 +2,13 @@
   <div class="flex flex-col items-center justify-center min-h-screen p-4 bg-muted/50">
     <Card className="w-full max-w-md p-8">
       <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-primary mb-2">Connexion Régie</h2>
-        <p class="text-muted-foreground text-sm">Veuillez vous identifier pour accéder au panneau de contrôle.</p>
+        <h2 class="text-2xl font-bold text-primary mb-2">{{ $t('login_screen.title') }}</h2>
+        <p class="text-muted-foreground text-sm">{{ $t('login_screen.subtitle') }}</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-primary">Email</label>
+          <label class="text-sm font-semibold text-primary">{{ $t('login_screen.email') }}</label>
           <input 
             type="email" 
             v-model="email" 
@@ -17,7 +17,7 @@
           />
         </div>
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-primary">Mot de passe</label>
+          <label class="text-sm font-semibold text-primary">{{ $t('login_screen.password') }}</label>
           <input 
             type="password" 
             v-model="password" 
@@ -27,7 +27,7 @@
         </div>
         
         <Btn type="submit" variant="primary" size="lg" className="w-full mt-2 font-bold text-lg">
-          Se Connecter
+          {{ $t('login_screen.submit') }}
         </Btn>
         
         <div v-if="error" class="mt-4 p-3 bg-red-50 text-red-600 rounded-xl text-sm font-semibold border border-red-100 flex items-center gap-2 justify-center">

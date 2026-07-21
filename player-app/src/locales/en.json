@@ -1,0 +1,37 @@
+{
+  "app": {
+    "loading": "Connecting...",
+    "invalid_link": "Invalid link. Please scan the host's QR code.",
+    "game_closed": "The game was closed by the host.",
+    "connection_error": "Could not connect to the server.",
+    "join_error": "Could not join the game. The code might be expired."
+  },
+  "login": {
+    "title": "Join the Game",
+    "game": "Game:",
+    "nickname_label": "Your Nickname",
+    "nickname_placeholder": "Ex: Mozart, Daft Punk...",
+    "play": "Play !"
+  },
+  "gameroom": {
+    "pts": "pts",
+    "blocked_title": "You are blocked",
+    "blocked_forever": "The host blocked your answers indefinitely.",
+    "blocked_turn": "You are blocked until the end of this turn.",
+    "blocked_turns": "You cannot play for {n} turn(s).",
+    "waiting_title": "Waiting...",
+    "waiting_subtitle": "The host will soon start the next track.",
+    "buffering": "⏳ Get ready...",
+    "delaying": "⏳ Please wait : {n}s",
+    "playing": "🎵 Your turn to play !",
+    "search_placeholder": "Type a title or an artist...",
+    "answer_sent": "✅ Answer sent !",
+    "time_left": "⏱️ {n}s left",
+    "time_up": "Time's up !",
+    "review_title": "End of track",
+    "review_subtitle": "The host is reviewing the answers. Get ready !",
+    "your_answer": "Your answer",
+    "finished_title": "Game Over !",
+    "finished_subtitle": "Look at the projector to discover the final podium."
+  }
+}
