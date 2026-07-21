@@ -1,5 +1,4 @@
 import { MusicProvider, Track } from './MusicProvider';
-import jsmediatags from 'jsmediatags';
 
 export class LocalAdapter implements MusicProvider {
   readonly name = 'local';
@@ -12,82 +11,19 @@ export class LocalAdapter implements MusicProvider {
     }
   }
 
-  private readTags(file: File): Promise<{title: string, artist: string}> {
-    return new Promise((resolve) => {
-      jsmediatags.read(file, {
-        onSuccess: (tag: any) => {
-          resolve({
-            title: file.name.replace(/\.[^/.]+$/, ""),
-            artist: tag.tags.artist || "Artiste Inconnu"
-          });
-        },
-        onError: () => {
-          resolve({
-            title: file.name.replace(/\.[^/.]+$/, ""),
-            artist: "Artiste Inconnu"
-          });
-        }
-      });
-    });
-  }
-
   async search(_query: string): Promise<Track[]> {
-    return new Promise((resolve, reject) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.setAttribute('webkitdirectory', '');
-      input.setAttribute('directory', '');
-      input.setAttribute('multiple', '');
-      
-      input.onchange = async (e: any) => {
-        const files = Array.from(e.target.files) as File[];
-        const audioFiles = files.filter(f => 
-          f.type.startsWith('audio/') || 
-          f.name.toLowerCase().endsWith('.mp3') || 
-          f.name.toLowerCase().endsWith('.wav') || 
-          f.name.toLowerCase().endsWith('.ogg')
-        );
-        
-        if (audioFiles.length === 0) {
-          reject(new Error("Aucun fichier audio trouvé dans ce dossier"));
-          return;
-        }
-        
-        const promises = audioFiles.map(async (file) => {
-          const url = URL.createObjectURL(file);
-          const tags = await this.readTags(file);
-          
-          return {
-            id: url,
-            title: tags.title,
-            artist: tags.artist,
-            duration: 30000,
-            source: 'local' as const
-          };
-        });
-        
-        const resolvedTracks = await Promise.all(promises);
-        
-        resolvedTracks.sort((a, b) => {
-          const nameA = `${a.title} - ${a.artist}`.toLowerCase();
-          const nameB = `${b.title} - ${b.artist}`.toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-        
-        resolve(resolvedTracks);
-      };
-      
-      input.oncancel = () => {
-        reject(new Error("Sélection annulée"));
-      };
-      
-      input.click();
-    });
+    return Promise.resolve([]); // Le mode de recherche natif est désactivé au profit des dialogs système.
   }
 
   async play(trackId: string, delayMs: number = 0): Promise<void> {
     if (!this.audio) throw new Error("Audio player not initialized");
-    this.audio.src = trackId;
+    
+    // Convert absolute path to our local stream URL if it's not already a URL
+    if (trackId.startsWith('http')) {
+      this.audio.src = trackId;
+    } else {
+      this.audio.src = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    }
     
     if (this.playTimeout) {
       clearTimeout(this.playTimeout);

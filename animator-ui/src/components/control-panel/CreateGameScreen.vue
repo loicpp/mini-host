@@ -62,29 +62,22 @@
           </select>
         </div>
 
-        <div class="flex flex-col gap-2" v-if="preferredSource === 'soundcloud'">
+        <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">Playlist de départ :</label>
-          <div v-if="playlists.length > 0">
+          <div v-if="filteredPlaylists.length > 0">
             <select v-model="settings.playlistId" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
-              <option v-for="pl in playlists" :key="pl.id" :value="pl.id">
+              <option v-for="pl in filteredPlaylists" :key="pl.id" :value="pl.id">
                 {{ pl.name }} ({{ pl.tracks.length }} titres)
               </option>
             </select>
           </div>
           <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
-            <p class="text-amber-800 text-sm font-medium text-center">Vous n'avez aucune playlist configurée.</p>
+            <p class="text-amber-800 text-sm font-medium text-center">Vous n'avez aucune playlist {{ preferredSource === 'local' ? 'locale' : 'SoundCloud' }} configurée.</p>
             <Btn variant="dark" @click="$emit('configure-playlists')">Créer ma première playlist</Btn>
           </div>
         </div>
-
-        <div class="flex flex-col gap-2" v-if="preferredSource === 'local'">
-          <label class="font-bold text-primary">Dossier de musiques :</label>
-          <Btn variant="secondary" @click="selectLocalDirectory">
-            <FolderOpen class="w-4 h-4 mr-2" /> {{ settings.localTracks && settings.localTracks.length > 0 ? `${settings.localTracks.length} fichiers sélectionnés` : 'Sélectionner un dossier...' }}
-          </Btn>
-        </div>
         
-        <Btn variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="preferredSource === 'soundcloud' && playlists.length === 0">
+        <Btn variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="filteredPlaylists.length === 0">
           Créer la partie
         </Btn>
       </div>
@@ -93,12 +86,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { ChevronLeft, FolderOpen } from '@lucide/vue';
+import { computed, ref, onMounted, watch } from 'vue';
+import { ChevronLeft } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
-import { musicManager } from '../../services/music/MusicManager';
 
-defineProps<{
+const props = defineProps<{
   preferredSource: string;
 }>();
 
@@ -109,6 +101,13 @@ const emit = defineEmits<{
 }>();
 
 const playlists = ref<any[]>([]);
+
+const filteredPlaylists = computed(() => {
+  if (props.preferredSource === 'local') {
+    return playlists.value.filter(p => p.type === 'local');
+  }
+  return playlists.value.filter(p => !p.type || p.type === 'soundcloud');
+});
 
 const settings = ref({
   blockDuration: 0,
@@ -130,8 +129,8 @@ onMounted(async () => {
       loadedPlaylists = data.playlists;
     }
     playlists.value = loadedPlaylists;
-    if (loadedPlaylists.length > 0 && !settings.value.playlistId) {
-      settings.value.playlistId = loadedPlaylists[0].id;
+    if (filteredPlaylists.value.length > 0 && !settings.value.playlistId) {
+      settings.value.playlistId = filteredPlaylists.value[0].id;
     }
   } catch(e) {
     console.warn("Could not load playlists for game creation", e);
@@ -166,21 +165,7 @@ const applyPreset = (mode: string, block: number, music: number, total: number) 
   settings.value.duration = total;
 };
 
-const selectLocalDirectory = async () => {
-  try {
-    if (musicManager.activeProviderName !== 'local') {
-      await musicManager.setProvider('local');
-    }
-    const results = await musicManager.search('');
-    if (results && results.length > 0) {
-      settings.value.localTracks = results;
-    }
-  } catch(e: any) {
-    if (e.message !== "Sélection annulée") {
-      console.warn("Could not load local directory", e);
-    }
-  }
-};
+
 
 const startGame = () => {
   let musicDuration = Math.floor(Number(settings.value.musicDuration));
@@ -205,16 +190,16 @@ const startGame = () => {
     blockDuration = musicDuration;
   }
   
-  settings.value.musicDuration = musicDuration;
-  settings.value.duration = duration;
-  settings.value.blockDuration = blockDuration;
-  
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
-  const payload = {
+  
+  const finalSettings = {
     ...settings.value,
+    duration,
+    musicDuration,
+    blockDuration,
     playlist: selectedPlaylist
   };
   
-  emit('start-game', payload);
+  emit('start-game', finalSettings);
 };
 </script>

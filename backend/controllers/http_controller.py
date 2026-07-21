@@ -35,6 +35,59 @@ def register_routes(app: Flask, api: AnimatorApi):
     def close_projector():
         return jsonify(api.close_projector_window())
 
+    @app.route('/api/dialog/folder')
+    def dialog_folder():
+        import tkinter as tk
+        from tkinter import filedialog
+        import glob
+        
+        try:
+            root = tk.Tk()
+            root.withdraw()
+            root.attributes('-topmost', True)
+            folder_path = filedialog.askdirectory(parent=root, title="Sélectionnez un dossier de musiques")
+            root.destroy()
+            
+            if not folder_path:
+                return jsonify([])
+                
+            files = []
+            for ext in ('*.mp3', '*.wav', '*.ogg', '*.MP3', '*.WAV', '*.OGG'):
+                files.extend(glob.glob(os.path.join(folder_path, ext)))
+            return jsonify(files)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/api/dialog/file')
+    def dialog_file():
+        import tkinter as tk
+        from tkinter import filedialog
+        
+        try:
+            root = tk.Tk()
+            root.withdraw()
+            root.attributes('-topmost', True)
+            files = filedialog.askopenfilenames(
+                parent=root,
+                title="Sélectionnez des musiques",
+                filetypes=[("Fichiers audio", "*.mp3 *.wav *.ogg")]
+            )
+            root.destroy()
+            
+            if not files:
+                return jsonify([])
+            return jsonify(list(files))
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/api/stream')
+    def stream_file():
+        from flask import send_file
+        path = request.args.get('path')
+        if not path or not os.path.exists(path) or not os.path.isfile(path):
+            return "File not found", 404
+        return send_file(path, conditional=True)
+
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_spa(path):

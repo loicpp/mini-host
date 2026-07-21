@@ -563,11 +563,7 @@ const createNewGame = async (settings: any) => {
   }
   
   playedTracks.value = [];
-  if (currentSource.value === 'local') {
-    localTracks.value = settings?.localTracks || [];
-  } else {
-    localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
-  }
+  localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
   
   try {
     await fetch('http://127.0.0.1:5000/api/game', {

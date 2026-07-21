@@ -13,6 +13,10 @@
       <div v-if="!selectedPlaylist" class="flex flex-col">
         <div class="flex gap-4 mb-8">
           <input type="text" v-model="newPlaylistName" placeholder="Nom de la nouvelle playlist..." class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
+          <select v-model="newPlaylistType" class="px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none font-medium font-bold">
+            <option value="soundcloud">☁️ SoundCloud</option>
+            <option value="local">📁 Local (Fichiers)</option>
+          </select>
           <Btn variant="primary" @click="createPlaylist" :disabled="!newPlaylistName.trim()">
             <Plus class="w-4 h-4 mr-2" /> Créer
           </Btn>
@@ -24,7 +28,11 @@
         <div v-else class="flex flex-col gap-3">
           <div v-for="pl in playlists" :key="pl.id" class="flex items-center justify-between p-4 bg-muted/50 border border-[rgba(0,0,0,0.05)] rounded-2xl hover:bg-muted transition-colors">
             <div>
-              <h4 class="font-bold text-primary text-lg m-0">{{ pl.name }}</h4>
+              <h4 class="font-bold text-primary text-lg m-0 flex items-center gap-2">
+                <span v-if="pl.type === 'local'" title="Playlist Locale">📁</span>
+                <span v-else title="Playlist SoundCloud">☁️</span>
+                {{ pl.name }}
+              </h4>
               <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} titres</p>
             </div>
             <div class="flex gap-2">
@@ -50,7 +58,8 @@
           </h3>
         </div>
 
-        <div class="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl mb-8">
+        <!-- Add Track Form (SoundCloud) -->
+        <div v-if="!selectedPlaylist.type || selectedPlaylist.type === 'soundcloud'" class="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl mb-8">
           <h4 class="font-bold text-blue-800 mb-4 flex items-center gap-2"><PlusCircle class="w-4 h-4" /> Ajouter un titre (SoundCloud)</h4>
           <div class="flex gap-4 mb-4">
             <input type="text" v-model="newTrack.title" placeholder="Titre du morceau" class="flex-1 px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
@@ -59,6 +68,20 @@
           <div class="flex gap-4">
             <input type="text" v-model="newTrack.url" placeholder="Lien SoundCloud complet" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
             <Btn variant="primary" @click="addTrack" :disabled="!newTrack.url.trim()">Ajouter</Btn>
+          </div>
+        </div>
+
+        <!-- Add Track Form (Local) -->
+        <div v-if="selectedPlaylist.type === 'local'" class="bg-amber-50/50 border border-amber-100 p-5 rounded-2xl mb-8">
+          <h4 class="font-bold text-amber-800 mb-4 flex items-center gap-2"><FolderOpen class="w-4 h-4" /> Ajouter des fichiers locaux</h4>
+          <p class="text-sm text-amber-700/80 mb-4">Sélectionnez un ou plusieurs fichiers, ou un dossier entier. Le titre et l'artiste seront extraits automatiquement si possible.</p>
+          <div class="flex gap-4">
+            <Btn variant="dark" @click="addLocalFiles">
+              <FileAudio class="w-4 h-4 mr-2" /> Sélectionner des fichiers
+            </Btn>
+            <Btn variant="secondary" @click="addLocalFolder">
+              <FolderPlus class="w-4 h-4 mr-2" /> Sélectionner un dossier
+            </Btn>
           </div>
         </div>
 
@@ -76,9 +99,22 @@
           
           <div class="flex flex-col gap-3">
             <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex flex-col min-w-0 pr-4">
-                <h4 class="font-bold text-primary m-0 truncate">{{ track.title }} - {{ track.artist }}</h4>
-                <p class="text-xs text-muted-foreground m-0 mt-1 truncate max-w-[400px]">{{ track.url }}</p>
+              <div class="flex flex-col min-w-0 pr-4 w-1/2">
+                <div v-if="editingTrackIndex === index" class="flex flex-col gap-2 w-full bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input type="text" v-model="editingTrackData.title" placeholder="Titre" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary" />
+                  <input type="text" v-model="editingTrackData.artist" placeholder="Artiste" class="px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm text-primary" />
+                  <div class="flex gap-2 mt-1">
+                    <Btn size="sm" variant="primary" @click="saveEditTrack()">Ok</Btn>
+                    <Btn size="sm" variant="soft" @click="editingTrackIndex = null">Annuler</Btn>
+                  </div>
+                </div>
+                <div v-else class="flex flex-col gap-1 w-full group">
+                  <h4 class="font-bold text-primary m-0 truncate" :title="track.title + ' - ' + track.artist">{{ track.title }} - {{ track.artist }}</h4>
+                  <p class="text-xs text-muted-foreground m-0 truncate w-full" :title="track.url" dir="rtl" style="text-align: left;">{{ track.url }}</p>
+                  <button @click="startEditTrack(index, track)" class="text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 w-max mt-1 outline-none">
+                    <Edit3 class="w-3 h-3"/> Éditer les infos
+                  </button>
+                </div>
               </div>
               <div class="flex gap-2 shrink-0">
                 <Btn v-if="testingTrackUrl !== track.url" variant="ghost-yellow" size="sm" className="w-[100px]" @click="testTrack(track.url)">
@@ -109,7 +145,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square } from '@lucide/vue';
+import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square, FolderOpen, FileAudio, FolderPlus } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
 import { musicManager } from '../../services/music/MusicManager';
@@ -132,17 +168,37 @@ interface Track {
 interface Playlist {
   id: string;
   name: string;
+  type?: 'soundcloud' | 'local';
   tracks: Track[];
 }
 
 const playlists = ref<Playlist[]>([]);
 const newPlaylistName = ref('');
+const newPlaylistType = ref<'soundcloud' | 'local'>('soundcloud');
 const selectedPlaylist = ref<Playlist | null>(null);
 
 const deletedTrackInfo = ref<{ track: Track, index: number, playlistId: string } | null>(null);
 let deleteToastTimeout: number | null = null;
 
 const newTrack = ref<Track>({ title: '', artist: '', url: '' });
+
+const editingTrackIndex = ref<number | null>(null);
+const editingTrackData = ref<{title: string, artist: string}>({ title: '', artist: '' });
+
+const startEditTrack = (index: number, track: Track) => {
+  editingTrackIndex.value = index;
+  editingTrackData.value = { title: track.title, artist: track.artist };
+};
+
+const saveEditTrack = async () => {
+  if (editingTrackIndex.value !== null && selectedPlaylist.value) {
+    const track = selectedPlaylist.value.tracks[editingTrackIndex.value];
+    track.title = editingTrackData.value.title;
+    track.artist = editingTrackData.value.artist;
+    editingTrackIndex.value = null;
+    await saveToConfig();
+  }
+};
 
 const testingTrackUrl = ref<string | null>(null);
 const testingTrackId = ref<string | null>(null);
@@ -167,10 +223,11 @@ const extractSoundCloudId = (url: string): string | null => {
 };
 
 const testTrack = async (url: string) => {
-  const source = getUrlSource(url);
+  const source = selectedPlaylist.value?.type === 'local' ? 'local' : getUrlSource(url);
   let id = null;
   if (source === 'youtube') id = extractYoutubeId(url);
-  if (source === 'soundcloud') id = extractSoundCloudId(url);
+  else if (source === 'soundcloud') id = extractSoundCloudId(url);
+  else if (source === 'local') id = url;
   
   if (id) {
     let dur = Math.floor(testDuration.value);
@@ -191,7 +248,7 @@ const testTrack = async (url: string) => {
         title: "Test",
         artist: "Test",
         duration: dur * 1000,
-        source: source as 'soundcloud'
+        source: source as any
       });
       
       testTimeout.value = window.setTimeout(() => {
@@ -248,6 +305,7 @@ const createPlaylist = async () => {
   const newPl: Playlist = {
     id: Date.now().toString(),
     name: newPlaylistName.value.trim(),
+    type: newPlaylistType.value,
     tracks: []
   };
   playlists.value.push(newPl);
@@ -286,8 +344,7 @@ const editPlaylist = (pl: Playlist) => {
 };
 
 const addTrack = async () => {
-  if (!selectedPlaylist.value) return;
-  if (!newTrack.value.url.trim()) return;
+  if (!newTrack.value.url.trim() || !selectedPlaylist.value) return;
   
   const url = newTrack.value.url.trim();
   const source = getUrlSource(url);
@@ -302,14 +359,90 @@ const addTrack = async () => {
   
   selectedPlaylist.value.tracks.push({
     id: id,
-    title: newTrack.value.title.trim() || 'Inconnu',
-    artist: newTrack.value.artist.trim() || 'Inconnu',
+    title: newTrack.value.title.trim() || 'Titre Inconnu',
+    artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
     source: source as any,
     url: url
   });
-  
-  newTrack.value = { title: '', artist: '', url: '', id: '', source: 'soundcloud' };
+  newTrack.value = { title: '', artist: '', url: '' };
   await saveToConfig();
+};
+
+import jsmediatags from 'jsmediatags';
+
+const readTagsFromUrl = (url: string): Promise<{title: string, artist: string} | null> => {
+  return new Promise((resolve) => {
+    jsmediatags.read(url, {
+      onSuccess: (tag: any) => {
+        resolve({
+          title: tag.tags.title,
+          artist: tag.tags.artist
+        });
+      },
+      onError: () => {
+        resolve(null);
+      }
+    });
+  });
+};
+
+const addLocalPaths = async (paths: string[]) => {
+  if (!selectedPlaylist.value || paths.length === 0) return;
+  
+  for (const path of paths) {
+    const filename = path.split(/[\/\\]/).pop() || '';
+    const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+    
+    // Default values based on filename
+    let title = nameWithoutExt;
+    let artist = "Artiste Inconnu";
+    
+    try {
+      // Try to read tags from the local stream
+      const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+      const tags = await readTagsFromUrl(streamUrl);
+      if (tags) {
+        if (tags.title) title = tags.title;
+        if (tags.artist) artist = tags.artist;
+      }
+    } catch (_e) {
+      console.warn("Could not read tags for", path);
+    }
+    
+    selectedPlaylist.value.tracks.push({
+      id: path,
+      title: title.trim(),
+      artist: artist.trim(),
+      url: path, // We store the absolute path in url
+      source: 'local'
+    });
+  }
+  
+  await saveToConfig();
+};
+
+const addLocalFiles = async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/dialog/file');
+    const paths = await res.json();
+    if (Array.isArray(paths) && paths.length > 0) {
+      await addLocalPaths(paths);
+    }
+  } catch (_e) {
+    console.error("Error opening file dialog", _e);
+  }
+};
+
+const addLocalFolder = async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/dialog/folder');
+    const paths = await res.json();
+    if (Array.isArray(paths) && paths.length > 0) {
+      await addLocalPaths(paths);
+    }
+  } catch (_e) {
+    console.error("Error opening folder dialog", _e);
+  }
 };
 
 const removeTrack = async (index: number) => {
