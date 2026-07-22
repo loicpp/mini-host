@@ -8,17 +8,24 @@ except ImportError:
     from music_provider import MusicManager
 
 from core.ports.music_search_port import MusicSearchPort
+from core.ports.playlist_generator_port import PlaylistGeneratorPort
 
 class AnimatorApi:
-    def __init__(self, storage_port: StoragePort, projector_port: ProjectorPort, sc_search_port: MusicSearchPort = None):
+    def __init__(self, storage_port: StoragePort, projector_port: ProjectorPort, sc_search_port: MusicSearchPort = None, playlist_generator_port: PlaylistGeneratorPort = None):
         self.storage_port = storage_port
         self.projector_port = projector_port
         self.sc_search_port = sc_search_port
+        self.playlist_generator_port = playlist_generator_port
         self.music_manager = MusicManager()
     
     def search_soundcloud(self, query: str) -> List[Dict[str, Any]]:
         if self.sc_search_port:
             return self.sc_search_port.search(query)
+        return []
+        
+    def generate_playlist(self, theme: str, limit: int) -> List[Dict[str, Any]]:
+        if self.playlist_generator_port:
+            return self.playlist_generator_port.generate(theme, limit)
         return []
         
     def save_config(self, config_data: Dict[str, Any]) -> Dict[str, str]:

@@ -20,6 +20,9 @@
           <Btn variant="primary" @click="createPlaylist" :disabled="!newPlaylistName.trim()">
             <Plus class="w-4 h-4 mr-2" /> {{ $t('playlists.create') }}
           </Btn>
+          <Btn variant="ghost-yellow" @click="showGeneratorModal = true">
+            <Wand2 class="w-4 h-4 mr-2" /> Générer
+          </Btn>
         </div>
 
         <div v-if="playlists.length === 0" class="text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
@@ -224,15 +227,49 @@
         <button @click="undoDelete" class="font-bold text-[#FFBA49] hover:text-[#ffb02e] hover:underline transition-all text-sm outline-none">Annuler</button>
       </div>
     </transition>
+
+    <!-- Modal de génération -->
+    <Modal v-if="showGeneratorModal" @close="showGeneratorModal = false">
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+          <Wand2 class="w-5 h-5 text-[#FFBA49]" /> Générer une playlist
+        </h3>
+        
+        <div class="flex flex-col gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-bold text-primary mb-2">Thème (tag Last.fm)</label>
+            <input type="text" v-model="generatorTheme" placeholder="ex: rock, 80s, disney..." class="w-full px-4 py-2 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-primary mb-2 flex justify-between">
+              <span>Nombre de musiques</span>
+              <span class="text-[#FFBA49]">{{ generatorLimit }}</span>
+            </label>
+            <Slider v-model="generatorLimit" :min="1" :max="20" />
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3">
+          <Btn variant="ghost" @click="showGeneratorModal = false" :disabled="isGenerating">Annuler</Btn>
+          <Btn variant="primary" @click="generatePlaylist" :disabled="isGenerating || !generatorTheme.trim()">
+            <Loader2 v-if="isGenerating" class="w-4 h-4 mr-2 animate-spin" />
+            <Wand2 v-else class="w-4 h-4 mr-2" />
+            {{ isGenerating ? 'Génération...' : 'Générer' }}
+          </Btn>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square, FolderOpen, FileAudio, FolderPlus, BadgeCheck } from '@lucide/vue';
+import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square, FolderOpen, FileAudio, FolderPlus, BadgeCheck, Wand2, Loader2 } from '@lucide/vue';
 import jsmediatags from 'jsmediatags';
 import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
+import Modal from '../ui/Modal.vue';
+import Slider from '../ui/Slider.vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { itunesService } from '../../services/itunesService';
 import { useDialog } from '../../composables/useDialog';
@@ -264,6 +301,11 @@ interface Playlist {
 const playlists = ref<Playlist[]>([]);
 const newPlaylistName = ref('');
 const newPlaylistType = ref<'soundcloud' | 'local'>('soundcloud');
+
+const showGeneratorModal = ref(false);
+const generatorTheme = ref('');
+const generatorLimit = ref(10);
+const isGenerating = ref(false);
 const selectedPlaylist = ref<Playlist | null>(null);
 
 const isEditingPlaylistName = ref(false);
@@ -584,15 +626,54 @@ const saveToConfig = async () => {
 
 const createPlaylist = async () => {
   if (!newPlaylistName.value.trim()) return;
-  const newPl: Playlist = {
-    id: Date.now().toString(),
+  const newId = `pl_${Date.now()}`;
+  playlists.value.push({
+    id: newId,
     name: newPlaylistName.value.trim(),
     type: newPlaylistType.value,
     tracks: []
-  };
-  playlists.value.push(newPl);
+  });
   newPlaylistName.value = '';
   await saveToConfig();
+};
+
+const generatePlaylist = async () => {
+  if (!generatorTheme.value.trim() || isGenerating.value) return;
+  
+  isGenerating.value = true;
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/playlists/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        theme: generatorTheme.value.trim(),
+        limit: generatorLimit.value
+      })
+    });
+    
+    const tracks = await res.json();
+    if (tracks && tracks.length > 0) {
+      const newId = `pl_${Date.now()}`;
+      const rawTheme = generatorTheme.value.trim();
+      const formattedTheme = rawTheme.charAt(0).toUpperCase() + rawTheme.slice(1).toLowerCase();
+      playlists.value.push({
+        id: newId,
+        name: `Playlist : ${formattedTheme}`,
+        type: 'soundcloud',
+        tracks: tracks
+      });
+      await saveToConfig();
+      showGeneratorModal.value = false;
+      generatorTheme.value = '';
+    } else {
+      await showAlert({ title: "Aucun résultat", message: "Aucune musique n'a été trouvée pour ce thème." });
+    }
+  } catch(e) {
+    console.error("Erreur génération playlist", e);
+    await showAlert({ title: "Erreur", message: "Impossible de générer la playlist." });
+  } finally {
+    isGenerating.value = false;
+  }
 };
 
 const deletePlaylist = async (id: string) => {

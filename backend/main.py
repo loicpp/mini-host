@@ -8,6 +8,7 @@ from core.animator_api import AnimatorApi
 from infrastructure.file_storage_adapter import FileStorageAdapter
 from infrastructure.local_projector_adapter import LocalProjectorAdapter
 from infrastructure.soundcloud_scraper_adapter import SoundCloudScraperAdapter
+from infrastructure.lastfm_playlist_generator_adapter import LastfmPlaylistGeneratorAdapter
 from controllers.http_controller import register_routes
 
 if getattr(sys, 'frozen', False):
@@ -26,10 +27,19 @@ CORS(app)
 dev_mode = "--dev" in sys.argv
 
 # Setup Architecture (Dependency Injection)
+lastfm_api_key = ""
+env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'animator-ui', '.env')
+if os.path.exists(env_path):
+    with open(env_path, 'r') as f:
+        for line in f:
+            if line.startswith('VITE_LAFT_FM_API_KEY='):
+                lastfm_api_key = line.split('=', 1)[1].strip()
+
 storage_adapter = FileStorageAdapter()
 projector_adapter = LocalProjectorAdapter(dev_mode=dev_mode)
 sc_search_adapter = SoundCloudScraperAdapter()
-api = AnimatorApi(storage_port=storage_adapter, projector_port=projector_adapter, sc_search_port=sc_search_adapter)
+playlist_generator_adapter = LastfmPlaylistGeneratorAdapter(sc_search_adapter, lastfm_api_key) if lastfm_api_key else None
+api = AnimatorApi(storage_port=storage_adapter, projector_port=projector_adapter, sc_search_port=sc_search_adapter, playlist_generator_port=playlist_generator_adapter)
 
 # Register routes
 register_routes(app, api)
