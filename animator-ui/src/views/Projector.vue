@@ -11,7 +11,7 @@
       </div>
       <div v-else></div> <!-- Placeholder for flex spacing -->
       <div class="flex items-center gap-4">
-        <img src="/favicon.jpg" alt="Logo" class="h-16 w-16 rounded-2xl object-cover border-2 border-[#FFBA49] shadow-[0_0_15px_rgba(255,186,73,0.4)]" />
+        <img src="/favicon.svg" alt="Logo" class="h-16 w-16 rounded-2xl object-cover border-2 border-[#FFBA49] shadow-[0_0_15px_rgba(255,186,73,0.4)]" />
         <h1 class="text-4xl font-black bg-gradient-to-r from-[#FFBA49] to-[#ff4d4d] bg-clip-text text-transparent m-0">Blind Test</h1>
       </div>
     </header>
