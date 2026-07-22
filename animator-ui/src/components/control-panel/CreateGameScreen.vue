@@ -56,20 +56,20 @@
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.game_mode') }}</label>
-          <select v-model="settings.mode" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
-            <option value="buzzer">{{ $t('create_game.mode_buzzer') }}</option>
-            <option value="text">{{ $t('create_game.mode_text') }}</option>
-          </select>
+          <CustomSelect 
+            v-model="settings.mode"
+            :options="modeOptions"
+          />
         </div>
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
           <div v-if="playlists.length > 0">
-            <select v-model="settings.playlistId" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
-              <option v-for="pl in playlists" :key="pl.id" :value="pl.id">
-                {{ pl.type === 'local' ? '📁' : '☁️' }} {{ pl.name }} ({{ pl.tracks.length }} {{ $t('create_game.tracks') }})
-              </option>
-            </select>
+            <CustomSelect 
+              v-model="settings.playlistId"
+              :options="playlistOptions"
+              placeholder="Sélectionnez une playlist..."
+            />
           </div>
           <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
             <p class="text-amber-800 text-sm font-medium text-center">Aucune playlist disponible. Créez-en une d'abord !</p>
@@ -86,9 +86,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { ChevronLeft } from '@lucide/vue';
+import { ref, onMounted, watch, computed } from 'vue';
+import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard } from '@lucide/vue';
+import { useI18n } from 'vue-i18n';
 import Btn from '../ui/Btn.vue';
+import CustomSelect from '../ui/CustomSelect.vue';
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'back'): void;
@@ -97,6 +101,20 @@ const emit = defineEmits<{
 }>();
 
 const playlists = ref<any[]>([]);
+
+const playlistOptions = computed(() => {
+  return playlists.value.map(pl => ({
+    value: pl.id,
+    label: pl.name,
+    description: `${pl.tracks.length} ${t('create_game.tracks')}`,
+    icon: pl.type === 'local' ? Folder : Cloud
+  }));
+});
+
+const modeOptions = computed(() => [
+  { value: 'buzzer', label: t('create_game.mode_buzzer'), icon: CircleDot },
+  { value: 'text', label: t('create_game.mode_text'), icon: Keyboard }
+]);
 
 const settings = ref({
   blockDuration: 0,
