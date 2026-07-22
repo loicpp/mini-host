@@ -177,7 +177,11 @@ const playerRank = computed(() => {
     id,
     ...props.game.players[id]
   }));
-  p.sort((a, b) => (b.score || 0) - (a.score || 0));
+  p.sort((a, b) => {
+    const scoreDiff = (b.score || 0) - (a.score || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+    return (a.name || '').localeCompare(b.name || '');
+  });
   const index = p.findIndex(pl => pl.id === props.playerId);
   return index !== -1 ? index + 1 : null;
 });

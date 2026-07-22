@@ -118,6 +118,7 @@ if __name__ == '__main__':
             import pygame
             import os
             os.environ['SDL_VIDEO_X11_WMCLASS'] = "com.github.loicpp.MiniHost"
+            os.environ['SDL_VIDEODRIVER'] = "x11"
             pygame.init()
             pygame.display.set_caption("MiniHost - Serveur")
             try:

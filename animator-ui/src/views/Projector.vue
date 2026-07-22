@@ -196,7 +196,11 @@ const allPlayersSorted = computed(() => {
     id,
     ...game.value?.players[id]
   }));
-  return p.sort((a, b) => (b.score || 0) - (a.score || 0));
+  return p.sort((a, b) => {
+    const scoreDiff = (b.score || 0) - (a.score || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+    return (a.name || '').localeCompare(b.name || '');
+  });
 });
 
 const topThreePlayers = computed(() => {
