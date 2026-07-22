@@ -610,18 +610,34 @@ const clearToast = () => {
   }
 };
 
+const clearEditingState = () => {
+  isEditingPlaylistName.value = false;
+  editingPlaylistName.value = '';
+  editingTrackIndex.value = null;
+  editSearchQuery.value = '';
+  editSuggestions.value = [];
+};
+
 const handleBack = () => {
   clearToast();
+  newPlaylistName.value = '';
+  clearEditingState();
   emit('back');
 };
 
 const closeEdition = () => {
   selectedPlaylist.value = null;
+  clearSelectedTrack();
+  newPlaylistName.value = '';
+  clearEditingState();
   clearToast();
 };
 
 const editPlaylist = (pl: Playlist) => {
   clearToast();
+  clearSelectedTrack();
+  newPlaylistName.value = '';
+  clearEditingState();
   selectedPlaylist.value = pl;
 };
 
