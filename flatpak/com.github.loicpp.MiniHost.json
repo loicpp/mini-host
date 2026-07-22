@@ -7,7 +7,7 @@
     "command": "minihost-start",
     "finish-args": [
         "--socket=wayland",
-        "--socket=fallback-x11",
+        "--socket=x11",
         "--device=dri",
         "--socket=pulseaudio",
         "--share=network",
