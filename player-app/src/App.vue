@@ -11,7 +11,9 @@
             <option value="en">EN</option>
           </select>
         </div>
-        <h1 class="text-3xl font-black text-primary tracking-tight">🎶 Blind Test</h1>
+        <h1 class="text-3xl font-black text-primary tracking-tight flex items-center justify-center gap-2">
+          <img src="/blindtest.svg" alt="logo" class="w-8 h-8" /> Blind Test
+        </h1>
       </header>
 
       <main class="p-6 pt-2">

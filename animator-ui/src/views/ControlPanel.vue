@@ -222,10 +222,10 @@
             </div>
             
             <div class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2">
-              <div v-if="Object.keys(displayedPlayers).length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
+              <div v-if="sortedPlayersList.length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
                 {{ $t('control_panel.no_players_connected') }}
               </div>
-              <div v-for="(player, playerId) in displayedPlayers" :key="playerId" :class="['rounded-xl border p-4 flex flex-col gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
+              <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex flex-col gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <span class="font-bold text-primary text-lg">{{ player.name || $t('control_panel.anonymous') }}</span>
@@ -237,13 +237,13 @@
                 
                 <div class="flex gap-2 flex-wrap items-center justify-between mt-1">
                   <div class="flex flex-wrap gap-2">
-                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(playerId as string, 1)">{{ $t('control_panel.plus_one_turn') }}</Btn>
-                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(playerId as string, 3)">{{ $t('control_panel.plus_three_tours') }}</Btn>
-                    <Btn :variant="player.blockedTurns ? 'success' : 'danger'" size="sm" @click="setPlayerBlock(playerId as string, player.blockedTurns ? 0 : -1)">
+                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(player.id, 1)">{{ $t('control_panel.plus_one_turn') }}</Btn>
+                    <Btn variant="secondary" size="sm" @click="setPlayerBlock(player.id, 3)">{{ $t('control_panel.plus_three_tours') }}</Btn>
+                    <Btn :variant="player.blockedTurns ? 'success' : 'danger'" size="sm" @click="setPlayerBlock(player.id, player.blockedTurns ? 0 : -1)">
                       {{ player.blockedTurns ? $t('control_panel.unblock') : $t('control_panel.block_permanently') }}
                     </Btn>
                   </div>
-                  <Btn variant="danger" size="sm" @click="removePlayer(playerId as string)">{{ $t('control_panel.remove') }}</Btn>
+                  <Btn variant="danger" size="sm" @click="removePlayer(player.id)">{{ $t('control_panel.remove') }}</Btn>
                 </div>
               </div>
             </div>
@@ -347,6 +347,12 @@ const displayedPlayers = computed(() => {
     };
   }
   return result;
+});
+
+const sortedPlayersList = computed(() => {
+  return Object.keys(displayedPlayers.value)
+    .map(id => ({ id, ...displayedPlayers.value[id] }))
+    .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 });
 
 
@@ -846,12 +852,21 @@ const autoCorrect = () => {
       const gTitle = guess.title.toLowerCase().replace(/[^a-z0-9]/g, '');
       const gArtist = (guess.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
       
-      const guessFull = gTitle + gArtist;
+      const guessFull1 = gTitle + gArtist;
+      const guessFull2 = gArtist + gTitle;
       
-      // Basic fuzzy check: if the target includes the main part of the title or vice versa
-      if (gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target))) {
+      const hasTitle = gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target));
+      const hasArtist = gArtist.length > 2 && (target.includes(gArtist) || gArtist.includes(target));
+      
+      if (hasTitle && hasArtist) {
+        // Both title and artist match
         if (!pendingPoints.value[id]) award(id, 1);
-      } else if (guessFull.length > 2 && (target.includes(guessFull) || guessFull.includes(target))) {
+      } else if (guessFull1.length > 2 && (target.includes(guessFull1) || guessFull1.includes(target))) {
+        if (!pendingPoints.value[id]) award(id, 1);
+      } else if (guessFull2.length > 2 && (target.includes(guessFull2) || guessFull2.includes(target))) {
+        if (!pendingPoints.value[id]) award(id, 1);
+      } else if (hasTitle && target.length <= gTitle.length + 5) {
+        // Target seems to only contain the title
         if (!pendingPoints.value[id]) award(id, 1);
       }
     }

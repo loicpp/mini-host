@@ -1,7 +1,17 @@
 <template>
-  <div class="flex flex-col h-screen w-screen bg-[#13111C] text-white overflow-hidden font-sans" @dblclick="toggleFullscreen">
-    <!-- Header with QR Code -->
-    <header class="flex justify-between items-center px-12 py-6">
+  <div class="relative h-screen w-screen bg-[#13111C] text-white overflow-hidden font-sans" @dblclick="toggleFullscreen">
+    <div 
+      class="absolute origin-top-left flex flex-col"
+      :style="{ 
+        width: '1920px', 
+        height: '1080px', 
+        transform: `scale(${scale})`, 
+        left: `${(windowWidth - 1920 * scale) / 2}px`, 
+        top: `${(windowHeight - 1080 * scale) / 2}px` 
+      }"
+    >
+      <!-- Header with QR Code -->
+      <header class="flex justify-between items-center px-12 py-6">
       <div v-if="gameId && secret && game?.status !== 'waiting'" class="flex items-center gap-6 bg-white/5 p-3 rounded-2xl backdrop-blur-md border border-white/10">
         <img :src="qrCodeUrl" alt="QR Code" class="w-20 h-20 bg-white p-1 rounded-xl" />
         <div class="flex flex-col">
@@ -11,13 +21,13 @@
       </div>
       <div v-else></div> <!-- Placeholder for flex spacing -->
       <div class="flex items-center gap-4">
-        <img src="/favicon.svg" alt="Logo" class="h-16 w-16 rounded-2xl object-cover border-2 border-[#FFBA49] shadow-[0_0_15px_rgba(255,186,73,0.4)]" />
+        <img src="/blindtest.svg" alt="Logo" class="h-16 w-16 rounded-2xl object-cover border-2 border-[#FFBA49] shadow-[0_0_15px_rgba(255,186,73,0.4)]" />
         <h1 class="text-4xl font-black bg-gradient-to-r from-[#FFBA49] to-[#ff4d4d] bg-clip-text text-transparent m-0">Blind Test</h1>
       </div>
     </header>
 
     <!-- Main Display Area -->
-    <main class="flex-1 flex justify-center items-center text-center overflow-y-auto py-8">
+    <main class="flex-1 flex justify-center items-center text-center overflow-hidden py-8">
       <div v-if="!game" class="animate-pulse">
         <h1 class="text-4xl font-bold text-white/70">{{ $t('projector.connecting') }}</h1>
       </div>
@@ -97,7 +107,7 @@
         <div class="w-full">
           <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.leaderboard') }}</p>
           <ul class="flex flex-col gap-4 w-full m-0 p-0">
-            <li v-for="(player, index) in allPlayersSorted" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-5 rounded-2xl text-3xl shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4">
+            <li v-for="(player, index) in allPlayersSorted.slice(0, 5)" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-5 rounded-2xl text-3xl shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4">
               <span class="font-black text-[#FFBA49] w-16 text-left">#{{ index + 1 }}</span>
               <span class="flex-1 text-left font-bold">{{ player.name }}</span>
               <span class="font-black text-emerald-400">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
@@ -110,13 +120,13 @@
         <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">{{ $t('projector.podium') }}</h1>
         
         <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
-          <div v-for="(player, index) in topThreePlayers" :key="player.id" :class="[
+          <div v-for="player in topThreePlayers" :key="player.id" :class="[
             'bg-white/10 rounded-t-3xl flex flex-col items-center pt-6 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] relative w-1/3 animate-in fade-in slide-in-from-bottom-8',
-            index === 0 ? 'h-full border-t-[6px] border-[#ffd700] bg-gradient-to-t from-[#ffd700]/10 to-[#ffd700]/30 z-30' :
-            index === 1 ? 'h-[75%] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
+            player.rank === 1 ? 'h-full border-t-[6px] border-[#ffd700] bg-gradient-to-t from-[#ffd700]/10 to-[#ffd700]/30 z-30' :
+            player.rank === 2 ? 'h-[75%] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
             'h-[55%] border-t-[6px] border-[#cd7f32] bg-gradient-to-t from-[#cd7f32]/10 to-[#cd7f32]/30 z-10'
           ]">
-            <div class="text-6xl mb-3 drop-shadow-md">{{ ['🥇', '🥈', '🥉'][index] }}</div>
+            <div class="text-6xl mb-3 drop-shadow-md">{{ player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : '🥉' }}</div>
             <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
             <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</div>
           </div>
@@ -134,6 +144,7 @@
         </div>
       </div>
     </main>
+    </div>
   </div>
 </template>
 
@@ -143,10 +154,24 @@ import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
+let originalTitle = '';
+let originalFavicon = '';
+
 const gameId = ref('');
 const secret = ref('');
 const game = ref<Record<string, any> | null>(null);
 const apiPort = ref<number | null>(null);
+
+const windowWidth = ref(window.innerWidth);
+const windowHeight = ref(window.innerHeight);
+const scale = computed(() => {
+  return Math.min(windowWidth.value / 1920, windowHeight.value / 1080);
+});
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth;
+  windowHeight.value = window.innerHeight;
+};
 
 const timeLeft = ref(0);
 const timeLeftMusic = ref(0);
@@ -174,8 +199,15 @@ const allPlayersSorted = computed(() => {
   return p.sort((a, b) => (b.score || 0) - (a.score || 0));
 });
 
-const topThreePlayers = computed(() => allPlayersSorted.value.slice(0, 3));
-const otherPlayers = computed(() => allPlayersSorted.value.slice(3));
+const topThreePlayers = computed(() => {
+  const top = allPlayersSorted.value.slice(0, 3);
+  const result = [];
+  if (top.length > 1) result.push({ ...top[1], rank: 2 });
+  if (top.length > 0) result.push({ ...top[0], rank: 1 });
+  if (top.length > 2) result.push({ ...top[2], rank: 3 });
+  return result;
+});
+const otherPlayers = computed(() => allPlayersSorted.value.slice(3, 5));
 
 const dashOffsetTotal = computed(() => {
   const c = Math.PI * (45 * 2);
@@ -206,6 +238,15 @@ onMounted(async () => {
   if (portParam) {
     apiPort.value = parseInt(portParam);
   }
+  
+  // Set title and favicon for Projector
+  originalTitle = document.title;
+  const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+  if (link) {
+    originalFavicon = link.href;
+    link.href = '/blindtest.svg';
+  }
+  document.title = "Blind test";
   
   if (!gameId.value) return;
 
@@ -307,10 +348,17 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('resize', handleResize);
+  document.title = originalTitle;
+  const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+  if (link && originalFavicon) {
+    link.href = originalFavicon;
+  }
 });
 </script>
 

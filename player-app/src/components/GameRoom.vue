@@ -2,15 +2,20 @@
   <div class="flex flex-col gap-6">
     <!-- Header with Score -->
     <div class="flex items-center justify-between p-4 bg-muted rounded-2xl border border-[rgba(0,0,0,0.05)]">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-lg font-bold text-primary">
+      <div class="flex items-center gap-3 flex-1 min-w-0 mr-4">
+        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm text-lg font-bold text-primary">
           {{ player?.name?.charAt(0).toUpperCase() || '?' }}
         </div>
-        <span class="font-bold text-lg text-primary">{{ player?.name }}</span>
+        <span class="font-bold text-lg text-primary truncate block">{{ player?.name }}</span>
       </div>
-      <div class="bg-white px-4 py-1.5 rounded-full shadow-sm flex items-center gap-2 border border-yellow-100">
-        <span class="font-black text-xl text-[#FFBA49]">{{ player?.score || 0 }}</span>
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">{{ $t('gameroom.pts') }}</span>
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="bg-[#FFBA49] px-3 py-1 rounded-full shadow-sm flex items-center border border-[#e6a53c]" v-if="playerRank">
+          <span class="font-black text-[#3F4739] text-sm">#{{ playerRank }}</span>
+        </div>
+        <div class="bg-white px-4 py-1.5 rounded-full shadow-sm flex items-center gap-2 border border-yellow-100">
+          <span class="font-black text-xl text-[#FFBA49]">{{ player?.score || 0 }}</span>
+          <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">{{ $t('gameroom.pts') }}</span>
+        </div>
       </div>
     </div>
 
@@ -61,14 +66,16 @@
           </template>
           <template v-else>
             <!-- Search Input -->
-            <div class="relative z-50">
+            <div class="relative z-50" v-if="!hasSubmitted">
               <div class="relative">
                 <input 
                   type="text" 
                   v-model="searchQuery" 
                   @input="handleSearch"
+                  @keydown.enter="submitCustomGuess"
                   :placeholder="$t('gameroom.search_placeholder')" 
                   autocomplete="off"
+                  maxlength="50"
                   :disabled="timeLeft <= 0 || hasSubmitted || isBuffering || isDelaying"
                   class="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
                 />
@@ -164,6 +171,17 @@ const player = computed(() => {
   return props.game?.players?.[props.playerId];
 });
 
+const playerRank = computed(() => {
+  if (!props.game?.players || !props.playerId) return null;
+  const p = Object.keys(props.game.players).map(id => ({
+    id,
+    ...props.game.players[id]
+  }));
+  p.sort((a, b) => (b.score || 0) - (a.score || 0));
+  const index = p.findIndex(pl => pl.id === props.playerId);
+  return index !== -1 ? index + 1 : null;
+});
+
 watch(() => props.game?.status, (newStatus, oldStatus) => {
   if (newStatus === 'playing') {
     if (oldStatus !== 'playing') {
@@ -207,6 +225,29 @@ const handleSearch = () => {
 };
 
 const selectSuggestion = (item) => {
+  currentGuess.value = item;
+  hasSubmitted.value = true;
+  searchQuery.value = '';
+  suggestions.value = [];
+  
+  emit('submit', item);
+};
+
+const submitCustomGuess = () => {
+  if (hasSubmitted.value || !searchQuery.value.trim()) return;
+  
+  const customText = searchQuery.value.trim();
+  let title = customText;
+  let artist = '';
+  
+  if (customText.includes('-')) {
+    const parts = customText.split('-');
+    title = parts[0].trim();
+    artist = parts.slice(1).join('-').trim();
+  }
+  
+  const item = { title, artist, coverUrl: '' };
+  
   currentGuess.value = item;
   hasSubmitted.value = true;
   searchQuery.value = '';

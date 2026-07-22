@@ -17,7 +17,7 @@
           :placeholder="$t('login.nickname_placeholder')" 
           required 
           autocomplete="off"
-          maxlength="20"
+          maxlength="25"
           class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none"
         />
       </div>
