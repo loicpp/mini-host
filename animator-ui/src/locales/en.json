@@ -209,5 +209,55 @@
   },
   "login": {
     "invalid_credentials": "Invalid credentials."
+  },
+  "gameroom": {
+    "pts": "pts"
+  },
+  "dialogs": {
+    "delete_playlist": {
+      "title": "Delete Playlist?",
+      "message": "Are you sure you want to delete this playlist? This action cannot be undone.",
+      "confirm": "Delete"
+    },
+    "invalid_link_sc": {
+      "title": "Invalid Link",
+      "message": "The provided link is not a valid SoundCloud or YouTube link."
+    },
+    "invalid_url": {
+      "title": "Invalid URL",
+      "message": "Cannot recognize this audio link."
+    },
+    "logout": {
+      "title": "Log Out?",
+      "message": "You will need to log in again to use the control panel.",
+      "confirm": "Log Out"
+    },
+    "stop_game": {
+      "title": "Stop the game?",
+      "message": "The game will end immediately and you will be redirected to the final results.",
+      "confirm": "Stop"
+    },
+    "restart_game": {
+      "title": "Restart game?",
+      "message": "Are you sure you want to restart the game from scratch? Connected players will be kept.",
+      "confirm": "Restart"
+    },
+    "kick_player": {
+      "title": "Kick player?",
+      "message": "Are you sure you want to kick this player from the game?",
+      "confirm": "Kick"
+    },
+    "game_not_found": {
+      "title": "Game not found",
+      "message": "This game no longer exists!"
+    },
+    "playback_error": {
+      "title": "Playback error",
+      "message": "Playback error: {err}"
+    },
+    "launch_error": {
+      "title": "Launch error",
+      "message": "Launch error: {err}"
+    }
   }
 }

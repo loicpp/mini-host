@@ -450,7 +450,7 @@ onMounted(() => {
 
 
 const logout = async () => {
-  if (await showConfirm({ title: "Se déconnecter ?", message: "Vous devrez vous reconnecter pour utiliser la régie.", confirmText: "Déconnexion", confirmVariant: "danger" })) {
+  if (await showConfirm({ title: t('dialogs.logout.title'), message: t('dialogs.logout.message'), confirmText: t('dialogs.logout.confirm'), confirmVariant: "danger" })) {
     email.value = '';
     password.value = '';
     
@@ -613,7 +613,7 @@ const resumeGame = async () => {
     const gameData = await animatorService.getGame(gameId.value);
     
     if (!gameData) {
-      await showAlert({ title: "Partie introuvable", message: "Cette partie n'existe plus !" });
+      await showAlert({ title: t('dialogs.game_not_found.title'), message: t('dialogs.game_not_found.message') });
       lastGameId.value = null;
       return;
     }
@@ -778,11 +778,11 @@ const playMusic = async () => {
         await musicManager.play(selectedTrack.value!, Math.max(0, timeToWait));
       }
     } catch (err: any) {
-      await showAlert({ title: "Erreur de lecture", message: "Erreur de lecture : " + err.message });
+      await showAlert({ title: t('dialogs.playback_error.title'), message: t('dialogs.playback_error.message', { err: err.message }) });
       stopMusic();
     }
   } catch (err: any) {
-    await showAlert({ title: "Erreur lors du lancement", message: "Erreur lors du lancement : " + err.message });
+    await showAlert({ title: t('dialogs.launch_error.title'), message: t('dialogs.launch_error.message', { err: err.message }) });
   }
 };
 
@@ -982,7 +982,7 @@ const nextRound = async () => {
 };
 
 const endGame = async () => {
-  if (await showConfirm({ title: "Arrêter la partie ?", message: "La partie sera définitivement terminée et vous serez redirigé vers les résultats finaux.", confirmText: "Arrêter", confirmVariant: "danger" })) {
+  if (await showConfirm({ title: t('dialogs.stop_game.title'), message: t('dialogs.stop_game.message'), confirmText: t('dialogs.stop_game.confirm'), confirmVariant: "danger" })) {
     status.value = 'finished';
     try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
     await animatorService.updateGameState(gameId.value, 'finished');
@@ -990,7 +990,7 @@ const endGame = async () => {
 };
 
 const restartGame = async () => {
-  if (await showConfirm({ title: "Recommencer la partie ?", message: "Voulez-vous vraiment recommencer la partie à zéro ? Les joueurs connectés seront conservés.", confirmText: "Recommencer", confirmVariant: "primary" })) {
+  if (await showConfirm({ title: t('dialogs.restart_game.title'), message: t('dialogs.restart_game.message'), confirmText: t('dialogs.restart_game.confirm'), confirmVariant: "primary" })) {
     status.value = 'waiting';
     try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
     nextTrackInfo.value.answer = '';
@@ -1019,7 +1019,7 @@ const restartGame = async () => {
 };
 
 const removePlayer = async (playerId: string) => {
-  if (await showConfirm({ title: "Supprimer le joueur ?", message: "Voulez-vous vraiment expulser ce joueur de la partie ?", confirmText: "Supprimer", confirmVariant: "danger" })) {
+  if (await showConfirm({ title: t('dialogs.kick_player.title'), message: t('dialogs.kick_player.message'), confirmText: t('dialogs.kick_player.confirm'), confirmVariant: "danger" })) {
     try {
       await animatorService.removePlayer(gameId.value, playerId);
     } catch(e) {

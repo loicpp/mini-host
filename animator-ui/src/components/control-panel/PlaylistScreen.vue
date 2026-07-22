@@ -150,8 +150,10 @@ import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { useDialog } from '../../composables/useDialog';
+import { useI18n } from 'vue-i18n';
 
 const { showAlert, showConfirm } = useDialog();
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'back'): void;
@@ -260,7 +262,7 @@ const testTrack = async (url: string) => {
       console.error(err);
     }
   } else {
-    await showAlert({ title: "Lien invalide", message: "Le lien fourni n'est pas un lien SoundCloud ou YouTube valide." });
+    await showAlert({ title: t('dialogs.invalid_link_sc.title'), message: t('dialogs.invalid_link_sc.message') });
   }
 };
 
@@ -314,7 +316,7 @@ const createPlaylist = async () => {
 };
 
 const deletePlaylist = async (id: string) => {
-  if (await showConfirm({ title: "Supprimer la playlist ?", message: "Voulez-vous vraiment supprimer cette playlist ? Cette action est irréversible.", confirmText: "Supprimer", confirmVariant: "danger" })) {
+  if (await showConfirm({ title: t('dialogs.delete_playlist.title'), message: t('dialogs.delete_playlist.message'), confirmText: t('dialogs.delete_playlist.confirm'), confirmVariant: "danger" })) {
     playlists.value = playlists.value.filter(p => p.id !== id);
     await saveToConfig();
   }
@@ -353,7 +355,7 @@ const addTrack = async () => {
   if (source === 'soundcloud') id = extractSoundCloudId(url);
   
   if (!id) {
-    await showAlert({ title: "URL invalide", message: "Impossible de reconnaître ce lien audio." });
+    await showAlert({ title: t('dialogs.invalid_url.title'), message: t('dialogs.invalid_url.message') });
     return;
   }
   

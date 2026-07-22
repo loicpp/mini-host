@@ -4,7 +4,7 @@
     :class="[
       baseClass,
       sizes[size],
-      variants[variant],
+      computedVariant,
       disabled ? 'opacity-50 cursor-not-allowed' : '',
       className
     ]"
@@ -15,12 +15,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const { variant = "primary", size = "md", className = "", disabled = false } = defineProps<{
   variant?: "primary" | "secondary" | "ghost" | "danger" | "success" | "dark" | "cyan" | "orange" | "blue" | "pink" | "gray" | "soft" | "ghost-yellow" | "ghost-orange" | "ghost-red"
   size?: "sm" | "md" | "lg"
   className?: string
   disabled?: boolean
 }>()
+
+const computedVariant = computed(() => {
+  const base = variants[variant] || variants.primary;
+  if (!disabled) return base;
+  return base.split(' ').filter(c => !c.startsWith('hover:') && !c.startsWith('active:')).join(' ');
+});
 
 defineEmits(['click'])
 

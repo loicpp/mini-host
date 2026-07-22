@@ -209,5 +209,55 @@
   },
   "login": {
     "invalid_credentials": "Identifiants invalides."
+  },
+  "gameroom": {
+    "pts": "pts"
+  },
+  "dialogs": {
+    "delete_playlist": {
+      "title": "Supprimer la playlist ?",
+      "message": "Voulez-vous vraiment supprimer cette playlist ? Cette action est irréversible.",
+      "confirm": "Supprimer"
+    },
+    "invalid_link_sc": {
+      "title": "Lien invalide",
+      "message": "Le lien fourni n'est pas un lien SoundCloud ou YouTube valide."
+    },
+    "invalid_url": {
+      "title": "URL invalide",
+      "message": "Impossible de reconnaître ce lien audio."
+    },
+    "logout": {
+      "title": "Se déconnecter ?",
+      "message": "Vous devrez vous reconnecter pour utiliser la régie.",
+      "confirm": "Déconnexion"
+    },
+    "stop_game": {
+      "title": "Arrêter la partie ?",
+      "message": "La partie sera définitivement terminée et vous serez redirigé vers les résultats finaux.",
+      "confirm": "Arrêter"
+    },
+    "restart_game": {
+      "title": "Recommencer la partie ?",
+      "message": "Voulez-vous vraiment recommencer la partie à zéro ? Les joueurs connectés seront conservés.",
+      "confirm": "Recommencer"
+    },
+    "kick_player": {
+      "title": "Supprimer le joueur ?",
+      "message": "Voulez-vous vraiment expulser ce joueur de la partie ?",
+      "confirm": "Supprimer"
+    },
+    "game_not_found": {
+      "title": "Partie introuvable",
+      "message": "Cette partie n'existe plus !"
+    },
+    "playback_error": {
+      "title": "Erreur de lecture",
+      "message": "Erreur de lecture : {err}"
+    },
+    "launch_error": {
+      "title": "Erreur lors du lancement",
+      "message": "Erreur lors du lancement : {err}"
+    }
   }
 }
