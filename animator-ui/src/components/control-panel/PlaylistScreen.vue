@@ -229,7 +229,7 @@
     </transition>
 
     <!-- Modal de génération -->
-    <Modal v-if="showGeneratorModal" @close="showGeneratorModal = false">
+    <Modal v-if="showGeneratorModal" @close="closeGeneratorModal">
       <div class="p-6">
         <h3 class="text-xl font-bold text-primary mb-4 flex items-center gap-2">
           <Wand2 class="w-5 h-5 text-[#FFBA49]" /> Générer une playlist
@@ -250,7 +250,7 @@
         </div>
         
         <div class="flex justify-end gap-3">
-          <Btn variant="ghost" @click="showGeneratorModal = false" :disabled="isGenerating">Annuler</Btn>
+          <Btn variant="ghost" @click="closeGeneratorModal" :disabled="isGenerating">Annuler</Btn>
           <Btn variant="primary" @click="generatePlaylist" :disabled="isGenerating || !generatorTheme.trim()">
             <Loader2 v-if="isGenerating" class="w-4 h-4 mr-2 animate-spin" />
             <Wand2 v-else class="w-4 h-4 mr-2" />
@@ -635,6 +635,12 @@ const createPlaylist = async () => {
   });
   newPlaylistName.value = '';
   await saveToConfig();
+};
+
+const closeGeneratorModal = () => {
+  showGeneratorModal.value = false;
+  generatorTheme.value = '';
+  generatorLimit.value = 10;
 };
 
 const generatePlaylist = async () => {
