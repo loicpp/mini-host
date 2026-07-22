@@ -64,20 +64,20 @@
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
-          <div v-if="filteredPlaylists.length > 0">
+          <div v-if="playlists.length > 0">
             <select v-model="settings.playlistId" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
-              <option v-for="pl in filteredPlaylists" :key="pl.id" :value="pl.id">
-                {{ pl.name }} ({{ pl.tracks.length }} {{ $t('create_game.tracks') }})
+              <option v-for="pl in playlists" :key="pl.id" :value="pl.id">
+                {{ pl.type === 'local' ? '📁' : '☁️' }} {{ pl.name }} ({{ pl.tracks.length }} {{ $t('create_game.tracks') }})
               </option>
             </select>
           </div>
           <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
-            <p class="text-amber-800 text-sm font-medium text-center">{{ $t('create_game.no_playlist', { type: preferredSource === 'local' ? $t('create_game.local') : $t('create_game.soundcloud') }) }}</p>
+            <p class="text-amber-800 text-sm font-medium text-center">Aucune playlist disponible. Créez-en une d'abord !</p>
             <Btn variant="dark" @click="$emit('configure-playlists')">{{ $t('create_game.create_first_playlist') }}</Btn>
           </div>
         </div>
         
-        <Btn variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="filteredPlaylists.length === 0">
+        <Btn variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="playlists.length === 0">
           {{ $t('create_game.start_button') }}
         </Btn>
       </div>
@@ -86,13 +86,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { ChevronLeft } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
-
-const props = defineProps<{
-  preferredSource: string;
-}>();
 
 const emit = defineEmits<{
   (e: 'back'): void;
@@ -101,13 +97,6 @@ const emit = defineEmits<{
 }>();
 
 const playlists = ref<any[]>([]);
-
-const filteredPlaylists = computed(() => {
-  if (props.preferredSource === 'local') {
-    return playlists.value.filter(p => p.type === 'local');
-  }
-  return playlists.value.filter(p => !p.type || p.type === 'soundcloud');
-});
 
 const settings = ref({
   blockDuration: 0,
@@ -129,8 +118,8 @@ onMounted(async () => {
       loadedPlaylists = data.playlists;
     }
     playlists.value = loadedPlaylists;
-    if (filteredPlaylists.value.length > 0 && !settings.value.playlistId) {
-      settings.value.playlistId = filteredPlaylists.value[0].id;
+    if (loadedPlaylists.length > 0) {
+      settings.value.playlistId = loadedPlaylists[0].id;
     }
   } catch(e) {
     console.warn("Could not load playlists for game creation", e);

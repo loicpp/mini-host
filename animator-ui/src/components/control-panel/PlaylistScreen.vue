@@ -87,7 +87,7 @@
               @keydown.enter="applyCustomSearch"
               @keydown.esc="suggestions = []"
               @blur="handleSearchBlur"
-              placeholder="Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)" 
+              :placeholder="(!selectedPlaylist.type || selectedPlaylist.type === 'soundcloud') ? 'Rechercher sur SoundCloud (ou tapez Titre - Artiste et Entrée)' : 'Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)'" 
               class="w-full px-4 py-3 bg-white rounded-xl border text-foreground focus:ring-2 transition-shadow outline-none font-medium shadow-sm"
               :class="selectedPlaylist.type === 'local' ? 'border-amber-100 focus:ring-amber-400' : 'border-blue-100 focus:ring-blue-400'"
             />
@@ -397,7 +397,18 @@ const handleSearch = () => {
 
   isSearching.value = true;
   searchTimeout.value = setTimeout(async () => {
-    suggestions.value = await itunesService.search(searchQuery.value);
+    if (!selectedPlaylist.value?.type || selectedPlaylist.value?.type === 'soundcloud') {
+      try {
+        const res = await fetch(`http://127.0.0.1:5000/api/soundcloud/search?q=${encodeURIComponent(searchQuery.value)}`);
+        const data = await res.json();
+        suggestions.value = data;
+      } catch (e) {
+        console.error("SC search failed", e);
+        suggestions.value = [];
+      }
+    } else {
+      suggestions.value = await itunesService.search(searchQuery.value);
+    }
     isSearching.value = false;
   }, 500);
 };
@@ -408,10 +419,13 @@ const handleSearchBlur = () => {
   }, 200);
 };
 
-const selectSuggestion = (item: {title: string, artist: string}) => {
+const selectSuggestion = (item: {title: string, artist: string, url?: string}) => {
   newTrack.value.title = item.title;
   newTrack.value.artist = item.artist;
-  newTrack.value.isCertified = true;
+  newTrack.value.isCertified = selectedPlaylist.value?.type === 'local' || selectedPlaylist.value?.type === undefined; 
+  if (item.url) {
+    newTrack.value.url = item.url;
+  }
   searchQuery.value = '';
   suggestions.value = [];
 };

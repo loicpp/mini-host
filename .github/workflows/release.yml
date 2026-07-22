@@ -141,29 +141,20 @@ jobs:
           name: MiniHost-Linux
           path: MiniHost-Linux
           
-      - name: Download Windows Portable
-        uses: actions/download-artifact@v4
-        with:
-          name: MiniHost-Windows-Portable
-          path: MiniHost-Windows-Portable
-          
       - name: Download Windows Installer
         uses: actions/download-artifact@v4
         with:
           name: MiniHost-Windows-Installer
           path: MiniHost-Windows-Installer
           
-      - name: Zip Artifacts for Release
+      - name: Prepare Artifacts for Release
         run: |
-          cd MiniHost-Windows-Portable
-          zip -r ../MiniHost-Windows.zip .
-          cd ..
+          mv MiniHost-Windows-Installer/MiniHostSetup.exe MiniHost-windows.exe
           
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             MiniHost-Linux/MiniHost-linux.flatpak
-            MiniHost-Windows.zip
-            MiniHost-Windows-Installer/MiniHostSetup.exe
+            MiniHost-windows.exe
           generate_release_notes: true

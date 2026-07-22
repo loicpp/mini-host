@@ -10,14 +10,6 @@
       </h2>
       <p class="text-muted-foreground text-center mb-8">{{ $t('settings.subtitle') }}</p>
       
-      <div class="flex flex-col gap-3 mb-6">
-        <label class="font-bold text-primary">{{ $t('settings.source') }}</label>
-        <select v-model="localSource" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
-          <option value="soundcloud">{{ $t('settings.source_soundcloud') }}</option>
-          <option value="local">{{ $t('settings.source_local') }}</option>
-        </select>
-      </div>
-
       <div class="flex flex-col gap-3 mb-8">
         <label class="font-bold text-primary">{{ $t('settings.language') }}</label>
         <select v-model="localLanguage" class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none cursor-pointer font-medium">
@@ -50,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { ChevronLeft, Settings, LogOut } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../ui/Btn.vue';
@@ -59,28 +51,16 @@ const { locale } = useI18n();
 
 const appVersion = import.meta.env.VITE_APP_VERSION || 'inconnue';
 
-const props = defineProps<{
-  preferredSource: string;
-}>();
-
 const emit = defineEmits<{
-  (e: 'update:preferredSource', val: string): void;
   (e: 'back'): void;
   (e: 'save'): void;
   (e: 'logout'): void;
 }>();
 
-const localSource = ref(props.preferredSource);
 const localLanguage = ref(locale.value);
-
-watch(() => props.preferredSource, (newVal) => {
-  localSource.value = newVal;
-});
 
 const handleSave = () => {
   locale.value = localLanguage.value;
-  emit('update:preferredSource', localSource.value);
   emit('save');
 };
 </script>
-

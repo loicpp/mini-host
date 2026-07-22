@@ -7,12 +7,20 @@ except ImportError:
     # Fallback for old import structure if needed
     from music_provider import MusicManager
 
+from core.ports.music_search_port import MusicSearchPort
+
 class AnimatorApi:
-    def __init__(self, storage_port: StoragePort, projector_port: ProjectorPort):
+    def __init__(self, storage_port: StoragePort, projector_port: ProjectorPort, sc_search_port: MusicSearchPort = None):
         self.storage_port = storage_port
         self.projector_port = projector_port
+        self.sc_search_port = sc_search_port
         self.music_manager = MusicManager()
     
+    def search_soundcloud(self, query: str) -> List[Dict[str, Any]]:
+        if self.sc_search_port:
+            return self.sc_search_port.search(query)
+        return []
+        
     def save_config(self, config_data: Dict[str, Any]) -> Dict[str, str]:
         self.storage_port.save_config(config_data)
         return {"status": "ok"}

@@ -55,7 +55,6 @@
 
         <CreateGameScreen
           v-else-if="viewState === 'create-game'"
-          :preferredSource="preferredSource"
           @back="viewState = 'home'"
           @configure-playlists="onConfigurePlaylists"
           @start-game="createNewGame"
@@ -63,7 +62,8 @@
 
         <SettingsScreen 
           v-else-if="viewState === 'settings'"
-          v-model:preferredSource="preferredSource"
+          :language="currentLanguage"
+          @update:language="updateLanguage"
           @back="viewState = 'home'"
           @save="saveSettings"
           @logout="logout"
@@ -284,7 +284,9 @@ import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
 import { getServerTime } from '../firebase';
 import { useDialog } from '../composables/useDialog';
+import { useI18n } from 'vue-i18n';
 
+const { t, locale } = useI18n();
 const { showAlert, showConfirm } = useDialog();
 
 const email = ref('');
@@ -297,6 +299,7 @@ const gameSecret = ref('');
 const status = ref('waiting');
 
 const players = ref<Record<string, any>>({});
+const currentLanguage = ref(locale.value);
 const nextTrackInfo = ref({ answer: '' });
 const currentSource = ref('soundcloud');
 const searchQuery = ref('');
@@ -313,8 +316,6 @@ const hasBuzzed = computed(() => {
   if (gameSettings.value.mode !== 'buzzer') return false;
   return !!currentBuzzer.value;
 });
-
-
 
 const isPlayersModalOpen = ref(false);
 
@@ -355,8 +356,6 @@ const sortedPlayersList = computed(() => {
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 });
 
-
-
 const playersWhoWonPoints = computed(() => {
   const result = [];
   for (const [id, points] of Object.entries(lastAwardedPoints.value)) {
@@ -378,9 +377,6 @@ const lastPlayedTrack = computed(() => {
   return localTracks.value.find(t => t.id === lastId) || null;
 });
 
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
-
 const statusDisplay = computed(() => {
   if (status.value === 'waiting') return t('control_panel.status_waiting');
   if (status.value === 'playing') return t('control_panel.status_playing');
@@ -395,7 +391,6 @@ const viewState = ref('home');
 const musicProgress = ref(0);
 const musicTimeLeft = ref(0);
 let animationFrameId: number | null = null;
-const preferredSource = ref('soundcloud');
 const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
 
 const isBackendConnected = ref(true);
@@ -411,6 +406,11 @@ const checkBackendConnection = async () => {
   }
 };
 
+const updateLanguage = (lang: string) => {
+  currentLanguage.value = lang;
+  locale.value = lang;
+};
+
 onMounted(() => {
   // Start connection monitor
   checkBackendConnection();
@@ -424,15 +424,11 @@ onMounted(() => {
         password.value = config.password;
         await login();
       }
-      if (config && config.preferredSource) {
-        preferredSource.value = config.preferredSource;
-      }
       
       // Load language preference
       if (config && config.language) {
-        import('../i18n').then((module) => {
-          module.default.global.locale.value = config.language;
-        });
+        currentLanguage.value = config.language;
+        locale.value = config.language;
       }
     } catch(e) {
       console.warn("Could not load config", e);
@@ -451,9 +447,6 @@ onMounted(() => {
     }
   });
 });
-
-
-
 
 const logout = async () => {
   if (await showConfirm({ title: t('dialogs.logout.title'), message: t('dialogs.logout.message'), confirmText: t('dialogs.logout.confirm'), confirmVariant: "danger" })) {
@@ -502,15 +495,16 @@ const login = async (loginEmail?: string, loginPassword?: string) => {
       const configRes = await fetch('http://127.0.0.1:5000/api/config');
       const config = await configRes.json();
       
-      if (!config.preferredSource) {
-        viewState.value = 'settings';
+      if (!config.language) {
+        currentLanguage.value = locale.value;
       } else {
-        preferredSource.value = config.preferredSource;
-        viewState.value = 'home';
+        currentLanguage.value = config.language;
+        locale.value = config.language;
       }
       if (config.lastGameId) {
         lastGameId.value = config.lastGameId;
       }
+      viewState.value = 'home';
     } catch (e) {
       console.warn("Backend not available, running in local-only mode", e);
       viewState.value = 'settings';
@@ -566,7 +560,7 @@ const createNewGame = async (settings: any) => {
   gameId.value = game.gameId;
   gameSecret.value = game.secret;
   status.value = 'waiting';
-  currentSource.value = preferredSource.value;
+  currentSource.value = settings?.playlist?.type || 'soundcloud';
   viewState.value = 'game';
   
   if (musicManager.activeProviderName !== currentSource.value) {
@@ -634,9 +628,6 @@ const resumeGame = async () => {
     status.value = 'waiting';
   }
   
-  currentSource.value = preferredSource.value;
-  viewState.value = 'game';
-  
   try {
     const res = await fetch('http://127.0.0.1:5000/api/game');
     const data = await res.json();
@@ -646,6 +637,9 @@ const resumeGame = async () => {
   } catch {
     console.warn("Could not load game.json");
   }
+  
+  currentSource.value = (gameSettings.value as any).playlist?.type || 'soundcloud';
+  viewState.value = 'game';
   
   animatorService.listenToPlayers(gameId.value, (newPlayers) => {
     players.value = newPlayers;
@@ -682,7 +676,7 @@ const saveSettings = async () => {
     await fetch('http://127.0.0.1:5000/api/config', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ preferredSource: preferredSource.value, language: currentLanguage })
+      body: JSON.stringify({ language: currentLanguage })
     });
   } catch {
     console.warn("Could not save settings to backend");

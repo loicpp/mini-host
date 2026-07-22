@@ -7,6 +7,7 @@ from flask_cors import CORS
 from core.animator_api import AnimatorApi
 from infrastructure.file_storage_adapter import FileStorageAdapter
 from infrastructure.local_projector_adapter import LocalProjectorAdapter
+from infrastructure.soundcloud_scraper_adapter import SoundCloudScraperAdapter
 from controllers.http_controller import register_routes
 
 if getattr(sys, 'frozen', False):
@@ -27,7 +28,8 @@ dev_mode = "--dev" in sys.argv
 # Setup Architecture (Dependency Injection)
 storage_adapter = FileStorageAdapter()
 projector_adapter = LocalProjectorAdapter(dev_mode=dev_mode)
-api = AnimatorApi(storage_port=storage_adapter, projector_port=projector_adapter)
+sc_search_adapter = SoundCloudScraperAdapter()
+api = AnimatorApi(storage_port=storage_adapter, projector_port=projector_adapter, sc_search_port=sc_search_adapter)
 
 # Register routes
 register_routes(app, api)
