@@ -21,7 +21,7 @@
             <Plus class="w-4 h-4 mr-2" /> {{ $t('playlists.create') }}
           </Btn>
           <Btn variant="ghost-yellow" @click="showGeneratorModal = true">
-            <Wand2 class="w-4 h-4 mr-2" /> Générer
+            <Wand2 class="w-4 h-4 mr-2" /> {{ $t('playlists.generate') }}
           </Btn>
         </div>
 
@@ -34,7 +34,7 @@
               <h4 class="font-bold text-primary text-lg m-0 flex items-center gap-2">
                 <span v-if="pl.type === 'local'" title="Playlist Locale">📁</span>
                 <span v-else-if="pl.type === 'soundcloud'" title="Playlist SoundCloud">☁️</span>
-                <span v-else title="Type de playlist invalide" class="text-red-500 font-bold">⚠️ Type Invalide</span>
+                <span v-else title="Type de playlist invalide" class="text-red-500 font-bold">{{ $t('playlists.invalid_type') }}</span>
                 {{ pl.name }}
               </h4>
               <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} {{ $t('playlists.tracks') }}</p>
@@ -141,7 +141,7 @@
                       @keydown.enter="saveEditTrack"
                       @keydown.esc="editSuggestions = []"
                       @blur="handleEditBlur"
-                      placeholder="Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)" 
+                      :placeholder="$t('playlists.search_itunes_placeholder')" 
                       class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
                     />
                     <div v-if="isEditSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
@@ -222,7 +222,7 @@
                       @keydown.enter="saveEditTrack"
                       @keydown.esc="editSuggestions = []"
                       @blur="handleEditBlur"
-                      placeholder="Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)" 
+                      :placeholder="$t('playlists.search_itunes_placeholder')" 
                       class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
                     />
                     <div v-if="isEditSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
@@ -296,17 +296,17 @@
     <Modal v-if="showGeneratorModal" @close="closeGeneratorModal">
       <div class="p-6">
         <h3 class="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-          <Wand2 class="w-5 h-5 text-[#FFBA49]" /> Générer une playlist
+          <Wand2 class="w-5 h-5 text-[#FFBA49]" /> {{ $t('playlists.generate_playlist') }}
         </h3>
         
         <div class="flex flex-col gap-4 mb-6">
           <div>
-            <label class="block text-sm font-bold text-primary mb-2">Thème (tag Last.fm)</label>
+            <label class="block text-sm font-bold text-primary mb-2">{{ $t('playlists.theme_label') }}</label>
             <input type="text" v-model="generatorTheme" placeholder="ex: rock, 80s, disney..." class="w-full px-4 py-2 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none" />
           </div>
           <div>
             <label class="block text-sm font-bold text-primary mb-2 flex justify-between">
-              <span>Nombre de musiques</span>
+              <span>{{ $t('playlists.track_count_label') }}</span>
               <span class="text-[#FFBA49]">{{ generatorLimit }}</span>
             </label>
             <Slider v-model="generatorLimit" :min="1" :max="20" />
@@ -318,7 +318,7 @@
           <Btn variant="primary" @click="generatePlaylist" :disabled="isGenerating || !generatorTheme.trim()">
             <Loader2 v-if="isGenerating" class="w-4 h-4 mr-2 animate-spin" />
             <Wand2 v-else class="w-4 h-4 mr-2" />
-            {{ isGenerating ? 'Génération...' : 'Générer' }}
+            {{ isGenerating ? $t('playlists.generating') : $t('playlists.generate') }}
           </Btn>
         </div>
       </div>
@@ -817,7 +817,7 @@ const generatePlaylist = async () => {
     }
   } catch(e) {
     console.error("Erreur génération playlist", e);
-    await showAlert({ title: "Erreur", message: "Impossible de générer la playlist." });
+    await showAlert({ title: t('playlists.generate_error_title'), message: t('playlists.generate_error_msg') });
   } finally {
     isGenerating.value = false;
   }

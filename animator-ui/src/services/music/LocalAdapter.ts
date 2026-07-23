@@ -15,14 +15,22 @@ export class LocalAdapter implements MusicProvider {
     return Promise.resolve([]); // Le mode de recherche natif est désactivé au profit des dialogs système.
   }
 
+  async preload(trackId: string): Promise<void> {
+    if (!this.audio) return;
+    const url = trackId.startsWith('http') ? trackId : `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    if (this.audio.src === url) return;
+    
+    this.audio.src = url;
+    this.audio.load();
+  }
+
   async play(trackId: string, delayMs: number = 0): Promise<void> {
     if (!this.audio) throw new Error("Audio player not initialized");
     
-    // Convert absolute path to our local stream URL if it's not already a URL
-    if (trackId.startsWith('http')) {
-      this.audio.src = trackId;
-    } else {
-      this.audio.src = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    const url = trackId.startsWith('http') ? trackId : `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    if (this.audio.src !== url) {
+      this.audio.src = url;
+      this.audio.load();
     }
     
     if (this.playTimeout) {
@@ -32,11 +40,11 @@ export class LocalAdapter implements MusicProvider {
     
     if (delayMs > 0) {
       this.playTimeout = setTimeout(() => {
-        if (this.audio) this.audio.play();
+        if (this.audio) this.audio.play().catch(() => {});
         this.playTimeout = null;
       }, delayMs);
     } else {
-      this.audio.play();
+      this.audio.play().catch(() => {});
     }
   }
 

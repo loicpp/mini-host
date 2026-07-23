@@ -14,8 +14,8 @@
         <div class="flex items-center gap-3 mb-3">
           <span class="font-bold text-muted-foreground text-sm w-16">{{ $t('create_game.buzzer') }}</span>
           <div class="flex flex-1 gap-2">
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 15, 15)">Normal</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 2, 10)">Quick</Btn>
+            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 15, 15)">{{ $t('create_game.quick_mode_normal') }}</Btn>
+            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 2, 10)">{{ $t('create_game.quick_mode_quick') }}</Btn>
             <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 30, 30)">Fun</Btn>
             <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 10, 30, 30)">Peaceful</Btn>
           </div>
@@ -24,8 +24,8 @@
         <div class="flex items-center gap-3">
           <span class="font-bold text-muted-foreground text-sm w-16">{{ $t('create_game.text') }}</span>
           <div class="flex flex-1 gap-2">
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 15, 15)">Normal</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 2, 10)">Quick</Btn>
+            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 15, 15)">{{ $t('create_game.quick_mode_normal') }}</Btn>
+            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 2, 10)">{{ $t('create_game.quick_mode_quick') }}</Btn>
             <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 30, 30)">Fun</Btn>
             <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 10, 30, 30)">Peaceful</Btn>
           </div>
@@ -68,11 +68,11 @@
             <CustomSelect 
               v-model="settings.playlistId"
               :options="playlistOptions"
-              placeholder="Sélectionnez une playlist..."
+              :placeholder="$t('create_game.playlist_placeholder')"
             />
           </div>
           <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
-            <p class="text-amber-800 text-sm font-medium text-center">Aucune playlist disponible. Créez-en une d'abord !</p>
+            <p class="text-amber-800 text-sm font-medium text-center">{{ $t('create_game.no_playlist_available') }}</p>
             <Btn variant="dark" @click="$emit('configure-playlists')">{{ $t('create_game.create_first_playlist') }}</Btn>
           </div>
         </div>

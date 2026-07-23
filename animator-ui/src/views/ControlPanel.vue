@@ -735,6 +735,11 @@ const toggleProjector = async () => {
 const selectTrack = (track: Track) => {
   selectedTrack.value = track;
   nextTrackInfo.value.answer = `${track.title} - ${track.artist}`;
+  
+  // Preload track immediately so it's ready when the animator clicks Play
+  if (typeof musicManager.preload === 'function') {
+    musicManager.preload(track).catch(e => console.warn("Preload failed", e));
+  }
 };
 
 let currentStartTime = 0;

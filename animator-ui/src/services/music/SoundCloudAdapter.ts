@@ -69,6 +69,23 @@ export class SoundCloudAdapter implements MusicProvider {
     // No-op
   }
 
+  private currentTrackUrl: string | null = null;
+
+  async preload(trackUrl: string): Promise<void> {
+    if (!this.widget) return;
+    if (this.currentTrackUrl === trackUrl) return; // already loaded/loading
+    
+    this.currentTrackUrl = trackUrl;
+    this.widget.load(trackUrl, {
+      auto_play: false,
+      hide_related: true,
+      show_comments: false,
+      show_user: false,
+      show_reposts: false,
+      visual: false
+    });
+  }
+
   async play(trackUrl: string, delayMs: number = 0): Promise<void> {
     if (!this.widget) {
       console.warn("SoundCloud widget not initialized. Call init() first.");
@@ -80,30 +97,29 @@ export class SoundCloudAdapter implements MusicProvider {
       this.playTimeout = null;
     }
     
-    if (delayMs > 0) {
-      // Load muted or not autoplaying
+    const needsLoad = this.currentTrackUrl !== trackUrl;
+    
+    if (needsLoad) {
+      this.currentTrackUrl = trackUrl;
       this.widget.load(trackUrl, {
-        auto_play: false,
+        auto_play: delayMs === 0,
         hide_related: true,
         show_comments: false,
         show_user: false,
         show_reposts: false,
         visual: false
       });
+    } else {
+      if (delayMs === 0) {
+        this.widget.play();
+      }
+    }
+    
+    if (delayMs > 0) {
       this.playTimeout = setTimeout(() => {
         this.widget.play();
         this.playTimeout = null;
       }, delayMs);
-    } else {
-      // Play immediately synchronously
-      this.widget.load(trackUrl, {
-        auto_play: true,
-        hide_related: true,
-        show_comments: false,
-        show_user: false,
-        show_reposts: false,
-        visual: false
-      });
     }
   }
 

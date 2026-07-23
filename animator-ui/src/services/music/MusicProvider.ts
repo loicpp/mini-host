@@ -28,6 +28,11 @@ export interface MusicProvider {
   search(query: string): Promise<Track[]>;
 
   /**
+   * Preloads a track by its ID
+   */
+  preload?(trackId: string): Promise<void>;
+
+  /**
    * Plays a track by its ID
    */
   play(trackId: string, delayMs?: number): Promise<void>;

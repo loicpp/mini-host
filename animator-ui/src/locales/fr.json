@@ -41,7 +41,11 @@
     "create_first_playlist": "Créer ma première playlist",
     "start_button": "Créer la partie",
     "local": "locale",
-    "soundcloud": "SoundCloud"
+    "soundcloud": "SoundCloud",
+    "quick_mode_normal": "Normal",
+    "quick_mode_quick": "Rapide",
+    "playlist_placeholder": "Sélectionnez une playlist...",
+    "no_playlist_available": "Aucune playlist disponible. Créez-en une d'abord !"
   },
   "playlists": {
     "quit_edition": "Quitter l'édition",
@@ -82,7 +86,16 @@
     "search_sc_placeholder": "Rechercher sur SoundCloud (ou tapez Titre - Artiste et Entrée)",
     "cancel_add": "Annuler l'ajout",
     "track_deleted": "Musique supprimée",
-    "duplicate_warning": "Cette URL ou ce fichier est déjà dans la playlist. Cliquez à nouveau pour forcer l'ajout."
+    "duplicate_warning": "Cette URL ou ce fichier est déjà dans la playlist. Cliquez à nouveau pour forcer l'ajout.",
+    "generate": "Générer",
+    "generate_playlist": "Générer une playlist",
+    "generating": "Génération...",
+    "invalid_type": "⚠️ Type Invalide",
+    "search_itunes_placeholder": "Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)",
+    "theme_label": "Thème (tag Last.fm)",
+    "track_count_label": "Nombre de musiques",
+    "generate_error_title": "Erreur",
+    "generate_error_msg": "Impossible de générer la playlist."
   },
   "login_screen": {
     "title": "Connexion Régie",

@@ -36,6 +36,15 @@ class MusicManager {
     return await this.currentProvider.search(query);
   }
 
+  async preload(track: Track): Promise<void> {
+    if (!this.currentProvider || this.currentProvider.name !== track.source) {
+      await this.setProvider(track.source);
+    }
+    if (this.currentProvider!.preload) {
+      await this.currentProvider!.preload(track.id);
+    }
+  }
+
   async play(track: Track, delayMs: number = 0): Promise<void> {
     if (!this.currentProvider || this.currentProvider.name !== track.source) {
       await this.setProvider(track.source);
