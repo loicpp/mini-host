@@ -17,10 +17,6 @@ export function useAuth() {
         password.value = config.password;
         await login();
       }
-      if (config && config.language) {
-        currentLanguage.value = config.language;
-        i18n.global.locale.value = config.language as any;
-      }
     } catch(e) {
       console.warn("Could not load config", e);
     }
@@ -44,12 +40,6 @@ export function useAuth() {
         const configRes = await fetch('http://127.0.0.1:5000/api/config');
         const config = await configRes.json();
         
-        if (!config.language) {
-          currentLanguage.value = i18n.global.locale.value as any;
-        } else {
-          currentLanguage.value = config.language;
-          i18n.global.locale.value = config.language as any;
-        }
         if (config.lastGameId) {
           lastGameId.value = config.lastGameId;
         }

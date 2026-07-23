@@ -55,12 +55,14 @@ const emit = defineEmits<{
   (e: 'back'): void;
   (e: 'save'): void;
   (e: 'logout'): void;
+  (e: 'update:language', val: string): void;
 }>();
 
 const localLanguage = ref(locale.value);
 
 const handleSave = () => {
   locale.value = localLanguage.value;
+  emit('update:language', localLanguage.value);
   emit('save');
 };
 </script>
