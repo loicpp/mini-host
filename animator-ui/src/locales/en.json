@@ -57,6 +57,10 @@
     "delete": "Delete the playlist",
     "back": "Back to playlists",
     "editing": "Editing:",
+    "remove": "Remove from playlist",
+    "certified": "Music certified by iTunes",
+    "not_certified": "Music not recognized by iTunes",
+    "edit_info": "Edit information",
     "add_sc": "Add a track (SoundCloud)",
     "track_title": "Track title",
     "artist": "Artist",
@@ -66,6 +70,8 @@
     "local_help": "Select one or more files, or an entire folder. Title and artist will be extracted automatically if possible.",
     "select_files": "Select files",
     "select_folder": "Select a folder",
+    "import_track": "Import a track",
+    "import_folder": "Import a folder",
     "playlist_empty": "This playlist is empty.",
     "test_duration": "Listening duration (Test):",
     "sec": "sec",
@@ -74,7 +80,11 @@
     "cancel": "Cancel",
     "testing": "Stop",
     "test": "Test",
-    "remove": "Remove"
+    "remove": "Remove",
+    "search_sc_placeholder": "Search on SoundCloud (or type Title - Artist and press Enter)",
+    "cancel_add": "Cancel addition",
+    "track_deleted": "Track deleted",
+    "duplicate_warning": "This URL or file is already in the playlist. Click again to force add."
   },
   "login_screen": {
     "title": "Control Panel Login",

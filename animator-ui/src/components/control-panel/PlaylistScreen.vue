@@ -33,7 +33,8 @@
             <div>
               <h4 class="font-bold text-primary text-lg m-0 flex items-center gap-2">
                 <span v-if="pl.type === 'local'" title="Playlist Locale">📁</span>
-                <span v-else title="Playlist SoundCloud">☁️</span>
+                <span v-else-if="pl.type === 'soundcloud'" title="Playlist SoundCloud">☁️</span>
+                <span v-else title="Type de playlist invalide" class="text-red-500 font-bold">⚠️ Type Invalide</span>
                 {{ pl.name }}
               </h4>
               <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} {{ $t('playlists.tracks') }}</p>
@@ -59,8 +60,8 @@
             <div v-if="isEditingPlaylistName" class="flex items-center gap-2">
               <span class="text-[#FFBA49] font-bold text-xl">{{ $t('playlists.editing') }}</span>
               <input type="text" v-model="editingPlaylistName" @keydown.enter="savePlaylistName" @keydown.esc="isEditingPlaylistName = false" class="px-3 py-1 bg-white border border-slate-200 rounded-lg outline-none focus:border-[#FFBA49] text-xl font-bold text-primary shadow-sm min-w-[250px]" />
-              <Btn size="sm" variant="primary" @click="savePlaylistName()">OK</Btn>
-              <Btn size="sm" variant="soft" @click="isEditingPlaylistName = false">Annuler</Btn>
+              <Btn size="sm" variant="primary" @click="savePlaylistName()">{{ $t('playlists.ok') }}</Btn>
+              <Btn size="sm" variant="soft" @click="isEditingPlaylistName = false">{{ $t('playlists.cancel') }}</Btn>
             </div>
             <h3 v-else class="text-xl font-bold text-primary m-0 flex items-center gap-2 group cursor-pointer" @click="startEditPlaylistName">
               <span class="text-[#FFBA49]">{{ $t('playlists.editing') }}</span> 
@@ -76,13 +77,9 @@
           <div class="flex justify-between items-center mb-4">
             <h4 v-if="selectedPlaylist.type === 'local'" class="font-bold text-amber-800 flex items-center gap-2 m-0"><FolderOpen class="w-4 h-4" /> {{ $t('playlists.add_local') }}</h4>
             <h4 v-else class="font-bold text-blue-800 flex items-center gap-2 m-0"><PlusCircle class="w-4 h-4" /> {{ $t('playlists.add_sc') }}</h4>
-            
-            <Btn v-if="selectedPlaylist.type === 'local'" size="sm" variant="secondary" @click="addLocalFolder">
-              <FolderPlus class="w-4 h-4 mr-1" /> Importer un dossier
-            </Btn>
           </div>
           
-          <div v-if="!newTrack.title" class="relative mb-4 z-10">
+          <div v-if="selectedPlaylist.type === 'soundcloud' && !newTrack.title" class="relative mb-4 z-10">
             <input 
               type="text" 
               v-model="searchQuery" 
@@ -90,17 +87,16 @@
               @keydown.enter="applyCustomSearch"
               @keydown.esc="suggestions = []"
               @blur="handleSearchBlur"
-              :placeholder="(!selectedPlaylist.type || selectedPlaylist.type === 'soundcloud') ? 'Rechercher sur SoundCloud (ou tapez Titre - Artiste et Entrée)' : 'Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)'" 
-              class="w-full px-4 py-3 bg-white rounded-xl border text-foreground focus:ring-2 transition-shadow outline-none font-medium shadow-sm"
-              :class="selectedPlaylist.type === 'local' ? 'border-amber-100 focus:ring-amber-400' : 'border-blue-100 focus:ring-blue-400'"
+              :placeholder="$t('playlists.search_sc_placeholder')" 
+              class="w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm"
             />
-            <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-t-transparent rounded-full animate-spin" :class="selectedPlaylist.type === 'local' ? 'border-amber-200' : 'border-blue-200'"></div>
+            <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-blue-200 border-t-transparent rounded-full animate-spin"></div>
             
             <ul v-if="suggestions.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50">
                 <li 
                   v-for="(item, index) in suggestions" 
                   :key="index"
-                  @click="selectSuggestion(item)"
+                  @mousedown.prevent="selectSuggestion(item)"
                   class="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
                   :title="item.title + ' - ' + item.artist"
                 >
@@ -113,24 +109,85 @@
             </ul>
           </div>
           
+          <div v-else-if="selectedPlaylist.type === 'local' && !newTrack.url" class="flex justify-center gap-6 py-4">
+            <Btn variant="primary" @click="addLocalTrackFileFirst">
+              <FileAudio class="w-4 h-4 mr-2" /> {{ $t('playlists.import_track') }}
+            </Btn>
+            <Btn variant="primary" @click="addLocalFolder">
+              <FolderPlus class="w-4 h-4 mr-2" /> {{ $t('playlists.import_folder') }}
+            </Btn>
+          </div>
+          
           <div v-else class="flex flex-col gap-4">
-            <div class="bg-white p-3 rounded-xl border flex items-center justify-between shadow-sm" :class="selectedPlaylist.type === 'local' ? 'border-amber-100' : 'border-blue-100'">
-                <div>
-                   <strong class="block" :class="selectedPlaylist.type === 'local' ? 'text-amber-900' : 'text-blue-900'">{{ newTrack.title }}</strong>
-                   <span v-if="newTrack.artist" class="text-sm" :class="selectedPlaylist.type === 'local' ? 'text-amber-700' : 'text-blue-700'">{{ newTrack.artist }}</span>
+            <div class="bg-white p-3 rounded-xl border flex items-center justify-between shadow-sm mb-4" :class="selectedPlaylist.type === 'local' ? 'border-amber-100' : 'border-blue-100'">
+                <div v-if="editingTrackIndex !== -1" class="flex flex-col flex-1 min-w-0 mr-4">
+                    <strong class="flex items-center gap-2" :class="selectedPlaylist.type === 'local' ? 'text-amber-900' : 'text-blue-900'">
+                        <span class="truncate">{{ newTrack.title }}</span>
+                        <span v-if="newTrack.isCertified" :title="$t('playlists.certified')" class="flex shrink-0">
+                          <BadgeCheck class="w-4 h-4 text-blue-500 fill-blue-50" />
+                        </span>
+                        <span v-else :title="$t('playlists.not_certified')" class="flex shrink-0">
+                          <XCircle class="w-4 h-4 text-red-500 fill-red-50" />
+                        </span>
+                    </strong>
+                    <span v-if="newTrack.artist" class="text-sm truncate" :class="selectedPlaylist.type === 'local' ? 'text-amber-700' : 'text-blue-700'">{{ newTrack.artist }}</span>
                 </div>
-                <button @click="clearSelectedTrack" class="text-muted-foreground hover:text-red-500 font-bold px-2 py-1 bg-red-50 rounded-lg text-xs">Annuler</button>
+                
+                <div v-else class="flex-1 min-w-0 mr-4 relative z-50">
+                    <input 
+                      type="text" 
+                      v-model="editSearchQuery" 
+                      @input="handleEditSearch"
+                      @keydown.enter="saveEditTrack"
+                      @keydown.esc="editSuggestions = []"
+                      @blur="handleEditBlur"
+                      placeholder="Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)" 
+                      class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
+                    />
+                    <div v-if="isEditSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+                    
+                    <ul v-if="editSuggestions.length > 0" class="absolute top-full mt-1 left-0 right-0 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-xl overflow-hidden max-h-[200px] overflow-y-auto z-50">
+                        <li 
+                          v-for="(item, sIdx) in editSuggestions" 
+                          :key="sIdx"
+                          @mousedown.prevent="selectEditSuggestion(item)"
+                          class="flex items-center gap-3 p-2 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
+                          :title="item.title + ' - ' + item.artist"
+                        >
+                          <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-8 h-8 rounded-md object-cover flex-shrink-0 bg-muted" />
+                          <div class="flex flex-col min-w-0">
+                            <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
+                            <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
+                          </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="flex items-center gap-2 shrink-0">
+                    <template v-if="editingTrackIndex !== -1">
+                        <button @click="startEditNewTrack" class="text-xs text-blue-500 hover:text-blue-700 font-bold px-2 py-1 bg-blue-50 rounded-lg flex items-center gap-1 outline-none">
+                          <Edit3 class="w-3 h-3"/> {{ $t('playlists.edit') }}
+                        </button>
+                    </template>
+                    <template v-else>
+                        <Btn size="sm" variant="primary" @click="saveEditTrack()">{{ $t('playlists.ok') }}</Btn>
+                        <Btn size="sm" variant="soft" @click="cancelEditTrack()">{{ $t('playlists.cancel') }}</Btn>
+                    </template>
+                    <button v-if="editingTrackIndex !== -1" @click="clearSelectedTrack" class="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-lg flex items-center justify-center transition-colors outline-none" :title="$t('playlists.cancel_add')">
+                      <X class="w-4 h-4"/>
+                    </button>
+                </div>
             </div>
             
-            <div class="flex gap-4" v-if="!selectedPlaylist.type || selectedPlaylist.type === 'soundcloud'">
+            <div class="flex gap-4" v-if="selectedPlaylist.type === 'soundcloud'">
               <input type="text" v-model="newTrack.url" @input="duplicateWarning = null; forceAdd = false;" :placeholder="$t('playlists.sc_url')" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
               <Btn variant="primary" @click="addTrack" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
             </div>
             
-            <div class="flex gap-4" v-else>
-              <Btn variant="dark" @click="addLocalTrackWithMetadata">
-                <FileAudio class="w-4 h-4 mr-2" /> 
-                {{ pendingLocalPath ? 'Confirmer l\'ajout du fichier' : 'Associer un fichier MP3' }}
+            <div class="flex justify-end gap-4" v-else>
+              <Btn variant="primary" @click="confirmLocalTrackAdded">
+                <Plus class="w-4 h-4 mr-2" /> 
+                {{ $t('playlists.add') }}
               </Btn>
             </div>
             
@@ -155,9 +212,9 @@
           
           <div class="flex flex-col gap-3">
             <div v-for="(track, index) in selectedPlaylist.tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex flex-col min-w-0 pr-4 w-1/2">
-                <div v-if="editingTrackIndex === index" class="flex flex-col gap-2 w-full bg-slate-50 p-3 rounded-xl border border-slate-200 relative">
-                  <div class="relative z-50">
+              <div class="flex flex-col min-w-0 pr-4 flex-1">
+                <div v-if="editingTrackIndex === index" class="flex items-center gap-2 w-full bg-slate-50 h-[60px] px-2 rounded-xl border border-slate-200 relative">
+                  <div class="relative z-50 flex-1 min-w-0">
                     <input 
                       type="text" 
                       v-model="editSearchQuery" 
@@ -166,7 +223,7 @@
                       @keydown.esc="editSuggestions = []"
                       @blur="handleEditBlur"
                       placeholder="Rechercher sur iTunes (ou tapez Titre - Artiste et Entrée)" 
-                      class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
+                      class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
                     />
                     <div v-if="isEditSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
                     
@@ -174,7 +231,7 @@
                         <li 
                           v-for="(item, sIdx) in editSuggestions" 
                           :key="sIdx"
-                          @click="selectEditSuggestion(item)"
+                          @mousedown.prevent="selectEditSuggestion(item)"
                           class="flex items-center gap-3 p-2 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
                           :title="item.title + ' - ' + item.artist"
                         >
@@ -187,20 +244,27 @@
                     </ul>
                   </div>
                   
-                  <div class="flex gap-2 mt-1">
+                  <div class="flex items-center gap-2 shrink-0">
                     <Btn size="sm" variant="primary" @click="saveEditTrack()">{{ $t('playlists.ok') }}</Btn>
                     <Btn size="sm" variant="soft" @click="cancelEditTrack()">{{ $t('playlists.cancel') }}</Btn>
                   </div>
                 </div>
-                <div v-else class="flex flex-col gap-1 w-full group">
-                  <h4 class="font-bold text-primary m-0 flex items-center" :title="track.title + ' - ' + track.artist">
-                    <span class="truncate">{{ track.title }} - {{ track.artist }}</span>
-                    <BadgeCheck v-if="track.isCertified" class="w-4 h-4 text-blue-500 fill-blue-50 shrink-0 ml-1" title="Validé par iTunes" />
-                  </h4>
-                  <p class="text-xs text-muted-foreground m-0 truncate w-full" :title="track.url" dir="rtl" style="text-align: left;">{{ track.url }}</p>
-                  <button @click="startEditTrack(index, track)" class="text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 w-max mt-1 outline-none">
-                    <Edit3 class="w-3 h-3"/> {{ $t('playlists.edit_info') }}
-                  </button>
+                <div v-else class="flex flex-col justify-center w-full group min-w-0 h-[60px]">
+                  <div 
+                    @click="startEditTrack(index, track)" 
+                    class="flex flex-col w-fit max-w-full cursor-pointer"
+                    :title="$t('playlists.edit_info')"
+                  >
+                    <div class="flex items-center gap-1.5 min-w-0 w-full">
+                      <span class="font-bold text-primary truncate text-base">{{ track.title }}</span>
+                      <span v-if="track.isCertified" :title="$t('playlists.certified')" class="flex shrink-0">
+                        <BadgeCheck class="w-4.5 h-4.5 text-blue-500 fill-blue-50" />
+                      </span>
+                      <Edit3 class="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"/>
+                    </div>
+                    <span class="text-sm text-muted-foreground truncate w-full font-medium">{{ track.artist }}</span>
+                  </div>
+                  <p class="text-[10px] text-muted-foreground/50 m-0 truncate w-full mt-0.5" :title="track.url" dir="rtl" style="text-align: left;">{{ track.url }}</p>
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
@@ -223,8 +287,8 @@
     <!-- Undo Toast -->
     <transition enter-active-class="transition ease-out duration-300" enter-from-class="transform translate-y-full opacity-0" enter-to-class="transform translate-y-0 opacity-100" leave-active-class="transition ease-in duration-200" leave-from-class="transform translate-y-0 opacity-100" leave-to-class="transform translate-y-full opacity-0">
       <div v-if="deletedTrackInfo" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#3F4739] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-4 z-50">
-        <span class="font-medium text-sm">Musique supprimée</span>
-        <button @click="undoDelete" class="font-bold text-[#FFBA49] hover:text-[#ffb02e] hover:underline transition-all text-sm outline-none">Annuler</button>
+        <span class="font-medium text-sm">{{ $t('playlists.track_deleted') }}</span>
+        <button @click="undoDelete" class="font-bold text-[#FFBA49] hover:text-[#ffb02e] hover:underline transition-all text-sm outline-none">{{ $t('playlists.cancel') }}</button>
       </div>
     </transition>
 
@@ -250,7 +314,7 @@
         </div>
         
         <div class="flex justify-end gap-3">
-          <Btn variant="ghost" @click="closeGeneratorModal" :disabled="isGenerating">Annuler</Btn>
+          <Btn variant="ghost" @click="closeGeneratorModal" :disabled="isGenerating">{{ $t('playlists.cancel') }}</Btn>
           <Btn variant="primary" @click="generatePlaylist" :disabled="isGenerating || !generatorTheme.trim()">
             <Loader2 v-if="isGenerating" class="w-4 h-4 mr-2 animate-spin" />
             <Wand2 v-else class="w-4 h-4 mr-2" />
@@ -264,7 +328,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square, FolderOpen, FileAudio, FolderPlus, BadgeCheck, Wand2, Loader2 } from '@lucide/vue';
+import { ChevronLeft, ListMusic, Plus, Edit3, Trash2, PlusCircle, PlayCircle, Play, Square, FolderOpen, FileAudio, FolderPlus, BadgeCheck, Wand2, Loader2, XCircle, X } from '@lucide/vue';
 import jsmediatags from 'jsmediatags';
 import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
@@ -272,6 +336,45 @@ import Modal from '../ui/Modal.vue';
 import Slider from '../ui/Slider.vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { itunesService } from '../../services/itunesService';
+
+const autoCertifyTrack = async (trackData: {title: string, artist: string, isCertified?: boolean}) => {
+  console.log("Try to auto-certify track:", trackData);
+  if (trackData.isCertified) return trackData;
+  const rawTitle = trackData.title.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+  const rawArtist = (trackData.artist || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').replace(/Artiste Inconnu/i, '').trim();
+  
+  const query = `${rawTitle} ${rawArtist}`.trim();
+  if (query.length < 3) return trackData;
+  
+  try {
+    const results = await itunesService.search(query);
+    if (results && results.length > 0) {
+      const target = rawTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const targetArtist = rawArtist.toLowerCase().replace(/[^a-z0-9]/g, '');
+      
+      for (const item of results.slice(0, 3)) {
+        const found = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const foundArtist = (item.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        const titleMatch = found.includes(target) || target.includes(found) || found === target;
+        const artistMatch = targetArtist.length < 2 
+                         || foundArtist.includes(targetArtist) 
+                         || targetArtist.includes(foundArtist)
+                         || target.includes(foundArtist);
+        
+        if (titleMatch && artistMatch) {
+          trackData.title = item.title;
+          trackData.artist = item.artist;
+          trackData.isCertified = true;
+          break; // Stop at the first valid match
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Auto-certify error:", e);
+  }
+  return trackData;
+};
 import { useDialog } from '../../composables/useDialog';
 import { useI18n } from 'vue-i18n';
 
@@ -341,7 +444,7 @@ const checkForDuplicate = (track: Track, urlToCheck?: string): string | null => 
   const tracks = selectedPlaylist.value.tracks;
   
   if (urlToCheck && tracks.some(t => t.url === urlToCheck)) {
-    return "Cette URL ou ce fichier est déjà dans la playlist. Cliquez à nouveau pour forcer l'ajout.";
+    return t('playlists.duplicate_warning');
   }
   
   const title = track.title?.toLowerCase().trim();
@@ -392,6 +495,13 @@ const selectEditSuggestion = async (item: {title: string, artist: string}) => {
   await saveEditTrack();
 };
 
+const startEditNewTrack = () => {
+  editingTrackIndex.value = -1;
+  editingTrackData.value = { title: newTrack.value.title, artist: newTrack.value.artist, isCertified: newTrack.value.isCertified };
+  editSearchQuery.value = `${newTrack.value.title} ${newTrack.value.artist}`.trim();
+  handleEditSearch();
+};
+
 const applyCustomEditSearch = () => {
   if (!editSearchQuery.value.trim()) return;
   
@@ -439,7 +549,7 @@ const handleSearch = () => {
 
   isSearching.value = true;
   searchTimeout.value = setTimeout(async () => {
-    if (!selectedPlaylist.value?.type || selectedPlaylist.value?.type === 'soundcloud') {
+    if (selectedPlaylist.value?.type === 'soundcloud') {
       try {
         const res = await fetch(`http://127.0.0.1:5000/api/soundcloud/search?q=${encodeURIComponent(searchQuery.value)}`);
         const data = await res.json();
@@ -461,13 +571,21 @@ const handleSearchBlur = () => {
   }, 200);
 };
 
-const selectSuggestion = (item: {title: string, artist: string, url?: string}) => {
+const selectSuggestion = async (item: {title: string, artist: string, url?: string}) => {
   newTrack.value.title = item.title;
   newTrack.value.artist = item.artist;
-  newTrack.value.isCertified = selectedPlaylist.value?.type === 'local' || selectedPlaylist.value?.type === undefined; 
+  newTrack.value.isCertified = false;
   if (item.url) {
     newTrack.value.url = item.url;
   }
+  
+  if (selectedPlaylist.value?.type === 'soundcloud') {
+    const certified = await autoCertifyTrack({ ...newTrack.value });
+    newTrack.value.title = certified.title;
+    newTrack.value.artist = certified.artist;
+    newTrack.value.isCertified = certified.isCertified;
+  }
+  
   searchQuery.value = '';
   suggestions.value = [];
 };
@@ -512,6 +630,14 @@ const startEditTrack = (index: number, track: Track) => {
 const saveEditTrack = async () => {
   if (editSearchQuery.value.trim()) {
      applyCustomEditSearch();
+  }
+  
+  if (editingTrackIndex.value === -1) {
+    newTrack.value.title = editingTrackData.value.title;
+    newTrack.value.artist = editingTrackData.value.artist;
+    newTrack.value.isCertified = editingTrackData.value.isCertified;
+    editingTrackIndex.value = null;
+    return;
   }
   
   if (editingTrackIndex.value !== null && selectedPlaylist.value) {
@@ -575,11 +701,16 @@ const testTrack = async (url: string) => {
         source: source as any
       });
       
-      testTimeout.value = window.setTimeout(() => {
-        if (testingTrackUrl.value === url) {
-          stopTest();
-        }
-      }, dur * 1000);
+      if (testingTrackUrl.value !== url) {
+        // The user clicked stop while play() was pending
+        await musicManager.stop();
+      } else {
+        testTimeout.value = window.setTimeout(() => {
+          if (testingTrackUrl.value === url) {
+            stopTest();
+          }
+        }, dur * 1000);
+      }
     } catch(err) {
       console.error(err);
     }
@@ -666,8 +797,18 @@ const generatePlaylist = async () => {
         id: newId,
         name: `Playlist : ${formattedTheme}`,
         type: 'soundcloud',
-        tracks: tracks
+        tracks: []
       });
+      
+      // Auto-certify generated tracks
+      const plIndex = playlists.value.length - 1;
+      for (const track of tracks) {
+        if (!track.isCertified) {
+          await autoCertifyTrack(track);
+        }
+        playlists.value[plIndex].tracks.push(track);
+      }
+      
       await saveToConfig();
       showGeneratorModal.value = false;
       generatorTheme.value = '';
@@ -728,6 +869,8 @@ const editPlaylist = (pl: Playlist) => {
   selectedPlaylist.value = pl;
 };
 
+
+
 const addTrack = async () => {
   if (!newTrack.value.url.trim() || !selectedPlaylist.value) return;
   
@@ -752,37 +895,69 @@ const addTrack = async () => {
     return;
   }
   
+  const trackToAdd = { ...newTrack.value, id, url };
+  if (source === 'soundcloud' && !trackToAdd.isCertified) {
+    await autoCertifyTrack(trackToAdd);
+  }
+  
   selectedPlaylist.value.tracks.push({
-    id: id,
-    title: newTrack.value.title.trim() || 'Titre Inconnu',
-    artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
+    id: trackToAdd.id,
+    title: trackToAdd.title.trim() || 'Titre Inconnu',
+    artist: trackToAdd.artist.trim() || 'Artiste Inconnu',
+    url: trackToAdd.url,
     source: source as any,
-    url: url,
-    isCertified: newTrack.value.isCertified
+    isCertified: trackToAdd.isCertified
   });
   clearSelectedTrack();
   await saveToConfig();
 };
 
-const addLocalTrackWithMetadata = async () => {
+const addLocalTrackFileFirst = async () => {
   if (!selectedPlaylist.value) return;
-  
-  if (pendingLocalPath.value) {
-    selectedPlaylist.value.tracks.push({
-      id: pendingLocalPath.value,
-      title: newTrack.value.title.trim() || 'Titre Inconnu',
-      artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
-      url: pendingLocalPath.value,
-      source: 'local',
-      isCertified: newTrack.value.isCertified
-    });
-    clearSelectedTrack();
-    await saveToConfig();
-    return;
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/dialog/file');
+    const paths = await res.json();
+    if (Array.isArray(paths) && paths.length > 0) {
+      const path = paths[0];
+      
+      const filename = path.split(/[\/\\]/).pop() || '';
+      const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+      
+      let title = nameWithoutExt;
+      let artist = "Artiste Inconnu";
+      
+      try {
+        const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+        const tags = await readTagsFromUrl(streamUrl);
+        if (tags) {
+          if (tags.title) title = tags.title;
+          if (tags.artist) artist = tags.artist;
+        }
+      } catch (_e) {
+        console.warn("Could not extract ID3 tags from file:", _e);
+      }
+      
+      newTrack.value = {
+        title,
+        artist,
+        url: path,
+        source: 'local',
+        isCertified: false
+      };
+      pendingLocalPath.value = path;
+      
+      await autoCertifyTrack(newTrack.value);
+    }
+  } catch (_e) {
+    console.error("Error opening file dialog", _e);
   }
+};
+
+const confirmLocalTrackAdded = async () => {
+  if (!selectedPlaylist.value || !pendingLocalPath.value) return;
   
   if (!forceAdd.value) {
-    const warning = checkForDuplicate(newTrack.value);
+    const warning = checkForDuplicate(newTrack.value, pendingLocalPath.value);
     if (warning) {
       duplicateWarning.value = warning;
       forceAdd.value = true;
@@ -790,35 +965,17 @@ const addLocalTrackWithMetadata = async () => {
     }
   }
   
-  try {
-    const res = await fetch('http://127.0.0.1:5000/api/dialog/file');
-    const paths = await res.json();
-    if (Array.isArray(paths) && paths.length > 0) {
-      const path = paths[0];
-      
-      const pathWarning = checkForDuplicate(newTrack.value, path);
-      if (pathWarning && pathWarning.includes('URL ou ce fichier')) {
-         duplicateWarning.value = pathWarning;
-         pendingLocalPath.value = path;
-         forceAdd.value = true;
-         return;
-      }
-      
-      selectedPlaylist.value.tracks.push({
-        id: path,
-        title: newTrack.value.title.trim() || 'Titre Inconnu',
-        artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
-        url: path,
-        source: 'local',
-        isCertified: newTrack.value.isCertified
-      });
-      
-      clearSelectedTrack();
-      await saveToConfig();
-    }
-  } catch (_e) {
-    console.error("Error opening file dialog", _e);
-  }
+  selectedPlaylist.value.tracks.push({
+    id: pendingLocalPath.value,
+    title: newTrack.value.title.trim() || 'Titre Inconnu',
+    artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
+    url: pendingLocalPath.value,
+    source: 'local',
+    isCertified: newTrack.value.isCertified
+  });
+  
+  clearSelectedTrack();
+  await saveToConfig();
 };
 
 const readTagsFromUrl = (url: string): Promise<{title: string, artist: string} | null> => {
@@ -862,15 +1019,17 @@ const addLocalPaths = async (paths: string[]) => {
       console.warn("Could not read tags for", path);
     }
     
-    const newTrackData = {
+    let newTrackData = {
       id: path,
       title: title.trim() || 'Titre Inconnu',
       artist: artist.trim() || 'Artiste Inconnu',
       url: path,
-      source: 'local' as const
+      source: 'local' as const,
+      isCertified: false
     };
     
     if (!checkForDuplicate(newTrackData, path)) {
+      newTrackData = await autoCertifyTrack(newTrackData) as any;
       selectedPlaylist.value.tracks.push(newTrackData);
       addedCount++;
     }
