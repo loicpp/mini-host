@@ -1,0 +1,38 @@
+import { ref } from 'vue';
+import { Track } from '../services/music/MusicProvider';
+import i18n from '../i18n';
+
+// Global shared state for the application
+export const email = ref('');
+export const password = ref('');
+export const loginError = ref('');
+export const isLoggedIn = ref(false);
+
+export const gameId = ref('');
+export const gameSecret = ref('');
+export const status = ref('waiting');
+
+export const players = ref<Record<string, any>>({});
+export const currentLanguage = ref(i18n.global.locale.value);
+export const nextTrackInfo = ref({ answer: '' });
+export const currentSource = ref('soundcloud');
+export const searchQuery = ref('');
+export const selectedTrack = ref<Track | null>(null);
+export const localTracks = ref<Track[]>([]);
+export const playedTracks = ref<string[]>([]);
+
+export const isProjectorOpen = ref(false);
+export const showDiagnostics = ref(false);
+
+export const currentBuzzer = ref<any>(null);
+
+export const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text' });
+
+export const pendingPoints = ref<Record<string, number>>({});
+export const lastAwardedPoints = ref<Record<string, number>>({});
+
+export const musicProgress = ref(0);
+export const musicTimeLeft = ref(0);
+export const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
+
+export const isBackendConnected = ref(true);

@@ -1,0 +1,166 @@
+import { computed } from 'vue';
+import { gameId, players, currentBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status } from './state';
+import { animatorService } from '../services/animatorService';
+import { useDialog } from './useDialog';
+import { useI18n } from 'vue-i18n';
+
+export function useGamePlayers() {
+  const { t } = useI18n();
+  const { showConfirm } = useDialog();
+
+  const displayedPlayers = computed(() => {
+    const result: Record<string, any> = {};
+    for (const id in players.value) {
+      const p = players.value[id];
+      if (p.role === 'animator' || p.role === 'projector') continue;
+      
+      let guess = p.currentGuess;
+      
+      if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value && currentBuzzer.value.playerId === id) {
+        guess = {
+          title: 'BUZZ',
+          artist: 'Appuyé !',
+          submittedAt: currentBuzzer.value.submittedAt
+        };
+      }
+      
+      result[id] = {
+        ...p,
+        currentGuess: guess,
+        score: (p.score || 0) + (pendingPoints.value[id] || 0),
+        pendingPoints: pendingPoints.value[id] || 0
+      };
+    }
+    return result;
+  });
+
+  const sortedPlayersList = computed(() => {
+    return Object.keys(displayedPlayers.value)
+      .map(id => ({ id, ...displayedPlayers.value[id] }))
+      .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  });
+
+  const playersWhoWonPoints = computed(() => {
+    const result = [];
+    for (const [id, points] of Object.entries(lastAwardedPoints.value)) {
+      if (points > 0 && players.value[id]) {
+        result.push({
+          id,
+          name: players.value[id].name,
+          score: players.value[id].score,
+          pointsGained: points
+        });
+      }
+    }
+    return result.sort((a, b) => b.pointsGained - a.pointsGained);
+  });
+
+  const hasBuzzed = computed(() => {
+    if (gameSettings.value.mode !== 'buzzer') return false;
+    return !!currentBuzzer.value;
+  });
+
+  const award = (playerId: string, points: number) => {
+    if (points !== 0) {
+      const currentScore = players.value[playerId]?.score || 0;
+      const currentPending = pendingPoints.value[playerId] || 0;
+      if (currentScore + currentPending + points >= 0) {
+        pendingPoints.value = {
+          ...pendingPoints.value,
+          [playerId]: currentPending + points
+        };
+      }
+    }
+  };
+
+  const applyPendingPoints = async () => {
+    lastAwardedPoints.value = { ...pendingPoints.value };
+    for (const [playerId, points] of Object.entries(pendingPoints.value)) {
+      if (points !== 0) {
+        await animatorService.awardPoints(gameId.value, playerId, points);
+      }
+    }
+    pendingPoints.value = {};
+  };
+
+  const revealResults = async () => {
+    status.value = 'results';
+    await applyPendingPoints();
+    await animatorService.updateGameState(gameId.value, 'results');
+    await animatorService.decrementBlockedTurns(gameId.value);
+  };
+
+  const autoCorrect = () => {
+    if (!nextTrackInfo.value.answer) return;
+    const target = nextTrackInfo.value.answer.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    for (const id in players.value) {
+      const guess = players.value[id]?.currentGuess;
+      if (guess && guess.title) {
+        const gTitle = guess.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const gArtist = (guess.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        const guessFull1 = gTitle + gArtist;
+        const guessFull2 = gArtist + gTitle;
+        
+        const hasTitle = gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target));
+        const hasArtist = gArtist.length > 2 && (target.includes(gArtist) || gArtist.includes(target));
+        
+        if (hasTitle && hasArtist) {
+          if (!pendingPoints.value[id]) award(id, 1);
+        } else if (guessFull1.length > 2 && (target.includes(guessFull1) || guessFull1.includes(target))) {
+          if (!pendingPoints.value[id]) award(id, 1);
+        } else if (guessFull2.length > 2 && (target.includes(guessFull2) || guessFull2.includes(target))) {
+          if (!pendingPoints.value[id]) award(id, 1);
+        } else if (hasTitle && target.length <= gTitle.length + 5) {
+          if (!pendingPoints.value[id]) award(id, 1);
+        }
+      }
+    }
+  };
+
+  const correctBuzzer = async () => {
+    let playerIdToReward = null;
+    if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value) {
+      playerIdToReward = currentBuzzer.value.playerId;
+    }
+    
+    if (playerIdToReward) {
+      award(playerIdToReward, 1);
+    }
+    
+    await revealResults();
+  };
+
+  const removePlayer = async (playerId: string) => {
+    if (await showConfirm({ title: t('dialogs.kick_player.title'), message: t('dialogs.kick_player.message'), confirmText: t('dialogs.kick_player.confirm'), confirmVariant: "danger" })) {
+      try {
+        await animatorService.removePlayer(gameId.value, playerId);
+      } catch(e) {
+        console.error("Impossible de supprimer le joueur:", e);
+      }
+    }
+  };
+  
+  const setPlayerBlock = async (playerId: string, turns: number) => {
+    try {
+      await animatorService.setPlayerBlock(gameId.value, playerId, turns);
+    } catch(e) {
+      console.error("Impossible de modifier le blocage du joueur:", e);
+    }
+  };
+
+  return {
+    displayedPlayers,
+    sortedPlayersList,
+    playersWhoWonPoints,
+    hasBuzzed,
+    award,
+    applyPendingPoints,
+    revealResults,
+    autoCorrect,
+    correctBuzzer,
+    removePlayer,
+    setPlayerBlock
+  };
+}

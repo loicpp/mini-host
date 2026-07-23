@@ -1,14 +1,43 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ControlPanel from '../views/ControlPanel.vue'
+import AppLayout from '../layouts/AppLayout.vue'
+import LoginView from '../views/LoginView.vue'
+import HomeView from '../views/HomeView.vue'
+import GameSessionView from '../views/GameSessionView.vue'
+import CreateGameView from '../views/CreateGameView.vue'
+import PlaylistConfigView from '../views/PlaylistConfigView.vue'
+import SettingsView from '../views/SettingsView.vue'
+import DiagnosticsView from '../views/DiagnosticsView.vue'
 import Projector from '../views/Projector.vue'
+
+import { isLoggedIn } from '../composables/state';
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: '/login',
+      name: 'Login',
+      component: LoginView
+    },
+    {
       path: '/',
-      name: 'ControlPanel',
-      component: ControlPanel
+      component: AppLayout,
+      children: [
+        { path: '', name: 'Home', component: HomeView },
+        { path: 'game/create', name: 'CreateGame', component: CreateGameView },
+        { path: 'game/:id', name: 'GameSession', component: GameSessionView },
+        { path: 'playlists', name: 'Playlists', component: PlaylistConfigView },
+        { path: 'settings', name: 'Settings', component: SettingsView },
+        { path: 'diagnostics', name: 'Diagnostics', component: DiagnosticsView }
+      ],
+      beforeEnter: (to, _from, next) => {
+        // If not logged in, we check state. Note: auto-login might still be pending in LoginView.
+        if (!isLoggedIn.value && to.name !== 'Login') {
+          next({ name: 'Login' });
+        } else {
+          next();
+        }
+      }
     },
     {
       path: '/public',
