@@ -66,8 +66,13 @@ if __name__ == '__main__':
     threading.Thread(target=run_flask, daemon=True).start()
     
     def open_browser():
-        time.sleep(1)
-        
+        # Wait up to 3 seconds to see if an existing UI reconnects (UI pings every 2s when disconnected)
+        for _ in range(6):
+            if api.ui_connected:
+                print("UI already connected, skipping browser open.")
+                return
+            time.sleep(0.5)
+            
         # Restore original LD_LIBRARY_PATH for subprocesses to avoid PyInstaller conflicts
         old_lp = os.environ.get('LD_LIBRARY_PATH')
         if 'LD_LIBRARY_PATH_ORIG' in os.environ:

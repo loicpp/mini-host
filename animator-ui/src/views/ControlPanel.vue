@@ -1,9 +1,23 @@
 <template>
   <div class="flex w-full h-screen bg-muted/30 text-foreground overflow-hidden font-sans">
-    <!-- Disconnection Warning Banner -->
-    <div v-if="!isBackendConnected" class="fixed top-0 left-0 w-full bg-red-500 text-white p-3 text-center font-bold flex justify-center items-center gap-2 z-50 shadow-md text-sm">
-      <span class="animate-pulse text-lg">⚠️</span>
-      <span>{{ $t('control_panel.backend_disconnected') }}</span>
+    <!-- Disconnection Warning Modal (Blocks UI entirely) -->
+    <div v-if="!isBackendConnected" class="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-4">
+      <div class="bg-card text-card-foreground p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col items-center text-center border border-red-500/20">
+        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6 animate-pulse">
+          <span class="text-4xl">⚠️</span>
+        </div>
+        <h2 class="text-2xl font-bold text-red-600 mb-3">{{ $t('control_panel.backend_disconnected_title') }}</h2>
+        <p class="text-muted-foreground mb-6">
+          {{ $t('control_panel.backend_disconnected') }}
+        </p>
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ $t('control_panel.reconnecting') }}
+        </div>
+      </div>
     </div>
     <!-- Login Screen -->
     <LoginScreen 
@@ -394,7 +408,7 @@ let animationFrameId: number | null = null;
 const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
 
 const isBackendConnected = ref(true);
-let pingInterval: ReturnType<typeof setInterval> | null = null;
+let pingTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const checkBackendConnection = async () => {
   try {
@@ -403,6 +417,8 @@ const checkBackendConnection = async () => {
   } catch (e) {
     console.warn(e);
     isBackendConnected.value = false;
+  } finally {
+    pingTimeout = setTimeout(checkBackendConnection, isBackendConnected.value ? 4000 : 2000);
   }
 };
 
@@ -414,7 +430,6 @@ const updateLanguage = (lang: string) => {
 onMounted(() => {
   // Start connection monitor
   checkBackendConnection();
-  pingInterval = setInterval(checkBackendConnection, 4000);
   const attemptAutoLogin = async () => {
     try {
       const configRes = await fetch('http://127.0.0.1:5000/api/config');
@@ -1046,8 +1061,8 @@ const setPlayerBlock = async (playerId: string, turns: number) => {
 };
 
 onUnmounted(() => {
-  if (pingInterval) {
-    clearInterval(pingInterval);
+  if (pingTimeout) {
+    clearTimeout(pingTimeout);
   }
 });
 </script>

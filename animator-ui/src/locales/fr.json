@@ -198,7 +198,9 @@
     "status_reviewing": "Correction",
     "status_results": "Résultats",
     "status_finished": "Terminée",
-    "backend_disconnected": "Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée."
+    "backend_disconnected": "Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.",
+    "backend_disconnected_title": "Connexion perdue",
+    "reconnecting": "Tentative de reconnexion..."
   },
   "local_tracks": {
     "no_folder": "Aucun dossier chargé. Utilisez le bouton \"Sélectionner un dossier...\" à gauche."

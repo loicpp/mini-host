@@ -5,6 +5,7 @@ from core.animator_api import AnimatorApi
 def register_routes(app: Flask, api: AnimatorApi):
     @app.route('/api/test_connection')
     def test_connection():
+        api.ui_connected = True
         return jsonify({"status": "ok"})
 
     @app.route('/api/config', methods=['GET', 'POST'])

@@ -17,6 +17,7 @@ class AnimatorApi:
         self.sc_search_port = sc_search_port
         self.playlist_generator_port = playlist_generator_port
         self.music_manager = MusicManager()
+        self.ui_connected = False
     
     def search_soundcloud(self, query: str) -> List[Dict[str, Any]]:
         if self.sc_search_port:

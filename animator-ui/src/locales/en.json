@@ -198,7 +198,9 @@
     "status_reviewing": "Reviewing",
     "status_results": "Results",
     "status_finished": "Finished",
-    "backend_disconnected": "Cannot reach local server (backend). Please make sure the desktop app is running."
+    "backend_disconnected": "Cannot reach local server (backend). Please make sure the desktop app is running.",
+    "backend_disconnected_title": "Connection lost",
+    "reconnecting": "Attempting to reconnect..."
   },
   "local_tracks": {
     "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left."
