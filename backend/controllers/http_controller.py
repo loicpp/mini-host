@@ -101,6 +101,11 @@ def register_routes(app: Flask, api: AnimatorApi):
         path = request.args.get('path')
         if not path or not os.path.exists(path) or not os.path.isfile(path):
             return "File not found", 404
+            
+        # Security check: ensure it's a music file
+        if not path.lower().endswith(('.mp3', '.wav', '.ogg')):
+            return "Invalid file format. Only music files are allowed.", 403
+            
         return send_file(path, conditional=True)
 
     @app.route('/', defaults={'path': ''})
