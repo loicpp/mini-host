@@ -37,21 +37,21 @@
           <label class="font-bold text-primary flex justify-between">
             {{ $t('create_game.block_duration') }} <span class="text-[#FFBA49]">{{ settings.blockDuration }}s</span>
           </label>
-          <input type="range" v-model.number="settings.blockDuration" min="0" max="30" step="1" class="w-full accent-[#FFBA49] cursor-pointer" />
+          <Slider v-model="settings.blockDuration" :min="0" :max="30" />
         </div>
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary flex justify-between">
             {{ $t('create_game.music_duration') }} <span class="text-[#FFBA49]">{{ settings.musicDuration }}s</span>
           </label>
-          <input type="range" v-model.number="settings.musicDuration" min="1" max="100" step="1" class="w-full accent-[#FFBA49] cursor-pointer" />
+          <Slider v-model="settings.musicDuration" :min="1" :max="100" />
         </div>
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary flex justify-between">
             {{ $t('create_game.total_duration') }} <span class="text-[#FFBA49]">{{ settings.duration }}s</span>
           </label>
-          <input type="range" v-model.number="settings.duration" min="1" max="100" step="1" class="w-full accent-[#FFBA49] cursor-pointer" />
+          <Slider v-model="settings.duration" :min="1" :max="100" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -89,8 +89,9 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
-import Btn from '../ui/Btn.vue';
-import CustomSelect from '../ui/CustomSelect.vue';
+import Btn from '../../ui/Btn.vue';
+import CustomSelect from '../../ui/CustomSelect.vue';
+import Slider from '../../ui/Slider.vue';
 
 const { t } = useI18n();
 

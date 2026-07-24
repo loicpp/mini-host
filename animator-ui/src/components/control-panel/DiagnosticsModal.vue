@@ -220,7 +220,7 @@ const runDiagnostics = async () => {
   await setStepRunning(5);
   let testGameId = '';
   try {
-    const game = await animatorService.createGame();
+    const game = await animatorService.createGame('blind_test');
     testGameId = game.gameId;
     steps.value[5].status = 'success';
     steps.value[5].message = `${t('diagnostics.game_created')} (${testGameId})`;

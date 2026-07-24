@@ -1,7 +1,8 @@
 <template>
   <main class="flex-1 overflow-y-auto relative p-0 w-full h-full">
-    <CreateGameScreen
-      @back="router.push('/')"
+    <component 
+      :is="configComponent"
+      @back="router.push('/game/selector')"
       @configure-playlists="handleConfigurePlaylists"
       @start-game="handleStartGame"
     />
@@ -9,12 +10,23 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import CreateGameScreen from '../components/control-panel/CreateGameScreen.vue';
+import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import BlindTestConfig from '../components/games/blind-test/BlindTestConfig.vue';
 import { useGameSession } from '../composables/useGameSession';
 
 const router = useRouter();
+const route = useRoute();
 const { createNewGame, leaveGame } = useGameSession();
+
+const gameType = computed(() => route.params.gameType as string || 'blind_test');
+
+const configComponent = computed(() => {
+  if (gameType.value === 'blind_test') {
+    return BlindTestConfig;
+  }
+  return BlindTestConfig; // Fallback
+});
 
 const handleConfigurePlaylists = async () => {
   await leaveGame();
@@ -22,7 +34,7 @@ const handleConfigurePlaylists = async () => {
 };
 
 const handleStartGame = async (settings: any) => {
-  const newGameId = await createNewGame(settings);
+  const newGameId = await createNewGame(gameType.value, settings);
   router.push(`/game/${newGameId}`);
 };
 </script>

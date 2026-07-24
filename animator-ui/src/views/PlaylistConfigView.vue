@@ -1,7 +1,7 @@
 <template>
   <main class="flex-1 overflow-y-auto relative p-0 w-full h-full">
     <PlaylistScreen 
-      @back="router.push('/')"
+      @back="router.push('/setup')"
     />
   </main>
 </template>

@@ -24,7 +24,9 @@ const router = createRouter({
       component: AppLayout,
       children: [
         { path: '', name: 'Home', component: HomeView },
-        { path: 'game/create', name: 'CreateGame', component: CreateGameView },
+        { path: 'game/selector', name: 'GameSelector', component: () => import('../views/GameSelectorView.vue') },
+        { path: 'setup', name: 'SetupSelector', component: () => import('../views/SetupSelectorView.vue') },
+        { path: 'game/create/:gameType', name: 'CreateGame', component: CreateGameView },
         { path: 'game/:id', name: 'GameSession', component: GameSessionView },
         { path: 'playlists', name: 'Playlists', component: PlaylistConfigView },
         { path: 'settings', name: 'Settings', component: SettingsView },

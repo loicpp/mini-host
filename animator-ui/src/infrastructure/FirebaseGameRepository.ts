@@ -3,7 +3,7 @@ import { ref, set, get, onValue, update, remove } from "firebase/database";
 import { GameRepository } from '../core/ports/GameRepository';
 
 export class FirebaseGameRepository implements GameRepository {
-  async createGame(settings: any = {}) {
+  async createGame(gameType: string, settings: any = {}) {
     const gameId = Math.random().toString(36).substring(2, 6).toUpperCase();
     const secret = Math.random().toString(36).substring(2, 10);
     
@@ -11,6 +11,7 @@ export class FirebaseGameRepository implements GameRepository {
     await set(gameRef, {
       status: 'waiting',
       secret: secret,
+      gameType: gameType,
       settings: settings,
       players: {}
     });

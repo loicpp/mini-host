@@ -20,46 +20,51 @@
       </button>
 
       <!-- btn 2: Reprendre -->
-      <button v-if="lastGameId" class="group flex items-center p-4 bg-white hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl border border-[rgba(0,0,0,0.06)] shadow-sm text-left outline-none" @click="$emit('resume-game')">
-        <div class="w-12 h-12 rounded-xl bg-[#fff6e0] flex items-center justify-center text-[#FFBA49] mr-5 shrink-0">
-          <RefreshCw class="w-5 h-5" />
-        </div>
-        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.resume_game') }}</span>
-        <span class="px-3 py-1 bg-[#fff6e0] text-[#3F4739] font-bold text-[11px] rounded-lg tracking-wider uppercase mr-2 border border-[#fef3c7]">{{ lastGameId }}</span>
-      </button>
+      <MenuActionBtn 
+        v-if="lastGameId"
+        :title="$t('home.resume_game')"
+        colorClass="bg-[#fff6e0] text-[#FFBA49]"
+        @click="$emit('resume-game')"
+      >
+        <template #icon><RefreshCw class="w-5 h-5" /></template>
+        <template #extra>
+          <span class="px-3 py-1 bg-[#fff6e0] text-[#3F4739] font-bold text-[11px] rounded-lg tracking-wider uppercase mr-2 border border-[#fef3c7]">{{ lastGameId }}</span>
+        </template>
+      </MenuActionBtn>
 
-      <!-- btn 3: Playlists -->
-      <button class="group flex items-center p-4 bg-white hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl border border-[rgba(0,0,0,0.06)] shadow-sm text-left outline-none" @click="$emit('open-playlists')">
-        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 mr-5 shrink-0">
-          <ListMusic class="w-5 h-5" />
-        </div>
-        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.playlists') }}</span>
-        <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
-      </button>
+      <!-- btn 3: Setup -->
+      <MenuActionBtn 
+        title="Mise en place"
+        colorClass="bg-purple-50 text-purple-500"
+        @click="$emit('open-setup')"
+      >
+        <template #icon><Database class="w-5 h-5" /></template>
+      </MenuActionBtn>
 
       <!-- btn 4: Diagnostics -->
-      <button class="group flex items-center p-4 bg-white hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl border border-[rgba(0,0,0,0.06)] shadow-sm text-left outline-none" @click="$emit('run-diagnostics')">
-        <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 mr-5 shrink-0">
-          <Activity class="w-5 h-5" />
-        </div>
-        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.diagnostics') }}</span>
-        <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
-      </button>
+      <MenuActionBtn 
+        :title="$t('home.diagnostics')"
+        colorClass="bg-gray-100 text-gray-500"
+        @click="$emit('run-diagnostics')"
+      >
+        <template #icon><Activity class="w-5 h-5" /></template>
+      </MenuActionBtn>
 
       <!-- btn 5: Settings -->
-      <button class="group flex items-center p-4 bg-white hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl border border-[rgba(0,0,0,0.06)] shadow-sm text-left outline-none" @click="$emit('open-settings')">
-        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 mr-5 shrink-0">
-          <Settings class="w-5 h-5" />
-        </div>
-        <span class="text-lg font-bold text-primary flex-1">{{ $t('home.settings') }}</span>
-        <ChevronRight class="w-5 h-5 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors mr-2 shrink-0" />
-      </button>
+      <MenuActionBtn 
+        :title="$t('home.settings')"
+        colorClass="bg-blue-50 text-blue-500"
+        @click="$emit('open-settings')"
+      >
+        <template #icon><Settings class="w-5 h-5" /></template>
+      </MenuActionBtn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Settings, Zap, RefreshCw, ListMusic, ChevronRight, Activity } from '@lucide/vue';
+import { Settings, Zap, RefreshCw, Database, Activity } from '@lucide/vue';
+import MenuActionBtn from '../ui/MenuActionBtn.vue';
 
 defineProps<{
   lastGameId: string | null;
@@ -68,7 +73,7 @@ defineProps<{
 defineEmits<{
   (e: 'create-game'): void;
   (e: 'resume-game'): void;
-  (e: 'open-playlists'): void;
+  (e: 'open-setup'): void;
   (e: 'run-diagnostics'): void;
   (e: 'open-settings'): void;
 }>();

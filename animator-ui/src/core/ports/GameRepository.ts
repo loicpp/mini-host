@@ -1,5 +1,5 @@
 export interface GameRepository {
-  createGame(settings?: any): Promise<{ gameId: string, secret: string }>;
+  createGame(gameType: string, settings?: any): Promise<{ gameId: string, secret: string }>;
   getGame(gameId: string): Promise<any>;
   updateGameState(gameId: string, status: string, trackInfo?: any): Promise<void>;
   listenToPlayers(gameId: string, callback: (players: any) => void): () => void;

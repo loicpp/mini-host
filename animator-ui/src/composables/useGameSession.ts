@@ -1,4 +1,4 @@
-import { gameSettings, lastGameId, gameId, gameSecret, status, currentSource, playedTracks, localTracks, players, currentBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints } from './state';
+import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, currentBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
@@ -33,7 +33,8 @@ export function useGameSession() {
     });
   };
 
-  const createNewGame = async (settings: any) => {
+  const createNewGame = async (type: string, settings: any) => {
+    gameType.value = type;
     if (settings) {
       gameSettings.value = {
         blockDuration: settings.blockDuration || 0,
@@ -51,7 +52,7 @@ export function useGameSession() {
       }
     }
 
-    const game = await animatorService.createGame(gameSettings.value);
+    const game = await animatorService.createGame(gameType.value, gameSettings.value);
     gameId.value = game.gameId;
     gameSecret.value = game.secret;
     status.value = 'waiting';
@@ -72,7 +73,7 @@ export function useGameSession() {
       await fetch('http://127.0.0.1:5000/api/game', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
+        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value, gameType: gameType.value })
       });
     } catch {
       console.warn("Could not save game.json");
@@ -112,6 +113,12 @@ export function useGameSession() {
         await showAlert({ title: t('dialogs.game_not_found.title'), message: t('dialogs.game_not_found.message') });
         lastGameId.value = null;
         return false;
+      }
+
+      if (gameData.gameType) {
+        gameType.value = gameData.gameType;
+      } else {
+        gameType.value = 'blind_test'; // Default to blind_test for old games
       }
 
       if (gameData.status) {

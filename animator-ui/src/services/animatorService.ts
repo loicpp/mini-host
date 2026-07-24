@@ -27,8 +27,8 @@ export const animatorService = {
     }
   },
 
-  async createGame(settings: any = {}) {
-    return gameRepo.createGame(settings);
+  async createGame(gameType: string, settings: any = {}) {
+    return gameRepo.createGame(gameType, settings);
   },
 
   async getGame(gameId: string) {

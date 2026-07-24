@@ -55,8 +55,8 @@ describe('animatorService', () => {
   });
 
   it('createGame - delegates to repository', async () => {
-    const result = await animatorService.createGame({ mode: 'buzzer' });
-    expect(mockRepoInstance.createGame).toHaveBeenCalledWith({ mode: 'buzzer' });
+    const result = await animatorService.createGame('blind_test', { mode: 'buzzer' });
+    expect(mockRepoInstance.createGame).toHaveBeenCalledWith('blind_test', { mode: 'buzzer' });
     expect(result.gameId).toBe('TEST');
   });
 

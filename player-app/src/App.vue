@@ -35,7 +35,8 @@
 
         <!-- State: Game Room -->
         <div v-else-if="state === 'in-game'">
-          <GameRoom 
+          <component 
+            :is="activePlayerComponent"
             :game="game" 
             :playerId="playerId" 
             @submit="handleGuess" 
@@ -48,11 +49,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { gameService } from './services/gameService';
 import Login from './components/Login.vue';
-import GameRoom from './components/GameRoom.vue';
+import BlindTestPlayer from './components/games/blind-test/BlindTestPlayer.vue';
+
+const activePlayerComponent = computed(() => {
+  if (game.value && game.value.gameType === 'blind_test') {
+    return BlindTestPlayer;
+  }
+  return BlindTestPlayer; // Fallback
+});
 
 const { t } = useI18n();
 const state = ref('loading');

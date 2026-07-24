@@ -3,8 +3,8 @@
     <HomeScreen 
       :lastGameId="lastGameId || ''"
       @open-settings="router.push('/settings')"
-      @open-playlists="router.push('/playlists')"
-      @create-game="router.push('/game/create')"
+      @open-setup="router.push('/setup')"
+      @create-game="router.push('/game/selector')"
       @resume-game="handleResumeGame"
       @run-diagnostics="router.push('/diagnostics')"
       @logout="handleLogout"

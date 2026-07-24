@@ -11,6 +11,7 @@ export const isLoggedIn = ref(false);
 export const gameId = ref('');
 export const gameSecret = ref('');
 export const status = ref('waiting');
+export const gameType = ref('blind_test');
 
 export const players = ref<Record<string, any>>({});
 export const currentLanguage = ref(i18n.global.locale.value);
