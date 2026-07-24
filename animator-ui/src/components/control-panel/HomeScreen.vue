@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { Settings, Zap, RefreshCw, Database, Activity } from '@lucide/vue';
+import { Settings, Zap, RefreshCw, Database, Activity, ChevronRight } from '@lucide/vue';
 import MenuActionBtn from '../ui/MenuActionBtn.vue';
 
 defineProps<{
