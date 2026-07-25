@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { gameId, players, currentBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status } from './state';
+import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status } from './state';
 import { animatorService } from '../services/animatorService';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
@@ -16,11 +16,10 @@ export function useGamePlayers() {
       
       let guess = p.currentGuess;
       
-      if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value && currentBuzzer.value.playerId === id) {
+      if (gameSettings.value.mode === 'buzzer' && pressedBuzzer.value && pressedBuzzer.value === id) {
         guess = {
           title: 'BUZZ',
-          artist: 'Appuyé !',
-          submittedAt: currentBuzzer.value.submittedAt
+          artist: 'Appuyé !'
         };
       }
       
@@ -57,7 +56,7 @@ export function useGamePlayers() {
 
   const hasBuzzed = computed(() => {
     if (gameSettings.value.mode !== 'buzzer') return false;
-    return !!currentBuzzer.value;
+    return !!pressedBuzzer.value;
   });
 
   const award = (playerId: string, points: number) => {
@@ -81,11 +80,13 @@ export function useGamePlayers() {
       }
     }
     pendingPoints.value = {};
+    await animatorService.updateRanks(gameId.value);
   };
 
   const revealResults = async () => {
     status.value = 'results';
     await applyPendingPoints();
+    await animatorService.clearPressedBuzzer(gameId.value);
     await animatorService.updateGameState(gameId.value, 'results');
     await animatorService.decrementBlockedTurns(gameId.value);
   };
@@ -121,8 +122,8 @@ export function useGamePlayers() {
 
   const correctBuzzer = async () => {
     let playerIdToReward = null;
-    if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value) {
-      playerIdToReward = currentBuzzer.value.playerId;
+    if (gameSettings.value.mode === 'buzzer' && pressedBuzzer.value) {
+      playerIdToReward = pressedBuzzer.value;
     }
     
     if (playerIdToReward) {

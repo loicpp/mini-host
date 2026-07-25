@@ -52,17 +52,12 @@ export const gameService = {
     const user = auth.currentUser;
     if (!user) return false;
 
-    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
-    const result = await runTransaction(buzzerRef, (currentData) => {
-      if (!currentData) {
-        return {
-          playerId: user.uid,
-          submittedAt: Date.now()
-        }; // We are the first!
-      }
-      return; // Someone else already buzzed, abort
-    });
-
-    return result.committed;
+    const buzzerRef = ref(db, `games/${gameId}/pressedBuzzer`);
+    try {
+      await set(buzzerRef, user.uid);
+      return true; // Si la promesse se résout, c'est que la règle !data.exists() a été respectée (on est le premier)
+    } catch (error) {
+      return false; // Si une erreur est levée (Permission denied), quelqu'un a été plus rapide
+    }
   }
 };

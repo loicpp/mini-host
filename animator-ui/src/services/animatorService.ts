@@ -22,16 +22,16 @@ export const animatorService = {
     return gameRepo.listenToPlayers(gameId, callback);
   },
 
-  listenToBuzzer(gameId: string, callback: (buzzer: any) => void) {
-    return gameRepo.listenToBuzzer(gameId, callback);
+  listenToPressedBuzzer(gameId: string, callback: (buzzer: any) => void) {
+    return gameRepo.listenToPressedBuzzer(gameId, callback);
   },
 
   async clearPlayerGuess(gameId: string, playerId: string) {
     return gameRepo.clearPlayerGuess(gameId, playerId);
   },
 
-  async clearCurrentBuzzer(gameId: string) {
-    return gameRepo.clearCurrentBuzzer(gameId);
+  async clearPressedBuzzer(gameId: string) {
+    return gameRepo.clearPressedBuzzer(gameId);
   },
 
   async awardPoints(gameId: string, playerId: string, points: number) {
@@ -60,5 +60,9 @@ export const animatorService = {
 
   async setPlayerBlock(gameId: string, playerId: string, turns: number) {
     return gameRepo.setPlayerBlock(gameId, playerId, turns);
+  },
+
+  async updateRanks(gameId: string) {
+    return gameRepo.updateRanks(gameId);
   }
 };

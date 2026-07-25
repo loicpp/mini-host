@@ -91,11 +91,11 @@
             </div>
           </div>
 
-          <div v-if="gameSettings.mode === 'buzzer' && currentBuzzer" class="flex-1 bg-red-50 border-2 border-red-200 p-8 rounded-3xl flex flex-col items-center justify-center text-center shadow-inner animate-in zoom-in-95 duration-200">
+          <div v-if="gameSettings.mode === 'buzzer' && pressedBuzzer" class="flex-1 bg-red-50 border-2 border-red-200 p-8 rounded-3xl flex flex-col items-center justify-center text-center shadow-inner animate-in zoom-in-95 duration-200">
             <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center text-white shadow-xl mb-6 animate-bounce">
               <Zap class="w-10 h-10 fill-current" />
             </div>
-            <h2 class="text-4xl font-black text-red-600 mb-2">{{ displayedPlayers[currentBuzzer.playerId]?.name || $t('control_panel.a_player') }} {{ $t('control_panel.buzzed') }}</h2>
+            <h2 class="text-4xl font-black text-red-600 mb-2">{{ displayedPlayers[pressedBuzzer]?.name || $t('control_panel.a_player') }} {{ $t('control_panel.buzzed') }}</h2>
             <p class="text-red-500/80 font-bold text-xl">{{ $t('control_panel.buzzer_pause') }}</p>
           </div>
 
@@ -216,7 +216,7 @@ import PlayersGrid from '../../control-panel/PlayersGrid.vue';
 
 import { 
   gameId, status, currentSource, isProjectorOpen, searchQuery, nextTrackInfo,
-  localTracks, selectedTrack, gameSettings, playedTracks, currentBuzzer, musicProgress, musicTimeLeft
+  localTracks, selectedTrack, gameSettings, playedTracks, pressedBuzzer, musicProgress, musicTimeLeft
 } from '../../../composables/state';
 import { useGameSession } from '../../../composables/useGameSession';
 import { useGamePlayers } from '../../../composables/useGamePlayers';

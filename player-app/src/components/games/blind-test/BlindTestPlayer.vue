@@ -172,18 +172,7 @@ const player = computed(() => {
 });
 
 const playerRank = computed(() => {
-  if (!props.game?.players || !props.playerId) return null;
-  const p = Object.keys(props.game.players).map(id => ({
-    id,
-    ...props.game.players[id]
-  }));
-  p.sort((a, b) => {
-    const scoreDiff = (b.score || 0) - (a.score || 0);
-    if (scoreDiff !== 0) return scoreDiff;
-    return (a.name || '').localeCompare(b.name || '');
-  });
-  const index = p.findIndex(pl => pl.id === props.playerId);
-  return index !== -1 ? index + 1 : null;
+  return player.value?.rank || null;
 });
 
 watch(() => props.game?.status, (newStatus, oldStatus) => {

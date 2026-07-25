@@ -25,7 +25,7 @@ export const playedTracks = ref<string[]>([]);
 export const isProjectorOpen = ref(false);
 export const showDiagnostics = ref(false);
 
-export const currentBuzzer = ref<any>(null);
+export const pressedBuzzer = ref<string | null>(null);
 
 export const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text' });
 

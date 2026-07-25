@@ -1,7 +1,7 @@
 import { watch, computed } from 'vue';
 import { 
   gameId, status, gameSettings, selectedTrack, nextTrackInfo, 
-  playedTracks, localTracks, currentBuzzer, players, musicProgress, musicTimeLeft
+  playedTracks, localTracks, pressedBuzzer, players, musicProgress, musicTimeLeft
 } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
@@ -49,7 +49,7 @@ export function useGameMusic() {
       const startTime = getServerTime() + delay;
       currentStartTime = startTime;
       
-      await animatorService.clearCurrentBuzzer(gameId.value);
+      await animatorService.clearPressedBuzzer(gameId.value);
   
       hasMusicStopped = false;
   
@@ -104,14 +104,14 @@ export function useGameMusic() {
 
   const resumeMusic = async () => {
     let playerIdToBlock = null;
-    if (gameSettings.value.mode === 'buzzer' && currentBuzzer.value) {
-      playerIdToBlock = currentBuzzer.value.playerId;
+    if (gameSettings.value.mode === 'buzzer' && pressedBuzzer.value) {
+      playerIdToBlock = pressedBuzzer.value;
     }
   
     if (playerIdToBlock) {
       await setPlayerBlock(playerIdToBlock, 1);
       await animatorService.clearPlayerGuess(gameId.value, playerIdToBlock);
-      await animatorService.clearCurrentBuzzer(gameId.value);
+      await animatorService.clearPressedBuzzer(gameId.value);
     }
     
     status.value = 'playing';
@@ -173,7 +173,7 @@ export function useGameMusic() {
     }
   });
   
-  watch(() => currentBuzzer.value, (newBuzzer) => {
+  watch(() => pressedBuzzer.value, (newBuzzer) => {
     if (status.value === 'playing' && newBuzzer && gameSettings.value.mode === 'buzzer') {
       pauseMusic();
     }

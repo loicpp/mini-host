@@ -1,4 +1,4 @@
-import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, currentBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints } from './state';
+import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
@@ -95,8 +95,8 @@ export function useGameSession() {
     animatorService.listenToPlayers(gameId.value, (newPlayers) => {
       players.value = newPlayers;
     });
-    animatorService.listenToBuzzer(gameId.value, (buzzerData) => {
-      currentBuzzer.value = buzzerData;
+    animatorService.listenToPressedBuzzer(gameId.value, (buzzerData) => {
+      pressedBuzzer.value = buzzerData;
     });
 
     return game.gameId;
@@ -146,8 +146,8 @@ export function useGameSession() {
     animatorService.listenToPlayers(gameId.value, (newPlayers) => {
       players.value = newPlayers;
     });
-    animatorService.listenToBuzzer(gameId.value, (buzzerData) => {
-      currentBuzzer.value = buzzerData;
+    animatorService.listenToPressedBuzzer(gameId.value, (buzzerData) => {
+      pressedBuzzer.value = buzzerData;
     });
 
     return true;

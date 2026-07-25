@@ -1,9 +1,10 @@
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { ref, set, get, onValue, update, remove } from "firebase/database";
 import { GameRepository } from '../core/ports/GameRepository';
 
 export class FirebaseGameRepository implements GameRepository {
   async createGame(gameType: string, settings: any = {}) {
+    const user = auth.currentUser;
     const gameId = Math.random().toString(36).substring(2, 6).toUpperCase();
     const secret = Math.random().toString(36).substring(2, 10);
     
@@ -13,6 +14,7 @@ export class FirebaseGameRepository implements GameRepository {
       secret: secret,
       gameType: gameType,
       settings: settings,
+      ownerId: user ? user.uid : 'unknown',
       players: {}
     });
     
@@ -44,8 +46,8 @@ export class FirebaseGameRepository implements GameRepository {
     });
   }
 
-  listenToBuzzer(gameId: string, callback: (buzzer: any) => void) {
-    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
+  listenToPressedBuzzer(gameId: string, callback: (buzzer: any) => void) {
+    const buzzerRef = ref(db, `games/${gameId}/pressedBuzzer`);
     return onValue(buzzerRef, (snapshot) => {
       callback(snapshot.val() || null);
     });
@@ -56,8 +58,8 @@ export class FirebaseGameRepository implements GameRepository {
     await remove(guessRef);
   }
 
-  async clearCurrentBuzzer(gameId: string) {
-    const buzzerRef = ref(db, `games/${gameId}/currentBuzzer`);
+  async clearPressedBuzzer(gameId: string) {
+    const buzzerRef = ref(db, `games/${gameId}/pressedBuzzer`);
     await remove(buzzerRef);
   }
 
@@ -129,5 +131,34 @@ export class FirebaseGameRepository implements GameRepository {
   async setPlayerBlock(gameId: string, playerId: string, turns: number) {
     const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
     await update(playerRef, { blockedTurns: turns });
+  }
+
+  async updateRanks(gameId: string) {
+    const playersRef = ref(db, `games/${gameId}/players`);
+    const snapshot = await get(playersRef);
+    if (snapshot.exists()) {
+      const players = snapshot.val();
+      const playersList = Object.keys(players)
+        .filter(id => players[id].role !== 'animator' && players[id].role !== 'projector')
+        .map(id => ({ id, ...players[id] }));
+      
+      playersList.sort((a, b) => {
+        const scoreDiff = (b.score || 0) - (a.score || 0);
+        if (scoreDiff !== 0) return scoreDiff;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+      
+      const updates: any = {};
+      playersList.forEach((p, index) => {
+        const newRank = index + 1;
+        if (p.rank !== newRank) {
+          updates[`${p.id}/rank`] = newRank;
+        }
+      });
+      
+      if (Object.keys(updates).length > 0) {
+        await update(playersRef, updates);
+      }
+    }
   }
 }
