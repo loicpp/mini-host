@@ -2,10 +2,15 @@
   <div class="flex flex-col">
     <div class="flex gap-4 mb-8">
       <input type="text" v-model="newPlaylistName" :placeholder="$t('playlists.new_placeholder')" class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
-      <select v-model="newPlaylistType" class="px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none font-bold">
-        <option value="soundcloud">{{ $t('playlists.type_soundcloud') }}</option>
-        <option value="local">{{ $t('playlists.type_local') }}</option>
-      </select>
+      <div class="w-48 shrink-0">
+        <CustomSelect 
+          v-model="newPlaylistType" 
+          :options="[
+            { value: 'soundcloud', label: $t('playlists.type_soundcloud') },
+            { value: 'local', label: $t('playlists.type_local') }
+          ]"
+        />
+      </div>
       <Btn variant="primary" @click="handleCreate" :disabled="!newPlaylistName.trim()">
         <Plus class="w-4 h-4 mr-2" /> {{ $t('playlists.create') }}
       </Btn>
@@ -46,6 +51,7 @@
 import { ref } from 'vue';
 import { Plus, Wand2, Edit3, Trash2 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
+import CustomSelect from '../ui/CustomSelect.vue';
 import { Playlist } from '../../types/playlist';
 
 defineProps<{

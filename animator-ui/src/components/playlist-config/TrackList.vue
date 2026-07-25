@@ -48,7 +48,6 @@
               </div>
               
               <div class="flex items-center gap-2 shrink-0">
-                <Btn size="sm" variant="primary" @click="saveEditTrack">{{ $t('playlists.ok') }}</Btn>
                 <Btn size="sm" variant="soft" @click="cancelEditTrack">{{ $t('playlists.cancel') }}</Btn>
               </div>
             </div>
@@ -128,7 +127,19 @@ const selectSuggestion = (item: {title: string, artist: string}) => {
   editingTrackData.value.title = item.title;
   editingTrackData.value.artist = item.artist;
   editingTrackData.value.isCertified = true;
-  saveEditTrack();
+  
+  // Directly emit the update here to avoid applyCustomEditSearch overwriting it
+  if (editingTrackIndex.value !== null) {
+    const originalTrack = props.tracks[editingTrackIndex.value];
+    emit('update-track', editingTrackIndex.value, {
+      ...originalTrack,
+      title: editingTrackData.value.title,
+      artist: editingTrackData.value.artist,
+      isCertified: editingTrackData.value.isCertified
+    });
+    editingTrackIndex.value = null;
+  }
+  clearSearch();
 };
 
 const applyCustomEditSearch = () => {

@@ -96,7 +96,6 @@
                   </button>
               </template>
               <template v-else>
-                  <Btn size="sm" variant="primary" @click="saveEdit">{{ $t('playlists.ok') }}</Btn>
                   <Btn size="sm" variant="soft" @click="cancelEdit">{{ $t('playlists.cancel') }}</Btn>
               </template>
               <button v-if="!isEditingTrack" @click="clear" class="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-lg flex items-center justify-center transition-colors outline-none" :title="$t('playlists.cancel_add')">
