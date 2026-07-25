@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { animatorService } from './animatorService';
+import { authService } from './authService';
 
 // Mock du module firebase local
 vi.mock('../firebase', () => ({
@@ -44,13 +45,13 @@ vi.mock('../infrastructure/FirebaseGameRepository', () => {
   };
 });
 
-describe('animatorService', () => {
+describe('animatorService & authService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('signIn - calls Firebase auth correctly', async () => {
-    const user = await animatorService.signIn('test@test.com', 'password');
+    const user = await authService.signIn('test@test.com', 'password');
     expect(user.uid).toBe('123');
   });
 

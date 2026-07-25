@@ -52,6 +52,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { gameService } from './services/gameService';
+import { authService } from './services/authService';
 import Login from './components/Login.vue';
 import BlindTestPlayer from './components/games/blind-test/BlindTestPlayer.vue';
 
@@ -86,7 +87,7 @@ onMounted(async () => {
   secret.value = sec;
 
   try {
-    await gameService.signIn();
+    await authService.signIn();
     gameService.listenToGame(gameId.value, (newGameState) => {
       if (newGameState) {
         game.value = newGameState;

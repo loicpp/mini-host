@@ -146,9 +146,9 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { itunesService } from '../services/itunesService';
-import { getServerTime } from '../firebase';
-import { useGameTimer } from '../composables/useGameTimer';
+import { itunesService } from '../../../services/itunesService';
+import { getServerTime } from '../../../firebase';
+import { useGameTimer } from '../../../composables/useGameTimer';
 
 const props = defineProps({
   game: Object,

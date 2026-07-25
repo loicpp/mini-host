@@ -1,5 +1,5 @@
 import { email, password, loginError, isLoggedIn, currentLanguage, lastGameId } from './state';
-import { animatorService } from '../services/animatorService';
+import { authService } from '../services/authService';
 import i18n from '../i18n';
 import { useI18n } from 'vue-i18n';
 import { useDialog } from './useDialog';
@@ -27,7 +27,7 @@ export function useAuth() {
     if (loginPassword) password.value = loginPassword;
     try {
       loginError.value = '';
-      await animatorService.signIn(email.value, password.value);
+      await authService.signIn(email.value, password.value);
       isLoggedIn.value = true;
       
       try {
@@ -70,8 +70,8 @@ export function useAuth() {
       }
       
       try {
-        if (typeof animatorService.signOut === 'function') {
-          await animatorService.signOut();
+        if (typeof authService.signOut === 'function') {
+          await authService.signOut();
         }
       } catch (e) {
         console.warn(e);

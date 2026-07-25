@@ -1,18 +1,7 @@
 import { db, auth } from '../firebase';
-import { ref, set, get, onValue, update, remove, runTransaction } from "firebase/database";
-import { signInAnonymously } from "firebase/auth";
+import { ref, set, onValue, runTransaction } from "firebase/database";
 
 export const gameService = {
-  // Sign in anonymously
-  async signIn() {
-    try {
-      const userCredential = await signInAnonymously(auth);
-      return userCredential.user;
-    } catch (error) {
-      console.error("Error signing in anonymously:", error);
-      throw error;
-    }
-  },
 
   // Get current user ID if already signed in
   getCurrentUserId() {
