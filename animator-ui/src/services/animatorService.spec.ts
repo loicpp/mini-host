@@ -21,9 +21,9 @@ const { mockRepoInstance } = vi.hoisted(() => {
       getGame: vi.fn().mockResolvedValue({ status: 'playing' }),
       updateGameState: vi.fn(),
       listenToPlayers: vi.fn(),
-      listenToBuzzer: vi.fn(),
+      listenToPressedBuzzer: vi.fn(),
       clearPlayerGuess: vi.fn(),
-      clearCurrentBuzzer: vi.fn(),
+      clearPressedBuzzer: vi.fn(),
       awardPoints: vi.fn(),
       deleteGame: vi.fn(),
       clearPlayerAnswers: vi.fn(),
@@ -76,8 +76,8 @@ describe('animatorService & authService', () => {
     await animatorService.clearPlayerGuess('G1', 'P1');
     expect(mockRepoInstance.clearPlayerGuess).toHaveBeenCalledWith('G1', 'P1');
 
-    await animatorService.clearCurrentBuzzer('G1');
-    expect(mockRepoInstance.clearCurrentBuzzer).toHaveBeenCalledWith('G1');
+    await animatorService.clearPressedBuzzer('G1');
+    expect(mockRepoInstance.clearPressedBuzzer).toHaveBeenCalledWith('G1');
 
     await animatorService.awardPoints('G1', 'P1', 10);
     expect(mockRepoInstance.awardPoints).toHaveBeenCalledWith('G1', 'P1', 10);
@@ -106,7 +106,7 @@ describe('animatorService & authService', () => {
     animatorService.listenToPlayers('G1', cb);
     expect(mockRepoInstance.listenToPlayers).toHaveBeenCalledWith('G1', cb);
 
-    animatorService.listenToBuzzer('G1', cb);
-    expect(mockRepoInstance.listenToBuzzer).toHaveBeenCalledWith('G1', cb);
+    animatorService.listenToPressedBuzzer('G1', cb);
+    expect(mockRepoInstance.listenToPressedBuzzer).toHaveBeenCalledWith('G1', cb);
   });
 });
