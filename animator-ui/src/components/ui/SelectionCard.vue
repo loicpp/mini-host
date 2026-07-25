@@ -5,7 +5,7 @@
     :style="cardStyle"
     :disabled="disabled"
   >
-    <div v-if="disabled" class="absolute top-4 right-4 bg-gray-200 text-gray-500 text-xs font-bold px-2 py-1 rounded-md">{{ disabledLabel || 'Bientôt' }}</div>
+    <div v-if="disabled" class="absolute top-4 right-4 bg-gray-200 text-gray-500 text-xs font-bold px-2 py-1 rounded-md">{{ disabledLabel || $t('app.soon') }}</div>
     
     <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 transition-colors shadow-sm icon-wrapper"
       :class="[disabled ? 'bg-gray-200 text-gray-500' : '']">

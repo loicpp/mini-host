@@ -69,6 +69,7 @@ pyinstaller --noconfirm ^
     --add-data "favicon.ico;." ^
     --add-data "favicon.png;." ^
     --add-data "..\animator-ui\dist;animator-ui\dist" ^
+    --add-data ".env;." ^
     --hidden-import "flask" ^
     --hidden-import "flask_cors" ^
     --hidden-import "core" ^

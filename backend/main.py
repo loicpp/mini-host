@@ -14,12 +14,15 @@ from controllers.http_controller import register_routes
 if getattr(sys, 'frozen', False):
     bundle_dir = sys._MEIPASS
     static_folder = os.path.join(bundle_dir, 'animator-ui', 'dist')
+    backend_env_path = os.path.join(bundle_dir, '.env')
 elif os.path.exists('/app/share/minihost/animator-ui/dist'):
     # Exécution depuis le sandbox Flatpak
     static_folder = '/app/share/minihost/animator-ui/dist'
+    backend_env_path = '/app/share/minihost/backend/.env'
 else:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     static_folder = os.path.join(current_dir, '..', 'animator-ui', 'dist')
+    backend_env_path = os.path.join(current_dir, '.env')
 
 app = Flask(__name__, static_folder=static_folder)
 CORS(app)
@@ -28,11 +31,10 @@ dev_mode = "--dev" in sys.argv
 
 # Setup Architecture (Dependency Injection)
 lastfm_api_key = ""
-env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'animator-ui', '.env')
-if os.path.exists(env_path):
-    with open(env_path, 'r') as f:
+if os.path.exists(backend_env_path):
+    with open(backend_env_path, 'r') as f:
         for line in f:
-            if line.startswith('VITE_LAFT_FM_API_KEY='):
+            if line.startswith('LASTFM_API_KEY='):
                 lastfm_api_key = line.split('=', 1)[1].strip()
 
 storage_adapter = FileStorageAdapter()

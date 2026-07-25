@@ -34,7 +34,7 @@
 
       <!-- btn 3: Setup -->
       <MenuActionBtn 
-        title="Mise en place"
+        :title="$t('home.setup')"
         colorClass="bg-purple-50 text-purple-500"
         @click="$emit('open-setup')"
       >

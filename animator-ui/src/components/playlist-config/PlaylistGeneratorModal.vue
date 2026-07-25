@@ -32,13 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Wand2, Loader2 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Modal from '../ui/Modal.vue';
 import Slider from '../ui/Slider.vue';
 
-defineProps<{
+const props = defineProps<{
   show: boolean;
   isGenerating: boolean;
 }>();
@@ -51,8 +51,14 @@ const emit = defineEmits<{
 const generatorTheme = ref('');
 const generatorLimit = ref(10);
 
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    generatorTheme.value = '';
+    generatorLimit.value = 10;
+  }
+});
+
 const handleGenerate = () => {
   emit('generate', generatorTheme.value, generatorLimit.value);
-  // Optional: clear state after emit if parent doesn't recreate component
 };
 </script>

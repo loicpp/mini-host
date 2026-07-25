@@ -5,8 +5,29 @@
     "new_game": "New Game",
     "resume_game": "Resume Game",
     "playlists": "Setup (Playlists)",
+    "setup": "Setup",
     "diagnostics": "Run Diagnostics",
     "settings": "Global Settings"
+  },
+  "setup": {
+    "back": "Back",
+    "title": "Setup",
+    "subtitle": "Configure the elements that will be used in your games.",
+    "playlists": "Playlists",
+    "playlists_desc": "Manage your music for the Blind Test.",
+    "images": "Images",
+    "images_desc": "Configure image banks for your visual Quizzes.",
+    "questions": "Questions",
+    "questions_desc": "Create text question lists for Quizzes."
+  },
+  "game_selector": {
+    "back": "Back",
+    "title": "Choose a game",
+    "subtitle": "Select the type of game you want to host.",
+    "blind_test": "Blind Test",
+    "blind_test_desc": "The great musical classic. Guess the artist and title.",
+    "quiz": "Quiz",
+    "quiz_desc": "Test your general knowledge with various questions."
   },
   "settings": {
     "back": "Back",
@@ -229,7 +250,8 @@
   },
   "app": {
     "cancel": "Cancel",
-    "ok": "OK"
+    "ok": "OK",
+    "soon": "Soon"
   },
   "login": {
     "invalid_credentials": "Invalid credentials."

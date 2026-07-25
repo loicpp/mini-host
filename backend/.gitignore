@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .env
 .env.*
+!.env.example
 .DS_Store
 regie_config.json
 build

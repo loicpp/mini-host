@@ -5,8 +5,29 @@
     "new_game": "Nouvelle Partie",
     "resume_game": "Reprendre la partie",
     "playlists": "Mise en place (Playlists)",
+    "setup": "Mise en place",
     "diagnostics": "Lancer les diagnostics",
     "settings": "Paramètres globaux"
+  },
+  "setup": {
+    "back": "Retour",
+    "title": "Mise en place",
+    "subtitle": "Configurez les éléments qui seront utilisés dans vos parties.",
+    "playlists": "Playlists",
+    "playlists_desc": "Gérez vos musiques pour le Blind Test.",
+    "images": "Images",
+    "images_desc": "Configurez des banques d'images pour vos Quiz visuels.",
+    "questions": "Questions",
+    "questions_desc": "Créez des listes de questions textuelles pour les Quiz."
+  },
+  "game_selector": {
+    "back": "Retour",
+    "title": "Choisir un jeu",
+    "subtitle": "Sélectionnez le type de jeu que vous souhaitez animer.",
+    "blind_test": "Blind Test",
+    "blind_test_desc": "Le grand classique musical. Devinez l'artiste et le titre.",
+    "quiz": "Quiz",
+    "quiz_desc": "Testez votre culture générale avec des questions variées."
   },
   "settings": {
     "back": "Retour",
@@ -228,7 +249,8 @@
   },
   "app": {
     "cancel": "Annuler",
-    "ok": "OK"
+    "ok": "OK",
+    "soon": "Bientôt"
   },
   "login": {
     "invalid_credentials": "Identifiants invalides."
