@@ -1,7 +1,7 @@
 <template>
   <main class="flex-1 overflow-y-auto relative p-0 w-full h-full">
     <HomeScreen 
-      :lastGameId="lastGameId || ''"
+      :lastGameId="verifiedLastGameId || ''"
       @open-settings="router.push('/settings')"
       @open-setup="router.push('/setup')"
       @create-game="router.push('/game/selector')"
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import HomeScreen from '../components/control-panel/HomeScreen.vue';
 import { lastGameId } from '../composables/state';
@@ -25,6 +25,8 @@ const router = useRouter();
 const { logout } = useAuth();
 const { resumeGame } = useGameSession();
 
+const verifiedLastGameId = ref<string | null>(null);
+
 onMounted(async () => {
   if (lastGameId.value) {
     try {
@@ -32,6 +34,8 @@ onMounted(async () => {
       if (!gameData) {
         lastGameId.value = null;
         localStorage.removeItem('minihost_last_game');
+      } else {
+        verifiedLastGameId.value = lastGameId.value;
       }
     } catch (e) {
       console.warn("Impossible de vérifier l'existence de la partie", e);
