@@ -4,10 +4,13 @@
       "$gameId": {
         ".read": "auth != null && data.child('ownerId').val() === auth.uid",
         ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && (data.child('ownerId').val() === auth.uid || !data.exists())",
-        ".validate": "newData.hasChildren(['ownerId', 'secret', 'settings', 'status']) || data.exists()",
+        ".validate": "newData.hasChildren(['ownerId', 'secret', 'data']) || data.exists()",
 
         "data": {
-          ".read": "auth != null && root.child('games/' + $gameId + '/players/' + auth.uid).exists()"
+          ".read": "auth != null && root.child('games/' + $gameId + '/players/' + auth.uid).exists()",
+          "status": {
+            ".read": "auth != null"
+          }
         },
 
         "pressedBuzzer": {

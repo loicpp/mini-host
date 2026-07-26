@@ -115,14 +115,14 @@ export function useGameSession() {
         return false;
       }
 
-      if (gameData.gameType) {
-        gameType.value = gameData.gameType;
+      if (gameData.data?.settings?.gameType) {
+        gameType.value = gameData.data.settings.gameType;
       } else {
         gameType.value = 'blind_test'; // Default to blind_test for old games
       }
 
-      if (gameData.status) {
-        status.value = gameData.status;
+      if (gameData.data?.status) {
+        status.value = gameData.data.status;
       } else {
         status.value = 'waiting';
       }

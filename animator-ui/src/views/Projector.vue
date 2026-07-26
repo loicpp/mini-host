@@ -12,7 +12,7 @@
     >
       <!-- Header with QR Code -->
       <header class="flex justify-between items-center px-12 py-6">
-      <div v-if="gameId && secret && game?.status !== 'waiting'" class="flex items-center gap-6 bg-white/5 p-3 rounded-2xl backdrop-blur-md border border-white/10">
+      <div v-if="gameId && secret && game?.data?.status !== 'waiting'" class="flex items-center gap-6 bg-white/5 p-3 rounded-2xl backdrop-blur-md border border-white/10">
         <img :src="qrCodeUrl" alt="QR Code" class="w-20 h-20 bg-white p-1 rounded-xl" />
         <div class="flex flex-col">
           <p class="text-white/70 text-sm m-0">{{ $t('projector.scan_to_play') }}</p>
@@ -32,7 +32,7 @@
         <h1 class="text-4xl font-bold text-white/70">{{ $t('projector.connecting') }}</h1>
       </div>
 
-      <div v-else-if="game.status === 'waiting'" class="w-full max-w-6xl flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'waiting'" class="w-full max-w-6xl flex flex-col items-center">
         <div v-if="gameId && secret" class="flex items-center gap-12 bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 mb-8 shadow-2xl">
           <img :src="qrCodeUrl" alt="QR Code" class="w-64 h-64 bg-white p-4 rounded-3xl m-0 shadow-lg" />
           <div class="text-left flex flex-col justify-center">
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div v-else-if="game.status === 'playing'" class="w-full flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'playing'" class="w-full flex flex-col items-center">
         <div v-if="isBuffering" class="flex flex-col items-center">
           <h1 class="text-5xl text-[#FFBA49] font-black mb-8">{{ $t('projector.music_starts_in') }}</h1>
           <div class="text-9xl font-black text-white animate-pulse">{{ bufferTimeLeft }}</div>
@@ -94,15 +94,15 @@
         </div>
       </div>
 
-      <div v-else-if="game.status === 'reviewing'" class="w-full flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'reviewing'" class="w-full flex flex-col items-center">
         <h1 class="text-7xl font-black text-red-400 mb-6 drop-shadow-md">{{ $t('projector.time_up') }}</h1>
         <p class="text-3xl text-white/80">{{ $t('projector.reviewing') }}</p>
       </div>
 
-      <div v-else-if="game.status === 'results'" class="w-full max-w-4xl flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'results'" class="w-full max-w-4xl flex flex-col items-center">
         <h1 class="text-6xl font-black text-emerald-400 mb-8 drop-shadow-md">{{ $t('projector.results') }}</h1>
         <div class="bg-white/10 p-10 rounded-3xl mb-12 border-2 border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.3)] w-full">
-          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.currentTrack?.answer || $t('projector.unknown_answer') }}</h2>
+          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.answer || $t('projector.unknown_answer') }}</h2>
         </div>
         <div class="w-full">
           <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.leaderboard') }}</p>
@@ -116,7 +116,7 @@
         </div>
       </div>
       
-      <div v-else-if="game.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
         <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">{{ $t('projector.podium') }}</h1>
         
         <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
@@ -152,7 +152,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
-import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 
 let originalTitle = '';
 let originalFavicon = '';
@@ -261,11 +261,8 @@ onMounted(async () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       unsubscribe();
       if (!user) {
-        try {
-          await signInAnonymously(auth);
-        } catch(e) {
-          console.error(e);
-        }
+        window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        return;
       }
       resolve();
     });
@@ -280,16 +277,16 @@ onMounted(async () => {
   });
 });
 
-watch(() => game.value?.status, (newStatus) => {
+watch(() => game.value?.data?.status, (newStatus) => {
   if (newStatus === 'playing') {
-    const track = game.value?.currentTrack;
-    if (track && track.startTime && track.duration) {
-      totalTime.value = track.duration / 1000;
-      const mDuration = track.musicDuration || track.duration;
-      const bDuration = track.blockDuration || 0;
-      musicTotalTime.value = mDuration / 1000;
-      blockTotalTime.value = bDuration / 1000;
-      startTimer(track.startTime, track.duration, mDuration);
+    const data = game.value?.data;
+    if (data && data.startTime && data.settings?.duration) {
+      totalTime.value = data.settings.duration;
+      const mDuration = data.settings.musicDuration || data.settings.duration;
+      const bDuration = data.settings.blockDuration || 0;
+      musicTotalTime.value = mDuration;
+      blockTotalTime.value = bDuration;
+      startTimer(data.startTime, data.settings.duration * 1000, mDuration * 1000);
     }
   } else {
     if (timerInterval.value) {

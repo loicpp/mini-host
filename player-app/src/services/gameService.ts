@@ -26,12 +26,69 @@ export const gameService = {
     return user.uid;
   },
 
-  // Listen to game state
   listenToGame(gameId: string, callback: (game: any) => void) {
-    const gameRef = ref(db, `games/${gameId}`);
-    return onValue(gameRef, (snapshot) => {
-      callback(snapshot.val());
+    const user = auth.currentUser;
+    if (!user) return;
+    const playerRef = ref(db, `games/${gameId}/players/${user.uid}`);
+    const statusRef = ref(db, `games/${gameId}/data/status`);
+    
+    let currentData: any = {};
+    let currentPlayer: any = null;
+    let currentStatus: any = null;
+    let unsubscribeData: any = null;
+    let gameExists = true;
+    
+    const triggerCallback = () => {
+      if (!gameExists) {
+        callback(null); // Game doesn't exist
+        return;
+      }
+      if (!currentPlayer) {
+        callback({ players: {} }); // Triggers the login screen in App.vue
+        return;
+      }
+      callback({
+        ...currentData,
+        status: currentStatus || currentData?.status,
+        settings: currentData?.settings,
+        startTime: currentData?.startTime,
+        players: { [user.uid]: currentPlayer }
+      });
+    };
+
+    const unsubscribeStatus = onValue(statusRef, (snap) => {
+      if (!snap.exists()) {
+        gameExists = false;
+      } else {
+        gameExists = true;
+        currentStatus = snap.val();
+      }
+      triggerCallback();
+    }, (error) => {
+      gameExists = false;
+      triggerCallback();
     });
+
+    const unsubscribePlayer = onValue(playerRef, (snap) => { 
+      currentPlayer = snap.val(); 
+      if (currentPlayer && !unsubscribeData) {
+        const dataRef = ref(db, `games/${gameId}/data`);
+        unsubscribeData = onValue(dataRef, (dataSnap) => {
+          currentData = dataSnap.val() || {};
+          triggerCallback();
+        });
+      } else if (!currentPlayer && unsubscribeData) {
+        unsubscribeData();
+        unsubscribeData = null;
+      }
+      triggerCallback(); 
+    });
+
+    return () => { 
+      if (unsubscribeData) unsubscribeData();
+      unsubscribeStatus();
+      unsubscribePlayer(); 
+    };
   },
 
   // Submit a guess

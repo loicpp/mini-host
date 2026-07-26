@@ -10,11 +10,15 @@ export class FirebaseGameRepository implements GameRepository {
     
     const gameRef = ref(db, `games/${gameId}`);
     await set(gameRef, {
-      status: 'waiting',
       secret: secret,
-      gameType: gameType,
-      settings: settings,
       ownerId: user ? user.uid : 'unknown',
+      data: {
+        status: 'waiting',
+        settings: {
+          ...settings,
+          gameType: gameType
+        }
+      },
       players: {}
     });
     
@@ -31,9 +35,10 @@ export class FirebaseGameRepository implements GameRepository {
   }
 
   async updateGameState(gameId: string, status: string, trackInfo: any = null) {
-    const updates: any = { status };
+    const updates: any = { 'data/status': status };
     if (trackInfo) {
-      updates.currentTrack = trackInfo;
+      if (trackInfo.startTime) updates['data/startTime'] = trackInfo.startTime;
+      if (trackInfo.answer) updates['answer'] = trackInfo.answer;
     }
     const gameRef = ref(db, `games/${gameId}`);
     await update(gameRef, updates);

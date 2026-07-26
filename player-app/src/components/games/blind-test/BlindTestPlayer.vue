@@ -190,9 +190,10 @@ watch(() => props.game?.status, (newStatus, oldStatus) => {
       currentGuess.value = null;
     }
     
-    const track = props.game.currentTrack;
-    if (track && track.startTime && track.duration) {
-      startTimer(track.startTime, track.duration, track.blockDuration || 0);
+    const startTime = props.game?.startTime;
+    const settings = props.game?.settings;
+    if (startTime && settings?.duration) {
+      startTimer(startTime, settings.duration * 1000, (settings.blockDuration || 0) * 1000);
     }
   } else if (newStatus !== 'playing') {
     stopTimer();
