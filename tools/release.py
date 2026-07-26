@@ -5,6 +5,8 @@ import sys
 
 def get_latest_git_tag():
     try:
+        print("Synchronisation des tags avec le dépôt distant...")
+        subprocess.run(['git', 'fetch', '--tags', '-q'], check=True)
         result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], capture_output=True, text=True, check=True)
         tag = result.stdout.strip()
         if tag.startswith('v'):
@@ -13,56 +15,21 @@ def get_latest_git_tag():
     except subprocess.CalledProcessError:
         return "0.0.0"
 
-def get_current_version(env_path):
-    if not os.path.exists(env_path):
-        return None
-    with open(env_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.startswith('VITE_APP_VERSION='):
-                return line.strip().split('=', 1)[1]
-    return None
 
-def update_env_version(env_path, new_version):
-    # Create the directory if it doesn't exist just in case
-    os.makedirs(os.path.dirname(env_path), exist_ok=True)
-    
-    lines = []
-    if os.path.exists(env_path):
-        with open(env_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-    
-    with open(env_path, 'w', encoding='utf-8') as f:
-        found = False
-        for line in lines:
-            if line.startswith('VITE_APP_VERSION='):
-                f.write(f"VITE_APP_VERSION={new_version}\n")
-                found = True
-            else:
-                f.write(line)
-        if not found:
-            f.write(f"VITE_APP_VERSION={new_version}\n")
 
 def parse_version(v):
     return tuple(map(int, v.split('.')))
 
 def main():
-    animator_env = os.path.join('animator-ui', '.env')
-    player_env = os.path.join('player-app', '.env')
-
     git_v = get_latest_git_tag()
-    v_animator = get_current_version(animator_env)
-    v_player = get_current_version(player_env)
     
-    base_v = v_animator if v_animator else (v_player if v_player else git_v)
+    base_v = git_v
     if base_v == "0.0.0":
         base_v = "1.0.0"
 
     print("======================================")
-    print("Dernières versions trouvées :")
-    print(f" - Git Tag     : {git_v}")
-    print(f" - Animator UI : {v_animator or 'Aucune'}")
-    print(f" - Player App  : {v_player or 'Aucune'}")
-    print(f" -> Version de base utilisée : {base_v}")
+    print(f"Dernière version trouvée (Git Tag) : {git_v}")
+    print(f"Version de base utilisée           : {base_v}")
     print("======================================")
 
     try:
@@ -123,10 +90,7 @@ def main():
         print("Opération annulée.")
         sys.exit(0)
 
-    print(f"\nMise à jour des fichiers .env vers la version {new_v}...")
-    update_env_version(animator_env, new_v)
-    update_env_version(player_env, new_v)
-    print("✅ Versions mises à jour dans les .env locaux !")
+    print(f"\nLa version {new_v} sera gérée uniquement via le tag Git.")
 
     try:
         # Verify if tag already exists locally
