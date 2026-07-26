@@ -3,6 +3,10 @@ set -e
 
 echo "==> Préparation de l'environnement pour la construction Flatpak..."
 
+if [ ! -f "backend/.env" ]; then
+    echo "[ERROR] Le fichier backend/.env est manquant ! L'application en a besoin pour fonctionner."
+    exit 1
+fi
 # Installation de flatpak-builder s'il est manquant
 if ! command -v flatpak-builder &> /dev/null; then
     echo "Installation de flatpak-builder système via apt (le mot de passe administrateur peut être requis)..."

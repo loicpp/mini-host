@@ -60,6 +60,12 @@ if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
 if exist MiniHost.spec del MiniHost.spec
 
+if not exist ".env" (
+    echo [ERROR] backend/.env file is missing! The application requires it to build.
+    popd
+    goto error
+)
+
 :: Note the use of semicolon (;) instead of colon (:) for windows add-data
 pyinstaller --noconfirm ^
     --onefile ^
