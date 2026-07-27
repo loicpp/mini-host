@@ -53,11 +53,3 @@ class AnimatorApi:
 
     def load_playlists(self) -> List[Dict[str, Any]]:
         return self.storage_port.load_playlists()
-    
-    def open_projector_window(self, game_id: str) -> Dict[str, str]:
-        self.projector_port.open_window(game_id)
-        return {"status": "ok"}
-
-    def close_projector_window(self) -> Dict[str, str]:
-        self.projector_port.close_window()
-        return {"status": "ok"}

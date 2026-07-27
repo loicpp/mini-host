@@ -40,15 +40,7 @@ def register_routes(app: Flask, api: AnimatorApi):
             return jsonify(api.save_game_state(request.json))
         return jsonify(api.load_game_state())
 
-    @app.route('/api/projector/open', methods=['POST'])
-    def open_projector():
-        data = request.json
-        game_id = data.get('game_id')
-        return jsonify(api.open_projector_window(game_id))
 
-    @app.route('/api/projector/close', methods=['POST'])
-    def close_projector():
-        return jsonify(api.close_projector_window())
 
     @app.route('/api/dialog/folder')
     def dialog_folder():

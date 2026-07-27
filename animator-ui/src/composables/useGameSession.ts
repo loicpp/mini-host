@@ -5,6 +5,8 @@ import { Track } from '../services/music/MusicProvider';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
 
+let projectorWindow: Window | null = null;
+
 export function useGameSession() {
   const { t } = useI18n();
   const { showAlert, showConfirm } = useDialog();
@@ -169,24 +171,22 @@ export function useGameSession() {
 
   const toggleProjector = async () => {
     if (!isProjectorOpen.value) {
-      try {
-        await fetch('http://127.0.0.1:5000/api/projector/open', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ game_id: gameId.value })
-        });
-      } catch {
-        console.warn("Could not open projector via backend");
-        window.open(`/public?game=${gameId.value}`, '_blank', 'width=1280,height=720');
-      }
+      projectorWindow = window.open(`/public?game=${gameId.value}`, 'projectorWindow', 'width=1280,height=720');
       isProjectorOpen.value = true;
+      
+      if (projectorWindow) {
+        const timer = setInterval(() => {
+          if (projectorWindow?.closed) {
+            clearInterval(timer);
+            isProjectorOpen.value = false;
+            projectorWindow = null;
+          }
+        }, 1000);
+      }
     } else {
-      try {
-        await fetch('http://127.0.0.1:5000/api/projector/close', {
-          method: 'POST'
-        });
-      } catch {
-        console.warn("Could not close projector via backend");
+      if (projectorWindow) {
+        projectorWindow.close();
+        projectorWindow = null;
       }
       isProjectorOpen.value = false;
     }

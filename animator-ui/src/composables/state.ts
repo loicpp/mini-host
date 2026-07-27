@@ -27,7 +27,7 @@ export const showDiagnostics = ref(false);
 
 export const pressedBuzzer = ref<string | null>(null);
 
-export const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text' });
+export const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration: 30, mode: 'text', allowSuggestions: true });
 
 export const pendingPoints = ref<Record<string, number>>({});
 export const lastAwardedPoints = ref<Record<string, number>>({});
