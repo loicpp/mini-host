@@ -110,6 +110,7 @@ export class SoundCloudAdapter implements MusicProvider {
         visual: false
       });
     } else {
+      this.widget.seekTo(0);
       if (delayMs === 0) {
         this.widget.play();
       }
@@ -117,6 +118,9 @@ export class SoundCloudAdapter implements MusicProvider {
     
     if (delayMs > 0) {
       this.playTimeout = setTimeout(() => {
+        if (!needsLoad) {
+          this.widget.seekTo(0);
+        }
         this.widget.play();
         this.playTimeout = null;
       }, delayMs);

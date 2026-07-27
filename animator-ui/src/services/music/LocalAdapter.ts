@@ -31,6 +31,8 @@ export class LocalAdapter implements MusicProvider {
     if (this.audio.src !== url) {
       this.audio.src = url;
       this.audio.load();
+    } else {
+      this.audio.currentTime = 0;
     }
     
     if (this.playTimeout) {
@@ -40,7 +42,10 @@ export class LocalAdapter implements MusicProvider {
     
     if (delayMs > 0) {
       this.playTimeout = setTimeout(() => {
-        if (this.audio) this.audio.play().catch(() => {});
+        if (this.audio) {
+          this.audio.currentTime = 0;
+          this.audio.play().catch(() => {});
+        }
         this.playTimeout = null;
       }, delayMs);
     } else {
