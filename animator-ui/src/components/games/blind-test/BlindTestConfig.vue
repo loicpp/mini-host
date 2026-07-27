@@ -71,6 +71,26 @@
           />
         </div>
 
+        <div class="flex flex-col gap-2" v-if="settings.mode === 'text'">
+          <div 
+            class="flex items-center justify-between p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:border-[#FFBA49] transition-all cursor-pointer group"
+            @click="settings.allowSuggestions = !settings.allowSuggestions"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-primary transition-colors">{{ $t('create_game.allow_suggestions') }}</span>
+              <span class="text-sm text-muted-foreground mt-0.5">{{ $t('create_game.allow_suggestions_desc') }}</span>
+            </div>
+            <div class="relative shrink-0 ml-4">
+              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.allowSuggestions ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
+                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.allowSuggestions ? 'translate-x-5' : 'translate-x-0']">
+                  <Check v-if="settings.allowSuggestions" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
+                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
           <div v-if="playlists.length > 0">
@@ -96,7 +116,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard } from '@lucide/vue';
+import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard, Check, X } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
@@ -131,6 +151,7 @@ const settings = ref({
   musicDuration: 15,
   duration: 30,
   mode: 'text',
+  allowSuggestions: true,
   playlistId: '',
   localTracks: [] as any[]
 });

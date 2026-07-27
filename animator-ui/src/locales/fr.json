@@ -54,6 +54,8 @@
     "music_duration": "Temps de la musique :",
     "total_duration": "Temps total de réflexion :",
     "game_mode": "Mode de jeu :",
+    "allow_suggestions": "Propositions de saisie (iTunes) :",
+    "allow_suggestions_desc": "Affiche des suggestions pendant que le joueur tape sa réponse.",
     "mode_buzzer": "Buzzer (Le premier qui clique répond)",
     "mode_text": "Saisie de la musique (Chacun tape sa réponse)",
     "starting_playlist": "Playlist de départ :",

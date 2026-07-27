@@ -211,6 +211,10 @@ const handleSearch = () => {
     return;
   }
 
+  if (props.game?.settings?.allowSuggestions === false) {
+    return;
+  }
+
   isSearching.value = true;
   searchTimeout.value = setTimeout(async () => {
     suggestions.value = await itunesService.search(searchQuery.value);

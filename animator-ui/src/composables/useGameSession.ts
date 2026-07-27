@@ -40,7 +40,8 @@ export function useGameSession() {
         blockDuration: settings.blockDuration || 0,
         musicDuration: settings.musicDuration || 15,
         duration: settings.duration,
-        mode: settings.mode
+        mode: settings.mode,
+        allowSuggestions: settings.allowSuggestions ?? true
       };
     }
 

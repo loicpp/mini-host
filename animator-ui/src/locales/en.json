@@ -54,6 +54,8 @@
     "music_duration": "Music duration:",
     "total_duration": "Total thinking time:",
     "game_mode": "Game mode:",
+    "allow_suggestions": "Input Suggestions (iTunes):",
+    "allow_suggestions_desc": "Displays a list of suggestions while the player types their answer.",
     "mode_buzzer": "Buzzer (First to click answers)",
     "mode_text": "Text Input (Everyone types their answer)",
     "starting_playlist": "Starting playlist:",
