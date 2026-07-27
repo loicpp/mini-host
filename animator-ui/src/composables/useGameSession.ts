@@ -215,31 +215,29 @@ export function useGameSession() {
   };
 
   const restartGame = async () => {
-    if (await showConfirm({ title: t('dialogs.restart_game.title'), message: t('dialogs.restart_game.message'), confirmText: t('dialogs.restart_game.confirm'), confirmVariant: "primary" })) {
-      status.value = 'waiting';
-      try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
-      nextTrackInfo.value.answer = '';
-      searchQuery.value = '';
-      selectedTrack.value = null;
-      pendingPoints.value = {};
-      
-      try {
-        await animatorService.resetPlayers(gameId.value);
-      } catch {
-        console.warn("Could not reset players");
-      }
-      await animatorService.updateGameState(gameId.value, 'waiting', null);
-      
-      playedTracks.value = [];
-      try {
-        await fetch('http://127.0.0.1:5000/api/game', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
-        });
-      } catch(e) {
-        console.warn("Could not reset game.json", e);
-      }
+    status.value = 'waiting';
+    try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
+    nextTrackInfo.value.answer = '';
+    searchQuery.value = '';
+    selectedTrack.value = null;
+    pendingPoints.value = {};
+    
+    try {
+      await animatorService.resetPlayers(gameId.value);
+    } catch {
+      console.warn("Could not reset players");
+    }
+    await animatorService.updateGameState(gameId.value, 'waiting', null);
+    
+    playedTracks.value = [];
+    try {
+      await fetch('http://127.0.0.1:5000/api/game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
+      });
+    } catch(e) {
+      console.warn("Could not reset game.json", e);
     }
   };
 

@@ -126,7 +126,7 @@
     "submit": "Se Connecter"
   },
   "sidebar": {
-    "quit": "Quitter",
+    "quit": "Retour",
     "playing": "En cours",
     "no_music": "Aucune musique",
     "last_music": "Dernière Musique",
@@ -240,6 +240,8 @@
     "status_reviewing": "Correction",
     "status_results": "Résultats",
     "status_finished": "Terminée",
+    "game_finished_title": "Partie Terminée",
+    "game_finished_message": "La partie est arrêtée. Vous pouvez recommencer une nouvelle session avec les mêmes joueurs.",
     "backend_disconnected": "Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.",
     "backend_disconnected_title": "Connexion perdue",
     "reconnecting": "Tentative de reconnexion..."
@@ -281,11 +283,6 @@
       "title": "Arrêter la partie ?",
       "message": "La partie sera définitivement terminée et vous serez redirigé vers les résultats finaux.",
       "confirm": "Arrêter"
-    },
-    "restart_game": {
-      "title": "Recommencer la partie ?",
-      "message": "Voulez-vous vraiment recommencer la partie à zéro ? Les joueurs connectés seront conservés.",
-      "confirm": "Recommencer"
     },
     "kick_player": {
       "title": "Supprimer le joueur ?",

@@ -240,6 +240,8 @@
     "status_reviewing": "Reviewing",
     "status_results": "Results",
     "status_finished": "Finished",
+    "game_finished_title": "Game Over",
+    "game_finished_message": "The game has been stopped. You can restart a new session with the same players.",
     "backend_disconnected": "Cannot reach local server (backend). Please make sure the desktop app is running.",
     "backend_disconnected_title": "Connection lost",
     "reconnecting": "Attempting to reconnect..."
@@ -281,11 +283,6 @@
       "title": "Stop the game?",
       "message": "The game will end immediately and you will be redirected to the final results.",
       "confirm": "Stop"
-    },
-    "restart_game": {
-      "title": "Restart game?",
-      "message": "Are you sure you want to restart the game from scratch? Connected players will be kept.",
-      "confirm": "Restart"
     },
     "kick_player": {
       "title": "Kick player?",

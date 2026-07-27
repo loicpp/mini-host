@@ -36,9 +36,6 @@
               <span>{{ Object.keys(displayedPlayers).length }} {{ $t('control_panel.players') }}</span>
               <span class="w-2 h-2 rounded-full bg-emerald-400 ml-1"></span>
             </button>
-            <Btn variant="ghost-orange" @click="restartGame">
-              <RefreshCw class="w-4 h-4 mr-2" /> {{ $t('control_panel.restart') }}
-            </Btn>
             <Btn variant="ghost-red" @click="endGame" v-if="status !== 'finished'">
               <Square class="w-4 h-4 mr-2" /> {{ $t('control_panel.stop') }}
             </Btn>
@@ -147,6 +144,19 @@
                 {{ $t('control_panel.no_points_won') }}
               </div>
             </div>
+          </div>
+        </div>
+
+        <div v-if="status === 'finished'" class="flex-1 flex flex-col items-center justify-center py-12 animate-in zoom-in-95 duration-300">
+          <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl flex flex-col items-center text-center max-w-md w-full mx-auto">
+            <div class="w-20 h-20 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mb-6">
+              <RefreshCw class="w-10 h-10" />
+            </div>
+            <h2 class="text-2xl font-black text-primary mb-2">{{ $t('control_panel.game_finished_title') }}</h2>
+            <p class="text-muted-foreground mb-8 text-sm">{{ $t('control_panel.game_finished_message') }}</p>
+            <Btn variant="primary" size="lg" className="w-full font-bold text-lg" @click="restartGame">
+              <RefreshCw class="w-5 h-5 mr-2" /> {{ $t('control_panel.restart') }}
+            </Btn>
           </div>
         </div>
       </div>
