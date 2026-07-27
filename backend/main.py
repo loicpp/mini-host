@@ -93,10 +93,7 @@ if __name__ == '__main__':
     threading.Thread(target=open_browser, daemon=True).start()
     
     def on_close():
-        try:
-            api.close_projector_window()
-        except Exception:
-            pass
+
         try:
             api.music_manager.quit()
         except Exception:

@@ -31,12 +31,3 @@ def test_save_playlists(api, mock_storage):
     mock_storage.save_playlists.assert_called_once_with([{"id": 1}])
     assert result == {"status": "ok"}
 
-def test_open_projector_window(api, mock_projector):
-    result = api.open_projector_window("game123")
-    mock_projector.open_window.assert_called_once_with("game123")
-    assert result == {"status": "ok"}
-
-def test_close_projector_window(api, mock_projector):
-    result = api.close_projector_window()
-    mock_projector.close_window.assert_called_once()
-    assert result == {"status": "ok"}
