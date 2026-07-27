@@ -9,20 +9,24 @@
       <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">
           <label class="text-sm font-semibold text-primary">{{ $t('login_screen.email') }}</label>
-          <input 
+          <TextInput 
             type="email" 
             v-model="email" 
             required 
-            class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none"
+            inputClass="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground font-medium"
+            focusClass="focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none"
+            :clearOnUnmount="false"
           />
         </div>
         <div class="flex flex-col gap-2">
           <label class="text-sm font-semibold text-primary">{{ $t('login_screen.password') }}</label>
-          <input 
+          <TextInput 
             type="password" 
             v-model="password" 
             required 
-            class="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none"
+            inputClass="w-full px-4 py-3 bg-muted rounded-xl border-none text-foreground font-medium"
+            focusClass="focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none"
+            :clearOnUnmount="false"
           />
         </div>
         
@@ -42,6 +46,7 @@
 import { ref } from 'vue';
 import Card from '../ui/Card.vue';
 import Btn from '../ui/Btn.vue';
+import TextInput from '../ui/TextInput.vue';
 
 defineProps<{
   error: string;

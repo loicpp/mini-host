@@ -18,15 +18,18 @@
           <div class="flex flex-col min-w-0 pr-4 flex-1">
             <div v-if="editingTrackIndex === index" class="flex items-center gap-2 w-full bg-slate-50 h-[60px] px-2 rounded-xl border border-slate-200 relative">
               <div class="relative z-50 flex-1 min-w-0">
-                <input 
-                  type="text" 
+                <TextInput 
+                  ref="editTrackInput"
                   v-model="searchQuery" 
                   @input="onSearchInput"
+                  @focus="onSearchInput"
                   @keydown.enter="saveEditTrack"
                   @keydown.esc="cancelEditTrack"
                   @blur="handleSearchBlur"
                   :placeholder="$t('playlists.search_itunes_placeholder')" 
-                  class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
+                  inputClass="bg-white border border-slate-200 text-sm shadow-sm px-3 py-1.5 rounded-lg font-bold text-primary"
+                  focusClass="focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                  clearable
                 />
                 <div v-if="isSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
                 
@@ -87,9 +90,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { PlayCircle, BadgeCheck, Edit3, Play, Square, Trash2 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
+import TextInput from '../ui/TextInput.vue';
 import { Track } from '../../types/playlist';
 import { useTrackSearch } from '../../composables/useTrackSearch';
 
@@ -111,12 +115,20 @@ const { searchQuery, suggestions, isSearching, handleSearch, handleSearchBlur, c
 
 const editingTrackIndex = ref<number | null>(null);
 const editingTrackData = ref<{title: string, artist: string, isCertified?: boolean}>({ title: '', artist: '', isCertified: false });
+const editTrackInput = ref<any>(null);
 
-const startEditTrack = (index: number, track: Track) => {
+const startEditTrack = async (index: number, track: Track) => {
   editingTrackIndex.value = index;
   editingTrackData.value = { title: track.title, artist: track.artist, isCertified: track.isCertified };
   searchQuery.value = `${track.title} - ${track.artist}`;
   suggestions.value = [];
+  handleSearch('local');
+  await nextTick();
+  if (Array.isArray(editTrackInput.value)) {
+    editTrackInput.value[0]?.focus();
+  } else {
+    editTrackInput.value?.focus();
+  }
 };
 
 const onSearchInput = () => {

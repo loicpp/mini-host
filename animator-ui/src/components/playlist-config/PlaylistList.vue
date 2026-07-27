@@ -1,7 +1,15 @@
 <template>
   <div class="flex flex-col">
     <div class="flex gap-4 mb-8">
-      <input type="text" v-model="newPlaylistName" :placeholder="$t('playlists.new_placeholder')" class="flex-1 px-4 py-3 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium" />
+      <TextInput 
+        v-model="newPlaylistName" 
+        :placeholder="$t('playlists.new_placeholder')" 
+        wrapperClass="flex-1" 
+        inputClass="bg-muted px-4 py-3 rounded-xl border-none font-medium text-foreground"
+        focusClass="focus:ring-2 focus:ring-[#FFBA49]"
+        clearable 
+        :maxLength="50" 
+      />
       <div class="w-48 shrink-0">
         <CustomSelect 
           v-model="newPlaylistType" 
@@ -52,6 +60,7 @@ import { ref } from 'vue';
 import { Plus, Wand2, Edit3, Trash2 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import CustomSelect from '../ui/CustomSelect.vue';
+import TextInput from '../ui/TextInput.vue';
 import { Playlist } from '../../types/playlist';
 
 defineProps<{

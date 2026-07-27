@@ -6,15 +6,17 @@
     </div>
     
     <div v-if="playlistType === 'soundcloud' && !newTrack.title" class="relative mb-4 z-10">
-      <input 
-        type="text" 
+      <TextInput 
         v-model="searchQuery" 
         @input="onSearchInput"
+        @focus="onSearchInput"
         @keydown.enter="applyCustomSearch"
         @keydown.esc="clearSearch"
         @blur="handleSearchBlur"
         :placeholder="$t('playlists.search_sc_placeholder')" 
-        class="w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm"
+        inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground"
+        focusClass="focus:ring-2 focus:ring-blue-400"
+        clearable
       />
       <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-blue-200 border-t-transparent rounded-full animate-spin"></div>
       
@@ -60,15 +62,18 @@
           </div>
           
           <div v-else class="flex-1 min-w-0 mr-4 relative z-50">
-              <input 
-                type="text" 
+              <TextInput 
+                ref="editInput"
                 v-model="searchQuery" 
                 @input="onSearchInput"
+                @focus="onSearchInput"
                 @keydown.enter="saveEdit"
                 @keydown.esc="clearSearch"
                 @blur="handleSearchBlur"
                 :placeholder="$t('playlists.search_itunes_placeholder')" 
-                class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-400 text-sm font-bold text-primary shadow-sm"
+                inputClass="bg-white border border-slate-200 text-sm shadow-sm px-3 py-1.5 rounded-lg font-bold text-primary"
+                focusClass="focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                clearable
               />
               <div v-if="isSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
               
@@ -105,7 +110,7 @@
       </div>
       
       <div class="flex gap-4" v-if="playlistType === 'soundcloud'">
-        <input type="text" :value="newTrack.url" @input="updateUrl" :placeholder="$t('playlists.sc_url')" class="flex-2 w-full px-4 py-3 bg-white rounded-xl border border-blue-100 text-foreground focus:ring-2 focus:ring-blue-400 transition-shadow outline-none font-medium shadow-sm" />
+        <TextInput :modelValue="newTrack.url" @input="updateUrl" :placeholder="$t('playlists.sc_url')" inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground" focusClass="focus:ring-2 focus:ring-blue-400" wrapperClass="flex-2" clearable @clear="updateUrl({ target: { value: '' } } as unknown as Event)" />
         <Btn variant="primary" @click="$emit('add-sc-track')" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
       </div>
       
@@ -125,9 +130,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { PlusCircle, FolderOpen, FileAudio, FolderPlus, BadgeCheck, XCircle, X, Edit3, Plus } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
+import TextInput from '../ui/TextInput.vue';
 import { Track } from '../../types/playlist';
 import { useTrackSearch } from '../../composables/useTrackSearch';
 import { useTrackCertifier } from '../../composables/useTrackCertifier';
@@ -152,6 +158,7 @@ const { searchQuery, suggestions, isSearching, handleSearch, handleSearchBlur, c
 const { autoCertifyTrack } = useTrackCertifier();
 
 const isEditingTrack = ref(false);
+const editInput = ref<any>(null);
 
 const onSearchInput = () => {
   emit('reset-duplicate-warning');
@@ -187,10 +194,12 @@ const selectSuggestion = async (item: {title: string, artist: string, url?: stri
   clearSearch();
 };
 
-const startEdit = () => {
+const startEdit = async () => {
   isEditingTrack.value = true;
   searchQuery.value = `${props.newTrack.title} ${props.newTrack.artist}`.trim();
   handleSearch('local'); // use iTunes for editing metadata
+  await nextTick();
+  editInput.value?.focus();
 };
 
 const selectSuggestionForEdit = (item: {title: string, artist: string}) => {

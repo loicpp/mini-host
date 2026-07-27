@@ -37,6 +37,10 @@ class AnimatorApi:
         return self.storage_port.load_config()
 
     def save_playlists(self, playlists_data: List[Dict[str, Any]]) -> Dict[str, str]:
+        for pl in playlists_data:
+            name = pl.get('name', '')
+            if len(name) > 50:
+                return {"status": "error", "message": f"Le nom de la playlist ne peut pas dépasser 50 caractères."}
         self.storage_port.save_playlists(playlists_data)
         return {"status": "ok"}
 

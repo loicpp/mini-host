@@ -8,7 +8,7 @@
       <div class="flex flex-col gap-4 mb-6">
         <div>
           <label class="block text-sm font-bold text-primary mb-2">{{ $t('playlists.theme_label') }}</label>
-          <input type="text" v-model="generatorTheme" placeholder="ex: rock, 80s, disney..." class="w-full px-4 py-2 bg-muted rounded-xl border-none text-foreground focus:ring-2 focus:ring-[#FFBA49] outline-none" />
+          <TextInput v-model="generatorTheme" placeholder="ex: rock, 80s, disney..." inputClass="w-full px-4 py-2 bg-muted rounded-xl border-none text-foreground font-medium" focusClass="focus:ring-2 focus:ring-[#FFBA49] outline-none" clearable />
         </div>
         <div>
           <label class="block text-sm font-bold text-primary mb-2 flex justify-between">
@@ -37,6 +37,7 @@ import { Wand2, Loader2 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Modal from '../ui/Modal.vue';
 import Slider from '../ui/Slider.vue';
+import TextInput from '../ui/TextInput.vue';
 
 const props = defineProps<{
   show: boolean;

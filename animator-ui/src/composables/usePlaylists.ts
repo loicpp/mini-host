@@ -28,11 +28,16 @@ export function usePlaylists() {
 
   const saveToConfig = async () => {
     try {
-      await fetch('http://127.0.0.1:5000/api/playlists', {
+      const res = await fetch('http://127.0.0.1:5000/api/playlists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(playlists.value)
       });
+      const data = await res.json();
+      if (data.status === 'error') {
+        await showAlert({ title: "Erreur de sauvegarde", message: data.message });
+        await loadPlaylists(); // reload to get the correct state
+      }
     } catch(e) {
       console.warn("Could not save playlists", e);
     }
@@ -43,7 +48,7 @@ export function usePlaylists() {
     const newId = `pl_${Date.now()}`;
     playlists.value.push({
       id: newId,
-      name: name.trim(),
+      name: name.trim().substring(0, 50),
       type: type,
       tracks: []
     });

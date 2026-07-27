@@ -7,12 +7,16 @@
       <div class="flex items-center gap-3">
         <div v-if="isEditingName" class="flex items-center gap-2">
           <span class="text-[#FFBA49] font-bold text-xl">{{ $t('playlists.editing') }}</span>
-          <input 
-            type="text" 
+          <TextInput 
+            ref="nameInput"
             v-model="editingName" 
             @keydown.enter="saveName" 
             @keydown.esc="isEditingName = false" 
-            class="px-3 py-1 bg-white border border-slate-200 rounded-lg outline-none focus:border-[#FFBA49] text-xl font-bold text-primary shadow-sm min-w-[250px]" 
+            inputClass="bg-white border border-slate-200 text-xl shadow-sm px-3 py-1 rounded-lg font-bold text-primary"
+            focusClass="focus:border-[#FFBA49] focus:ring-1 focus:ring-[#FFBA49]"
+            wrapperClass="w-fit min-w-[250px]"
+            clearable
+            :maxLength="50"
           />
           <Btn size="sm" variant="primary" @click="saveName">{{ $t('playlists.ok') }}</Btn>
           <Btn size="sm" variant="soft" @click="isEditingName = false">{{ $t('playlists.cancel') }}</Btn>
@@ -53,10 +57,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { ChevronLeft, Edit3 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
+import TextInput from '../ui/TextInput.vue';
 import TrackAdder from './TrackAdder.vue';
 import TrackList from './TrackList.vue';
 import { Playlist, Track } from '../../types/playlist';
@@ -88,14 +93,17 @@ const emit = defineEmits<{
 
 const isEditingName = ref(false);
 const editingName = ref('');
+const nameInput = ref<any>(null);
 
-const startEditName = () => {
+const startEditName = async () => {
   editingName.value = props.playlist.name;
   isEditingName.value = true;
+  await nextTick();
+  nameInput.value?.focus();
 };
 
 const saveName = () => {
-  const newName = editingName.value.trim();
+  const newName = editingName.value.trim().substring(0, 50);
   if (newName) {
     emit('update-playlist-name', newName);
   }
