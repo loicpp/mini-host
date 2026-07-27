@@ -5,8 +5,8 @@
     </div>
     <input 
       type="range" 
-      :min="min" 
-      :max="max" 
+      :min="internalMin" 
+      :max="internalMax" 
       :value="modelValue" 
       @input="updateValue"
       class="absolute inset-0 w-full opacity-0 cursor-pointer h-full" 
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -26,26 +26,90 @@ const props = defineProps({
   },
   min: {
     type: Number,
-    required: true
+    default: 0
   },
   max: {
     type: Number,
-    required: true
+    default: 100
   },
   color: {
     type: String,
     default: "#FFBA49"
+  },
+  stepValues: {
+    type: Array as () => number[],
+    default: undefined
+  },
+  allowShiftOverride: {
+    type: Boolean,
+    default: false
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
+const isShiftPressed = ref(false);
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'Shift') {
+    isShiftPressed.value = true;
+  }
+};
+
+const handleKeyUp = (e: KeyboardEvent) => {
+  if (e.key === 'Shift') {
+    isShiftPressed.value = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keyup', handleKeyUp);
+});
+
+const internalMin = computed(() => {
+  if (props.stepValues && props.stepValues.length > 0) {
+    return Math.min(...props.stepValues, props.min);
+  }
+  return props.min;
+});
+
+const internalMax = computed(() => {
+  if (props.stepValues && props.stepValues.length > 0) {
+    return Math.max(...props.stepValues, props.max);
+  }
+  return props.max;
+});
+
 const pct = computed(() => {
-  return ((props.modelValue - props.min) / (props.max - props.min)) * 100
+  let percentage = ((props.modelValue - internalMin.value) / (internalMax.value - internalMin.value)) * 100;
+  if (percentage < 0) percentage = 0;
+  if (percentage > 100) percentage = 100;
+  return percentage;
 })
 
 const updateValue = (e: Event) => {
   const val = Number((e.target as HTMLInputElement).value)
-  emit('update:modelValue', val)
+  if (props.stepValues && props.stepValues.length > 0 && !(props.allowShiftOverride && isShiftPressed.value)) {
+    let closest = props.stepValues[0];
+    let minDiff = Infinity;
+    for (const step of props.stepValues) {
+      const diff = Math.abs(step - val);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closest = step;
+      }
+    }
+    emit('update:modelValue', closest)
+    // Force input to snap visually if necessary (although opacity is 0)
+    ;(e.target as HTMLInputElement).value = closest.toString();
+  } else {
+    emit('update:modelValue', val)
+  }
 }
 </script>

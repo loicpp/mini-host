@@ -34,24 +34,33 @@
       
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between">
-            {{ $t('create_game.block_duration') }} <span class="text-[#FFBA49]">{{ settings.blockDuration }}s</span>
+          <label class="font-bold text-primary flex justify-between items-center">
+            {{ $t('create_game.block_duration') }} 
+            <div class="flex items-center text-[#FFBA49]">
+              <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
+            </div>
           </label>
-          <Slider v-model="settings.blockDuration" :min="0" :max="30" />
+          <Slider v-model="settings.blockDuration" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between">
-            {{ $t('create_game.music_duration') }} <span class="text-[#FFBA49]">{{ settings.musicDuration }}s</span>
+          <label class="font-bold text-primary flex justify-between items-center">
+            {{ $t('create_game.music_duration') }} 
+            <div class="flex items-center text-[#FFBA49]">
+              <input type="number" v-model.number="settings.musicDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('musicDuration', 1, 100)" />s
+            </div>
           </label>
-          <Slider v-model="settings.musicDuration" :min="1" :max="100" />
+          <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between">
-            {{ $t('create_game.total_duration') }} <span class="text-[#FFBA49]">{{ settings.duration }}s</span>
+          <label class="font-bold text-primary flex justify-between items-center">
+            {{ $t('create_game.total_duration') }} 
+            <div class="flex items-center text-[#FFBA49]">
+              <input type="number" v-model.number="settings.duration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('duration', 1, 100)" />s
+            </div>
           </label>
-          <Slider v-model="settings.duration" :min="1" :max="100" />
+          <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -145,24 +154,41 @@ onMounted(async () => {
   }
 });
 
-watch(() => settings.value.musicDuration, (newVal) => {
-  if (settings.value.duration < newVal) {
-    settings.value.duration = newVal;
+const preventNonNumeric = (e: KeyboardEvent) => {
+  if (['e', 'E', '+', '-', '.', ','].includes(e.key)) {
+    e.preventDefault();
   }
-  if (settings.value.blockDuration > newVal) {
-    settings.value.blockDuration = newVal;
+};
+
+const clampValue = (field: 'blockDuration' | 'musicDuration' | 'duration', min: number, max: number) => {
+  let val = Number(settings.value[field]);
+  if (isNaN(val)) val = min;
+  if (val < min) val = min;
+  if (val > max) val = max;
+  settings.value[field] = val;
+};
+
+watch(() => settings.value.musicDuration, (newVal) => {
+  const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+  if (settings.value.duration < effectiveVal) {
+    settings.value.duration = effectiveVal;
+  }
+  if (settings.value.blockDuration > effectiveVal) {
+    settings.value.blockDuration = effectiveVal;
   }
 });
 
 watch(() => settings.value.duration, (newVal) => {
-  if (settings.value.musicDuration > newVal) {
-    settings.value.musicDuration = newVal;
+  const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+  if (settings.value.musicDuration > effectiveVal) {
+    settings.value.musicDuration = effectiveVal;
   }
 });
 
 watch(() => settings.value.blockDuration, (newVal) => {
-  if (settings.value.musicDuration < newVal) {
-    settings.value.musicDuration = newVal;
+  const effectiveVal = Math.min(Math.max(newVal, 0), 30);
+  if (settings.value.musicDuration < effectiveVal) {
+    settings.value.musicDuration = effectiveVal;
   }
 });
 
