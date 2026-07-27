@@ -10,15 +10,20 @@ export function useAuth() {
 
   const attemptAutoLogin = async () => {
     try {
-      const configRes = await fetch('http://127.0.0.1:5000/api/config');
-      const config = await configRes.json();
-      if (config && config.email && config.password) {
-        email.value = config.email;
-        password.value = config.password;
-        await login();
+      const user = await authService.getCurrentUser();
+      if (user) {
+        email.value = user.email || '';
+        isLoggedIn.value = true;
+        
+        // Charger uniquement les variables non-sensibles depuis l'API locale
+        const configRes = await fetch('http://127.0.0.1:5000/api/config');
+        const config = await configRes.json();
+        if (config && config.lastGameId) {
+          lastGameId.value = config.lastGameId;
+        }
       }
     } catch(e) {
-      console.warn("Could not load config", e);
+      console.warn("Could not check auth state", e);
     }
   };
 
@@ -31,12 +36,6 @@ export function useAuth() {
       isLoggedIn.value = true;
       
       try {
-        await fetch('http://127.0.0.1:5000/api/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.value, password: password.value })
-        });
-        
         const configRes = await fetch('http://127.0.0.1:5000/api/config');
         const config = await configRes.json();
         
@@ -46,7 +45,7 @@ export function useAuth() {
         return true;
       } catch (e) {
         console.warn("Backend not available, running in local-only mode", e);
-        return false;
+        return true; // The user successfully signed in to Firebase anyway
       }
     } catch {
       loginError.value = t('login.invalid_credentials');
@@ -58,16 +57,6 @@ export function useAuth() {
     if (await showConfirm({ title: t('dialogs.logout.title'), message: t('dialogs.logout.message'), confirmText: t('dialogs.logout.confirm'), confirmVariant: "danger" })) {
       email.value = '';
       password.value = '';
-      
-      try {
-        await fetch('http://127.0.0.1:5000/api/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: null, password: null })
-        });
-      } catch {
-        console.warn("Could not clear credentials from config.json");
-      }
       
       try {
         if (typeof authService.signOut === 'function') {
