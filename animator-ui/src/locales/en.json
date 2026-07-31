@@ -244,6 +244,8 @@
     "status_finished": "Finished",
     "game_finished_title": "Game Over",
     "game_finished_message": "The game has been stopped. You can restart a new session with the same players.",
+    "back_to_menu": "Return to main menu",
+    "delete_game": "Quit and delete",
     "backend_disconnected": "Cannot reach local server (backend). Please make sure the desktop app is running.",
     "backend_disconnected_title": "Connection lost",
     "reconnecting": "Attempting to reconnect..."
@@ -282,9 +284,14 @@
       "confirm": "Log Out"
     },
     "stop_game": {
-      "title": "Stop the game?",
+      "title": "Stop game?",
       "message": "The game will end immediately and you will be redirected to the final results.",
       "confirm": "Stop"
+    },
+    "delete_game": {
+      "title": "Delete game?",
+      "message": "Are you sure you want to permanently delete this game? This action cannot be undone.",
+      "confirm": "Delete"
     },
     "kick_player": {
       "title": "Kick player?",

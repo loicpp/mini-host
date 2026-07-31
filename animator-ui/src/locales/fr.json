@@ -256,6 +256,8 @@
     "status_finished": "Terminée",
     "game_finished_title": "Partie Terminée",
     "game_finished_message": "La partie est arrêtée. Vous pouvez recommencer une nouvelle session avec les mêmes joueurs.",
+    "back_to_menu": "Retour au menu principal",
+    "delete_game": "Quitter et supprimer",
     "backend_disconnected": "Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.",
     "backend_disconnected_title": "Connexion perdue",
     "reconnecting": "Tentative de reconnexion..."
@@ -297,6 +299,11 @@
       "title": "Arrêter la partie ?",
       "message": "La partie sera définitivement terminée et vous serez redirigé vers les résultats finaux.",
       "confirm": "Arrêter"
+    },
+    "delete_game": {
+      "title": "Supprimer la partie ?",
+      "message": "Êtes-vous sûr de vouloir supprimer définitivement cette partie ? Cette action est irréversible et supprimera tout l'historique.",
+      "confirm": "Supprimer"
     },
     "kick_player": {
       "title": "Supprimer le joueur ?",

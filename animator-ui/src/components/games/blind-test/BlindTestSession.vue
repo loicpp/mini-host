@@ -154,9 +154,17 @@
             </div>
             <h2 class="text-2xl font-black text-primary mb-2">{{ $t('control_panel.game_finished_title') }}</h2>
             <p class="text-muted-foreground mb-8 text-sm">{{ $t('control_panel.game_finished_message') }}</p>
-            <Btn variant="primary" size="lg" className="w-full font-bold text-lg" @click="restartGame">
-              <RefreshCw class="w-5 h-5 mr-2" /> {{ $t('control_panel.restart') }}
-            </Btn>
+            <div class="flex flex-col gap-3 w-full">
+              <Btn variant="primary" size="lg" className="w-full font-bold text-lg" @click="restartGame">
+                <RefreshCw class="w-5 h-5 mr-2" /> {{ $t('control_panel.restart') }}
+              </Btn>
+              <Btn variant="gray" className="w-full font-semibold" @click="handleLeaveGame">
+                <ChevronLeft class="w-4 h-4 mr-2" /> {{ $t('control_panel.back_to_menu') }}
+              </Btn>
+              <Btn variant="danger" className="w-full font-semibold" @click="handleDeleteAndLeaveGame">
+                <Trash2 class="w-4 h-4 mr-2" /> {{ $t('control_panel.delete_game') }}
+              </Btn>
+            </div>
           </div>
         </div>
       </div>
@@ -214,7 +222,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban } from '@lucide/vue';
+import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2 } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 
 import Btn from '../../ui/Btn.vue';
@@ -235,7 +243,7 @@ import { useGameMusic } from '../../../composables/useGameMusic';
 const { t } = useI18n();
 const router = useRouter();
 
-const { leaveGame, toggleProjector, nextRound, endGame, restartGame } = useGameSession();
+const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame } = useGameSession();
 const { 
   displayedPlayers, sortedPlayersList, playersWhoWonPoints, hasBuzzed, 
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock 
@@ -256,6 +264,13 @@ const statusDisplay = computed(() => {
 const handleLeaveGame = async () => {
   await leaveGame();
   router.push('/');
+};
+
+const handleDeleteAndLeaveGame = async () => {
+  const deleted = await deleteAndLeaveGame();
+  if (deleted) {
+    router.push('/');
+  }
 };
 
 const handleConfigurePlaylists = async () => {

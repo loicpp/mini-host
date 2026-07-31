@@ -169,6 +169,18 @@ export function useGameSession() {
     selectedTrack.value = null;
   };
 
+  const deleteAndLeaveGame = async () => {
+    if (await showConfirm({ title: t('dialogs.delete_game.title'), message: t('dialogs.delete_game.message'), confirmText: t('dialogs.delete_game.confirm'), confirmVariant: "danger" })) {
+      const id = gameId.value;
+      await leaveGame();
+      if (id) {
+        await animatorService.deleteGame(id);
+      }
+      return true;
+    }
+    return false;
+  };
+
   const toggleProjector = async () => {
     if (!isProjectorOpen.value) {
       projectorWindow = window.open(`/public?game=${gameId.value}`, 'projectorWindow', 'width=1280,height=720');
@@ -246,6 +258,7 @@ export function useGameSession() {
     createNewGame,
     resumeGame,
     leaveGame,
+    deleteAndLeaveGame,
     toggleProjector,
     nextRound,
     endGame,
