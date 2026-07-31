@@ -216,12 +216,12 @@
     "music": "Musique",
     "reflection": "Réflexion",
     "your_turn": "À vous de jouer !",
-    "time_up": "⏰ Temps écoulé !",
+    "time_up": "Temps écoulé !",
     "reviewing": "L'animateur corrige vos réponses...",
-    "results": "🎉 Résultats",
+    "results": "Résultats",
     "unknown_answer": "Réponse Inconnue",
     "leaderboard": "Classement Général :",
-    "podium": "🏆 Podium Final 🏆",
+    "podium": "Podium Final",
     "rest_of_leaderboard": "Le reste du classement :"
   },
   "control_panel": {

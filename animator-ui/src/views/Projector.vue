@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-screen w-screen bg-[#13111C] text-white overflow-hidden font-sans" @dblclick="toggleFullscreen">
+  <div class="relative h-screen w-screen bg-[#13111C] text-white overflow-hidden font-sans select-none" @dblclick="toggleFullscreen">
     <div 
       class="absolute origin-top-left flex flex-col"
       :style="{ 
@@ -95,12 +95,16 @@
       </div>
 
       <div v-else-if="game.data?.status === 'reviewing'" class="w-full flex flex-col items-center">
-        <h1 class="text-7xl font-black text-red-400 mb-6 drop-shadow-md">{{ $t('projector.time_up') }}</h1>
+        <h1 class="text-7xl font-black text-red-400 mb-6 py-4 flex items-center justify-center gap-4">
+          <AlarmClock class="w-20 h-20" /> {{ $t('projector.time_up') }}
+        </h1>
         <p class="text-3xl text-white/80">{{ $t('projector.reviewing') }}</p>
       </div>
 
       <div v-else-if="game.data?.status === 'results'" class="w-full max-w-4xl flex flex-col items-center">
-        <h1 class="text-6xl font-black text-emerald-400 mb-8 drop-shadow-md">{{ $t('projector.results') }}</h1>
+        <h1 class="text-6xl font-black text-emerald-400 mb-8 py-4 flex items-center justify-center gap-4">
+          <PartyPopper class="w-16 h-16" /> {{ $t('projector.results') }}
+        </h1>
         <div class="bg-white/10 p-10 rounded-3xl mb-12 border-2 border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.3)] w-full">
           <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.answer || $t('projector.unknown_answer') }}</h2>
         </div>
@@ -117,7 +121,9 @@
       </div>
       
       <div v-else-if="game.data?.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
-        <h1 class="text-7xl font-black text-emerald-400 mb-16 drop-shadow-lg">{{ $t('projector.podium') }}</h1>
+        <h1 class="text-7xl font-black text-emerald-400 mb-16 flex items-center justify-center gap-6">
+          <Trophy class="w-20 h-20" /> {{ $t('projector.podium') }} <Trophy class="w-20 h-20" />
+        </h1>
         
         <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
           <div v-for="player in topThreePlayers" :key="player.id" :class="[
@@ -126,7 +132,14 @@
             player.rank === 2 ? 'h-[75%] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
             'h-[55%] border-t-[6px] border-[#cd7f32] bg-gradient-to-t from-[#cd7f32]/10 to-[#cd7f32]/30 z-10'
           ]">
-            <div class="text-6xl mb-3 drop-shadow-md">{{ player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : '🥉' }}</div>
+            <div class="mb-3 py-4 flex justify-center w-full">
+              <Medal :class="[
+                'w-16 h-16',
+                player.rank === 1 ? 'text-[#ffd700] fill-[#ffd700]/30' : 
+                player.rank === 2 ? 'text-[#e0e0e0] fill-[#e0e0e0]/30' : 
+                'text-[#cd7f32] fill-[#cd7f32]/30'
+              ]" stroke-width="2" />
+            </div>
             <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
             <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</div>
           </div>
@@ -153,6 +166,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
+import { AlarmClock, PartyPopper, Trophy, Medal } from '@lucide/vue';
 
 let originalTitle = '';
 let originalFavicon = '';

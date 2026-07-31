@@ -204,12 +204,12 @@
     "music": "Music",
     "reflection": "Thinking",
     "your_turn": "Your turn!",
-    "time_up": "⏰ Time's up!",
+    "time_up": "Time's up!",
     "reviewing": "Host is reviewing answers...",
-    "results": "🎉 Results",
+    "results": "Results",
     "unknown_answer": "Unknown Answer",
     "leaderboard": "Leaderboard:",
-    "podium": "🏆 Final Podium 🏆",
+    "podium": "Final Podium",
     "rest_of_leaderboard": "Rest of the leaderboard:"
   },
   "control_panel": {

@@ -29,7 +29,7 @@ export function useGameMusic() {
 
   const selectTrack = (track: Track) => {
     selectedTrack.value = track;
-    nextTrackInfo.value.answer = `${track.title} - ${track.artist}`;
+    nextTrackInfo.value.answer = track.artist ? `${track.title} - ${track.artist}` : track.title;
     
     if (typeof musicManager.preload === 'function') {
       musicManager.preload(track).catch((e: any) => console.warn("Preload failed", e));
