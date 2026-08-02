@@ -1,66 +1,66 @@
 # Backend - MiniHost
 
-Le backend est développé en Python avec Flask et PyWebView. Il est architecturé selon le modèle de l'Architecture Hexagonale (Ports et Adaptateurs).
+The backend engine is developed in Python using Flask and PyWebView. It is architected following Clean Architecture and Hexagonal Architecture principles (Ports and Adapters).
 
 ---
 
-## 💻 Développement local
+## 💻 Local Development
 
-### 1. Activer l'environnement virtuel
-* **Sous Linux / macOS** :
+### 1. Activate Virtual Environment
+* **On Linux / macOS**:
   ```bash
   source venv/bin/activate
   ```
-* **Sous Windows** :
+* **On Windows**:
   ```cmd
   venv\Scripts\activate.bat
   ```
 
-### 2. Installer les dépendances
+### 2. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Lancer le serveur de développement
+### 3. Run Development Server
 ```bash
 python main.py --dev
 ```
-*(L'argument `--dev` permet au backend d'indiquer au projecteur de se brancher sur le port de développement de Vite `http://127.0.0.1:5174/` plutôt que sur les fichiers statiques compilés de la régie).*
+*(The `--dev` argument instructs the backend projector adapter to connect to Vite's dev server at `http://127.0.0.1:5174/` instead of loading static built assets).*
 
 ---
 
-## 🧪 Lancer les Tests
+## 🧪 Running Tests
 
-Les tests unitaires sont écrits avec `pytest`.
+Unit tests are written using `pytest` and `pytest-cov`.
 
-### 1. Activer l'environnement virtuel
+### 1. Activate Virtual Environment
 ```bash
-source venv/bin/activate  # ou venv\Scripts\activate sous Windows
+source venv/bin/activate  # or venv\Scripts\activate.bat on Windows
 ```
 
-### 2. Lancer les tests simples
-* **Sous Linux / macOS** :
+### 2. Run Basic Tests
+* **On Linux / macOS**:
   ```bash
   PYTHONPATH=. pytest tests/
   ```
-* **Sous Windows (cmd)** :
+* **On Windows (cmd)**:
   ```cmd
   set PYTHONPATH=.
   pytest tests/
   ```
-* **Sous Windows (PowerShell)** :
+* **On Windows (PowerShell)**:
   ```powershell
   $env:PYTHONPATH="."
   pytest tests/
   ```
 
-### 3. Lancer les tests avec couverture (Coverage)
-L'objectif est de maintenir au minimum **70% de couverture**.
-* **Sous Linux / macOS** :
+### 3. Run Tests with Code Coverage
+The objective is to maintain a minimum of **70% code coverage** on core business logic.
+* **On Linux / macOS**:
   ```bash
   PYTHONPATH=. pytest --cov=core tests/
   ```
-* **Sous Windows (cmd)** :
+* **On Windows (cmd)**:
   ```cmd
   set PYTHONPATH=.
   pytest --cov=core tests/
@@ -68,12 +68,13 @@ L'objectif est de maintenir au minimum **70% de couverture**.
 
 ---
 
-## 🚀 Compilation (Production)
+## 🚀 Production Build
 
-L'exécutable final de MiniHost est créé à l'aide de **PyInstaller** qui embarque le code Python ainsi que les fichiers compilés du frontend `animator-ui/dist`.
+The final executable for MiniHost is created using **PyInstaller**, which bundles the Python backend along with the pre-compiled `animator-ui/dist` frontend.
 
-Pour lancer la compilation Windows, utilisez le script à la racine :
+To initiate the Windows build process, execute the script located in the repository root:
 ```cmd
-build.bat
+..\build.bat
 ```
-*(Si Inno Setup est présent sur votre machine, cela compilera également l'installateur d'application `MiniHostSetup.exe`).*
+*(If Inno Setup is installed on your system, this will also generate the full setup installer `installer\MiniHostSetup.exe`).*
+

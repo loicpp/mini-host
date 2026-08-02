@@ -1,48 +1,49 @@
 # Animator UI - MiniHost
 
-L'interface de régie de l'animateur, développée en Vue 3 + TypeScript avec Vite. Elle implémente une architecture propre avec un Repository pattern pour abstraire Firebase.
+The Host / Animator control panel interface, built with Vue 3, TypeScript, and Vite. It implements a clean architecture utilizing the Repository pattern to abstract Firebase communication.
 
 ---
 
-## 💻 Développement local
+## 💻 Local Development
 
-### 1. Installer les dépendances
+### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configurer les variables d'environnement
-Créez un fichier `.env` basé sur `.env.example` et renseignez les identifiants de votre projet Firebase.
+### 2. Environment Configuration
+Create a `.env` file based on `.env.example` and populate it with your Firebase project credentials.
 
-### 3. Lancer le serveur de développement local
+### 3. Start Local Development Server
 ```bash
 npm run dev
 ```
-*(Le serveur se lance généralement sur le port `5174` et est directement accessible depuis le backend en mode `--dev`)*
+*(The development server typically runs on port `5174` and is directly consumed by the backend when launched with the `--dev` flag).*
 
 ---
 
-## 🧪 Lancer les Tests
+## 🧪 Running Tests
 
-Les tests unitaires et la couverture de code sont assurés par `Vitest` et `@vitest/coverage-v8`.
+Unit testing and code coverage reports are powered by `Vitest` and `@vitest/coverage-v8`.
 
-### 1. Lancer les tests en mode interactif (Watch)
+### 1. Run Tests in Interactive Mode (Watch Mode)
 ```bash
 npx vitest
 ```
 
-### 2. Lancer les tests avec le rapport de couverture (Coverage)
-L'objectif est de maintenir au minimum **70% de couverture**.
+### 2. Run Tests with Code Coverage Report
+The objective is to maintain a minimum of **70% code coverage**.
 ```bash
 npx vitest run --coverage
 ```
 
 ---
 
-## 📦 Compilation de Production
+## 📦 Production Compilation
 
-Pour compiler l'application de régie afin de l'empaqueter dans le serveur Python :
+To compile the Animator UI application for packaging inside the Python desktop backend server:
 ```bash
 npm run build
 ```
-Les fichiers compilés seront générés dans le dossier `dist/` et seront recopiés automatiquement par le script global de build de l'application desktop.
+Compiled static files are output to the `dist/` folder and automatically copied during the main desktop build process.
+

@@ -1,134 +1,143 @@
-# 🎶 MiniHost - Le Blind Test Ultime
+# 🎮 MiniHost - Interactive Party & Event Game Host
 
-MiniHost est une application de quiz musical (Blind Test) interactive, pensée pour l'animation de soirées, d'événements ou entre amis.
-Elle se divise en deux grandes parties :
-1. **L'Interface Animateur (Bureau)** : Une application serveur locale qui gère la musique, les playlists, les points, et un projecteur déporté.
-2. **L'Interface Joueur (Mobile/Web)** : Une application web hébergée sur Firebase, qui permet aux joueurs de rejoindre la partie via leur téléphone et de s'affronter en temps réel.
+MiniHost is an interactive game hosting and event entertainment application designed for parties, corporate events, gatherings, and game nights with friends and family. While featuring a full-fledged music quiz (Blind Test) engine, MiniHost is architected with the ambition to host a wide range of party games, trivia quizzes, and interactive group activities.
 
----
-
-## 🏗️ Architecture du Projet
-
-Le projet est divisé en 3 sous-dossiers principaux :
-
-- **`backend/`** : Le cœur de l'application (Python/Flask). Il gère le serveur local, la lecture audio (`pygame`), l'ouverture du projecteur fenêtré (`pywebview`) et la communication avec Firebase.
-- **`animator-ui/`** : L'interface web de la Régie de l'animateur (Vue 3 + Vite). Cette interface est empaquetée à l'intérieur du serveur Python lors de la compilation.
-- **`player-app/`** : L'interface web des joueurs (Vue 3 + Vite). Elle est hébergée sur Firebase Hosting et communique avec la base de données en temps réel pour envoyer les réponses des joueurs.
-
-Les fichiers de configuration et les playlists personnelles de l'animateur sont sauvegardés sur sa machine dans le dossier utilisateur (ex: `~/.minihost/blindtest/`).
+The platform is split into two core components:
+1. **Host Interface (Desktop App)**: A local server application for the host/animator that manages game logic, playlists, scoring, local sound playback, and a dedicated secondary display projector screen.
+2. **Player Interface (Mobile / Web App)**: A responsive web application hosted on Firebase, allowing players to join instantly from their smartphones via QR code or URL to buzz and answer in real time.
 
 ---
 
-## 🚀 Compiler l'Application Animateur (Desktop)
+## 🏗️ Project Architecture
 
-Pour distribuer ou utiliser l'application de façon fluide (sans ligne de commande), un exécutable ou un package d'installation peut être généré. 
-Celui-ci inclut automatiquement l'interface graphique de l'animateur (`animator-ui`).
+The project is organized into 3 main directories (each containing its own dedicated documentation):
 
-### Sous Linux (Flatpak) :
-Exécutez le script fourni à la racine pour générer un package Flatpak autonome :
+- [**`backend/`**](backend/README.md): The core application engine (Python / Flask). Manages local server operations, audio playback (`pygame`), secondary display/projector windows (`pywebview`), and real-time database sync with Firebase. See [backend/README.md](backend/README.md) for backend specific setup and tests.
+- [**`animator-ui/`**](animator-ui/README.md): The Host / Animator control dashboard (Vue 3 + TypeScript + Vite). This web interface is embedded inside the Python backend executable during build. See [animator-ui/README.md](animator-ui/README.md) for details.
+- [**`player-app/`**](player-app/README.md): The Player mobile/web app (Vue 3 + TypeScript + Vite). Hosted on Firebase Hosting, communicating with Firebase Realtime Database for live interaction. See [player-app/README.md](player-app/README.md) for details.
+
+User configurations, game states, and host playlists are saved locally on the host's machine (e.g., `~/.minihost/blindtest/` or `$XDG_CONFIG_HOME/minihost/blindtest/`).
+
+---
+
+## 🚀 Building the Host Application (Desktop)
+
+To package and distribute the Host desktop application as a standalone executable (including `animator-ui`), use the build scripts provided in the root directory.
+
+### On Linux (Flatpak):
+Execute the root shell script to generate a standalone Flatpak package:
 ```bash
 chmod +x flatpak.sh
 ./flatpak.sh
 ```
-Une fois terminé, le package sera disponible sous : `MiniHost-linux.flatpak`.
-Vous pouvez l'installer localement en exécutant : `flatpak install MiniHost-linux.flatpak`.
+Once complete, the package will be available at: `MiniHost-linux.flatpak`.
+Install it locally using: `flatpak install MiniHost-linux.flatpak`.
 
-### Sous Windows :
-Exécutez le script `.bat` fourni à la racine :
+### On Windows:
+Execute the root batch script:
 ```cmd
 build.bat
 ```
-Une fois terminé :
-* L'exécutable portable sera disponible dans : `backend\dist\MiniHost.exe`.
-* Si **Inno Setup** est installé sur votre ordinateur (accessible via la commande `iscc`), le script créera également un installateur complet : `installer\MiniHostSetup.exe`. Cet installateur gère le placement dans le dossier des programmes, les raccourcis Démarrer/Bureau et la désinstallation propre via Windows.
+Once complete:
+* The portable executable will be located at: `backend\dist\MiniHost.exe`.
+* If **Inno Setup** is installed on your system (accessible via `iscc`), the script will automatically compile a full installer: `installer\MiniHostSetup.exe`. This installer handles Program Files placement, Start Menu / Desktop shortcuts, and clean uninstallation via Windows.
 
-> **Note :** La compilation croisée n'est pas supportée par PyInstaller. Vous devez exécuter `build.bat` sur une machine Windows pour générer un fichier `.exe`.
+> **Note:** Cross-compilation is not supported by PyInstaller. You must run `build.bat` on a Windows machine to generate the `.exe` binary.
 
 ---
 
-## 📱 Déployer l'Application Joueur (Firebase)
+## 📱 Deploying the Player App (Firebase)
 
-L'application des joueurs doit être accessible en ligne depuis n'importe quel smartphone.
-Avant toute chose, assurez-vous de bien avoir paramétré vos variables d'environnement dans le fichier `player-app/.env` (clés API Firebase).
+The Player application must be accessible online for smartphones.
+Ensure your environment variables are configured in `player-app/.env` (Firebase API keys).
 
-Rendez-vous dans le dossier de l'application joueur pour lancer le déploiement :
+Navigate to the player application folder to run the deployment script:
 
-### Sous Linux / macOS :
+### On Linux / macOS:
 ```bash
 cd player-app
 chmod +x deploy.sh
 ./deploy.sh
 ```
 
-### Sous Windows :
+### On Windows:
 ```cmd
 cd player-app
 deploy.bat
 ```
-Ces scripts se chargeront d'installer les dépendances, de compiler l'interface et de pousser les fichiers statiques sur Firebase Hosting (`npx firebase deploy --only hosting`).
+These scripts install dependencies, compile the frontend application, and deploy static assets to Firebase Hosting (`npx firebase deploy --only hosting`).
 
 ---
 
-## 🧪 Tests Unitaires et Couverture
+## 🧪 Unit Testing & Code Coverage
 
-L'application suit les principes du Clean Code et de l'Architecture Hexagonale. Pour assurer sa robustesse, une couverture de test d'au moins 70% est garantie sur la logique métier. 
-Chaque application a ses propres environnements et commandes de tests :
+MiniHost follows Clean Architecture and Hexagonal Architecture principles. A target code coverage of at least 70% is enforced on core business logic.
+Each module maintains its own testing environment and commands:
 
-- **Backend** : Tests avec `pytest` et `pytest-cov`
-- **Player App & Animator UI** : Tests avec `Vitest` et `@vitest/coverage-v8`
+- **Backend**: Tests powered by `pytest` and `pytest-cov`.
+- **Player App & Animator UI**: Tests powered by `Vitest` and `@vitest/coverage-v8`.
 
-Pour consulter les commandes exactes de lancement des tests et obtenir les rapports de coverage, référez-vous aux fichiers `README.md` présents dans chacun des sous-dossiers (`backend/`, `player-app/`, `animator-ui/`).
+For detailed execution commands and coverage report generation, refer to the individual `README` documentation:
+- [Backend Documentation](backend/README.md)
+- [Animator UI Documentation](animator-ui/README.md)
+- [Player App Documentation](player-app/README.md)
 
 ---
 
-## 🛠️ Développement Actif
+## 🛠️ Active Development
 
-Si vous souhaitez modifier le code et tester en direct sans recompiler tout l'exécutable à chaque fois :
+To modify the codebase and test in real time without rebuilding executables:
 
-### 1. Interface Animateur (`animator-ui`)
+### 1. Animator UI (`animator-ui`)
 ```bash
 cd animator-ui
 npm run dev
 ```
 
-### 2. Interface Joueurs (`player-app`)
+### 2. Player Interface (`player-app`)
 ```bash
 cd player-app
 npm run dev
 ```
 
-### 3. Serveur Local (`backend`)
+### 3. Backend Server (`backend`)
 ```bash
 cd backend
-source venv/bin/activate
+source venv/bin/activate # On Windows: venv\Scripts\activate.bat
 python main.py --dev
 ```
-*(L'argument `--dev` permet au backend d'indiquer au projecteur de se brancher sur le port de développement de Vite plutôt que sur les fichiers statiques compilés).*
+*(The `--dev` flag instructs the backend projector adapter to connect to Vite's development server on `http://127.0.0.1:5174/` instead of loading static built files).*
 
 ---
 
-## 🏷️ Créer une Nouvelle Release (Assistant de Versionnage)
+## 🏷️ Creating a New Release (Release Assistant)
 
-Le projet intègre un assistant interactif pour automatiser la mise à jour des versions dans les `.env` et générer les tags de release Git :
+The repository includes an interactive release wizard to automate version management and Git tagging:
 
-### Sous Linux / macOS :
+### On Linux / macOS:
 ```bash
 chmod +x release.sh
 ./release.sh
 ```
 
-### Sous Windows :
+### On Windows:
 ```cmd
 release.bat
 ```
 
-Ce script vous guide pour mettre à jour la version (Majeure, Mineure ou Patch) et pousse les modifications sur GitHub. La pipeline d'intégration continue de GitHub prendra alors le relais pour compiler l'application Linux (Flatpak), générer la version portable Windows et compiler l'installateur Windows Inno Setup (`MiniHostSetup.exe`) avant de publier le tout sur la page de Release du dépôt.
+This assistant guides you through incrementing the version (Major, Minor, or Patch) and creates/pushes the annotated Git tag (e.g., `v1.0.0`). The GitHub Actions CI/CD pipeline is then triggered automatically to:
+1. Deploy the Player application to Firebase Hosting.
+2. Build the Linux Flatpak bundle (`MiniHost-linux.flatpak`).
+3. Compile the Windows portable binary and Inno Setup installer (`MiniHostSetup.exe`).
+4. Publish all compiled assets automatically to the GitHub Releases page.
 
 ---
 
-## 🎯 Règles & Fonctionnalités du Jeu
+## 🎯 Key Features & Capabilities
 
-- **SoundCloud & Local** : L'animateur peut préparer des playlists depuis SoundCloud ou charger des fichiers audios locaux.
-- **Réponse au buzz** : Le chrono se lance, les joueurs doivent deviner le titre et/ou l'artiste sur leur téléphone.
-- **Projecteur** : Une fenêtre annexe peut s'ouvrir pour être glissée sur un deuxième écran ou un vidéoprojecteur, affichant le classement et le timer sans dévoiler les réponses de la régie.
-- **Versionning** : La version de l'application joueur est modifiable dans `player-app/.env` (`VITE_APP_VERSION`).
+- **Multi-Game Hosting**: Designed for hosting blind tests, quizzes, and custom party games during events, parties, and gatherings with friends or family.
+- **SoundCloud & Local Audio Integration**: Import playlists directly from SoundCloud or load local audio files seamlessly.
+- **Real-Time Smartphone Buzzing**: Instant response tracking, countdown timers, and title/artist/answer guessing from player phones.
+- **Projector & Second-Screen Window**: Separate display window for external monitors or projectors, showing leaderboards, timers, and visual animations without exposing host management controls.
+- **Automated CI/CD Deployment**: Integrated versioning and automated multi-platform compilation via GitHub Actions (`VITE_APP_VERSION`).
+

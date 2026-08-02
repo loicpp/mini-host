@@ -1,56 +1,57 @@
 # Player App - MiniHost
 
-L'application web des joueurs, développée en Vue 3 + TypeScript avec Vite et destinée à être hébergée sur Firebase Hosting.
+The web application for players, built with Vue 3, TypeScript, and Vite, designed for hosting on Firebase Hosting.
 
 ---
 
-## 💻 Développement local
+## 💻 Local Development
 
-### 1. Installer les dépendances
+### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configurer les variables d'environnement
-Créez un fichier `.env` basé sur `.env.example` et renseignez les identifiants de votre projet Firebase.
+### 2. Environment Configuration
+Create a `.env` file based on `.env.example` and populate it with your Firebase project credentials.
 
-### 3. Lancer le serveur de développement local
+### 3. Start Local Development Server
 ```bash
 npm run dev
 ```
 
 ---
 
-## 🧪 Lancer les Tests
+## 🧪 Running Tests
 
-Les tests unitaires et la couverture de code sont assurés par `Vitest` et `@vitest/coverage-v8`.
+Unit testing and code coverage reports are powered by `Vitest` and `@vitest/coverage-v8`.
 
-### 1. Lancer les tests en mode interactif (Watch)
+### 1. Run Tests in Interactive Mode (Watch Mode)
 ```bash
 npx vitest
 ```
 
-### 2. Lancer les tests avec le rapport de couverture (Coverage)
-L'objectif est de maintenir au minimum **70% de couverture**.
+### 2. Run Tests with Code Coverage Report
+The objective is to maintain a minimum of **70% code coverage**.
 ```bash
 npx vitest run --coverage
 ```
 
 ---
 
-## 🚀 Déploiement (Firebase)
+## 🚀 Deployment (Firebase)
 
-L'application est déployée sur Firebase Hosting pour être accessible en direct par les joueurs sur leur smartphone.
+The app is deployed to Firebase Hosting to be accessible live by players on their smartphones.
 
-### Sous Linux / macOS :
+### On Linux / macOS:
 ```bash
 chmod +x deploy.sh
 ./deploy.sh
 ```
 
-### Sous Windows :
+### On Windows:
 ```cmd
 deploy.bat
 ```
 
-Ces scripts buildent l'application avec `npm run build` et déploient les assets statiques sur Firebase (`npx firebase deploy --only hosting`).
+These scripts build the application with `npm run build` and deploy static assets to Firebase Hosting (`npx firebase deploy --only hosting`).
+
