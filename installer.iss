@@ -49,7 +49,7 @@ var
 begin
   if CurUninstallStep = usUninstall then
   begin
-    DataDir := ExpandConstant('{userprofile}\.minihost');
+    DataDir := GetEnv('USERPROFILE') + '\.minihost';
     if DirExists(DataDir) then
     begin
       if MsgBox('Voulez-vous également supprimer les données d''application et les configurations sauvegardées ?' + #13#10 + '(' + DataDir + ')', mbConfirmation, MB_YESNO) = IDYES then
