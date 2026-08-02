@@ -1,6 +1,27 @@
 @echo off
 setlocal
 
+:: Resolve Version (from ENV, Git tag, or .env)
+if "%VERSION%"=="" (
+    for /f "usebackq tokens=*" %%i in (`python -c "import subprocess; res=subprocess.run(['git','tag','-l','v*','--sort=-version:refname'],capture_output=True,text=True); print(res.stdout.splitlines()[0][1:] if res.stdout and res.stdout.splitlines() else '')"` 2^>nul) do (
+        set "VERSION=%%i"
+    )
+)
+
+if "%VERSION%"=="" (
+    if exist "animator-ui\.env.production" (
+        for /f "tokens=2 delims==" %%i in ('findstr "VITE_APP_VERSION" animator-ui\.env.production') do set "VERSION=%%i"
+    ) else if exist "animator-ui\.env" (
+        for /f "tokens=2 delims==" %%i in ('findstr "VITE_APP_VERSION" animator-ui\.env') do set "VERSION=%%i"
+    )
+)
+
+if "%VERSION%"=="" set "VERSION=1.0.0"
+
+set "VITE_APP_VERSION=%VERSION%"
+
+echo ==^> Building MiniHost Version: %VERSION%
+
 echo ==^> Building Animator UI (Frontend)...
 pushd animator-ui
 call npm install
@@ -97,20 +118,6 @@ echo Your executable is located at: backend\dist\MiniHost.exe
 
 echo.
 echo ==^> Building Windows Installer (Optional)...
-
-:: Extract version from environment variable or animator-ui\.env.production / animator-ui\.env
-if "%VERSION%"=="" set "VERSION=1.0.0"
-if "%VERSION%"=="1.0.0" (
-    if exist "animator-ui\.env.production" (
-        for /f "tokens=2 delims==" %%i in ('findstr "VITE_APP_VERSION" animator-ui\.env.production') do (
-            set "VERSION=%%i"
-        )
-    ) else if exist "animator-ui\.env" (
-        for /f "tokens=2 delims==" %%i in ('findstr "VITE_APP_VERSION" animator-ui\.env') do (
-            set "VERSION=%%i"
-        )
-    )
-)
 
 :: Detect Inno Setup Compiler (ISCC)
 set "ISCC_PATH="
