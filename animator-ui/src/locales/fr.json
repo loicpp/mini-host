@@ -25,9 +25,9 @@
     "title": "Choisir un jeu",
     "subtitle": "Sélectionnez le type de jeu que vous souhaitez animer.",
     "blind_test": "Blind Test",
-    "blind_test_desc": "Le grand classique musical. Devinez l'artiste et le titre.",
+    "blind_test_desc": "Devinez l'artiste et le titre.",
     "quiz": "Quiz",
-    "quiz_desc": "Testez votre culture générale avec des questions variées."
+    "quiz_desc": "Testez votre culture générale."
   },
   "settings": {
     "back": "Retour",

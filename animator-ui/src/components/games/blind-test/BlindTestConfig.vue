@@ -40,7 +40,7 @@
               <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
             </div>
           </label>
-          <Slider v-model="settings.blockDuration" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
+          <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
         </div>
 
         <div class="flex flex-col gap-2">

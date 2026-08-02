@@ -25,9 +25,9 @@
     "title": "Choose a game",
     "subtitle": "Select the type of game you want to host.",
     "blind_test": "Blind Test",
-    "blind_test_desc": "The great musical classic. Guess the artist and title.",
+    "blind_test_desc": "Guess the artist and title.",
     "quiz": "Quiz",
-    "quiz_desc": "Test your general knowledge with various questions."
+    "quiz_desc": "Test your general knowledge."
   },
   "settings": {
     "back": "Back",
