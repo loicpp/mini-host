@@ -62,6 +62,7 @@ import Modal from '../ui/Modal.vue';
 import Btn from '../ui/Btn.vue';
 import { musicManager } from '../../services/music/MusicManager';
 import { animatorService } from '../../services/animatorService';
+import { itunesService } from '../../services/itunesService';
 import { db } from '../../firebase';
 import { ref as dbRef, set, onValue, off } from 'firebase/database';
 
@@ -173,8 +174,8 @@ const runDiagnostics = async () => {
   // Step 4: iTunes
   await setStepRunning(3);
   try {
-    const res = await fetch('https://itunes.apple.com/search?term=test&limit=1');
-    if (!res.ok) throw new Error();
+    const results = await itunesService.search('test');
+    if (results.length === 0) throw new Error();
     steps.value[3].status = 'success';
     steps.value[3].message = t('diagnostics.itunes_ok');
   } catch {
