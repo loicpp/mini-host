@@ -162,11 +162,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
 import { AlarmClock, PartyPopper, Trophy, Medal } from '@lucide/vue';
+import QRCode from 'qrcode';
 
 let originalTitle = '';
 let originalFavicon = '';
@@ -198,10 +199,20 @@ const timerInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 const baseUrl = "https://minihostapp-1.web.app"; 
 
-const qrCodeUrl = computed(() => {
-  if (!gameId.value || !secret.value) return '';
-  const url = encodeURIComponent(`${baseUrl}/?game=${gameId.value}&secret=${secret.value}`);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${url}`;
+const qrCodeUrl = ref('');
+
+watchEffect(async () => {
+  if (gameId.value && secret.value) {
+    const targetUrl = `${baseUrl}/?game=${gameId.value}&secret=${secret.value}`;
+    try {
+      qrCodeUrl.value = await QRCode.toDataURL(targetUrl, { width: 250, margin: 1 });
+    } catch (e) {
+      console.error('Erreur génération QR Code:', e);
+      qrCodeUrl.value = '';
+    }
+  } else {
+    qrCodeUrl.value = '';
+  }
 });
 
 const allPlayersSorted = computed(() => {

@@ -65,6 +65,7 @@ import { animatorService } from '../../services/animatorService';
 import { itunesService } from '../../services/itunesService';
 import { db } from '../../firebase';
 import { ref as dbRef, set, onValue, off } from 'firebase/database';
+import QRCode from 'qrcode';
 
 defineEmits<{
   (e: 'close'): void;
@@ -85,6 +86,7 @@ const steps = ref([
   { name: t('diagnostics.step_create_game'), status: 'pending', message: '' },
   { name: t('diagnostics.step_realtime'), status: 'pending', message: '' },
   { name: t('diagnostics.step_player_access'), status: 'pending', message: '' },
+  { name: t('diagnostics.step_qrcode'), status: 'pending', message: '' },
   { name: t('diagnostics.step_popup'), status: 'pending', message: '' },
   { name: t('diagnostics.step_fetch_game'), status: 'pending', message: '' },
   { name: t('diagnostics.step_cleanup'), status: 'pending', message: '' }
@@ -302,44 +304,61 @@ const runDiagnostics = async () => {
     return;
   }
 
-  // Step 10: Popup Blocker
+  // Step 10: QR Code Generation
   await setStepRunning(9);
+  try {
+    const testUrl = `https://minihostapp-1.web.app/?game=${testGameId || 'TEST'}&secret=test`;
+    const qrData = await QRCode.toDataURL(testUrl, { width: 250, margin: 1 });
+    if (!qrData || !qrData.startsWith('data:image/')) {
+      throw new Error(t('diagnostics.qrcode_invalid'));
+    }
+    steps.value[9].status = 'success';
+    steps.value[9].message = t('diagnostics.qrcode_ok');
+  } catch (e: any) {
+    steps.value[9].status = 'error';
+    steps.value[9].message = e?.message || t('diagnostics.qrcode_error');
+    isRunning.value = false;
+    return;
+  }
+
+  // Step 11: Popup Blocker
+  await setStepRunning(10);
   try {
     const popup = window.open('about:blank', '_blank', 'width=100,height=100,left=-1000,top=-1000');
     if (!popup || popup.closed || typeof popup.closed === 'undefined') {
       throw new Error();
     }
     popup.close();
-    steps.value[9].status = 'success';
-    steps.value[9].message = t('diagnostics.popup_ok');
+    steps.value[10].status = 'success';
+    steps.value[10].message = t('diagnostics.popup_ok');
   } catch {
-    steps.value[9].status = 'warning';
-    steps.value[9].message = t('diagnostics.popup_warning');
+    steps.value[10].status = 'warning';
+    steps.value[10].message = t('diagnostics.popup_warning');
   }
 
-  // Step 11: Firebase Retrieve
-  await setStepRunning(10);
+  // Step 12: Firebase Retrieve
+  await setStepRunning(11);
   try {
     const fetchedGame = await animatorService.getGame(testGameId);
     if (!fetchedGame) throw new Error(t('diagnostics.game_not_found'));
-    steps.value[10].status = 'success';
-    steps.value[10].message = t('diagnostics.data_synced');
+    steps.value[11].status = 'success';
+    steps.value[11].message = t('diagnostics.data_synced');
   } catch (e: any) {
-    steps.value[10].status = 'error';
-    steps.value[10].message = e?.message || t('diagnostics.game_fetch_error');
+    steps.value[11].status = 'error';
+    steps.value[11].message = e?.message || t('diagnostics.game_fetch_error');
   }
 
-  // Step 12: Firebase Clean
-  await setStepRunning(11);
+  // Step 13: Firebase Clean
+  await setStepRunning(12);
   try {
     if (testGameId) {
       await animatorService.deleteGame(testGameId);
-      steps.value[11].status = 'success';
-      steps.value[11].message = t('diagnostics.cleanup_ok');
+      steps.value[12].status = 'success';
+      steps.value[12].message = t('diagnostics.cleanup_ok');
     }
   } catch (e: any) {
-    steps.value[11].status = 'error';
-    steps.value[11].message = `${t('diagnostics.cleanup_error')} ${e.message}`;
+    steps.value[12].status = 'error';
+    steps.value[12].message = `${t('diagnostics.cleanup_error')} ${e.message}`;
   }
 
   isRunning.value = false;
