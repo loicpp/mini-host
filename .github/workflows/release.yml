@@ -105,6 +105,7 @@ jobs:
       - name: Inject Environment Variables
         run: |
           VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           cat <<EOF > animator-ui/.env.production
           VITE_APP_VERSION=$VERSION
           VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}
