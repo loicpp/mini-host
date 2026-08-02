@@ -4,16 +4,34 @@ import subprocess
 import sys
 
 def get_latest_git_tag():
+    print("Synchronisation des tags avec le dépôt distant...")
     try:
-        print("Synchronisation des tags avec le dépôt distant...")
-        subprocess.run(['git', 'fetch', '--tags', '-q'], check=True)
+        # Synchro et nettoyage des tags supprimés sur origin
+        subprocess.run(['git', 'fetch', 'origin', '--prune', '+refs/tags/*:refs/tags/*'], capture_output=True, text=True, check=False)
+    except Exception as e:
+        print(f"⚠️ Impossible de synchroniser les tags distants : {e}")
+
+    try:
+        res = subprocess.run(['git', 'tag', '-l', 'v*', '--sort=-version:refname'], capture_output=True, text=True, check=True)
+        tags = [t.strip() for t in res.stdout.splitlines() if t.strip()]
+        if tags:
+            tag = tags[0]
+            if tag.startswith('v'):
+                return tag[1:]
+            return tag
+    except Exception:
+        pass
+
+    try:
         result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], capture_output=True, text=True, check=True)
         tag = result.stdout.strip()
         if tag.startswith('v'):
             return tag[1:]
         return tag
-    except subprocess.CalledProcessError:
-        return "0.0.0"
+    except Exception:
+        pass
+
+    return "0.0.0"
 
 
 
