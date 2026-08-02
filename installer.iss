@@ -28,6 +28,10 @@ ArchitecturesInstallIn64BitMode=x64
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[CustomMessages]
+french.DeleteDataPrompt=Voulez-vous également supprimer les données d'application et les configurations sauvegardées ?
+english.DeleteDataPrompt=Do you also want to delete application data and saved configurations?
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
@@ -46,13 +50,15 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   DataDir: String;
+  PromptMsg: String;
 begin
   if CurUninstallStep = usUninstall then
   begin
     DataDir := GetEnv('USERPROFILE') + '\.minihost';
     if DirExists(DataDir) then
     begin
-      if MsgBox('Voulez-vous également supprimer les données d''application et les configurations sauvegardées ?' + #13#10 + '(' + DataDir + ')', mbConfirmation, MB_YESNO) = IDYES then
+      PromptMsg := CustomMessage('DeleteDataPrompt') + #13#10 + '(' + DataDir + ')';
+      if MsgBox(PromptMsg, mbConfirmation, MB_YESNO) = IDYES then
       begin
         DelTree(DataDir, True, True, True);
       end;
