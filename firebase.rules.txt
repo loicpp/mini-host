@@ -24,7 +24,7 @@
             ".write": "auth != null && auth.uid == $playerId && newData.child('secret').val() == root.child('games').child($gameId).child('secret').val() && !data.exists()",
             ".validate": "newData.hasChildren(['name', 'score']) && (newData.child('score').val() == 0 || data.exists())",
             "currentGuess": {
-              ".write": "auth != null && auth.uid == $playerId"
+              ".write": "auth != null && auth.uid == $playerId && (!data.parent().child('blockedTurns').exists() || data.parent().child('blockedTurns').val() === 0) && root.child('games/' + $gameId + '/data/status').val() === 'playing'"
             }
           }
         }
