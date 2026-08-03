@@ -1,7 +1,8 @@
 import { watch, computed } from 'vue';
 import { 
   gameId, status, gameSettings, selectedTrack, nextTrackInfo, 
-  playedTracks, localTracks, pressedBuzzer, players, musicProgress, musicTimeLeft
+  playedTracks, localTracks, pressedBuzzer, players, musicProgress, musicTimeLeft,
+  currentStartTime
 } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
@@ -11,7 +12,6 @@ import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
 import { useGamePlayers } from './useGamePlayers';
 
-let currentStartTime = 0;
 let hasMusicStopped = false;
 let animationFrameId: number | null = null;
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
@@ -47,7 +47,7 @@ export function useGameMusic() {
       status.value = 'playing';
       const delay = 3000;
       const startTime = getServerTime() + delay;
-      currentStartTime = startTime;
+      currentStartTime.value = startTime;
       
       await animatorService.clearPressedBuzzer(gameId.value);
   
@@ -118,7 +118,7 @@ export function useGameMusic() {
     await animatorService.updateGameState(gameId.value, 'playing');
     
     const now = getServerTime();
-    if (currentStartTime && now >= currentStartTime + (gameSettings.value.musicDuration * 1000)) {
+    if (currentStartTime.value && now >= currentStartTime.value + (gameSettings.value.musicDuration * 1000)) {
       hasMusicStopped = true;
     }
     
@@ -134,8 +134,8 @@ export function useGameMusic() {
       if (status.value !== 'playing') return;
       
       const now = getServerTime();
-      if (currentStartTime) {
-        const elapsed = now - currentStartTime;
+      if (currentStartTime.value) {
+        const elapsed = now - currentStartTime.value;
         const total = gameSettings.value.duration * 1000;
         musicProgress.value = Math.min(100, Math.max(0, (elapsed / total) * 100));
         musicTimeLeft.value = Math.max(0, Math.ceil((total - elapsed) / 1000));
@@ -155,12 +155,12 @@ export function useGameMusic() {
         if (status.value !== 'playing') return;
         const now = getServerTime();
         
-        if (currentStartTime && !hasMusicStopped && now >= currentStartTime + (gameSettings.value.musicDuration * 1000)) {
+        if (currentStartTime.value && !hasMusicStopped && now >= currentStartTime.value + (gameSettings.value.musicDuration * 1000)) {
           musicManager.pause();
           hasMusicStopped = true;
         }
   
-        if (currentStartTime && now >= currentStartTime + (gameSettings.value.duration * 1000)) {
+        if (currentStartTime.value && now >= currentStartTime.value + (gameSettings.value.duration * 1000)) {
           stopMusic();
         } else {
           autoStopTimer = setTimeout(checkTimer, 500);

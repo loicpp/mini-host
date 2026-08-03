@@ -76,6 +76,7 @@
                 </div>
                 <div>
                   <h2 class="text-xl font-bold text-primary">{{ $t('control_panel.playing_now') }}</h2>
+                  <p class="text-sm font-medium text-muted-foreground mt-1">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</p>
                 </div>
               </div>
               <div class="text-3xl font-black text-primary font-mono bg-slate-50 px-4 py-2 rounded-xl">
@@ -186,31 +187,92 @@
             <div v-if="sortedPlayersList.length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
               {{ $t('control_panel.no_players_connected') }}
             </div>
-            <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex flex-col gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-primary text-lg">{{ player.name || $t('control_panel.anonymous') }}</span>
-                  <Badge v-if="player.blockedTurns === -1" color="red">{{ $t('control_panel.blocked_permanent') }}</Badge>
-                  <Badge v-else-if="player.blockedTurns > 0" color="red">{{ $t('control_panel.blocked_turns', { turns: player.blockedTurns }) }}</Badge>
-                </div>
-                <span class="font-black text-[#FFBA49] tabular-nums text-lg">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
+            <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex items-center justify-between gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
+              <div class="flex items-center gap-2 flex-1 overflow-hidden">
+                <span class="font-bold text-primary text-lg truncate">{{ player.name || $t('control_panel.anonymous') }}</span>
+                <Badge v-if="player.blockedTurns === -1" color="red" class="shrink-0">{{ $t('control_panel.blocked_permanent') }}</Badge>
+                <Badge v-else-if="player.blockedTurns > 0" color="red" class="shrink-0">{{ $t('control_panel.blocked_turns', { turns: player.blockedTurns }) }}</Badge>
               </div>
               
-              <div class="flex gap-2 flex-wrap items-center justify-between mt-1">
-                <div class="flex flex-wrap gap-2">
-                  <Btn variant="secondary" size="sm" @click="setPlayerBlock(player.id, 1)">{{ $t('control_panel.plus_one_turn') }}</Btn>
-                  <Btn variant="secondary" size="sm" @click="setPlayerBlock(player.id, 3)">{{ $t('control_panel.plus_three_tours') }}</Btn>
-                  <Btn :variant="player.blockedTurns ? 'success' : 'danger'" size="sm" @click="setPlayerBlock(player.id, player.blockedTurns ? 0 : -1)">
-                    {{ player.blockedTurns ? $t('control_panel.unblock') : $t('control_panel.block_permanently') }}
-                  </Btn>
-                </div>
-                <Btn variant="danger" size="sm" @click="removePlayer(player.id)">{{ $t('control_panel.remove') }}</Btn>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="font-black text-[#FFBA49] tabular-nums text-lg mr-2">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
+                
+                <button 
+                  class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                  :title="$t('control_panel.actions')"
+                  @click="openPlayerActionsModal(player)"
+                >
+                  <Settings class="w-4 h-4" />
+                </button>
+
+                <button 
+                  class="w-9 h-9 rounded-xl flex items-center justify-center text-red-600 bg-red-100 hover:bg-red-200 hover:text-red-700 transition-colors"
+                  :title="$t('control_panel.remove')"
+                  @click="removePlayer(player.id)"
+                >
+                  <UserMinus class="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
           
           <div class="flex justify-end mt-6">
             <Btn variant="dark" size="md" @click="isPlayersModalOpen = false">{{ $t('control_panel.close') }}</Btn>
+          </div>
+        </div>
+      </Modal>
+
+      <!-- Player Actions Modal -->
+      <Modal v-if="isPlayerActionsModalOpen" @close="isPlayerActionsModalOpen = false" maxW="max-w-md">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center shadow-sm">
+                <Settings class="w-5 h-5 text-gray-600" />
+              </div>
+              <h2 class="text-xl font-bold text-primary">{{ $t('control_panel.actions') }} - {{ selectedPlayerForActions?.name }}</h2>
+            </div>
+            <button @click="isPlayerActionsModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
+          </div>
+          
+          <div class="flex flex-col gap-6">
+            <!-- Points Section -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider m-0">{{ $t('control_panel.adjust_points') }}</p>
+                <span class="font-black text-[#FFBA49] tabular-nums bg-amber-50 px-2 py-1 rounded-md">{{ (selectedPlayerForActions?.score || 0) + tempScoreAdjustment }} {{ $t('gameroom.pts') }}</span>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                <Btn variant="danger" @click="handleTempPoints(-2)">-2</Btn>
+                <Btn variant="danger" @click="handleTempPoints(-1)">-1</Btn>
+                <Btn variant="danger" @click="handleTempPoints(-0.5)">-0.5</Btn>
+                <Btn variant="success" @click="handleTempPoints(0.5)">+0.5</Btn>
+                <Btn variant="success" @click="handleTempPoints(1)">+1</Btn>
+                <Btn variant="success" @click="handleTempPoints(2)">+2</Btn>
+              </div>
+            </div>
+
+            <hr class="border-[rgba(0,0,0,0.08)] m-0" />
+
+            <div>
+              <p class="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider m-0">{{ $t('control_panel.suspend_participation') }}</p>
+              
+              <div v-if="showUnblockOnly">
+                <Btn variant="success" className="w-full justify-center font-bold" @click="showUnblockOnly = false; tempBlockedTurns = 0">
+                  {{ $t('control_panel.lift_suspension') }}
+                </Btn>
+              </div>
+              <div v-else class="grid grid-cols-3 gap-2">
+                <Btn :variant="tempBlockedTurns === 1 ? 'dark-gray' : 'soft'" @click="tempBlockedTurns = tempBlockedTurns === 1 ? 0 : 1">{{ $t('control_panel.one_turn') }}</Btn>
+                <Btn :variant="tempBlockedTurns === 3 ? 'dark-gray' : 'soft'" @click="tempBlockedTurns = tempBlockedTurns === 3 ? 0 : 3">{{ $t('control_panel.three_turns') }}</Btn>
+                <Btn :variant="tempBlockedTurns === -1 ? 'black' : 'gray-medium'" @click="tempBlockedTurns = tempBlockedTurns === -1 ? 0 : -1">{{ $t('control_panel.permanently') }}</Btn>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-2 gap-3">
+              <Btn variant="gray" @click="isPlayerActionsModalOpen = false">{{ $t('app.cancel') }}</Btn>
+              <Btn variant="primary" :disabled="!hasUnsavedChanges" @click="savePlayerActions">{{ $t('settings.save') }}</Btn>
+            </div>
           </div>
         </div>
       </Modal>
@@ -222,7 +284,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2 } from '@lucide/vue';
+import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, Settings, UserMinus } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 
 import Btn from '../../ui/Btn.vue';
@@ -246,11 +308,51 @@ const router = useRouter();
 const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame } = useGameSession();
 const { 
   displayedPlayers, sortedPlayersList, playersWhoWonPoints, hasBuzzed, 
-  award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock 
+  award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
 
 const isPlayersModalOpen = ref(false);
+const isPlayerActionsModalOpen = ref(false);
+const selectedPlayerForActions = ref<any>(null);
+const tempScoreAdjustment = ref(0);
+const tempBlockedTurns = ref(0);
+const showUnblockOnly = ref(false);
+
+const openPlayerActionsModal = (player: any) => {
+  selectedPlayerForActions.value = player;
+  tempScoreAdjustment.value = 0;
+  tempBlockedTurns.value = player.blockedTurns || 0;
+  showUnblockOnly.value = !!player.blockedTurns;
+  isPlayerActionsModalOpen.value = true;
+};
+
+const hasUnsavedChanges = computed(() => {
+  if (!selectedPlayerForActions.value) return false;
+  const initialBlockedTurns = selectedPlayerForActions.value.blockedTurns || 0;
+  return tempScoreAdjustment.value !== 0 || tempBlockedTurns.value !== initialBlockedTurns;
+});
+
+const handleTempPoints = (points: number) => {
+  const currentScore = selectedPlayerForActions.value?.score || 0;
+  let newTotal = currentScore + tempScoreAdjustment.value + points;
+  if (newTotal < 0) {
+    newTotal = 0;
+  }
+  tempScoreAdjustment.value = newTotal - currentScore;
+};
+
+const savePlayerActions = async () => {
+  if (selectedPlayerForActions.value) {
+    if (tempScoreAdjustment.value !== 0) {
+      await addPointsManually(selectedPlayerForActions.value.id, tempScoreAdjustment.value);
+    }
+    if (tempBlockedTurns.value !== (selectedPlayerForActions.value.blockedTurns || 0)) {
+      await setPlayerBlock(selectedPlayerForActions.value.id, tempBlockedTurns.value);
+    }
+  }
+  isPlayerActionsModalOpen.value = false;
+};
 
 const statusDisplay = computed(() => {
   if (status.value === 'waiting') return t('control_panel.status_waiting');

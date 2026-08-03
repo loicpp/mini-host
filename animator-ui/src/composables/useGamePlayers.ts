@@ -60,15 +60,15 @@ export function useGamePlayers() {
   });
 
   const award = (playerId: string, points: number) => {
-    if (points !== 0) {
-      const currentScore = players.value[playerId]?.score || 0;
-      const currentPending = pendingPoints.value[playerId] || 0;
-      if (currentScore + currentPending + points >= 0) {
-        pendingPoints.value = {
-          ...pendingPoints.value,
-          [playerId]: currentPending + points
-        };
-      }
+    if (points === 0) {
+      const newPending = { ...pendingPoints.value };
+      delete newPending[playerId];
+      pendingPoints.value = newPending;
+    } else {
+      pendingPoints.value = {
+        ...pendingPoints.value,
+        [playerId]: points
+      };
     }
   };
 
@@ -151,6 +151,27 @@ export function useGamePlayers() {
     }
   };
 
+  const addPointsManually = async (playerId: string, points: number) => {
+    try {
+      const currentPlayer = players.value[playerId];
+      if (!currentPlayer) return;
+
+      const currentScore = currentPlayer.score || 0;
+      let finalPoints = points;
+
+      if (currentScore + points < 0) {
+        finalPoints = -currentScore;
+      }
+
+      if (finalPoints === 0) return;
+
+      await animatorService.awardPoints(gameId.value, playerId, finalPoints);
+      await animatorService.updateRanks(gameId.value);
+    } catch(e) {
+      console.error("Impossible d'ajuster les points manuellement:", e);
+    }
+  };
+
   return {
     displayedPlayers,
     sortedPlayersList,
@@ -162,6 +183,7 @@ export function useGamePlayers() {
     autoCorrect,
     correctBuzzer,
     removePlayer,
-    setPlayerBlock
+    setPlayerBlock,
+    addPointsManually
   };
 }

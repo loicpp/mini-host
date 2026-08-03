@@ -1,4 +1,4 @@
-import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints } from './state';
+import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints, currentStartTime } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
@@ -128,6 +128,14 @@ export function useGameSession() {
         status.value = gameData.data.status;
       } else {
         status.value = 'waiting';
+      }
+
+      if (gameData.data?.startTime) {
+        currentStartTime.value = gameData.data.startTime;
+      }
+
+      if (gameData.answer) {
+        nextTrackInfo.value.answer = gameData.answer;
       }
     } catch {
       console.warn("Could not fetch game status from Firebase, falling back to 'waiting'");

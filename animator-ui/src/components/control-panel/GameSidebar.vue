@@ -7,13 +7,21 @@
     <div class="h-[100px] shrink-0 flex flex-col justify-center">
       <div class="w-full" v-if="status !== 'waiting'">
         <p class="text-[10px] font-bold text-muted-foreground tracking-wider mb-2 uppercase">{{ $t('sidebar.playing') }}</p>
-        <div class="bg-[#fff6e0] text-[#3F4739] p-4 rounded-xl shadow-sm border border-[#fef3c7] relative group cursor-help overflow-hidden">
-          <template v-if="selectedTrack">
+        <div class="bg-[#fff6e0] text-[#3F4739] p-4 rounded-xl shadow-sm border border-[#fef3c7] relative group overflow-hidden">
+          <template v-if="selectedTrack || lastPlayedTrack">
             <div :class="['transition-all duration-500', status === 'playing' ? 'blur-[6px] opacity-30 group-hover:blur-none group-hover:opacity-100 select-none' : '']">
-              <div class="font-bold truncate">{{ selectedTrack.title }}</div>
-              <div class="text-sm opacity-80 truncate">{{ selectedTrack.artist }}</div>
+              <div class="font-bold truncate">{{ (selectedTrack || lastPlayedTrack)?.title }}</div>
+              <div class="text-sm opacity-80 truncate">{{ (selectedTrack || lastPlayedTrack)?.artist }}</div>
             </div>
             
+            <div v-if="status === 'playing'" class="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none">
+              <EyeOff class="w-6 h-6 text-[#3F4739]/50" />
+            </div>
+          </template>
+          <template v-else-if="nextTrackInfo.answer">
+            <div :class="['transition-all duration-500', status === 'playing' ? 'blur-[6px] opacity-30 group-hover:blur-none group-hover:opacity-100 select-none' : '']">
+              <div class="font-bold truncate" :title="nextTrackInfo.answer">{{ nextTrackInfo.answer }}</div>
+            </div>
             <div v-if="status === 'playing'" class="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none">
               <EyeOff class="w-6 h-6 text-[#3F4739]/50" />
             </div>

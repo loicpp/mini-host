@@ -37,3 +37,4 @@ export const musicTimeLeft = ref(0);
 export const lastGameId = ref<string | null>(localStorage.getItem('minihost_last_game'));
 
 export const isBackendConnected = ref(true);
+export const currentStartTime = ref(0);

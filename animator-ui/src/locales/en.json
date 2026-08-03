@@ -148,7 +148,9 @@
   },
   "players_grid": {
     "no_answer": "No answer",
-    "no_buzzer": "No player buzzed yet."
+    "no_buzzer": "No player buzzed yet.",
+    "cancel_points": "Cancel",
+    "submitted_at": "Submitted at {time} seconds"
   },
   "diagnostics": {
     "title": "System Diagnostics",
@@ -234,12 +236,15 @@
     "no_players_connected": "No players connected.",
     "anonymous": "Anonymous",
     "blocked_permanent": "Permanently blocked",
+    "suspend_participation": "Suspend participation:",
+    "one_turn": "1 turn",
+    "three_turns": "3 turns",
+    "permanently": "Permanently",
+    "lift_suspension": "Lift suspension",
+    "adjust_points": "Adjust points:",
     "blocked_turns": "Blocked",
-    "plus_one_turn": "+1 Turn",
-    "plus_three_tours": "+3 Turns",
-    "unblock": "Unblock",
-    "block_permanently": "Block permanently",
-    "remove": "Remove",
+    "remove": "Kick",
+    "actions": "Actions",
     "close": "Close",
     "status_waiting": "Waiting...",
     "status_playing": "Playing",

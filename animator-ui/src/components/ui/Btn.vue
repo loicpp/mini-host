@@ -18,7 +18,7 @@
 import { computed } from 'vue';
 
 const { variant = "primary", size = "md", className = "", disabled = false } = defineProps<{
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "success" | "dark" | "cyan" | "orange" | "blue" | "pink" | "gray" | "soft" | "ghost-yellow" | "ghost-orange" | "ghost-red"
+  variant?: "primary" | "secondary" | "ghost" | "danger" | "success" | "dark" | "cyan" | "orange" | "blue" | "pink" | "gray" | "soft" | "ghost-yellow" | "ghost-orange" | "ghost-red" | "dark-gray" | "black" | "gray-medium"
   size?: "sm" | "md" | "lg"
   className?: string
   disabled?: boolean
@@ -55,6 +55,9 @@ const variants = {
   soft: "bg-gray-200/70 text-gray-800 hover:bg-gray-300 active:scale-[0.98]",
   'ghost-yellow': "bg-transparent text-[#e09e24] hover:bg-[#FFBA49]/15 hover:text-[#c28415] active:scale-[0.98] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200",
   'ghost-orange': "bg-transparent text-orange-600 hover:bg-orange-100 hover:text-orange-800 active:scale-[0.98] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200",
-  'ghost-red': "bg-transparent text-red-600 hover:bg-red-100 hover:text-red-800 active:scale-[0.98] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200"
+  'ghost-red': "bg-transparent text-red-600 hover:bg-red-100 hover:text-red-800 active:scale-[0.98] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200",
+  'dark-gray': "bg-gray-700 text-white hover:bg-gray-800 active:scale-[0.98] shadow-sm",
+  'black': "bg-gray-950 text-white hover:bg-black active:scale-[0.98] shadow-sm",
+  'gray-medium': "bg-gray-300 text-gray-800 hover:bg-gray-400 active:scale-[0.98] shadow-sm"
 }
 </script>

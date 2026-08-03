@@ -148,7 +148,9 @@
   },
   "players_grid": {
     "no_answer": "Aucune réponse",
-    "no_buzzer": "Aucun joueur n'a buzzé pour le moment."
+    "no_buzzer": "Aucun joueur n'a buzzé pour le moment.",
+    "cancel_points": "Annuler",
+    "submitted_at": "Saisie à {time} secondes"
   },
   "diagnostics": {
     "title": "Diagnostics du Système",
@@ -246,12 +248,15 @@
     "no_players_connected": "Aucun joueur connecté.",
     "anonymous": "Anonyme",
     "blocked_permanent": "Bloqué définitivement",
+    "suspend_participation": "Suspendre la participation :",
+    "one_turn": "1 tour",
+    "three_turns": "3 tours",
+    "permanently": "Définitivement",
+    "lift_suspension": "Lever la suspension",
+    "adjust_points": "Ajuster les points :",
     "blocked_turns": "Bloqué",
-    "plus_one_turn": "+1 Tour",
-    "plus_three_tours": "+3 Tours",
-    "unblock": "Débloquer",
-    "block_permanently": "Bloquer définitivement",
-    "remove": "Supprimer",
+    "remove": "Virer",
+    "actions": "Actions",
     "close": "Fermer",
     "status_waiting": "En attente...",
     "status_playing": "Lecture en cours",
@@ -310,9 +315,9 @@
       "confirm": "Supprimer"
     },
     "kick_player": {
-      "title": "Supprimer le joueur ?",
+      "title": "Virer le joueur ?",
       "message": "Voulez-vous vraiment expulser ce joueur de la partie ?",
-      "confirm": "Supprimer"
+      "confirm": "Virer"
     },
     "game_not_found": {
       "title": "Partie introuvable",
