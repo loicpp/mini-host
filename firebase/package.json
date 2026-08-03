@@ -1,0 +1,8 @@
+{
+  "name": "minihost-firebase",
+  "private": true,
+  "version": "1.0.0",
+  "devDependencies": {
+    "firebase-tools": "^15.22.4"
+  }
+}

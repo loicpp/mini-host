@@ -42,6 +42,11 @@ jobs:
         env:
           # Assurez-vous d'ajouter ce secret dans les Settings > Secrets de votre dépôt GitHub
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      - name: Deploy Firebase Rules
+        run: bash deploy.sh
+        working-directory: firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
   build-linux:
     name: Build Linux Executable
