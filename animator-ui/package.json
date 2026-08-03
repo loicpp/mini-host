@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .js,.cjs,.ts,.vue"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@lucide/vue": "^1.25.0",

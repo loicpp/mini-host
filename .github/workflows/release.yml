@@ -38,6 +38,7 @@ jobs:
         shell: bash
       - name: Deploy Player App
         run: bash deploy.sh
+        working-directory: player-app
         env:
           # Assurez-vous d'ajouter ce secret dans les Settings > Secrets de votre dépôt GitHub
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

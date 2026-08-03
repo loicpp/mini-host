@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "==> Deploying Player App to Firebase..."
+echo "==> Deploying Player App to Firebase Hosting..."
 
 echo "--> Building Vue application..."
 npm install
