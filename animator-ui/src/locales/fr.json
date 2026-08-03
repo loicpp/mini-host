@@ -242,6 +242,7 @@
     "buzzer_pause": "La musique est en pause. À lui de donner la réponse !",
     "a_player": "Un joueur",
     "players_status": "Statut des joueurs en direct",
+    "round_results": "Résultats de la manche",
     "points_won": "Points remportés (cette manche)",
     "no_points_won": "Personne n'a remporté de points sur cette manche...",
     "manage_players": "Gestion des Joueurs",

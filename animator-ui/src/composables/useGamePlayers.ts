@@ -26,6 +26,7 @@ export function useGamePlayers() {
       result[id] = {
         ...p,
         currentGuess: guess,
+        hasAnswered: !!guess && (!!guess.title || !!guess.artist),
         score: (p.score || 0) + (pendingPoints.value[id] || 0),
         pendingPoints: pendingPoints.value[id] || 0
       };
@@ -37,6 +38,53 @@ export function useGamePlayers() {
     return Object.keys(displayedPlayers.value)
       .map(id => ({ id, ...displayedPlayers.value[id] }))
       .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  });
+
+  const playersRoundResults = computed(() => {
+    const rawPlayers = [];
+    for (const id in players.value) {
+      const p = players.value[id];
+      if (p.role === 'animator' || p.role === 'projector') continue;
+      
+      const pointsGained = lastAwardedPoints.value[id] || 0;
+      const currentScore = p.score || 0;
+      const previousScore = currentScore - pointsGained;
+      
+      rawPlayers.push({
+        id,
+        name: p.name || '',
+        score: currentScore,
+        previousScore,
+        pointsGained
+      });
+    }
+
+    // Sort to find previous ranks
+    const sortedByPrevious = [...rawPlayers].sort((a, b) => {
+      const scoreDiff = b.previousScore - a.previousScore;
+      if (scoreDiff !== 0) return scoreDiff;
+      return a.name.localeCompare(b.name);
+    });
+    const previousRanks = new Map(sortedByPrevious.map((p, index) => [p.id, index + 1]));
+
+    // Sort to find current ranks (and this will be the display order)
+    const sortedByCurrent = [...rawPlayers].sort((a, b) => {
+      const scoreDiff = b.score - a.score;
+      if (scoreDiff !== 0) return scoreDiff;
+      return a.name.localeCompare(b.name);
+    });
+
+    return sortedByCurrent.map((p, index) => {
+      const currentRank = index + 1;
+      const prevRank = previousRanks.get(p.id) || currentRank;
+      const rankChange = prevRank - currentRank; // positive = went up, negative = went down
+
+      return {
+        ...p,
+        currentRank,
+        rankChange
+      };
+    });
   });
 
   const playersWhoWonPoints = computed(() => {
@@ -175,6 +223,7 @@ export function useGamePlayers() {
   return {
     displayedPlayers,
     sortedPlayersList,
+    playersRoundResults,
     playersWhoWonPoints,
     hasBuzzed,
     award,

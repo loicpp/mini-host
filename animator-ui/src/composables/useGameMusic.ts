@@ -181,18 +181,26 @@ export function useGameMusic() {
   
   watch(() => players.value, (newPlayers) => {
     if (status.value === 'playing' && newPlayers) {
-      const playerIds = Object.keys(newPlayers);
+      const playerIds = Object.keys(newPlayers).filter(id => {
+        const role = (newPlayers as Record<string, any>)[id].role;
+        return role !== 'animator' && role !== 'projector';
+      });
       if (playerIds.length > 0) {
         if (gameSettings.value.mode === 'buzzer') {
           const allBlocked = playerIds.every(id => {
             const p = (newPlayers as Record<string, any>)[id];
             return p.blockedTurns === -1 || p.blockedTurns > 0;
           });
-          if (allBlocked && playerIds.length > 0) {
+          if (allBlocked) {
             stopMusic();
           }
         } else {
-          const allSubmitted = playerIds.every(id => (newPlayers as Record<string, any>)[id].currentGuess);
+          const allSubmitted = playerIds.every(id => {
+            const p = (newPlayers as Record<string, any>)[id];
+            const isBlocked = p.blockedTurns === -1 || p.blockedTurns > 0;
+            const hasGuess = !!p.currentGuess && (!!p.currentGuess.title || !!p.currentGuess.artist || typeof p.currentGuess === 'string' && p.currentGuess.length > 0);
+            return isBlocked || hasGuess;
+          });
           if (allSubmitted) {
             stopMusic();
           }

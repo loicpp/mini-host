@@ -230,6 +230,7 @@
     "buzzer_pause": "Music paused. Time for them to answer!",
     "a_player": "A player",
     "players_status": "Live Player Status",
+    "round_results": "Round results",
     "points_won": "Points won (this round)",
     "no_points_won": "No points won this round...",
     "manage_players": "Manage Players",

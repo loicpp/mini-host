@@ -126,23 +126,36 @@
         <div v-if="status === 'results'" class="flex flex-col gap-6 animate-in fade-in duration-300">
           <div class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
             <h3 class="font-bold text-primary mb-6 flex items-center gap-2">
-              <Trophy class="w-5 h-5 text-yellow-500" /> {{ $t('control_panel.points_won') }}
+              <Trophy class="w-5 h-5 text-yellow-500" /> {{ $t('control_panel.round_results') }}
             </h3>
             
             <div class="grid gap-3">
-              <div v-for="player in playersWhoWonPoints" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100">
-                <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
-                  +{{ player.pointsGained }}
+              <div v-for="player in playersRoundResults" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm font-bold text-gray-700 border border-gray-200">
+                  {{ player.currentRank }}
                 </div>
-                <div class="flex-1">
-                  <h4 class="font-bold text-lg text-emerald-900 m-0">{{ player.name }}</h4>
+                <div class="flex-1 flex items-center gap-3">
+                  <h4 class="font-bold text-lg text-primary m-0">{{ player.name }}</h4>
+                  <Badge v-if="player.pointsGained > 0" color="green">+{{ player.pointsGained }}</Badge>
+                  <Badge v-else-if="player.pointsGained < 0" color="red">{{ player.pointsGained }}</Badge>
                 </div>
-                <div class="flex flex-col items-end">
-                  <div class="font-black text-xl text-emerald-700">{{ player.score }} pts (Total)</div>
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-1 font-bold text-sm w-12 justify-end" :class="player.rankChange > 0 ? 'text-emerald-500' : player.rankChange < 0 ? 'text-red-500' : 'text-gray-400'">
+                    <template v-if="player.rankChange > 0">
+                      <ChevronUp class="w-4 h-4" /> {{ player.rankChange }}
+                    </template>
+                    <template v-else-if="player.rankChange < 0">
+                      <ChevronDown class="w-4 h-4" /> {{ Math.abs(player.rankChange) }}
+                    </template>
+                    <template v-else>
+                      <Minus class="w-4 h-4" />
+                    </template>
+                  </div>
+                  <div class="font-black text-xl text-primary w-24 text-right">{{ player.score }} pts</div>
                 </div>
               </div>
-              <div v-if="playersWhoWonPoints.length === 0" class="text-center text-muted-foreground py-8 italic bg-gray-50 rounded-xl border border-gray-100">
-                {{ $t('control_panel.no_points_won') }}
+              <div v-if="playersRoundResults.length === 0" class="text-center text-muted-foreground py-8 italic bg-gray-50 rounded-xl border border-gray-100">
+                {{ $t('control_panel.no_players_connected') }}
               </div>
             </div>
           </div>
@@ -284,7 +297,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, Settings, UserMinus } from '@lucide/vue';
+import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, Settings, UserMinus, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 
 import Btn from '../../ui/Btn.vue';
@@ -307,7 +320,7 @@ const router = useRouter();
 
 const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame } = useGameSession();
 const { 
-  displayedPlayers, sortedPlayersList, playersWhoWonPoints, hasBuzzed, 
+  displayedPlayers, sortedPlayersList, playersRoundResults, hasBuzzed, 
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
