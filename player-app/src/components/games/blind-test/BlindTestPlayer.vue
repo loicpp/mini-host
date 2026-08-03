@@ -175,7 +175,9 @@ const playerRank = computed(() => {
   return player.value?.rank || null;
 });
 
-watch(() => props.game?.status, (newStatus, oldStatus) => {
+watch(() => [props.game?.status, props.game?.startTime, props.game?.settings?.duration], ([newStatus, newStartTime, newDuration], oldVals) => {
+  const oldStatus = oldVals ? oldVals[0] : undefined;
+
   if (newStatus === 'playing') {
     if (oldStatus !== 'playing') {
       searchQuery.value = '';
@@ -190,10 +192,10 @@ watch(() => props.game?.status, (newStatus, oldStatus) => {
       currentGuess.value = null;
     }
     
-    const startTime = props.game?.startTime;
+    const startTime = newStartTime;
     const settings = props.game?.settings;
-    if (startTime && settings?.duration) {
-      startTimer(startTime, settings.duration * 1000, (settings.blockDuration || 0) * 1000);
+    if (startTime && newDuration) {
+      startTimer(startTime, newDuration * 1000, (settings?.blockDuration || 0) * 1000);
     }
   } else if (newStatus !== 'playing') {
     stopTimer();
