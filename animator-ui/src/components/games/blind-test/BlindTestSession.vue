@@ -12,6 +12,7 @@
       :hasBuzzed="hasBuzzed"
       :lastPlayedTrack="lastPlayedTrack"
       :players="displayedPlayers"
+      :playedCount="playedTracks.length"
       @toggle-projector="toggleProjector"
       @leave-game="handleLeaveGame"
       @configure-playlists="handleConfigurePlaylists"

@@ -6,7 +6,10 @@
     
     <div class="h-[100px] shrink-0 flex flex-col justify-center">
       <div class="w-full" v-if="status !== 'waiting'">
-        <p class="text-[10px] font-bold text-muted-foreground tracking-wider mb-2 uppercase">{{ $t('sidebar.playing') }}</p>
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] font-bold text-muted-foreground tracking-wider uppercase m-0">{{ $t('sidebar.playing') }}</p>
+          <div class="text-[10px] font-bold bg-muted px-2 py-0.5 rounded-md text-muted-foreground" v-if="playedCount !== undefined && playedCount > 0">{{ playedCount }} {{ $t('sidebar.played') }}</div>
+        </div>
         <div class="bg-[#fff6e0] text-[#3F4739] p-4 rounded-xl shadow-sm border border-[#fef3c7] relative group overflow-hidden">
           <template v-if="selectedTrack || lastPlayedTrack">
             <div :class="['transition-all duration-500', status === 'playing' ? 'blur-[6px] opacity-30 group-hover:blur-none group-hover:opacity-100 select-none' : '']">
@@ -33,7 +36,10 @@
       </div>
       <div class="w-full" v-else>
         <template v-if="lastPlayedTrack">
-          <p class="text-[10px] font-bold text-muted-foreground tracking-wider mb-2 uppercase">{{ $t('sidebar.last_music') }}</p>
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-[10px] font-bold text-muted-foreground tracking-wider uppercase m-0">{{ $t('sidebar.last_music') }}</p>
+            <div class="text-[10px] font-bold bg-muted px-2 py-0.5 rounded-md text-muted-foreground" v-if="playedCount !== undefined && playedCount > 0">{{ playedCount }} {{ $t('sidebar.played') }}</div>
+          </div>
           <div class="bg-gray-50 text-gray-700 p-4 rounded-xl shadow-sm border border-gray-100">
             <div class="font-bold truncate">{{ lastPlayedTrack.title }}</div>
             <div class="text-sm opacity-80 truncate">{{ lastPlayedTrack.artist }}</div>
@@ -88,17 +94,7 @@
     <div class="h-px bg-[rgba(0,0,0,0.05)] w-full my-4 shrink-0"></div>
 
     <div class="flex-1 overflow-y-auto min-h-0 pr-2">
-      <p class="text-[10px] font-bold text-muted-foreground tracking-wider mb-4 uppercase">{{ $t('sidebar.scores') }}</p>
-      <div class="flex flex-col gap-3">
-        <div v-for="(player, index) in sortedPlayers" :key="player.id" class="flex items-center gap-3">
-          <div :class="['w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-sm', index === 0 ? 'bg-[#FFBA49] text-[#3F4739]' : 'bg-muted text-muted-foreground']">
-            {{ index + 1 }}
-          </div>
-          <div class="flex-1 truncate font-semibold text-sm text-primary">{{ player.name }}</div>
-          <div class="font-black text-sm text-primary">{{ player.score || 0 }}</div>
-        </div>
-        <div v-if="sortedPlayers.length === 0" class="text-xs text-muted-foreground italic text-center py-4">{{ $t('sidebar.no_players') }}</div>
-      </div>
+      <!-- Scores section removed per user request -->
     </div>
 
     <div class="mt-4 pt-4 border-t border-[rgba(0,0,0,0.05)] shrink-0">
@@ -110,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { ChevronLeft, Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
 import Btn from '../ui/Btn.vue';
@@ -127,15 +123,10 @@ const props = defineProps<{
   hasBuzzed: boolean;
   lastPlayedTrack?: Track | null;
   players?: Record<string, any>;
+  playedCount?: number;
 }>();
 
-const sortedPlayers = computed(() => {
-  const arr = Object.keys(props.players || {}).map(id => ({
-    id,
-    ...props.players![id]
-  }));
-  return arr.sort((a, b) => (b.score || 0) - (a.score || 0));
-});
+
 
 const emit = defineEmits<{
   (e: 'leave-game'): void;

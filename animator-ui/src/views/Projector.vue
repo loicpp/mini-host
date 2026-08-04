@@ -32,20 +32,48 @@
         <h1 class="text-4xl font-bold text-white/70">{{ $t('projector.connecting') }}</h1>
       </div>
 
-      <div v-else-if="game.data?.status === 'waiting'" class="w-full max-w-6xl flex flex-col items-center">
-        <div v-if="gameId && secret" class="flex items-center gap-12 bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 mb-8 shadow-2xl">
-          <img :src="qrCodeUrl" alt="QR Code" class="w-64 h-64 bg-white p-4 rounded-3xl m-0 shadow-lg" />
-          <div class="text-left flex flex-col justify-center">
-            <h2 class="text-white text-4xl font-bold mb-2">{{ $t('projector.join_game') }}</h2>
-            <div class="text-[#FFBA49] text-8xl font-black tracking-[0.2em] mb-2 drop-shadow-[0_0_20px_rgba(255,186,73,0.5)]">{{ gameId }}</div>
-            <p class="text-white/80 text-2xl m-0">{{ $t('projector.scan_to_join') }}</p>
+      <div v-else-if="game.data?.status === 'waiting'" class="w-full max-w-[1600px] flex flex-col items-center px-10">
+        <div class="flex w-full gap-8 mb-6 justify-center items-stretch">
+          <!-- QR Code Box -->
+          <div v-if="gameId && secret" class="flex-[3] flex flex-row items-center justify-center gap-12 bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+            <img :src="qrCodeUrl" alt="QR Code" class="w-[380px] h-[380px] bg-white p-5 rounded-3xl m-0 shadow-xl" />
+            <div class="text-left flex flex-col justify-center">
+              <div class="text-[#FFBA49] text-8xl font-black tracking-[0.2em] mb-4 drop-shadow-[0_0_20px_rgba(255,186,73,0.5)]">{{ gameId }}</div>
+              <p class="text-white/80 text-3xl m-0">{{ $t('projector.scan_to_join') }}</p>
+            </div>
+          </div>
+          
+          <!-- Rules Box -->
+          <div v-if="game.data?.settings" class="flex-[2] flex flex-col justify-center text-left bg-white/5 p-8 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+            <h2 class="text-white text-3xl font-bold mb-6 flex items-center gap-3"><Info class="w-8 h-8 text-[#FFBA49]"/> {{ $t('projector.rules') }}</h2>
+            
+            <div class="mb-6">
+               <p class="text-white/60 text-lg uppercase tracking-wider mb-2">{{ $t('create_game.game_mode') }}</p>
+               <p class="text-2xl font-bold text-[#FFBA49]">{{ $t(`create_game.mode_${game.data.settings.mode}`) }}</p>
+            </div>
+
+            <div class="flex gap-4 w-full">
+                <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="game.data.settings.blockDuration > 0">
+                    <div class="text-[#00d2ff] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.5)]"></span>{{ $t('projector.block') }}</div>
+                    <div class="text-4xl font-black text-white">{{ game.data.settings.blockDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
+                </div>
+                <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner">
+                    <div class="text-[#FFBA49] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FFBA49] shadow-[0_0_10px_rgba(255,186,73,0.5)]"></span>{{ $t('projector.music') }}</div>
+                    <div class="text-4xl font-black text-white">{{ game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
+                </div>
+                <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="(game.data.settings.duration - game.data.settings.musicDuration) > 0">
+                    <div class="text-[#ff4d4d] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span>{{ $t('projector.reflection') }}</div>
+                    <div class="text-4xl font-black text-white">{{ game.data.settings.duration - game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
+                </div>
+            </div>
           </div>
         </div>
 
-        <h1 class="text-6xl font-black text-white mb-8">{{ $t('projector.get_ready') }}</h1>
+
+        <h1 class="text-6xl font-black text-white mb-6">{{ $t('projector.get_ready') }}</h1>
         
         <div class="w-full">
-          <h3 class="text-white/80 text-2xl mb-6 font-medium">{{ $t('projector.players_present') }} ({{ Object.keys(game.players || {}).length }})</h3>
+          <h3 class="text-white/80 text-2xl mb-4 font-medium">{{ $t('projector.players_present') }} ({{ Object.keys(game.players || {}).length }})</h3>
           <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
             <span v-for="(player, id) in game.players" :key="id" class="bg-white/15 px-6 py-3 rounded-full text-2xl font-bold backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
               {{ player.name }}
@@ -166,7 +194,7 @@ import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
-import { AlarmClock, PartyPopper, Trophy, Medal } from '@lucide/vue';
+import { AlarmClock, PartyPopper, Trophy, Medal, Info } from '@lucide/vue';
 import QRCode from 'qrcode';
 
 let originalTitle = '';
@@ -205,7 +233,7 @@ watchEffect(async () => {
   if (gameId.value && secret.value) {
     const targetUrl = `${baseUrl}/?game=${gameId.value}&secret=${secret.value}`;
     try {
-      qrCodeUrl.value = await QRCode.toDataURL(targetUrl, { width: 250, margin: 1 });
+      qrCodeUrl.value = await QRCode.toDataURL(targetUrl, { width: 600, margin: 1 });
     } catch (e) {
       console.error('Erreur génération QR Code:', e);
       qrCodeUrl.value = '';

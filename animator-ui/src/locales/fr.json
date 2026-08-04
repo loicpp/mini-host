@@ -133,6 +133,7 @@
   "sidebar": {
     "quit": "Retour",
     "playing": "En cours",
+    "played": "jouée(s)",
     "no_music": "Aucune musique",
     "last_music": "Music précédente",
     "blind_test": "Blind Test",
@@ -218,6 +219,7 @@
     "connecting": "Connexion à la partie...",
     "join_game": "Rejoignez la partie",
     "scan_to_join": "Scannez pour participer !",
+    "rules": "Règles de la partie",
     "get_ready": "Préparez-vous !",
     "players_present": "Joueurs présents",
     "music_starts_in": "La musique démarre dans...",
