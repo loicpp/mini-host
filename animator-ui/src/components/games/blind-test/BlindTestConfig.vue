@@ -34,8 +34,17 @@
       
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center">
-            {{ $t('create_game.block_duration') }} 
+          <label class="font-bold text-primary flex justify-between items-center w-full">
+            <span class="flex items-center">
+              {{ $t('create_game.block_duration') }} 
+              <div class="group relative flex items-center ml-2">
+                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                  {{ $t('create_game.block_duration_tooltip') }}
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            </span>
             <div class="flex items-center text-[#FFBA49]">
               <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
             </div>
@@ -44,8 +53,17 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center">
-            {{ $t('create_game.music_duration') }} 
+          <label class="font-bold text-primary flex justify-between items-center w-full">
+            <span class="flex items-center">
+              {{ $t('create_game.music_duration') }} 
+              <div class="group relative flex items-center ml-2">
+                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                  {{ $t('create_game.music_duration_tooltip') }}
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            </span>
             <div class="flex items-center text-[#FFBA49]">
               <input type="number" v-model.number="settings.musicDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('musicDuration', 1, 100)" />s
             </div>
@@ -54,8 +72,17 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center">
-            {{ $t('create_game.total_duration') }} 
+          <label class="font-bold text-primary flex justify-between items-center w-full">
+            <span class="flex items-center">
+              {{ $t('create_game.total_duration') }} 
+              <div class="group relative flex items-center ml-2">
+                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                  {{ $t('create_game.total_duration_tooltip') }}
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            </span>
             <div class="flex items-center text-[#FFBA49]">
               <input type="number" v-model.number="settings.duration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('duration', 1, 100)" />s
             </div>
@@ -116,7 +143,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard, Check, X } from '@lucide/vue';
+import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard, Check, X, Info } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
