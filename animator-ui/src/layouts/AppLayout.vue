@@ -20,7 +20,18 @@
       </div>
     </div>
     
+    
     <router-view />
+
+    <!-- Global Tutorial Exit Button -->
+    <button 
+      v-if="isTutorialActive" 
+      @click="exitTutorial"
+      class="fixed bottom-6 right-6 z-[9999] bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105"
+    >
+      <XCircle class="w-5 h-5" />
+      {{ $t('tutorial.buttons.exit') }}
+    </button>
   </div>
 </template>
 
@@ -28,8 +39,11 @@
 import { onMounted, onUnmounted } from 'vue';
 import { isBackendConnected, isProjectorOpen } from '../composables/state';
 import { useBackendConnection } from '../composables/useBackendConnection';
+import { useTutorial } from '../composables/useTutorial';
+import { XCircle } from '@lucide/vue';
 
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
+const { isTutorialActive, exitTutorial } = useTutorial();
 
 onMounted(() => {
   startConnectionMonitor();

@@ -337,5 +337,210 @@
       "title": "Erreur lors du lancement",
       "message": "Erreur lors du lancement : {err}"
     }
+  },
+  "tutorial": {
+    "buttons": {
+      "next": "Suivant",
+      "prev": "Précédent",
+      "done": "Terminer",
+      "skip": "Passer",
+      "exit": "Quitter le tutoriel",
+      "launch": "Lancer le tutoriel"
+    },
+    "homeSequence": {
+      "step1": {
+        "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie."
+      },
+      "step2": {
+        "title": "Accueil",
+        "description": "Voici l'accueil de MiniHost. C'est d'ici que vous pourrez accéder à toutes les fonctionnalités de l'application."
+      },
+      "step3": {
+        "title": "Créer une partie",
+        "description": "Ce bouton vous permet de créer une nouvelle partie."
+      },
+      "step4": {
+        "title": "Mise en place",
+        "description": "Celui-ci vous permet d'accéder aux données paramétrables pour vos parties. Vous pourrez notemment y gérer vos playlists et vos musiques."
+      },
+      "step5": {
+        "title": "Diagnostics",
+        "description": "celui-là permet de lancer les diagnostics automatiques de MiniHost. Vous pourrez y vérifier l'état de votre application et résoudre les problèmes éventuels."
+      },
+      "step6": {
+        "title": "Paramètres",
+        "description": "Enfin, ce dernier bouton vous permet d'accéder aux paramètres globaux de MiniHost. Vous pourrez y configurer l'application selon vos préférences."
+      },
+      "step7": {
+        "title": "Mise en place",
+        "description": "Pour commencer à créer des parties de blind test, il va nous falloir une playlist. Cliquez sur Mise en place !"
+      }
+    },
+    "setupSequence": {
+      "step1": {
+        "title": "Choix du paramètre",
+        "description": "Ici vous pouvez paramétrer les différents éléments de votre application. Nous allons maintenant paramétrer notre première playlist."
+      }
+    },
+    "playlistsSequence": {
+      "step1": {
+        "title": "Nom de la playlist",
+        "description": "Saisissez le nom de votre playlist ici."
+      },
+      "step2": {
+        "title": "Choix du type de playlist",
+        "description": "Vous pouvez choisir ici le type de playlist que vous souhaitez créer. Soundcloud et locale sont les deux types de playlist disponibles pour le moment. Soundcloud vous permet de directement chercher une musique depuis l'application sachant que Locale vous permet d'ajouter vos propres musiques depuis votre ordinateur."
+      },
+      "step3": {
+        "title": "Créer une playlist",
+        "description": "Enfin, cliquez ici pour créer votre première playlist."
+      },
+      "step4": {
+        "title": "Générer une playlist",
+        "description": "Sachez également qu'il est possible de générer une playlist automatiquement via cette option. Il suffira de renseigner une catégorie comme Rock, 90s, disney."
+      },
+      "step5": {
+        "title": "Liste des playlists",
+        "description": "Une fois votre playlist créée, elle apparaîtra dans cette liste. Vous pourrez alors la sélectionner pour créer une partie."
+      },
+      "step6": {
+        "title": "Sélectionner une playlist",
+        "description": "Une fois votre playlist créée, il va désormais falloir ajouter des musiques. CLiquez ici pour modifier votre playlist."
+      }
+    },
+    "playlistEditorSequence": {
+      "step1": {
+        "title": "Ajouter une musique",
+        "description": "Pour une playlist SoundCloud, Vous pouvez rechercher une musique pour l'ajouter à votre playlist. Saissez le nom de la musique dans ce champ."
+      },
+      "step2": {
+        "title": "Choisir une musique",
+        "description": "Cliquez sur la suggestion qui correspond le mieux. Il est également possible d'appuyer sur Entrée pour forcer le nom."
+      },
+      "step3": {
+        "title": "Vérification iTunes",
+        "description": "Voici la vérification iTunes. Si cette icône n'est pas bleue mais rouge, la musique n'est pas reconnue. Cela empêche les suggestions de saisie pour les joueurs de fonctionner. Pour garder les suggestions, il faut alors sélectionner une autre version de la musique sur soundcloud ou bien éditer le nom pour trouver une correspondance avec iTunes.\n\nIl est en revanche possible de désactiver les suggestions pour les joueurs. Même si les suggestions sont activées, les joueurs peuvent toujours saisir leur réponse manuellement en appuyant sur ennvoyer sur leur clavier de téléphone."
+      },
+      "step4": {
+        "title": "Url de la musique SoundCloud",
+        "description": "Vous pouvez également modifier la musique en saisissant directement l'url de la musique SoundCloud."
+      },
+      "step5": {
+        "title": "Ajouter une musique SoundCloud",
+        "description": "Cliquez ici pour ajouter la musique SoundCloud à votre playlist."
+      },
+      "step6": {
+        "title": "Liste des musiques",
+        "description": "Une fois vos musiques ajoutées, elles apparaîtront ici. Vous pourrez alors les gérer (modifier, supprimer, etc)."
+      },
+      "step7": {
+        "title": "Playlist prête !",
+        "description": "C'est tout pour la création de playlists ! Nous allons maintenant créer votre première partie !"
+      }
+    },
+    "resumeHomeSequence": {
+      "step1": {
+        "title": "Créer une partie",
+        "description": "Maintenant que nous avons créer une playlist. Nous allons pouvoir commencer une partie.\nCliquez ici pour créer une partie !"
+      }
+    },
+    "createGameSequence": {
+      "step1": {
+        "title": "Choix du jeu",
+        "description": "Vous pouvez choisir le type de jeu (Blind Test, Quiz, etc). Nous allons dans ce tutoriel lancer un blind test."
+      }
+    },
+    "initBlindTestSequence": {
+      "step1": {
+        "title": "Modes rapides",
+        "description": "Nous arrivons sur la configuration de la partie. Il est possible ici de modifier les paramètres par défaut de la partie. Les boutons ici présents vous permettent de choisir un mode rapide pour votre partie."
+      },
+      "step2": {
+        "title": "Temps",
+        "description": "Si vous souhaitez, modifier vos propres paramètres.Vous pouvez dans un premier temps régler le temps pendant lequel les joueurs peuvent être bloqués au début, puis le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre. Des icônes ⓘ vous permettent d'avoir plus d'informations sur chaque réglage."
+      },
+      "step3": {
+        "title": "Mode de jeu",
+        "description": "Ensuite, vous pouvez choisir ici le type de réponse : Buzzer ou Saisie."
+      },
+      "step4": {
+        "title": "Suggestions",
+        "description": "Si vous êtes en mode saisie. Il vous est possible d'activer ou de désactiver les suggestions pour les joueurs. Si elles sont activées, les joueurs pourront voir des suggestions de réponses lorsqu'ils saisissent leur réponse."
+      },
+      "step5": {
+        "title": "Playlist",
+        "description": "Enfin, vous pouvez choisir la playlist que vous souhaitez utiliser pour cette partie. La première playlist devrait être sélectionnée par défaut dans cette liste !"
+      },
+      "step6": {
+        "title": "Lancer la partie",
+        "description": "Une fois vos paramètres configurés, cliquez sur créer la partie !"
+      }
+    },
+    "gameSessionSequence": {
+      "step1": {
+        "title": "Lancement de la partie",
+        "description": "La partie est maintenant configurée et créée ! Vous êtes maintenant sur l'interface de la régie. C'est depuis cet écran que vous pourrez gérer la partie et les joueurs."
+      },
+      "step2": {
+        "title": "Projecteur",
+        "description": "En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir. C'est une page qui devra être affiché aux joueurs via un second écran. Elle affichera un QR Code en début de partie pour permettre aux joueurs de rejoindre votre partie. Vous pourrez double cliquer sur cette fenêtre afin de passer l'interface en plein écran. N'hésitez pas à revenir sur cette page régulièrement pendant ce tutoriel car elle se modifie automatiquement !"
+      },
+      "step3": {
+        "title": "État de la partie",
+        "description": "En haut se trouve un indicateur qui affiche l'état actuel de la partie (en attente, en cours, en revue, résultats). Selon l'état de la partie, l'interface se modifie automatiquement pour vous permettre de gérer la partie. De même que pour les joueurs, leur interface se modifie automatiquement selon l'état de la partie."
+      },
+      "step4": {
+        "title": "Gestion des joueurs",
+        "description": "Vous pouvez gérer ici vos joueurs. Il est possible de bloquer, expulser ou attribuer des points bonus. Pour ce tutoriel, deux joueurs fictifs ont rejoint la partie."
+      },
+      "step5": {
+        "title": "Sélection de la piste",
+        "description": "Vous pouvez sélectionner ici la musique que vous souhaitez jouer pour ce tour."
+      },
+      "step6": {
+        "title": "Lancer la musique",
+        "description": "Une fois votre musique sélectionnée, cliquez ensuite ici pour lancer la musique et laissez vos joueurs répondre."
+      },
+      "step7": {
+        "title": "Liste des réponses",
+        "description": "Quand les joueurs répondent, leur statut est mis à jour au fur et à mesure."
+      },
+      "step8": {
+        "title": "Liste des réponses",
+        "description": "Une fois que tous les joueurs ont répondus, on stop automatiquement le temps et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
+      },
+      "step9": {
+        "title": "Correction",
+        "description": "Pour accélerer la correction, vous pouvez utiliser ce bouton pour corriger automatiquement les réponses des joueurs."
+      },
+      "step10": {
+        "title": "Liste des réponses",
+        "description": "L'auto-correction a été appliquée. Vous voyez ici que Alice a trouvé la musique."
+      },
+      "step11": {
+        "title": "Dévoiler la correction",
+        "description": "Une fois les points attribuée ou retirée, cliquez ici pour soumettre la correction et dévoiler les résultats aux joueurs."
+      },
+      "step12": {
+        "title": "Classement actualisé",
+        "description": "Une fois les résultats dévoilés, le classement est mis à jour. Vous pouvez voir ici le classement actuel des joueurs, les mouvements du classement et les points obtenus au cour de la manche.\n\nDans l'exemple ci dessus, Alice a trouvé la musique, elle a gagné 1 point et est donc passé devant Bob."
+      },
+      "step13": {
+        "title": "Tour suivant",
+        "description": "Une fois que vos joueurs ont bien pris en compte les résultats, cliquez ici pour passer au tour suivant."
+      },
+      "step14": {
+        "title": "Arrêter la partie",
+        "description": "Une fois votre partie terminée, vous pouvez l'arrêter ici. Cela affichera aux joueurs le classement final et les résultats de la partie."
+      },
+      "step15": {
+        "title": "Confirmer l'arrêt de la partie",
+        "description": "Cliquez ici pour confirmer l'arrêt de la partie."
+      },
+      "step16": {
+        "title": "Fin du tutoriel",
+        "description": "C'est tout pour l'instant ! Vous pouvez supprimez la partie."
+      }
+    }
   }
 }

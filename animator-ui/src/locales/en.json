@@ -337,5 +337,210 @@
       "title": "Launch error",
       "message": "Launch error: {err}"
     }
+  },
+  "tutorial": {
+    "buttons": {
+      "next": "Next",
+      "prev": "Previous",
+      "done": "Done",
+      "skip": "Skip",
+      "exit": "Exit tutorial",
+      "launch": "Launch tutorial"
+    },
+    "homeSequence": {
+      "step1": {
+        "description": "Welcome to the tutorial! We will guide you step by step to create your first playlist and start your first game."
+      },
+      "step2": {
+        "title": "Home",
+        "description": "This is the MiniHost home page. From here you can access all the application's features."
+      },
+      "step3": {
+        "title": "Create a game",
+        "description": "This button allows you to create a new game."
+      },
+      "step4": {
+        "title": "Setup",
+        "description": "This one allows you to access the configurable data for your games. You can manage your playlists and music here."
+      },
+      "step5": {
+        "title": "Diagnostics",
+        "description": "This one launches MiniHost's automatic diagnostics. You can check the state of your application here and resolve any potential issues."
+      },
+      "step6": {
+        "title": "Settings",
+        "description": "Finally, this last button allows you to access the global settings of MiniHost. You can configure the application according to your preferences here."
+      },
+      "step7": {
+        "title": "Setup",
+        "description": "To start creating blind test games, we need a playlist. Click on Setup!"
+      }
+    },
+    "setupSequence": {
+      "step1": {
+        "title": "Parameter choice",
+        "description": "Here you can configure the different elements of your application. We are now going to configure our first playlist."
+      }
+    },
+    "playlistsSequence": {
+      "step1": {
+        "title": "Playlist name",
+        "description": "Enter the name of your playlist here."
+      },
+      "step2": {
+        "title": "Choice of playlist type",
+        "description": "You can choose the type of playlist you want to create here. Soundcloud and local are the two types of playlists available at the moment. Soundcloud allows you to search for music directly from the app, while Local allows you to add your own music from your computer."
+      },
+      "step3": {
+        "title": "Create a playlist",
+        "description": "Finally, click here to create your first playlist."
+      },
+      "step4": {
+        "title": "Generate a playlist",
+        "description": "Note that it is also possible to generate a playlist automatically using this option. Just enter a category like Rock, 90s, disney."
+      },
+      "step5": {
+        "title": "List of playlists",
+        "description": "Once your playlist is created, it will appear in this list. You can then select it to create a game."
+      },
+      "step6": {
+        "title": "Select a playlist",
+        "description": "Once your playlist is created, we now need to add music. Click here to edit your playlist."
+      }
+    },
+    "playlistEditorSequence": {
+      "step1": {
+        "title": "Add a track",
+        "description": "For a SoundCloud playlist, you can search for a track to add to your playlist. Enter the name of the track in this field."
+      },
+      "step2": {
+        "title": "Choose a track",
+        "description": "Click on the suggestion that fits best. It is also possible to press Enter to force the name."
+      },
+      "step3": {
+        "title": "iTunes verification",
+        "description": "Here is the iTunes verification. If this icon is not blue but red, the track is not recognized. This prevents typing suggestions from working for players. To keep suggestions, you must select another version of the track on SoundCloud or edit the name to find a match with iTunes.\n\nHowever, it is possible to disable suggestions for players. Even if suggestions are enabled, players can always type their answers manually by pressing send on their phone keyboard."
+      },
+      "step4": {
+        "title": "SoundCloud track URL",
+        "description": "You can also modify the track by directly entering the SoundCloud track URL."
+      },
+      "step5": {
+        "title": "Add a SoundCloud track",
+        "description": "Click here to add the SoundCloud track to your playlist."
+      },
+      "step6": {
+        "title": "List of tracks",
+        "description": "Once your tracks are added, they will appear here. You can then manage them (edit, delete, etc)."
+      },
+      "step7": {
+        "title": "Playlist ready!",
+        "description": "That's all for playlist creation! We are now going to create your first game!"
+      }
+    },
+    "resumeHomeSequence": {
+      "step1": {
+        "title": "Create a game",
+        "description": "Now that we have created a playlist. We can start a game.\nClick here to create a game!"
+      }
+    },
+    "createGameSequence": {
+      "step1": {
+        "title": "Game choice",
+        "description": "You can choose the type of game (Blind Test, Quiz, etc). In this tutorial we will launch a blind test."
+      }
+    },
+    "initBlindTestSequence": {
+      "step1": {
+        "title": "Quick modes",
+        "description": "We are now at the game configuration. It is possible here to modify the default settings of the game. The buttons present here allow you to choose a quick mode for your game."
+      },
+      "step2": {
+        "title": "Time",
+        "description": "If you wish, you can modify your own settings. You can first adjust the time during which players can be blocked at the start, then the track duration, as well as the total time during which players can answer. ⓘ icons give you more information on each setting."
+      },
+      "step3": {
+        "title": "Game mode",
+        "description": "Then, you can choose the answer type here: Buzzer or Typing."
+      },
+      "step4": {
+        "title": "Suggestions",
+        "description": "If you are in typing mode. It is possible to enable or disable suggestions for players. If enabled, players will be able to see answer suggestions as they type their answer."
+      },
+      "step5": {
+        "title": "Playlist",
+        "description": "Finally, you can choose the playlist you want to use for this game. The first playlist should be selected by default in this list!"
+      },
+      "step6": {
+        "title": "Launch the game",
+        "description": "Once your settings are configured, click on create game!"
+      }
+    },
+    "gameSessionSequence": {
+      "step1": {
+        "title": "Game launch",
+        "description": "The game is now configured and created! You are now on the control room interface. From this screen you can manage the game and the players."
+      },
+      "step2": {
+        "title": "Projector",
+        "description": "By clicking on this button, a page called projector will open. This is a page that must be displayed to players via a second screen. It will display a QR Code at the beginning of the game to allow players to join your game. You can double click on this window to switch the interface to full screen. Feel free to come back to this page regularly during this tutorial as it updates automatically!"
+      },
+      "step3": {
+        "title": "Game state",
+        "description": "At the top is an indicator that displays the current state of the game (waiting, in progress, reviewing, results). Depending on the state of the game, the interface automatically updates to allow you to manage the game. Similarly for the players, their interface updates automatically depending on the game state."
+      },
+      "step4": {
+        "title": "Player management",
+        "description": "You can manage your players here. It is possible to block, kick, or award bonus points. For this tutorial, two fictional players have joined the game."
+      },
+      "step5": {
+        "title": "Track selection",
+        "description": "You can select the track you want to play for this round here."
+      },
+      "step6": {
+        "title": "Play music",
+        "description": "Once your track is selected, click here to play the music and let your players answer."
+      },
+      "step7": {
+        "title": "List of answers",
+        "description": "When players answer, their status is updated in real time."
+      },
+      "step8": {
+        "title": "List of answers",
+        "description": "Once all players have answered, the timer automatically stops and their answers appear here. You can then award or remove points."
+      },
+      "step9": {
+        "title": "Correction",
+        "description": "To speed up the correction, you can use this button to automatically grade players' answers."
+      },
+      "step10": {
+        "title": "List of answers",
+        "description": "Auto-correction has been applied. You see here that Alice found the track."
+      },
+      "step11": {
+        "title": "Reveal correction",
+        "description": "Once points are awarded or removed, click here to submit the correction and reveal the results to players."
+      },
+      "step12": {
+        "title": "Updated leaderboard",
+        "description": "Once the results are revealed, the leaderboard is updated. You can see here the current player rankings, the movements in the leaderboard, and the points obtained during the round.\n\nIn the example above, Alice found the track, earned 1 point, and thus overtook Bob."
+      },
+      "step13": {
+        "title": "Next round",
+        "description": "Once your players have acknowledged the results, click here to move on to the next round."
+      },
+      "step14": {
+        "title": "Stop the game",
+        "description": "Once your game is finished, you can stop it here. This will display the final leaderboard and the results of the game to the players."
+      },
+      "step15": {
+        "title": "Confirm game stop",
+        "description": "Click here to confirm stopping the game."
+      },
+      "step16": {
+        "title": "End of tutorial",
+        "description": "That's all for now! You can delete the game."
+      }
+    }
   }
 }

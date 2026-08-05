@@ -20,10 +20,12 @@ import { lastGameId } from '../composables/state';
 import { useAuth } from '../composables/useAuth';
 import { useGameSession } from '../composables/useGameSession';
 import { animatorService } from '../services/animatorService';
+import { useTutorial } from '../composables/useTutorial';
 
 const router = useRouter();
 const { logout } = useAuth();
 const { resumeGame } = useGameSession();
+const { resumeHomeSequence } = useTutorial();
 
 const verifiedLastGameId = ref<string | null>(null);
 
@@ -41,6 +43,8 @@ onMounted(async () => {
       console.warn("Impossible de vérifier l'existence de la partie", e);
     }
   }
+  
+  resumeHomeSequence();
 });
 
 const handleResumeGame = async () => {

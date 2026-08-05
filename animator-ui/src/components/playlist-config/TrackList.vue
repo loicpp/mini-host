@@ -13,7 +13,7 @@
         </div>
       </div>
       
-      <div class="flex flex-col gap-3">
+      <div id="tracks-list" class="flex flex-col gap-3">
         <div v-for="(track, index) in tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
           <div class="flex flex-col min-w-0 pr-4 flex-1">
             <div v-if="editingTrackIndex === index" class="flex items-center gap-2 w-full bg-slate-50 h-[60px] px-2 rounded-xl border border-slate-200 relative">

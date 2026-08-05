@@ -26,7 +26,7 @@ export function useGamePlayers() {
       result[id] = {
         ...p,
         currentGuess: guess,
-        hasAnswered: !!guess && (!!guess.title || !!guess.artist),
+        hasAnswered: !!guess && (!!guess.title || !!guess.artist || (typeof guess === 'string' && guess.length > 0)),
         score: (p.score || 0) + (pendingPoints.value[id] || 0),
         pendingPoints: pendingPoints.value[id] || 0
       };

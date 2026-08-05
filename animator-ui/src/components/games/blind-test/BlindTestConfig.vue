@@ -8,7 +8,7 @@
       <h2 class="text-3xl font-black text-primary text-center mb-2">{{ $t('create_game.title') }}</h2>
       <p class="text-muted-foreground text-center mb-8">{{ $t('create_game.subtitle') }}</p>
       
-      <div class="bg-muted/50 p-5 rounded-2xl border border-[rgba(0,0,0,0.05)] mb-8">
+      <div id="quick-modes" class="bg-muted/50 p-5 rounded-2xl border border-[rgba(0,0,0,0.05)] mb-8">
         <p class="font-bold text-primary mb-4 text-sm uppercase tracking-wider">{{ $t('create_game.quick_modes') }}</p>
         
         <div class="flex items-center gap-3 mb-3">
@@ -33,72 +33,76 @@
       </div>
       
       <div class="flex flex-col gap-6">
-        <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center w-full">
-            <span class="flex items-center">
-              {{ $t('create_game.block_duration') }} 
-              <div class="group relative flex items-center ml-2">
-                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
-                  {{ $t('create_game.block_duration_tooltip') }}
-                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+        <div id="time-sliders" class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label class="font-bold text-primary flex justify-between items-center w-full">
+              <span class="flex items-center">
+                {{ $t('create_game.block_duration') }} 
+                <div class="group relative flex items-center ml-2">
+                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                    {{ $t('create_game.block_duration_tooltip') }}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </div>
+              </span>
+              <div class="flex items-center text-[#FFBA49]">
+                <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
               </div>
-            </span>
-            <div class="flex items-center text-[#FFBA49]">
-              <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
-            </div>
-          </label>
-          <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
-        </div>
+            </label>
+            <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
+          </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center w-full">
-            <span class="flex items-center">
-              {{ $t('create_game.music_duration') }} 
-              <div class="group relative flex items-center ml-2">
-                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
-                  {{ $t('create_game.music_duration_tooltip') }}
-                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+          <div class="flex flex-col gap-2">
+            <label class="font-bold text-primary flex justify-between items-center w-full">
+              <span class="flex items-center">
+                {{ $t('create_game.music_duration') }} 
+                <div class="group relative flex items-center ml-2">
+                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                    {{ $t('create_game.music_duration_tooltip') }}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </div>
+              </span>
+              <div class="flex items-center text-[#FFBA49]">
+                <input type="number" v-model.number="settings.musicDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('musicDuration', 1, 100)" />s
               </div>
-            </span>
-            <div class="flex items-center text-[#FFBA49]">
-              <input type="number" v-model.number="settings.musicDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('musicDuration', 1, 100)" />s
-            </div>
-          </label>
-          <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
-        </div>
+            </label>
+            <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
+          </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary flex justify-between items-center w-full">
-            <span class="flex items-center">
-              {{ $t('create_game.total_duration') }} 
-              <div class="group relative flex items-center ml-2">
-                <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
-                  {{ $t('create_game.total_duration_tooltip') }}
-                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+          <div class="flex flex-col gap-2">
+            <label class="font-bold text-primary flex justify-between items-center w-full">
+              <span class="flex items-center">
+                {{ $t('create_game.total_duration') }} 
+                <div class="group relative flex items-center ml-2">
+                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                    {{ $t('create_game.total_duration_tooltip') }}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </div>
+              </span>
+              <div class="flex items-center text-[#FFBA49]">
+                <input type="number" v-model.number="settings.duration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('duration', 1, 100)" />s
               </div>
-            </span>
-            <div class="flex items-center text-[#FFBA49]">
-              <input type="number" v-model.number="settings.duration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('duration', 1, 100)" />s
-            </div>
-          </label>
-          <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
+            </label>
+            <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
+          </div>
         </div>
 
         <div class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.game_mode') }}</label>
-          <CustomSelect 
-            v-model="settings.mode"
-            :options="modeOptions"
-          />
+          <div id="game-type-selector">
+            <CustomSelect 
+              v-model="settings.mode"
+              :options="modeOptions"
+            />
+          </div>
         </div>
 
-        <div class="flex flex-col gap-2" v-if="settings.mode === 'text'">
+        <div id="allow-suggestions" class="flex flex-col gap-2" v-if="settings.mode === 'text'">
           <div 
             class="flex items-center justify-between p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:border-[#FFBA49] transition-all cursor-pointer group"
             @click="settings.allowSuggestions = !settings.allowSuggestions"
@@ -118,7 +122,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2">
+        <div id="select-playlist" class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
           <div v-if="playlists.length > 0">
             <CustomSelect 
@@ -133,9 +137,11 @@
           </div>
         </div>
         
-        <Btn variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="playlists.length === 0">
-          {{ $t('create_game.start_button') }}
-        </Btn>
+        <div>
+          <Btn id="start-btn" variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="playlists.length === 0">
+            {{ $t('create_game.start_button') }}
+          </Btn>
+        </div>
       </div>
     </div>
   </div>
@@ -148,6 +154,9 @@ import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
 import Slider from '../../ui/Slider.vue';
+import { useTutorial } from '../../../composables/useTutorial.ts';
+
+const { playInitBlindTestSequence } = useTutorial();
 
 const { t } = useI18n();
 
@@ -200,6 +209,7 @@ onMounted(async () => {
   } catch(e) {
     console.warn("Could not load playlists for game creation", e);
   }
+  playInitBlindTestSequence();
 });
 
 const preventNonNumeric = (e: KeyboardEvent) => {

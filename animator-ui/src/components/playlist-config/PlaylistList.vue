@@ -2,6 +2,7 @@
   <div class="flex flex-col">
     <div class="flex gap-4 mb-8">
       <TextInput 
+        id="input-new-playlist"
         v-model="newPlaylistName" 
         :placeholder="$t('playlists.new_placeholder')" 
         wrapperClass="flex-1" 
@@ -10,7 +11,7 @@
         clearable 
         :maxLength="50" 
       />
-      <div class="w-48 shrink-0">
+      <div id="div-playlist-type" class="w-48 shrink-0">
         <CustomSelect 
           v-model="newPlaylistType" 
           :options="[
@@ -19,10 +20,10 @@
           ]"
         />
       </div>
-      <Btn variant="primary" @click="handleCreate" :disabled="!newPlaylistName.trim()">
+      <Btn id="btn-create-playlist" variant="primary" @click="handleCreate" :disabled="!newPlaylistName.trim()">
         <Plus class="w-4 h-4 mr-2" /> {{ $t('playlists.create') }}
       </Btn>
-      <Btn variant="ghost-yellow" @click="$emit('open-generator')">
+      <Btn id="btn-generate-playlist" variant="ghost-yellow" @click="$emit('open-generator')">
         <Wand2 class="w-4 h-4 mr-2" /> {{ $t('playlists.generate') }}
       </Btn>
     </div>
@@ -31,7 +32,7 @@
       {{ $t('playlists.empty') }}
     </div>
     
-    <div v-else class="flex flex-col gap-3">
+    <div id="div-playlists" v-else class="flex flex-col gap-3">
       <div v-for="pl in playlists" :key="pl.id" class="flex items-center justify-between p-4 bg-muted/50 border border-[rgba(0,0,0,0.05)] rounded-2xl hover:bg-muted transition-colors">
         <div>
           <h4 class="font-bold text-primary text-lg m-0 flex items-center gap-2">
@@ -43,7 +44,7 @@
           <p class="text-muted-foreground text-sm m-0">{{ pl.tracks.length }} {{ $t('playlists.tracks') }}</p>
         </div>
         <div class="flex gap-2">
-          <Btn variant="ghost-yellow" size="sm" @click="$emit('edit', pl)">
+          <Btn class="btn-edit-playlists" variant="ghost-yellow" size="sm" @click="$emit('edit', pl)">
             <Edit3 class="w-4 h-4 mr-2" /> {{ $t('playlists.edit') }}
           </Btn>
           <button class="w-9 h-9 flex items-center justify-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors" @click="$emit('delete', pl.id)" :title="$t('playlists.delete')">
@@ -77,8 +78,13 @@ const emit = defineEmits<{
 const newPlaylistName = ref('');
 const newPlaylistType = ref<'soundcloud' | 'local'>('soundcloud');
 
+import { useTutorial } from '../../composables/useTutorial';
+
+const { advanceTutorialStep } = useTutorial();
+
 const handleCreate = () => {
   emit('create', newPlaylistName.value, newPlaylistType.value);
   newPlaylistName.value = '';
+  advanceTutorialStep();
 };
 </script>

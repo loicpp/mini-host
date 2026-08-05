@@ -8,8 +8,9 @@
       <h2 class="text-4xl font-black text-primary text-center mb-2">{{ $t('game_selector.title') }}</h2>
       <p class="text-muted-foreground text-center mb-12">{{ $t('game_selector.subtitle') }}</p>
       
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div id="game-type-selector" class="grid grid-cols-2 md:grid-cols-4 gap-6">
         <SelectionCard
+          id="blind-test-game"
           :title="$t('game_selector.blind_test')"
           :description="$t('game_selector.blind_test_desc')"
           themeColor="#FFBA49"

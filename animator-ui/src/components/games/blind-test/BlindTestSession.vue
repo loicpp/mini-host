@@ -16,52 +16,54 @@
       @toggle-projector="toggleProjector"
       @leave-game="handleLeaveGame"
       @configure-playlists="handleConfigurePlaylists"
-      @play="playMusic"
+      @play="handlePlayMusic"
       @stop="stopMusic"
-      @reveal="revealResults"
-      @next-round="nextRound"
+      @reveal="handleRevealResults"
+      @next-round="handleNextRound"
       @resume-music="resumeMusic"
       @correct-buzzer="correctBuzzer"
-      @auto-correct="autoCorrect"
+      @auto-correct="handleAutoCorrect"
     />
 
     <main class="flex-1 overflow-y-auto relative p-8">
       <div v-if="gameId" class="flex flex-col gap-6">
         <div class="flex items-center justify-between mb-2 pb-4 border-b border-[rgba(0,0,0,0.05)]">
-          <div class="flex items-center gap-3">
+          <div id="game-status" class="flex items-center gap-3">
             <Badge :color="status === 'waiting' ? 'gray' : status === 'playing' ? 'blue' : status === 'reviewing' ? 'green' : status === 'results' ? 'pink' : 'gray'" class="px-3 py-1 text-xs uppercase tracking-wider">{{ statusDisplay }}</Badge>
           </div>
           <div class="ml-auto flex items-center gap-3">
-            <button @click="isPlayersModalOpen = true" class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold text-primary">
+            <button id="player-list" @click="isPlayersModalOpen = true" class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold text-primary">
               <Users class="w-5 h-5" /> 
               <span>{{ Object.keys(displayedPlayers).length }} {{ $t('control_panel.players') }}</span>
               <span class="w-2 h-2 rounded-full bg-emerald-400 ml-1"></span>
             </button>
-            <Btn variant="ghost-red" @click="endGame" v-if="status !== 'finished'">
+            <Btn id="stop-btn" variant="ghost-red" @click="handleEndGame" v-if="status !== 'finished'">
               <Square class="w-4 h-4 mr-2" /> {{ $t('control_panel.stop') }}
             </Btn>
           </div>
         </div>
 
         <LocalTracksView 
+          id="track-selection-panel"
           v-if="status === 'waiting' && (currentSource === 'local' || (currentSource === 'soundcloud' && localTracks.length > 0))"
           :localTracks="localTracks"
           :selectedTrack="selectedTrack"
           :currentSource="currentSource"
           :playedTracks="playedTracks"
-          @select-track="selectTrack"
+          @select-track="handleSelectTrack"
         />
 
         <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-6 rounded-2xl flex flex-wrap items-center justify-center gap-6 mb-4 shadow-sm">
           <h3 class="text-xl font-bold text-blue-700 m-0 flex items-center gap-2">
             🎵 {{ $t('control_panel.expected') }} <span class="px-3 py-1 bg-white rounded-lg border border-blue-200 shadow-sm ml-2">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
           </h3>
-          <Btn v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md" @click="autoCorrect">
+          <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md" @click="handleAutoCorrect">
             <Wand2 class="w-4 h-4 mr-2" /> {{ $t('control_panel.auto_correct') }}
           </Btn>
         </div>
 
         <PlayersGrid 
+          id="player-grid"
           v-if="status === 'reviewing'"
           :players="displayedPlayers"
           :gameMode="gameSettings.mode"
@@ -102,7 +104,7 @@
             <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
               <Users class="w-5 h-5 text-muted-foreground" /> {{ $t('control_panel.players_status') }}
             </h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div id="player-grid-playing" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               <div v-for="player in displayedPlayers" :key="player.id" 
                    :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors', 
                             player.blockedTurns && player.blockedTurns > 0 ? 'bg-red-50 border-red-200' :
@@ -130,7 +132,7 @@
               <Trophy class="w-5 h-5 text-yellow-500" /> {{ $t('control_panel.round_results') }}
             </h3>
             
-            <div class="grid gap-3">
+            <div id="player-rank" class="grid gap-3">
               <div v-for="player in playersRoundResults" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]">
                 <div class="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm font-bold text-gray-700 border border-gray-200">
                   {{ player.currentRank }}
@@ -176,7 +178,7 @@
               <Btn variant="gray" className="w-full font-semibold" @click="handleLeaveGame">
                 <ChevronLeft class="w-4 h-4 mr-2" /> {{ $t('control_panel.back_to_menu') }}
               </Btn>
-              <Btn variant="danger" className="w-full font-semibold" @click="handleDeleteAndLeaveGame">
+              <Btn id="delete-game-btn" variant="danger" className="w-full font-semibold" @click="handleDeleteAndLeaveGame">
                 <Trash2 class="w-4 h-4 mr-2" /> {{ $t('control_panel.delete_game') }}
               </Btn>
             </div>
@@ -315,6 +317,8 @@ import {
 import { useGameSession } from '../../../composables/useGameSession';
 import { useGamePlayers } from '../../../composables/useGamePlayers';
 import { useGameMusic } from '../../../composables/useGameMusic';
+import { useTutorial } from '../../../composables/useTutorial';
+import { onMounted, nextTick } from 'vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -325,6 +329,54 @@ const {
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
+const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched, advanceTutorialStep } = useTutorial();
+
+const handleSelectTrack = async (track: any) => {
+  selectTrack(track);
+  await nextTick();
+  advanceToTrackSelected();
+};
+
+const handlePlayMusic = async () => {
+  playMusic();
+  await nextTick();
+  advanceToMusicLaunched();
+};
+
+const handleAutoCorrect = () => {
+  autoCorrect();
+  advanceTutorialStep();
+};
+
+const handleRevealResults = async () => {
+  await revealResults();
+  setTimeout(() => {
+    advanceTutorialStep();
+  }, 500);
+};
+
+const handleNextRound = () => {
+  nextRound();
+  advanceTutorialStep();
+};
+
+const handleEndGame = async () => {
+  setTimeout(() => {
+    advanceTutorialStep();
+  }, 100);
+  
+  await endGame();
+  
+  if (status.value === 'finished') {
+    setTimeout(() => {
+      advanceTutorialStep();
+    }, 100);
+  }
+};
+
+onMounted(async () => {
+  playGameSessionSequence();
+});
 
 const isPlayersModalOpen = ref(false);
 const isPlayerActionsModalOpen = ref(false);

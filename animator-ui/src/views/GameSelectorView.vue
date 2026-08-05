@@ -7,6 +7,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import GameSelectorScreen from '../components/control-panel/GameSelectorScreen.vue';
+import { useTutorial } from '../composables/useTutorial.ts';
+import { onMounted } from 'vue';
+const { playCreateGameSequence } = useTutorial();
+
+onMounted(() => {
+  playCreateGameSequence();
+});
 
 const router = useRouter();
 

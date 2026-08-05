@@ -1,6 +1,6 @@
 <template>
   <aside class="w-[300px] bg-white text-primary p-6 flex flex-col border-r border-[rgba(0,0,0,0.05)] h-full shadow-sm">
-    <button class="flex items-center gap-2 text-muted-foreground hover:text-[#f1416c] font-bold text-sm mb-6 transition-colors self-start" @click="$emit('leave-game')">
+    <button id="btn-quit-game" class="flex items-center gap-2 text-muted-foreground hover:text-[#f1416c] font-bold text-sm mb-6 transition-colors self-start" @click="$emit('leave-game')">
       <ChevronLeft class="w-4 h-4" /> {{ $t('sidebar.quit') }}
     </button>
     
@@ -57,7 +57,7 @@
 
     <div class="h-[120px] flex flex-col justify-center shrink-0 w-full">
       <div class="flex flex-col gap-4 w-full" v-if="status === 'waiting'">
-        <Btn variant="blue" className="w-full font-bold" @click="$emit('play')" :disabled="!selectedTrack">
+        <Btn id="music-control-btn" variant="blue" className="w-full font-bold" @click="$emit('play')" :disabled="!selectedTrack">
           <Play class="w-5 h-5 mr-2" /> {{ $t('sidebar.play_music') }}
         </Btn>
       </div>
@@ -78,14 +78,14 @@
           </Btn>
         </template>
         <template v-else>
-          <Btn variant="pink" className="w-full font-bold" @click="$emit('reveal')">
+          <Btn id="submit-correction-btn" variant="pink" className="w-full font-bold" @click="$emit('reveal')">
             <Eye class="w-4 h-4 mr-2" /> {{ gameMode === 'buzzer' ? $t('sidebar.nobody_found') : $t('sidebar.reveal_results') }}
           </Btn>
         </template>
       </div>
       
       <div class="flex flex-col gap-4 w-full" v-if="status === 'results'">
-        <Btn variant="gray" className="w-full font-bold" @click="$emit('next-round')">
+        <Btn id="next-round-btn" variant="gray" className="w-full font-bold" @click="$emit('next-round')">
           <ChevronRight class="w-5 h-5 mr-2" /> {{ $t('sidebar.next_round') }}
         </Btn>
       </div>
@@ -98,7 +98,7 @@
     </div>
 
     <div class="mt-4 pt-4 border-t border-[rgba(0,0,0,0.05)] shrink-0">
-      <Btn variant="secondary" className="w-full font-bold bg-[#fff6e0] text-[#3F4739] hover:bg-[#ffe8a0]" @click="handleToggleProjector()">
+      <Btn id="projector-btn" variant="secondary" className="w-full font-bold bg-[#fff6e0] text-[#3F4739] hover:bg-[#ffe8a0]" @click="handleToggleProjector()">
         <Monitor class="w-4 h-4 mr-2" /> {{ isProjectorOpen ? $t('sidebar.close_projector') : $t('sidebar.open_projector') }}
       </Btn>
     </div>

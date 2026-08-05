@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { itunesService } from '../services/itunesService';
+import { isTutorialActive } from './useTutorial';
 
 export function useTrackSearch() {
   const searchQuery = ref('');
@@ -37,6 +38,7 @@ export function useTrackSearch() {
   };
 
   const handleSearchBlur = () => {
+    if (isTutorialActive.value) return;
     setTimeout(() => {
       suggestions.value = [];
     }, 200);

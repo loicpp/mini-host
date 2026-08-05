@@ -1,5 +1,5 @@
 <template>
-  <div :class="playlistType === 'local' ? 'bg-amber-50/50 border-amber-100' : 'bg-blue-50/50 border-blue-100'" class="border p-5 rounded-2xl mb-8">
+  <div id="track-name-input" :class="playlistType === 'local' ? 'bg-amber-50/50 border-amber-100' : 'bg-blue-50/50 border-blue-100'" class="border p-5 rounded-2xl mb-8">
     <div class="flex justify-between items-center mb-4">
       <h4 v-if="playlistType === 'local'" class="font-bold text-amber-800 flex items-center gap-2 m-0"><FolderOpen class="w-4 h-4" /> {{ $t('playlists.add_local') }}</h4>
       <h4 v-else class="font-bold text-blue-800 flex items-center gap-2 m-0"><PlusCircle class="w-4 h-4" /> {{ $t('playlists.add_sc') }}</h4>
@@ -20,7 +20,7 @@
       />
       <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-blue-200 border-t-transparent rounded-full animate-spin"></div>
       
-      <ul v-if="suggestions.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50">
+      <ul id="track-suggestions-list" v-if="suggestions.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50">
           <li 
             v-for="(item, index) in suggestions" 
             :key="index"
@@ -51,7 +51,7 @@
           <div v-if="!isEditingTrack" class="flex flex-col flex-1 min-w-0 mr-4">
               <strong class="flex items-center gap-2" :class="playlistType === 'local' ? 'text-amber-900' : 'text-blue-900'">
                   <span class="truncate">{{ newTrack.title }}</span>
-                  <span v-if="newTrack.isCertified" :title="$t('playlists.certified')" class="flex shrink-0">
+                  <span id="track-certification" v-if="newTrack.isCertified" :title="$t('playlists.certified')" class="flex shrink-0">
                     <BadgeCheck class="w-4 h-4 text-blue-500 fill-blue-50" />
                   </span>
                   <span v-else :title="$t('playlists.not_certified')" class="flex shrink-0">
@@ -110,12 +110,12 @@
       </div>
       
       <div class="flex gap-4" v-if="playlistType === 'soundcloud'">
-        <TextInput :modelValue="newTrack.url" @input="updateUrl" :placeholder="$t('playlists.sc_url')" inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground" focusClass="focus:ring-2 focus:ring-blue-400" wrapperClass="flex-2" clearable @clear="updateUrl({ target: { value: '' } } as unknown as Event)" />
-        <Btn variant="primary" @click="$emit('add-sc-track')" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
+        <TextInput id="soundcloud-track-url" :modelValue="newTrack.url" @input="updateUrl" :placeholder="$t('playlists.sc_url')" inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground" focusClass="focus:ring-2 focus:ring-blue-400" wrapperClass="flex-2" clearable @clear="updateUrl({ target: { value: '' } } as unknown as Event)" />
+        <Btn id="soundcloud-add-track-btn" variant="primary" @click="$emit('add-sc-track')" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
       </div>
       
       <div class="flex justify-end gap-4" v-else>
-        <Btn variant="primary" @click="$emit('confirm-local')">
+        <Btn id="add-track-btn" variant="primary" @click="$emit('confirm-local')">
           <Plus class="w-4 h-4 mr-2" /> 
           {{ $t('playlists.add') }}
         </Btn>
@@ -130,13 +130,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 import { PlusCircle, FolderOpen, FileAudio, FolderPlus, BadgeCheck, XCircle, X, Edit3, Plus } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import TextInput from '../ui/TextInput.vue';
 import { Track } from '../../types/playlist';
 import { useTrackSearch } from '../../composables/useTrackSearch';
 import { useTrackCertifier } from '../../composables/useTrackCertifier';
+import { useTutorial } from '../../composables/useTutorial';
 
 const props = defineProps<{
   playlistType?: 'soundcloud' | 'local';
@@ -156,6 +157,17 @@ const emit = defineEmits<{
 
 const { searchQuery, suggestions, isSearching, handleSearch, handleSearchBlur, clearSearch } = useTrackSearch();
 const { autoCertifyTrack } = useTrackCertifier();
+const { isTutorialActive, advanceToSuggestions, advanceToCertification } = useTutorial();
+
+const tutorialAdvancedToSuggestions = ref(false);
+watch(suggestions, (newVal) => {
+  if (newVal.length > 0 && isTutorialActive.value && !tutorialAdvancedToSuggestions.value) {
+    tutorialAdvancedToSuggestions.value = true;
+    nextTick(() => {
+      setTimeout(() => advanceToSuggestions(), 100);
+    });
+  }
+});
 
 const isEditingTrack = ref(false);
 const editInput = ref<any>(null);
@@ -192,6 +204,12 @@ const selectSuggestion = async (item: {title: string, artist: string, url?: stri
   
   emit('update:newTrack', updatedTrack);
   clearSearch();
+  
+  if (isTutorialActive.value) {
+    nextTick(() => {
+      setTimeout(() => advanceToCertification(), 100);
+    });
+  }
 };
 
 const startEdit = async () => {

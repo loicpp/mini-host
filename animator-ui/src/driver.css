@@ -1,0 +1,116 @@
+/* Driver.js Custom Theme to match MiniHost */
+.driver-popover {
+  background-color: var(--card) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid var(--border) !important;
+  font-family: var(--font-sans) !important;
+  color: var(--card-foreground) !important;
+  padding: 1.25rem !important;
+  max-width: 400px !important; /* Agrandit la modale pour que le contenu et les boutons rentrent */
+  min-width: 300px !important;
+}
+
+.driver-popover-title {
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+  margin-bottom: 0.5rem !important;
+  color: var(--card-foreground) !important;
+  padding-right: 20px !important; /* Pour ne pas chevaucher le bouton fermer */
+}
+
+.driver-popover-description {
+  color: var(--muted-foreground) !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+.driver-popover-footer {
+  margin-top: 1.25rem !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Cibler uniquement les boutons de navigation, pas le bouton de fermeture */
+.driver-popover-footer-btn {
+  display: inline-flex;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 500 !important;
+  border-radius: 0.75rem !important;
+  transition-property: all !important;
+  transition-duration: 150ms !important;
+  user-select: none !important;
+  cursor: pointer !important;
+  padding: 0.5rem 0.875rem !important; /* Un peu moins large */
+  font-size: 0.875rem !important;
+  text-shadow: none !important;
+  border: none !important;
+  margin: 0 4px !important;
+}
+
+.driver-popover-next-btn {
+  background-color: #FFBA49 !important;
+  color: #3F4739 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.driver-popover-next-btn:hover {
+  background-color: #f0aa30 !important;
+}
+
+.driver-popover-next-btn:active {
+  transform: scale(0.98) !important;
+}
+
+.driver-popover-prev-btn {
+  background-color: #FFD166 !important;
+  color: #3F4739 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.driver-popover-prev-btn:hover {
+  background-color: #FFBA49 !important;
+}
+
+.driver-popover-prev-btn:active {
+  transform: scale(0.98) !important;
+}
+
+/* Bouton Skip personnalisé */
+.driver-popover-footer-btn:not(.driver-popover-next-btn):not(.driver-popover-prev-btn) {
+  background-color: transparent !important;
+  color: var(--muted-foreground) !important;
+  box-shadow: none !important;
+}
+
+.driver-popover-footer-btn:not(.driver-popover-next-btn):not(.driver-popover-prev-btn):hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: var(--foreground) !important;
+}
+
+.driver-popover-footer-btn:not(.driver-popover-next-btn):not(.driver-popover-prev-btn):active {
+  transform: scale(0.98) !important;
+}
+
+.driver-popover-close-btn {
+  color: var(--muted-foreground) !important;
+  transition: color 0.15s !important;
+  font-size: 1.25rem !important;
+}
+
+.driver-popover-close-btn:hover {
+  color: var(--foreground) !important;
+}
+
+.driver-popover-progress-text {
+  font-size: 0.875rem !important;
+  color: var(--muted-foreground) !important;
+  font-weight: 500 !important;
+  margin-right: auto !important;
+}
+
+.driver-popover-arrow {
+  display: none !important;
+}
