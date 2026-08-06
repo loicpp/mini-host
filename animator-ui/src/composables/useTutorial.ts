@@ -19,6 +19,7 @@ export function useTutorial() {
 
   const startTutorial = () => {
     isTutorialActive.value = true;
+    playlistCreated = false;
     playHomeSequence();
   };
 
@@ -31,9 +32,11 @@ export function useTutorial() {
           driverObj.destroy();
         }
         driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
           showProgress: true,
           steps: [
             {
@@ -52,6 +55,7 @@ export function useTutorial() {
 
                   skipPlaylistCreation.addEventListener("click", () => {
                     driverObj.destroy();
+                    playlistCreated = true;
                     resumeHomeSequence();
                   });
                 },
@@ -114,7 +118,8 @@ export function useTutorial() {
                 description: t('tutorial.homeSequence.step7.description'),
                 side: 'left',
                 align: 'start',
-                showButtons: []
+                showButtons: [],
+              onNextClick: () => {}
               }
             },
           ]
@@ -133,9 +138,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         steps: [
           {
             element: '#setup-type-selector',
@@ -144,7 +151,8 @@ export function useTutorial() {
               description: t('tutorial.setupSequence.step1.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           }
         ]
@@ -160,9 +168,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         showProgress: true,
         steps: [
           {
@@ -171,7 +181,15 @@ export function useTutorial() {
               title: t('tutorial.playlistsSequence.step1.title'),
               description: t('tutorial.playlistsSequence.step1.description'),
               side: 'bottom',
-              align: 'start'
+              align: 'start',
+              onNextClick: () => {
+                const input = document.querySelector('#input-new-playlist') as HTMLInputElement;
+                if (input && !input.value.trim()) {
+                  input.value = "Playlist 1";
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                if (driverObj) driverObj.moveNext();
+              }
             }
           },
           {
@@ -190,7 +208,8 @@ export function useTutorial() {
               description: t('tutorial.playlistsSequence.step3.description'),
               side: 'bottom',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -220,7 +239,8 @@ export function useTutorial() {
               description: t('tutorial.playlistsSequence.step6.description'),
               side: 'left',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           }
         ]
@@ -307,9 +327,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         showProgress: true,
         steps: [
           {
@@ -319,7 +341,8 @@ export function useTutorial() {
               description: t('tutorial.playlistEditorSequence.step1.description'),
               side: 'bottom',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -329,7 +352,8 @@ export function useTutorial() {
               description: t('tutorial.playlistEditorSequence.step2.description'),
               side: 'bottom',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -358,7 +382,8 @@ export function useTutorial() {
               description: t('tutorial.playlistEditorSequence.step5.description'),
               side: 'bottom',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -391,15 +416,17 @@ export function useTutorial() {
 
   const resumeHomeSequence = () => {
     console.log(playlistCreated);
-    if (!isTutorialActive.value && !playlistCreated) return;
+    if (!isTutorialActive.value || !playlistCreated) return;
     setTimeout(() => {
       if (driverObj) {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         steps: [
           {
             element: '#btn-create-game',
@@ -408,7 +435,8 @@ export function useTutorial() {
               description: t('tutorial.resumeHomeSequence.step1.description'),
               side: 'left',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           }
         ]
@@ -424,9 +452,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         steps: [
           {
             element: '#game-type-selector',
@@ -435,7 +465,8 @@ export function useTutorial() {
               description: t('tutorial.createGameSequence.step1.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           }
         ]
@@ -451,9 +482,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         showProgress: true,
         steps: [
           {
@@ -526,7 +559,8 @@ export function useTutorial() {
               description: t('tutorial.initBlindTestSequence.step6.description'),
               side: 'bottom',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           }
         ]
@@ -562,9 +596,11 @@ export function useTutorial() {
         driverObj.destroy();
       }
       driverObj = driver({
+          allowClose: false,
+          showButtons: ['next'],
           nextBtnText: t('tutorial.buttons.next'),
-          prevBtnText: t('tutorial.buttons.prev'),
           doneBtnText: t('tutorial.buttons.done'),
+          onPrevClick: () => {},
         showProgress: true,
         steps: [
           {
@@ -610,7 +646,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step5.description'),
               side: 'left',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -620,7 +657,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step6.description'),
               side: 'left',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -631,7 +669,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step7.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -651,7 +690,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step9.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -671,7 +711,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step11.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -690,7 +731,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step13.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -700,7 +742,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step14.description'),
               side: 'top',
               align: 'start',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {
@@ -710,7 +753,8 @@ export function useTutorial() {
               description: t('tutorial.gameSessionSequence.step15.description'),
               side: 'right',
               align: 'end',
-              showButtons: []
+              showButtons: [],
+              onNextClick: () => {}
             }
           },
           {

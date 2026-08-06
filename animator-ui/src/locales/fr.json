@@ -349,7 +349,7 @@
     },
     "homeSequence": {
       "step1": {
-        "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie."
+        "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie. Vous avez la possibilité d'avancer dans le tutoriel à l'aide des flèches de votre clavier ou en cliquant sur les boutons.<br/><br/>Vous pouvez également quitter le tutoriel à tout moment en cliquant sur le bouton \"Quitter le tutoriel\".<br/><br/>Si vous avez déjà créer une playlist, vous pouvez passer directement à la création de votre partie en cliquant sur \"Passer\"."
       },
       "step2": {
         "title": "Accueil",
@@ -453,7 +453,7 @@
     "initBlindTestSequence": {
       "step1": {
         "title": "Modes rapides",
-        "description": "Nous arrivons sur la configuration de la partie. Il est possible ici de modifier les paramètres par défaut de la partie. Les boutons ici présents vous permettent de choisir un mode rapide pour votre partie."
+        "description": "Nous arrivons sur la configuration de la partie. Il est possible ici de modifier les paramètres par défaut de la partie. Les boutons ici présents vous permettent de choisir un mode rapide pour votre partie.<br/><br/>Si vous savez déjà comment configurer votre partie, vous pouvez passer directement à l'étape suivante en cliquant sur le bouton \"Passer\"."
       },
       "step2": {
         "title": "Temps",

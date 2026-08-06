@@ -54,7 +54,7 @@
                   <span id="track-certification" v-if="newTrack.isCertified" :title="$t('playlists.certified')" class="flex shrink-0">
                     <BadgeCheck class="w-4 h-4 text-blue-500 fill-blue-50" />
                   </span>
-                  <span v-else :title="$t('playlists.not_certified')" class="flex shrink-0">
+                  <span id="track-certification" v-else :title="$t('playlists.not_certified')" class="flex shrink-0">
                     <XCircle class="w-4 h-4 text-red-500 fill-red-50" />
                   </span>
               </strong>
