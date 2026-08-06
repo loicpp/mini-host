@@ -154,7 +154,8 @@
     "no_answer": "Aucune réponse",
     "no_buzzer": "Aucun joueur n'a buzzé pour le moment.",
     "cancel_points": "Annuler",
-    "submitted_at": "Saisie à {time} secondes"
+    "submitted_at": "Saisie à {time} secondes",
+    "sort_uncorrected": "Prioriser les joueurs à corriger"
   },
   "diagnostics": {
     "title": "Diagnostics du Système",

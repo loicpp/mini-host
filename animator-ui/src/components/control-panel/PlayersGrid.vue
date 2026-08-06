@@ -1,7 +1,19 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-    <Card 
-      v-for="(player, id) in filteredPlayers" :key="id" 
+  <div class="w-full flex flex-col gap-4">
+    <div class="flex justify-end w-full" v-if="gameMode !== 'buzzer'">
+      <label class="flex items-center cursor-pointer gap-2 select-none group">
+        <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">{{ $t('players_grid.sort_uncorrected') }}</span>
+        <div class="relative">
+          <input type="checkbox" v-model="sortUncorrectedFirst" class="sr-only" />
+          <div :class="['block w-10 h-6 rounded-full transition-colors duration-300', sortUncorrectedFirst ? 'bg-[#FFBA49]' : 'bg-gray-200']"></div>
+          <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 shadow-sm" :class="{'translate-x-4': sortUncorrectedFirst}"></div>
+        </div>
+      </label>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+      <Card 
+        v-for="player in filteredPlayers" :key="player.id" 
       :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${
         player.pendingPoints === 1 ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
         player.pendingPoints === 0.5 ? 'border-amber-400 bg-amber-50/50 shadow-[0_0_15px_rgba(251,191,36,0.3)]' : 
@@ -26,26 +38,26 @@
       <div class="flex flex-col gap-2 mt-1" v-if="gameMode !== 'buzzer'">
         <div class="flex gap-2 justify-center">
           <button 
-            @click="$emit('award', id as string, 1)" 
+            @click="$emit('award', player.id as string, 1)" 
             :disabled="player.pendingPoints === 1"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
               player.pendingPoints === 1 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 shadow-sm'
             ]">+1</button>
           <button 
-            @click="$emit('award', id as string, 0.5)" 
+            @click="$emit('award', player.id as string, 0.5)" 
             :disabled="player.pendingPoints === 0.5"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
               player.pendingPoints === 0.5 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-[#fff6e0] text-[#d97706] hover:bg-[#fef3c7] shadow-sm'
             ]">+0.5</button>
           <button 
-            @click="$emit('award', id as string, -1)" 
+            @click="$emit('award', player.id as string, -1)" 
             :disabled="player.pendingPoints === -1"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
               player.pendingPoints === -1 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-red-100 text-red-700 hover:bg-red-200 shadow-sm'
             ]">-1</button>
         </div>
         <button 
-          @click="$emit('award', id as string, 0)" 
+          @click="$emit('award', player.id as string, 0)" 
           :class="['px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-colors text-xs w-full shadow-sm',
             (player.pendingPoints !== 0 && player.pendingPoints !== undefined) ? 'visible' : 'invisible'
           ]">
@@ -54,14 +66,15 @@
       </div>
     </Card>
     
-    <div v-if="Object.keys(filteredPlayers).length === 0 && gameMode === 'buzzer'" class="col-span-full text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium">
+    <div v-if="filteredPlayers.length === 0 && gameMode === 'buzzer'" class="col-span-full text-center p-8 bg-muted/50 rounded-2xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium">
       {{ $t('players_grid.no_buzzer') }}
     </div>
+  </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Card from '../ui/Card.vue';
 import { currentStartTime } from '../../composables/state';
 import { useI18n } from 'vue-i18n';
@@ -86,16 +99,25 @@ const formatTime = (ts: number) => {
   return '';
 };
 
+const sortUncorrectedFirst = ref(false);
+
 const filteredPlayers = computed(() => {
-  if (props.gameMode === 'buzzer') {
-    const result: Record<string, any> = {};
-    for (const id in props.players) {
-      if (props.players[id].currentGuess) {
-        result[id] = props.players[id];
-      }
+  let playerArray = [];
+  for (const [id, player] of Object.entries(props.players)) {
+    if (props.gameMode === 'buzzer' && !player.currentGuess) {
+      continue;
     }
-    return result;
+    playerArray.push({ id, ...player });
   }
-  return props.players;
+
+  if (sortUncorrectedFirst.value && props.gameMode !== 'buzzer') {
+    playerArray.sort((a, b) => {
+      const aCorrected = (a.pendingPoints !== undefined && a.pendingPoints !== 0) ? 1 : 0;
+      const bCorrected = (b.pendingPoints !== undefined && b.pendingPoints !== 0) ? 1 : 0;
+      return aCorrected - bCorrected;
+    });
+  }
+
+  return playerArray;
 });
 </script>
