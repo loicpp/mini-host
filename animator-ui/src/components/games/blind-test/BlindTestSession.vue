@@ -32,7 +32,7 @@
             <Badge :color="status === 'waiting' ? 'gray' : status === 'playing' ? 'blue' : status === 'reviewing' ? 'green' : status === 'results' ? 'pink' : 'gray'" class="px-3 py-1 text-xs uppercase tracking-wider">{{ statusDisplay }}</Badge>
           </div>
           <div class="ml-auto flex items-center gap-3">
-            <button id="player-list" @click="isPlayersModalOpen = true" class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold text-primary">
+            <button id="players-btn" @click="openPlayersModal" class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:bg-gray-100 hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold text-primary">
               <Users class="w-5 h-5" /> 
               <span>{{ Object.keys(displayedPlayers).length }} {{ $t('control_panel.players') }}</span>
               <span class="w-2 h-2 rounded-full bg-emerald-400 ml-1"></span>
@@ -188,7 +188,7 @@
 
       <!-- Players Modal -->
       <Modal v-if="isPlayersModalOpen" @close="isPlayersModalOpen = false" maxW="max-w-2xl">
-        <div class="p-6">
+        <div id="player-list" class="p-6">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 bg-[#fff6e0] rounded-xl flex items-center justify-center shadow-sm">
@@ -196,7 +196,7 @@
               </div>
               <h2 class="text-2xl font-bold text-primary">{{ $t('control_panel.manage_players') }}</h2>
             </div>
-            <button @click="isPlayersModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
+            <button id="players-modal-close-btn" @click="isPlayersModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
           </div>
           
           <div class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2">
@@ -214,7 +214,7 @@
                 <span class="font-black text-[#FFBA49] tabular-nums text-lg mr-2">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
                 
                 <button 
-                  class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200/60 disabled:hover:text-gray-600"
+                  class="player-actions-btn w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200/60 disabled:hover:text-gray-600"
                   :title="$t('control_panel.actions')"
                   @click="openPlayerActionsModal(player)"
                   :disabled="status === 'finished'"
@@ -241,7 +241,7 @@
 
       <!-- Player Actions Modal -->
       <Modal v-if="isPlayerActionsModalOpen" @close="isPlayerActionsModalOpen = false" maxW="max-w-md">
-        <div class="p-6">
+        <div id="player-actions-modal" class="p-6">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center shadow-sm">
@@ -287,7 +287,7 @@
             </div>
 
             <div class="flex justify-end mt-2 gap-3">
-              <Btn variant="gray" @click="isPlayerActionsModalOpen = false">{{ $t('app.cancel') }}</Btn>
+              <Btn id="player-actions-cancel-btn" variant="gray" @click="isPlayerActionsModalOpen = false">{{ $t('app.cancel') }}</Btn>
               <Btn variant="primary" :disabled="!hasUnsavedChanges" @click="savePlayerActions">{{ $t('settings.save') }}</Btn>
             </div>
           </div>
@@ -330,7 +330,7 @@ const {
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
-const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched, advanceTutorialStep } = useTutorial();
+const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched, advanceTutorialStep, advanceToPlayerMenu, advanceToPlayerActions } = useTutorial();
 
 const handleSelectTrack = async (track: any) => {
   selectTrack(track);
@@ -362,17 +362,8 @@ const handleNextRound = () => {
 };
 
 const handleEndGame = async () => {
-  setTimeout(() => {
-    advanceTutorialStep();
-  }, 100);
-  
+  advanceTutorialStep();
   await endGame();
-  
-  if (status.value === 'finished') {
-    setTimeout(() => {
-      advanceTutorialStep();
-    }, 100);
-  }
 };
 
 onMounted(async () => {
@@ -386,12 +377,22 @@ const tempScoreAdjustment = ref(0);
 const tempBlockedTurns = ref(0);
 const showUnblockOnly = ref(false);
 
+const openPlayersModal = () => {
+  isPlayersModalOpen.value = true;
+  setTimeout(() => {
+    advanceToPlayerMenu();
+  }, 600);
+};
+
 const openPlayerActionsModal = (player: any) => {
   selectedPlayerForActions.value = player;
   tempScoreAdjustment.value = 0;
   tempBlockedTurns.value = player.blockedTurns || 0;
   showUnblockOnly.value = !!player.blockedTurns;
   isPlayerActionsModalOpen.value = true;
+  setTimeout(() => {
+    advanceToPlayerActions();
+  }, 600);
 };
 
 const hasUnsavedChanges = computed(() => {

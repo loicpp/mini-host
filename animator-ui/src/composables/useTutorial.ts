@@ -281,7 +281,27 @@ export function useTutorial() {
 
   const advanceToTrackSelected = () => {
     if (driverObj && isTutorialActive.value) {
-      if (typeof driverObj.getActiveIndex === 'function' && driverObj.getActiveIndex() === 4) {
+      if (typeof driverObj.getActiveIndex === 'function' && driverObj.getActiveIndex() === 7) {
+        driverObj.moveNext();
+      } else if (typeof driverObj.getActiveIndex !== 'function') {
+        driverObj.moveNext();
+      }
+    }
+  };
+
+  const advanceToPlayerMenu = () => {
+    if (driverObj && isTutorialActive.value) {
+      if (typeof driverObj.getActiveIndex === 'function' && driverObj.getActiveIndex() === 3) {
+        driverObj.moveNext();
+      } else if (typeof driverObj.getActiveIndex !== 'function') {
+        driverObj.moveNext();
+      }
+    }
+  };
+
+  const advanceToPlayerActions = () => {
+    if (driverObj && isTutorialActive.value) {
+      if (typeof driverObj.getActiveIndex === 'function' && driverObj.getActiveIndex() === 5) {
         driverObj.moveNext();
       } else if (typeof driverObj.getActiveIndex !== 'function') {
         driverObj.moveNext();
@@ -630,13 +650,54 @@ export function useTutorial() {
             }
           },
           {
-            element: '#player-list',
-            disableActiveInteraction: true,
+            element: '#players-btn',
             popover: {
               title: t('tutorial.gameSessionSequence.step4.title'),
               description: t('tutorial.gameSessionSequence.step4.description'),
               side: 'right',
+              align: 'start',
+              showButtons: [],
+              onNextClick: () => {}
+            }
+          },
+          {
+            element: '#player-list',
+            disableActiveInteraction: true,
+            popover: {
+              title: t('tutorial.gameSessionSequence.player-list.title'),
+              description: t('tutorial.gameSessionSequence.player-list.description'),
+              side: 'right',
               align: 'start'
+            }
+          },
+          {
+            element: '.player-actions-btn',
+            popover: {
+              title: t('tutorial.gameSessionSequence.step4b.title'),
+              description: t('tutorial.gameSessionSequence.step4b.description'),
+              side: 'left',
+              align: 'start',
+              showButtons: [],
+              onNextClick: () => {}
+            }
+          },
+          {
+            element: '#player-actions-modal',
+            disableActiveInteraction: true,
+            popover: {
+              title: t('tutorial.gameSessionSequence.step4c.title'),
+              description: t('tutorial.gameSessionSequence.step4c.description'),
+              side: 'right',
+              align: 'start',
+              onNextClick: () => {
+                const cancelBtn = document.querySelector('#player-actions-cancel-btn') as HTMLButtonElement;
+                if (cancelBtn) cancelBtn.click();
+                setTimeout(() => {
+                  const closeBtn = document.querySelector('#players-modal-close-btn') as HTMLButtonElement;
+                  if (closeBtn) closeBtn.click();
+                  if (driverObj) driverObj.moveNext();
+                }, 300);
+              }
             }
           },
           {
@@ -746,17 +807,7 @@ export function useTutorial() {
               onNextClick: () => {}
             }
           },
-          {
-            element: '#app-dialog-confirm-btn',
-            popover: {
-              title: t('tutorial.gameSessionSequence.step15.title'),
-              description: t('tutorial.gameSessionSequence.step15.description'),
-              side: 'right',
-              align: 'end',
-              showButtons: [],
-              onNextClick: () => {}
-            }
-          },
+
           {
             popover: {
               title: t('tutorial.gameSessionSequence.step16.title'),
@@ -807,6 +858,8 @@ export function useTutorial() {
     advanceToTrackAdded,
     advanceToTrackSelected,
     advanceToMusicLaunched,
-    advanceTutorialStep
+    advanceTutorialStep,
+    advanceToPlayerMenu,
+    advanceToPlayerActions
   };
 }

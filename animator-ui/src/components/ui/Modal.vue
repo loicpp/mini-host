@@ -28,10 +28,4 @@ defineProps({
 defineEmits(['close'])
 </script>
 
-<style>
-/* Override driver.js which sets pointer-events: none on all elements when active */
-.driver-active .app-modal-override,
-.driver-active .app-modal-override * {
-  pointer-events: auto !important;
-}
-</style>
+

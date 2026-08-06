@@ -1,6 +1,6 @@
 <template>
   <Modal v-if="isOpen" @close="handleCancel" maxW="max-w-md" :customStyle="{ zIndex: 2000000000 }">
-    <div class="p-6">
+    <div class="p-6 app-dialog-content">
       <div class="flex items-start gap-4">
         <div :class="[
           'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
@@ -35,3 +35,11 @@ import { useDialog } from '../../composables/useDialog';
 
 const { isOpen, options, handleConfirm, handleCancel } = useDialog();
 </script>
+
+<style>
+/* Override driver.js to ensure the tutorial exit confirmation dialog is clickable */
+.driver-active .app-dialog-content,
+.driver-active .app-dialog-content * {
+  pointer-events: auto !important;
+}
+</style>

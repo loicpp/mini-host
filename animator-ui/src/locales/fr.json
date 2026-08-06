@@ -496,7 +496,19 @@
       },
       "step4": {
         "title": "Gestion des joueurs",
-        "description": "Vous pouvez gérer ici vos joueurs. Il est possible de bloquer, expulser ou attribuer des points bonus. Pour ce tutoriel, deux joueurs fictifs ont rejoint la partie."
+        "description": "Vous pouvez gérer ici vos joueurs. Il est possible de bloquer, expulser ou attribuer des points bonus. Pour ce tutoriel, deux joueurs fictifs ont rejoint la partie. Cliquez sur ce bouton pour ouvrir la liste des joueurs."
+      },
+      "player-list": {
+        "title": "Liste des joueurs",
+        "description": "Voici la liste des joueurs. Vous pouvez voir ici le nom de chaque joueur, son statut actuel, ainsi que ses points."
+      },
+      "step4b": {
+        "title": "Actions sur un joueur",
+        "description": "Chaque joueur possède un menu d'actions. Cliquez sur ce bouton pour voir les actions possibles pour ce joueur."
+      },
+      "step4c": {
+        "title": "Menu d'actions",
+        "description": "Ici, vous pouvez ajuster manuellement les points du joueur, ou le suspendre pour un ou plusieurs tours s'il perturbe la partie. Cliquez sur Suivant pour fermer ce menu."
       },
       "step5": {
         "title": "Sélection de la piste",
@@ -537,10 +549,6 @@
       "step14": {
         "title": "Arrêter la partie",
         "description": "Une fois votre partie terminée, vous pouvez l'arrêter ici. Cela affichera aux joueurs le classement final et les résultats de la partie."
-      },
-      "step15": {
-        "title": "Confirmer l'arrêt de la partie",
-        "description": "Cliquez ici pour confirmer l'arrêt de la partie."
       },
       "step16": {
         "title": "Fin du tutoriel",

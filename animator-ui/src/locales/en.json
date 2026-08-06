@@ -496,7 +496,19 @@
       },
       "step4": {
         "title": "Player management",
-        "description": "You can manage your players here. It is possible to block, kick, or award bonus points. For this tutorial, two fictional players have joined the game."
+        "description": "You can manage your players here. It is possible to block, kick, or award bonus points. For this tutorial, two fictional players have joined the game. Click this button to open the players list."
+      },
+      "player-list": {
+        "title": "Players list",
+        "description": "Here is the list of players. You can see their name, their status, and their points. You can also manage them by clicking on the actions button."
+      },
+      "step4b": {
+        "title": "Player actions",
+        "description": "Each player has an actions menu. Click this button to see the possible actions for this player."
+      },
+      "step4c": {
+        "title": "Actions menu",
+        "description": "Here, you can manually adjust the player's points, or suspend them for one or more turns if they disrupt the game. Click Next to close this menu."
       },
       "step5": {
         "title": "Track selection",
@@ -537,10 +549,6 @@
       "step14": {
         "title": "Stop the game",
         "description": "Once your game is finished, you can stop it here. This will display the final leaderboard and the results of the game to the players."
-      },
-      "step15": {
-        "title": "Confirm game stop",
-        "description": "Click here to confirm stopping the game."
       },
       "step16": {
         "title": "End of tutorial",
