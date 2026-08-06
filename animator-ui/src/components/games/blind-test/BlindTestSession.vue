@@ -214,9 +214,10 @@
                 <span class="font-black text-[#FFBA49] tabular-nums text-lg mr-2">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
                 
                 <button 
-                  class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                  class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200/60 disabled:hover:text-gray-600"
                   :title="$t('control_panel.actions')"
                   @click="openPlayerActionsModal(player)"
+                  :disabled="status === 'finished'"
                 >
                   <Settings class="w-4 h-4" />
                 </button>
