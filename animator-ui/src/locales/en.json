@@ -337,6 +337,10 @@
     "launch_error": {
       "title": "Launch error",
       "message": "Launch error: {err}"
+    },
+    "exit_tutorial": {
+      "title": "Exit tutorial?",
+      "message": "Are you sure you want to exit the tutorial?"
     }
   },
   "tutorial": {

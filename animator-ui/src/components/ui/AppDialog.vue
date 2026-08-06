@@ -1,5 +1,5 @@
 <template>
-  <Modal v-if="isOpen" @close="handleCancel" maxW="max-w-md">
+  <Modal v-if="isOpen" @close="handleCancel" maxW="max-w-md" :customStyle="{ zIndex: 2000000000 }">
     <div class="p-6">
       <div class="flex items-start gap-4">
         <div :class="[

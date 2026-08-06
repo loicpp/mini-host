@@ -41,13 +41,24 @@ import { onMounted, onUnmounted } from 'vue';
 import { isBackendConnected, isProjectorOpen } from '../composables/state';
 import { useBackendConnection } from '../composables/useBackendConnection';
 import { useTutorial } from '../composables/useTutorial';
+import { useDialog } from '../composables/useDialog';
+import { useI18n } from 'vue-i18n';
 import { XCircle } from '@lucide/vue';
 
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
 const { isTutorialActive, exitTutorial } = useTutorial();
+const { showConfirm } = useDialog();
+const { t } = useI18n();
 
-const handleExitClick = () => {
-  if (window.confirm("Voulez-vous vraiment quitter le tutoriel ?")) {
+const handleExitClick = async () => {
+  const confirmed = await showConfirm({
+    title: t('dialogs.exit_tutorial.title'),
+    message: t('dialogs.exit_tutorial.message'),
+    confirmText: t('tutorial.buttons.exit'),
+    confirmVariant: 'danger'
+  });
+  
+  if (confirmed) {
     exitTutorial();
   }
 };

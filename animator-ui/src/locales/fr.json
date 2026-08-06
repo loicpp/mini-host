@@ -337,6 +337,10 @@
     "launch_error": {
       "title": "Erreur lors du lancement",
       "message": "Erreur lors du lancement : {err}"
+    },
+    "exit_tutorial": {
+      "title": "Quitter le tutoriel ?",
+      "message": "Voulez-vous vraiment quitter le tutoriel ?"
     }
   },
   "tutorial": {
