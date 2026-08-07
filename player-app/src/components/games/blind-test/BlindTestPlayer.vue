@@ -87,61 +87,22 @@
       </div>
 
       <!-- Classic Mode: Playing -->
-      <div v-else-if="game.status === 'playing'" class="bg-white border-2 border-[#FFBA49] rounded-2xl p-6 shadow-[0_4px_20px_rgba(255,186,73,0.15)] flex flex-col relative overflow-visible">
+      <div v-else-if="game.status === 'playing'" :class="[
+        'bg-white flex flex-col',
+        isSearchMode 
+          ? 'fixed inset-x-0 top-0 z-[9999] p-4' 
+          : 'relative overflow-visible border-2 border-[#FFBA49] rounded-2xl p-3 sm:p-6 shadow-[0_4px_20px_rgba(255,186,73,0.15)]'
+      ]"
+      :style="isSearchMode ? { height: viewportHeight + 'px' } : {}"
+      >
         
-        <div class="text-center mb-6 min-h-[32px] flex flex-col justify-center">
+        <div :class="['text-center min-h-[32px] flex flex-col justify-center', isSearchMode ? 'hidden' : 'mb-6']">
           <h3 v-if="isBuffering" class="text-lg font-bold text-muted-foreground">{{ $t('gameroom.buffering') }}</h3>
           <h3 v-else-if="isDelaying" class="text-lg font-bold text-[#FFBA49]">{{ $t('gameroom.delaying', { n: delayTimeLeft }) }}</h3>
           <h3 v-else class="text-2xl font-black text-primary">{{ $t('gameroom.playing') }}</h3>
         </div>
 
-        <div class="transition-opacity duration-300">
-          <!-- Search Input -->
-          <div class="relative z-50" v-if="!hasSubmitted">
-            <div class="relative">
-              <input 
-                type="text" 
-                v-model="searchQuery" 
-                @input="handleSearch"
-                @keydown.enter="submitCustomGuess"
-                :placeholder="$t('gameroom.search_placeholder')" 
-                autocomplete="off"
-                maxlength="50"
-                :disabled="timeLeft <= 0 || hasSubmitted"
-                class="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
-              />
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">🔍</span>
-              <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-muted-foreground border-t-primary rounded-full animate-spin"></div>
-            </div>
-
-            <!-- Autocomplete Results -->
-            <ul v-if="suggestions.length > 0 && !hasSubmitted" class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50 flex flex-col-reverse">
-              <li 
-                v-for="(item, index) in suggestions" 
-                :key="index"
-                @click="selectSuggestion(item)"
-                class="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
-              >
-                <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted" />
-                <div class="flex flex-col min-w-0">
-                  <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
-                  <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Current Selected Guess -->
-          <div v-if="hasSubmitted" class="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <p class="text-emerald-500 font-bold text-center mb-3">{{ $t('gameroom.answer_sent') }}</p>
-            <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center shadow-sm">
-              <strong class="text-emerald-900 block text-lg">{{ currentGuess?.title }}</strong>
-              <span v-if="currentGuess?.artist" class="text-emerald-700 text-sm mt-1 block">{{ currentGuess?.artist }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-center">
+        <div :class="['flex justify-center', isSearchMode ? 'order-1 flex-none mb-4' : 'mt-6 order-last']">
           <div v-if="timeLeft > 0" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fff6e0] text-[#3F4739] font-bold text-sm">
             {{ $t('gameroom.time_left', { n: timeLeft }) }}
           </div>
@@ -149,6 +110,56 @@
             {{ $t('gameroom.time_up') }}
           </div>
         </div>
+
+        <div :class="['flex flex-col relative', isSearchMode ? 'order-2 flex-1 min-h-0' : 'order-2']" v-if="!hasSubmitted">
+          <ul v-if="suggestions.length > 0" :class="[
+            'bg-white border border-[rgba(0,0,0,0.08)] overflow-hidden flex flex-col-reverse',
+            isSearchMode 
+              ? 'flex-1 mb-4 rounded-2xl shadow-inner overflow-y-auto' 
+              : 'absolute bottom-[calc(100%+0.5rem)] -left-5 -right-5 sm:left-0 sm:right-0 max-h-[40vh] rounded-xl shadow-2xl z-[60] overflow-y-auto'
+          ]">
+            <li 
+              v-for="(item, index) in suggestions" 
+              :key="index"
+              @click="selectSuggestion(item)"
+              class="flex items-start gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
+            >
+              <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted mt-0.5" />
+              <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-bold text-primary text-sm leading-tight break-words">{{ item.title }}</span>
+                <span class="text-xs text-muted-foreground mt-1 break-words">{{ item.artist }}</span>
+              </div>
+            </li>
+          </ul>
+
+          <div :class="['relative z-50 flex-none', isSearchMode ? 'mt-auto' : 'transition-opacity duration-300 -mx-2 sm:-mx-0']">
+            <input 
+              type="text" 
+              v-model="searchQuery" 
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @input="handleSearch"
+              @keydown.enter="submitCustomGuess"
+              :placeholder="$t('gameroom.search_placeholder')" 
+              autocomplete="off"
+              maxlength="100"
+              :disabled="timeLeft <= 0"
+              class="w-full pl-12 pr-4 py-3 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+            />
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">🔍</span>
+            <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-muted-foreground border-t-primary rounded-full animate-spin"></div>
+          </div>
+        </div>
+
+        <div v-if="hasSubmitted" class="order-2 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <p class="text-emerald-500 font-bold text-center mb-3">{{ $t('gameroom.answer_sent') }}</p>
+          <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center shadow-sm">
+            <strong class="text-emerald-900 block text-lg">{{ currentGuess?.title }}</strong>
+            <span v-if="currentGuess?.artist" class="text-emerald-700 text-sm mt-1 block">{{ currentGuess?.artist }}</span>
+          </div>
+        </div>
+
+        
       </div>
 
       <!-- Classic Mode: Reviewing -->
@@ -175,7 +186,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { itunesService } from '../../../services/itunesService';
 import { getServerTime } from '../../../firebase';
 import { useGameTimer } from '../../../composables/useGameTimer';
@@ -194,6 +205,55 @@ const searchTimeout = ref(null);
 
 const currentGuess = ref(null);
 const hasSubmitted = ref(false);
+
+const isSearchMode = ref(false);
+const isFocusedRef = ref(false);
+const viewportHeight = ref(window.innerHeight || 800);
+
+const updateViewport = () => {
+  if (window.visualViewport) {
+    viewportHeight.value = window.visualViewport.height;
+    
+    if (isFocusedRef.value && window.visualViewport.height < window.innerHeight - 50) {
+      isSearchMode.value = true;
+    } else if (window.visualViewport.height >= window.innerHeight - 50) {
+      isSearchMode.value = false;
+    }
+  } else {
+    viewportHeight.value = window.innerHeight;
+  }
+};
+
+onMounted(() => {
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateViewport);
+  } else {
+    window.addEventListener('resize', updateViewport);
+  }
+  updateViewport();
+});
+
+onUnmounted(() => {
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', updateViewport);
+  } else {
+    window.removeEventListener('resize', updateViewport);
+  }
+});
+
+const handleFocus = () => {
+  isFocusedRef.value = true;
+  if (!window.visualViewport) {
+    isSearchMode.value = true;
+  }
+};
+
+const handleBlur = () => {
+  isFocusedRef.value = false;
+  setTimeout(() => {
+    isSearchMode.value = false;
+  }, 100);
+};
 
 const { isBuffering, isDelaying, delayTimeLeft, timeLeft, startTimer, stopTimer } = useGameTimer(getServerTime);
 
@@ -271,6 +331,7 @@ const selectSuggestion = (item) => {
   
   currentGuess.value = item;
   hasSubmitted.value = true;
+  isSearchMode.value = false;
   searchQuery.value = '';
   suggestions.value = [];
   
@@ -294,6 +355,7 @@ const submitCustomGuess = () => {
   
   currentGuess.value = item;
   hasSubmitted.value = true;
+  isSearchMode.value = false;
   searchQuery.value = '';
   suggestions.value = [];
   
