@@ -4,7 +4,8 @@
     "invalid_link": "Lien invalide. Veuillez scanner le QR code de l'animateur.",
     "game_closed": "La partie a été fermée par l'animateur.",
     "connection_error": "Impossible de se connecter au serveur.",
-    "join_error": "Impossible de rejoindre la partie. Le code est peut-être expiré."
+    "join_error": "Impossible de rejoindre la partie. Le code est peut-être expiré.",
+    "kicked": "Vous avez été retiré de la partie par l'animateur."
   },
   "login": {
     "title": "Rejoindre la partie",
@@ -32,6 +33,10 @@
     "review_subtitle": "L'animateur corrige les réponses. Préparez-vous !",
     "your_answer": "Votre réponse",
     "finished_title": "Partie Terminée !",
-    "finished_subtitle": "Regardez le projecteur pour découvrir le podium final."
+    "finished_subtitle": "Regardez le projecteur pour découvrir le podium final.",
+    "buzzer_review_you": "Vous avez buzzé !",
+    "buzzer_review_you_sub": "En attente de la validation de l'animateur.",
+    "buzzer_review_other": "Quelqu'un a buzzé !",
+    "buzzer_review_other_sub": "En attente de la validation de la réponse."
   }
 }

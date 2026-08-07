@@ -43,63 +43,93 @@
         <p class="text-muted-foreground text-sm">{{ $t('gameroom.waiting_subtitle') }}</p>
       </div>
 
-      <!-- Status: Playing -->
+      <!-- Buzzer Mode (Playing & Reviewing) -->
+      <div v-else-if="game.settings?.mode === 'buzzer' && (game.status === 'playing' || game.status === 'reviewing')"
+           :class="['bg-white rounded-2xl p-6 relative overflow-visible transition-colors duration-300 flex flex-col', 
+                    game.status === 'playing' ? 'border-2 border-[#FFBA49] shadow-[0_4px_20px_rgba(255,186,73,0.15)]' : 'border-2 border-blue-400 shadow-[0_4px_20px_rgba(96,165,250,0.15)]']">
+        
+        <div class="text-center mb-6 h-[60px] flex flex-col justify-center">
+          <template v-if="game.status === 'playing'">
+            <h3 v-if="isBuffering" class="text-lg font-bold text-muted-foreground">{{ $t('gameroom.buffering') }}</h3>
+            <h3 v-else-if="isDelaying" class="text-lg font-bold text-[#FFBA49]">{{ $t('gameroom.delaying', { n: delayTimeLeft }) }}</h3>
+            <h3 v-else class="text-2xl font-black text-primary">{{ $t('gameroom.playing') }}</h3>
+          </template>
+          <template v-else>
+            <h3 class="text-xl font-bold text-primary mb-1">
+              {{ hasSubmitted ? $t('gameroom.buzzer_review_you') : $t('gameroom.buzzer_review_other') }}
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              {{ hasSubmitted ? $t('gameroom.buzzer_review_you_sub') : $t('gameroom.buzzer_review_other_sub') }}
+            </p>
+          </template>
+        </div>
+
+        <div :class="['transition-opacity duration-300 flex justify-center items-center py-6', (isBuffering && game.status === 'playing') ? 'opacity-50 pointer-events-none' : '']">
+          <button 
+            class="w-48 h-48 rounded-full bg-red-500 hover:bg-red-600 active:bg-red-700 border-8 border-red-700 shadow-[0_10px_20px_rgba(220,38,38,0.4),inset_0_4px_10px_rgba(255,255,255,0.4)] text-white font-black text-4xl tracking-widest transition-all active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center"
+            @click="handleBuzz" 
+            :disabled="game.status !== 'playing' || timeLeft <= 0 || isBuffering || isDelaying || hasSubmitted"
+          >
+            BUZZ
+          </button>
+        </div>
+
+        <div class="mt-6 flex justify-center min-h-[32px]">
+          <template v-if="game.status === 'playing'">
+            <div v-if="timeLeft > 0" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fff6e0] text-[#3F4739] font-bold text-sm">
+              {{ $t('gameroom.time_left', { n: timeLeft }) }}
+            </div>
+            <div v-else class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-100 text-red-600 font-bold text-sm">
+              {{ $t('gameroom.time_up') }}
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Classic Mode: Playing -->
       <div v-else-if="game.status === 'playing'" class="bg-white border-2 border-[#FFBA49] rounded-2xl p-6 shadow-[0_4px_20px_rgba(255,186,73,0.15)] flex flex-col relative overflow-visible">
         
-        <div class="text-center mb-6">
+        <div class="text-center mb-6 min-h-[32px] flex flex-col justify-center">
           <h3 v-if="isBuffering" class="text-lg font-bold text-muted-foreground">{{ $t('gameroom.buffering') }}</h3>
           <h3 v-else-if="isDelaying" class="text-lg font-bold text-[#FFBA49]">{{ $t('gameroom.delaying', { n: delayTimeLeft }) }}</h3>
           <h3 v-else class="text-2xl font-black text-primary">{{ $t('gameroom.playing') }}</h3>
         </div>
 
-        <div :class="['transition-opacity duration-300', isBuffering ? 'opacity-50 pointer-events-none' : '']">
-          <template v-if="game.settings?.mode === 'buzzer'">
-            <div class="flex justify-center items-center py-6" v-if="!hasSubmitted">
-              <button 
-                class="w-48 h-48 rounded-full bg-red-500 hover:bg-red-600 active:bg-red-700 border-8 border-red-700 shadow-[0_10px_20px_rgba(220,38,38,0.4),inset_0_4px_10px_rgba(255,255,255,0.4)] text-white font-black text-4xl tracking-widest transition-all active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center"
-                @click="handleBuzz" 
-                :disabled="timeLeft <= 0 || isBuffering || isDelaying"
-              >
-                BUZZ
-              </button>
+        <div class="transition-opacity duration-300">
+          <!-- Search Input -->
+          <div class="relative z-50" v-if="!hasSubmitted">
+            <div class="relative">
+              <input 
+                type="text" 
+                v-model="searchQuery" 
+                @input="handleSearch"
+                @keydown.enter="submitCustomGuess"
+                :placeholder="$t('gameroom.search_placeholder')" 
+                autocomplete="off"
+                maxlength="50"
+                :disabled="timeLeft <= 0 || hasSubmitted"
+                class="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+              />
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">🔍</span>
+              <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-muted-foreground border-t-primary rounded-full animate-spin"></div>
             </div>
-          </template>
-          <template v-else>
-            <!-- Search Input -->
-            <div class="relative z-50" v-if="!hasSubmitted">
-              <div class="relative">
-                <input 
-                  type="text" 
-                  v-model="searchQuery" 
-                  @input="handleSearch"
-                  @keydown.enter="submitCustomGuess"
-                  :placeholder="$t('gameroom.search_placeholder')" 
-                  autocomplete="off"
-                  maxlength="50"
-                  :disabled="timeLeft <= 0 || hasSubmitted || isBuffering || isDelaying"
-                  class="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
-                />
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">🔍</span>
-                <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-muted-foreground border-t-primary rounded-full animate-spin"></div>
-              </div>
 
-              <!-- Autocomplete Results -->
-              <ul v-if="suggestions.length > 0 && !hasSubmitted" class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50 flex flex-col-reverse">
-                <li 
-                  v-for="(item, index) in suggestions" 
-                  :key="index"
-                  @click="selectSuggestion(item)"
-                  class="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
-                >
-                  <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted" />
-                  <div class="flex flex-col min-w-0">
-                    <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
-                    <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </template>
+            <!-- Autocomplete Results -->
+            <ul v-if="suggestions.length > 0 && !hasSubmitted" class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl shadow-2xl overflow-hidden max-h-[250px] overflow-y-auto z-50 flex flex-col-reverse">
+              <li 
+                v-for="(item, index) in suggestions" 
+                :key="index"
+                @click="selectSuggestion(item)"
+                class="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
+              >
+                <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted" />
+                <div class="flex flex-col min-w-0">
+                  <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
+                  <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
 
           <!-- Current Selected Guess -->
           <div v-if="hasSubmitted" class="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -121,16 +151,16 @@
         </div>
       </div>
 
-      <!-- Status: Results / Reviewing -->
-      <div v-else-if="game.status === 'reviewing'" class="bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-6 shadow-sm text-center">
+      <!-- Classic Mode: Reviewing -->
+      <div v-else-if="game.status === 'reviewing'" class="bg-white rounded-2xl p-6 relative overflow-visible border border-[rgba(0,0,0,0.08)] shadow-sm text-center">
         <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mx-auto mb-4 text-xl">⏸️</div>
         <h3 class="text-xl font-bold text-primary mb-2">{{ $t('gameroom.review_title') }}</h3>
         <p class="text-muted-foreground text-sm mb-6">{{ $t('gameroom.review_subtitle') }}</p>
         
         <div v-if="hasSubmitted" class="bg-muted p-4 rounded-xl border border-[rgba(0,0,0,0.04)]">
           <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('gameroom.your_answer') }}</p>
-          <strong class="text-primary block">{{ currentGuess.title }}</strong>
-          <span v-if="currentGuess.artist" class="text-muted-foreground text-sm block mt-1">{{ currentGuess.artist }}</span>
+          <strong class="text-primary block">{{ currentGuess?.title }}</strong>
+          <span v-if="currentGuess?.artist" class="text-muted-foreground text-sm block mt-1">{{ currentGuess?.artist }}</span>
         </div>
       </div>
 
@@ -202,11 +232,23 @@ watch(() => [props.game?.status, props.game?.startTime, props.game?.settings?.du
   }
 }, { immediate: true });
 
+watch([isBuffering, isDelaying], ([newBuffering, newDelaying], [oldBuffering, oldDelaying]) => {
+  const wasDelayingOrBuffering = oldBuffering || oldDelaying;
+  const isNowPlaying = !newBuffering && !newDelaying;
+  if (wasDelayingOrBuffering && isNowPlaying) {
+    searchQuery.value = '';
+    suggestions.value = [];
+  }
+});
+
 const handleSearch = () => {
   if (hasSubmitted.value) return;
   
   clearTimeout(searchTimeout.value);
   suggestions.value = [];
+  
+  // Don't fetch suggestions during countdown
+  if (isBuffering.value || isDelaying.value) return;
   
   if (searchQuery.value.trim().length < 2) {
     isSearching.value = false;
@@ -225,6 +267,8 @@ const handleSearch = () => {
 };
 
 const selectSuggestion = (item) => {
+  if (isBuffering.value || isDelaying.value) return;
+  
   currentGuess.value = item;
   hasSubmitted.value = true;
   searchQuery.value = '';
@@ -234,7 +278,7 @@ const selectSuggestion = (item) => {
 };
 
 const submitCustomGuess = () => {
-  if (hasSubmitted.value || !searchQuery.value.trim()) return;
+  if (hasSubmitted.value || !searchQuery.value.trim() || isBuffering.value || isDelaying.value) return;
   
   const customText = searchQuery.value.trim();
   let title = customText;

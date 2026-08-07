@@ -4,7 +4,8 @@
     "invalid_link": "Invalid link. Please scan the host's QR code.",
     "game_closed": "The game was closed by the host.",
     "connection_error": "Could not connect to the server.",
-    "join_error": "Could not join the game. The code might be expired."
+    "join_error": "Could not join the game. The code might be expired.",
+    "kicked": "You have been removed from the game by the host."
   },
   "login": {
     "title": "Join the Game",
@@ -32,6 +33,10 @@
     "review_subtitle": "The host is reviewing the answers. Get ready !",
     "your_answer": "Your answer",
     "finished_title": "Game Over !",
-    "finished_subtitle": "Look at the projector to discover the final podium."
+    "finished_subtitle": "Look at the projector to discover the final podium.",
+    "buzzer_review_you": "You buzzed!",
+    "buzzer_review_you_sub": "Waiting for the host to validate.",
+    "buzzer_review_other": "Someone buzzed!",
+    "buzzer_review_other_sub": "Waiting for the answer to be validated."
   }
 }

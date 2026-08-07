@@ -96,6 +96,10 @@ onMounted(async () => {
           playerId.value = uid;
           state.value = 'in-game';
           error.value = '';
+        } else if (state.value === 'in-game') {
+          // If the player was in-game and is no longer in the players list, they were kicked.
+          error.value = t('app.kicked');
+          state.value = 'login';
         } else if (state.value === 'loading' || state.value === 'error') {
           state.value = 'login';
         }

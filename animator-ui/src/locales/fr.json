@@ -370,7 +370,7 @@
       },
       "step5": {
         "title": "Diagnostics",
-        "description": "celui-là permet de lancer les diagnostics automatiques de MiniHost. Vous pourrez y vérifier l'état de votre application et résoudre les problèmes éventuels."
+        "description": "Celui-là permet de lancer les diagnostics automatiques de MiniHost. Vous pourrez y vérifier l'état de votre application et résoudre les problèmes éventuels."
       },
       "step6": {
         "title": "Paramètres",
@@ -410,7 +410,7 @@
       },
       "step6": {
         "title": "Sélectionner une playlist",
-        "description": "Une fois votre playlist créée, il va désormais falloir ajouter des musiques. CLiquez ici pour modifier votre playlist."
+        "description": "Une fois votre playlist créée, il va désormais falloir ajouter des musiques. Cliquez ici pour modifier votre playlist."
       }
     },
     "playlistEditorSequence": {

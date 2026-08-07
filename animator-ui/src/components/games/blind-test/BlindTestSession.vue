@@ -79,7 +79,6 @@
                 </div>
                 <div>
                   <h2 class="text-xl font-bold text-primary">{{ $t('control_panel.playing_now') }}</h2>
-                  <p class="text-sm font-medium text-muted-foreground mt-1">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</p>
                 </div>
               </div>
               <div class="text-3xl font-black text-primary font-mono bg-slate-50 px-4 py-2 rounded-xl">
