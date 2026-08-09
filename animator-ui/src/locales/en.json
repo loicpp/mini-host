@@ -352,6 +352,7 @@
       "exit": "Exit tutorial",
       "launch": "Launch tutorial"
     },
+    "progress": "{current} of {total}",
     "homeSequence": {
       "step1": {
         "description": "Welcome to the tutorial! We will guide you step by step to create your first playlist and start your first game. You can advance through the tutorial using the arrow keys on your keyboard or by clicking the buttons.<br/><br/>You can also exit the tutorial at any time by clicking the \"Exit tutorial\" button.<br/><br/>If you have already created a playlist, you can skip directly to creating your game by clicking \"Skip\"."

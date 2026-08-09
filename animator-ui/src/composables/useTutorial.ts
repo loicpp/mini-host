@@ -38,6 +38,7 @@ export function useTutorial() {
           doneBtnText: t('tutorial.buttons.done'),
           onPrevClick: () => {},
           showProgress: true,
+          progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
           steps: [
             {
               popover: {
@@ -174,6 +175,7 @@ export function useTutorial() {
           doneBtnText: t('tutorial.buttons.done'),
           onPrevClick: () => {},
         showProgress: true,
+        progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
           {
             element: '#input-new-playlist',
@@ -353,6 +355,7 @@ export function useTutorial() {
           doneBtnText: t('tutorial.buttons.done'),
           onPrevClick: () => {},
         showProgress: true,
+        progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
           {
             element: '#track-name-input',
@@ -435,7 +438,6 @@ export function useTutorial() {
   };
 
   const resumeHomeSequence = () => {
-    console.log(playlistCreated);
     if (!isTutorialActive.value || !playlistCreated) return;
     setTimeout(() => {
       if (driverObj) {
@@ -508,6 +510,7 @@ export function useTutorial() {
           doneBtnText: t('tutorial.buttons.done'),
           onPrevClick: () => {},
         showProgress: true,
+        progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
           {
             element: '#quick-modes',
@@ -622,6 +625,7 @@ export function useTutorial() {
           doneBtnText: t('tutorial.buttons.done'),
           onPrevClick: () => {},
         showProgress: true,
+        progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
           {
             popover: {

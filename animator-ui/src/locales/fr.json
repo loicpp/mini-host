@@ -352,6 +352,7 @@
       "exit": "Quitter le tutoriel",
       "launch": "Lancer le tutoriel"
     },
+    "progress": "{current} sur {total}",
     "homeSequence": {
       "step1": {
         "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie. Vous avez la possibilité d'avancer dans le tutoriel à l'aide des flèches de votre clavier ou en cliquant sur les boutons.<br/><br/>Vous pouvez également quitter le tutoriel à tout moment en cliquant sur le bouton \"Quitter le tutoriel\".<br/><br/>Si vous avez déjà créer une playlist, vous pouvez passer directement à la création de votre partie en cliquant sur \"Passer\"."
