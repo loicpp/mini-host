@@ -395,7 +395,7 @@
       },
       "step2": {
         "title": "Choix du type de playlist",
-        "description": "Vous pouvez choisir ici le type de playlist que vous souhaitez créer. Soundcloud et locale sont les deux types de playlist disponibles pour le moment. Soundcloud vous permet de directement chercher une musique depuis l'application sachant que Locale vous permet d'ajouter vos propres musiques depuis votre ordinateur."
+        "description": "Vous pouvez choisir ici le type de playlist que vous souhaitez créer. Soundcloud et local sont les deux types de playlist disponibles pour le moment. Soundcloud vous permet de directement chercher une musique depuis l'application sachant que Locale vous permet d'ajouter vos propres musiques depuis votre ordinateur."
       },
       "step3": {
         "title": "Créer une playlist",
@@ -425,7 +425,7 @@
       },
       "step3": {
         "title": "Vérification iTunes",
-        "description": "Voici la vérification iTunes. Si cette icône n'est pas bleue mais rouge, la musique n'est pas reconnue. Cela empêche les suggestions de saisie pour les joueurs de fonctionner. Pour garder les suggestions, il faut alors sélectionner une autre version de la musique sur soundcloud ou bien éditer le nom pour trouver une correspondance avec iTunes.\n\nIl est en revanche possible de désactiver les suggestions pour les joueurs. Même si les suggestions sont activées, les joueurs peuvent toujours saisir leur réponse manuellement en appuyant sur ennvoyer sur leur clavier de téléphone."
+        "description": "Voici la vérification iTunes. Lorsque l'icône est bleue, cela indique que la musique est bien reconnue. Lorsqu'elle est rouge, la musique n'est pas reconnue et cela empêche les suggestions de saisie pour les joueurs de fonctionner avec l'auto-correction. Pour garder les suggestions et l'auto-correction, il faut alors sélectionner une autre version de la musique sur soundcloud ou bien éditer le nom pour trouver une correspondance avec iTunes.\n\nIl est en revanche possible de désactiver les suggestions pour les joueurs lors de parties. Même si les suggestions sont activées, les joueurs peuvent toujours saisir leur réponse manuellement en appuyant sur envoyer sur leur téléphone."
       },
       "step4": {
         "title": "Url de la musique SoundCloud",
@@ -437,7 +437,7 @@
       },
       "step6": {
         "title": "Liste des musiques",
-        "description": "Une fois vos musiques ajoutées, elles apparaîtront ici. Vous pourrez alors les gérer (modifier, supprimer, etc)."
+        "description": "Une fois vos musiques ajoutées, elles apparaîtront ici. Vous pourrez alors modifier, supprimer ou tester vos musiques."
       },
       "step7": {
         "title": "Playlist prête !",
@@ -463,7 +463,7 @@
       },
       "step2": {
         "title": "Temps",
-        "description": "Si vous souhaitez, modifier vos propres paramètres.Vous pouvez dans un premier temps régler le temps pendant lequel les joueurs peuvent être bloqués au début, puis le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre. Des icônes ⓘ vous permettent d'avoir plus d'informations sur chaque réglage."
+        "description": "Il est possible de modifier vous-même les paramètres de la partie. Vous pouvez dans un premier temps régler le temps pendant lequel les joueurs peuvent être bloqués au début, puis le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre. Des icônes ⓘ vous permettent d'avoir plus d'informations sur chaque réglage."
       },
       "step3": {
         "title": "Mode de jeu",
@@ -489,7 +489,7 @@
       },
       "step2": {
         "title": "Projecteur",
-        "description": "En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir. C'est une page qui devra être affiché aux joueurs via un second écran. Elle affichera un QR Code en début de partie pour permettre aux joueurs de rejoindre votre partie. Vous pourrez double cliquer sur cette fenêtre afin de passer l'interface en plein écran. N'hésitez pas à revenir sur cette page régulièrement pendant ce tutoriel car elle se modifie automatiquement !"
+        "description": "En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir qu'il faudra présenter sur un second écran. Cette page contiendra le QR Code qui permettra aux joueurs de rejoindre la partie.En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir qu'il faudra présenter sur un second écran. Cette page contiendra le QR Code qui permettra aux joueurs de rejoindre la partie N'hésitez pas à revenir sur cette page régulièrement pendant ce tutoriel car elle se modifie automatiquement !"
       },
       "step3": {
         "title": "État de la partie",
@@ -509,7 +509,7 @@
       },
       "step4c": {
         "title": "Menu d'actions",
-        "description": "Ici, vous pouvez ajuster manuellement les points du joueur, ou le suspendre pour un ou plusieurs tours s'il perturbe la partie. Cliquez sur Suivant pour fermer ce menu."
+        "description": "Vous avez la possibilité d'ajuster manuellement les points du joueur, le suspendre pour un ou plusieurs tours s'il perturbe la partie."
       },
       "step5": {
         "title": "Sélection de la piste",
@@ -525,7 +525,7 @@
       },
       "step8": {
         "title": "Liste des réponses",
-        "description": "Une fois que tous les joueurs ont répondus, on stop automatiquement le temps et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
+        "description": "Une fois que tous les joueurs ont répondus, on arrête automatiquement le tour et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
       },
       "step9": {
         "title": "Correction",
@@ -541,7 +541,7 @@
       },
       "step12": {
         "title": "Classement actualisé",
-        "description": "Une fois les résultats dévoilés, le classement est mis à jour. Vous pouvez voir ici le classement actuel des joueurs, les mouvements du classement et les points obtenus au cour de la manche.\n\nDans l'exemple ci dessus, Alice a trouvé la musique, elle a gagné 1 point et est donc passé devant Bob."
+        "description": "Une fois les résultats dévoilés, le classement est mis à jour. Vous pouvez voir ici le classement actuel des joueurs, les mouvements du classement et les points obtenus au cours de la manche.\n\nDans l'exemple ci dessus, Alice a trouvé la musique, elle a gagné 1 point, elle est donc passée devant Bob."
       },
       "step13": {
         "title": "Tour suivant",
