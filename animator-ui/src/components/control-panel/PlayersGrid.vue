@@ -104,6 +104,9 @@ const sortUncorrectedFirst = ref(false);
 const filteredPlayers = computed(() => {
   let playerArray = [];
   for (const [id, player] of Object.entries(props.players)) {
+    if (player.blockedTurns && player.blockedTurns !== 0) {
+      continue;
+    }
     if (props.gameMode === 'buzzer' && !player.currentGuess) {
       continue;
     }
