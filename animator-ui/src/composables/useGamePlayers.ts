@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status } from './state';
+import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status, autoCorrectResults } from './state';
 import { animatorService } from '../services/animatorService';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
@@ -28,7 +28,8 @@ export function useGamePlayers() {
         currentGuess: guess,
         hasAnswered: !!guess && (!!guess.title || !!guess.artist || (typeof guess === 'string' && guess.length > 0)),
         score: (p.score || 0) + (pendingPoints.value[id] || 0),
-        pendingPoints: pendingPoints.value[id] || 0
+        pendingPoints: pendingPoints.value[id] || 0,
+        autoCorrectResult: autoCorrectResults.value[id]
       };
     }
     return result;
@@ -128,6 +129,7 @@ export function useGamePlayers() {
       }
     }
     pendingPoints.value = {};
+    autoCorrectResults.value = {};
     await animatorService.updateRanks(gameId.value);
   };
 
@@ -155,14 +157,22 @@ export function useGamePlayers() {
         const hasTitle = gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target));
         const hasArtist = gArtist.length > 2 && (target.includes(gArtist) || gArtist.includes(target));
         
+        let isCorrect = false;
+
         if (hasTitle && hasArtist) {
-          if (!pendingPoints.value[id]) award(id, 1);
+          isCorrect = true;
         } else if (guessFull1.length > 2 && (target.includes(guessFull1) || guessFull1.includes(target))) {
-          if (!pendingPoints.value[id]) award(id, 1);
+          isCorrect = true;
         } else if (guessFull2.length > 2 && (target.includes(guessFull2) || guessFull2.includes(target))) {
-          if (!pendingPoints.value[id]) award(id, 1);
+          isCorrect = true;
         } else if (hasTitle && target.length <= gTitle.length + 5) {
-          if (!pendingPoints.value[id]) award(id, 1);
+          isCorrect = true;
+        }
+        
+        autoCorrectResults.value[id] = isCorrect;
+        
+        if (isCorrect && !pendingPoints.value[id]) {
+          award(id, 1);
         }
       }
     }

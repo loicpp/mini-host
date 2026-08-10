@@ -155,7 +155,9 @@
     "no_buzzer": "No player buzzed yet.",
     "cancel_points": "Cancel",
     "submitted_at": "Submitted at {time} seconds",
-    "sort_uncorrected": "Prioritize uncorrected players"
+    "sort_uncorrected": "Prioritize uncorrected players",
+    "correct_detected": "Correct answer detected",
+    "incorrect_detected": "Incorrect answer detected"
   },
   "diagnostics": {
     "title": "System Diagnostics",

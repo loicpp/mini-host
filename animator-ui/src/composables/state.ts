@@ -31,6 +31,7 @@ export const gameSettings = ref({ blockDuration: 0, musicDuration: 15, duration:
 
 export const pendingPoints = ref<Record<string, number>>({});
 export const lastAwardedPoints = ref<Record<string, number>>({});
+export const autoCorrectResults = ref<Record<string, boolean>>({});
 
 export const musicProgress = ref(0);
 export const musicTimeLeft = ref(0);

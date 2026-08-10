@@ -26,9 +26,25 @@
         <span class="font-black text-[#FFBA49] tabular-nums">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
       </div>
       
-      <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center" v-if="player.currentGuess">
-        <p class="font-bold text-emerald-600 text-sm mb-1 leading-tight">{{ player.currentGuess.title }}</p>
-        <p class="text-xs text-muted-foreground">{{ player.currentGuess.artist }}</p>
+      <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center relative" v-if="player.currentGuess">
+        <div v-if="player.autoCorrectResult === true" class="absolute top-2 right-2 flex items-center justify-center w-6 h-6 bg-emerald-100 rounded-full group" :title="$t('players_grid.correct_detected')">
+          <Check class="w-4 h-4 text-emerald-600" strokeWidth="3" />
+        </div>
+        <div v-if="player.autoCorrectResult === false" class="absolute top-2 right-2 flex items-center justify-center w-6 h-6 bg-red-100 rounded-full group" :title="$t('players_grid.incorrect_detected')">
+          <X class="w-4 h-4 text-red-600" strokeWidth="3" />
+        </div>
+        <p :class="[
+          'font-bold text-sm mb-1 leading-tight mr-6',
+          player.autoCorrectResult === true ? 'text-emerald-600' :
+          player.autoCorrectResult === false ? 'text-red-600' :
+          'text-primary'
+        ]">{{ player.currentGuess.title }}</p>
+        <p :class="[
+          'text-xs mr-6',
+          player.autoCorrectResult === true ? 'text-emerald-600/60' :
+          player.autoCorrectResult === false ? 'text-red-600/60' :
+          'text-muted-foreground'
+        ]">{{ player.currentGuess.artist }}</p>
         <p class="text-[10px] text-muted-foreground/60 text-right mt-1">{{ formatTime(player.currentGuess.submittedAt) }}</p>
       </div>
       <div class="min-h-[80px] bg-muted/50 rounded-xl p-3 flex flex-col justify-center items-center" v-else>
@@ -75,6 +91,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { Check, X } from '@lucide/vue';
 import Card from '../ui/Card.vue';
 import { currentStartTime } from '../../composables/state';
 import { useI18n } from 'vue-i18n';
