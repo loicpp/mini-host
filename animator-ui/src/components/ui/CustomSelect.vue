@@ -26,7 +26,10 @@
     >
       <div 
         v-if="isOpen"
-        class="absolute z-50 top-full mt-2 w-full bg-white rounded-xl shadow-xl border border-[rgba(0,0,0,0.08)] overflow-hidden max-h-64 overflow-y-auto"
+        :class="[
+          'absolute z-50 w-full bg-white rounded-xl shadow-xl border border-[rgba(0,0,0,0.08)] overflow-hidden max-h-64 overflow-y-auto',
+          placement === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+        ]"
       >
         <ul class="flex flex-col py-1">
           <li 
@@ -68,6 +71,7 @@ const props = defineProps<{
   modelValue: any;
   options: SelectOption[];
   placeholder?: string;
+  placement?: 'top' | 'bottom';
 }>();
 
 const emit = defineEmits<{

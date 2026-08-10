@@ -98,6 +98,7 @@
             <CustomSelect 
               v-model="settings.mode"
               :options="modeOptions"
+              placement="top"
             />
           </div>
         </div>
@@ -129,6 +130,7 @@
               v-model="settings.playlistId"
               :options="playlistOptions"
               :placeholder="$t('create_game.playlist_placeholder')"
+              placement="top"
             />
           </div>
           <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
