@@ -4,9 +4,11 @@
       <ChevronLeft class="w-4 h-4" /> {{ $t('create_game.back') }}
     </button>
     
-    <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-2xl">
-      <h2 class="text-3xl font-black text-primary text-center mb-2">{{ $t('create_game.title') }}</h2>
-      <p class="text-muted-foreground text-center mb-8">{{ $t('create_game.subtitle') }}</p>
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-6xl justify-center items-start lg:h-[85vh]">
+      <!-- Main Configuration Panel -->
+      <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-2xl overflow-y-auto custom-scrollbar" style="max-height: 100%;">
+        <h2 class="text-3xl font-black text-primary text-center mb-2">{{ $t('create_game.title') }}</h2>
+        <p class="text-muted-foreground text-center mb-8">{{ $t('create_game.subtitle') }}</p>
       
       <div id="quick-modes" class="bg-muted/50 p-5 rounded-2xl border border-[rgba(0,0,0,0.05)] mb-8">
         <p class="font-bold text-primary mb-4 text-sm uppercase tracking-wider">{{ $t('create_game.quick_modes') }}</p>
@@ -103,25 +105,6 @@
           </div>
         </div>
 
-        <div id="allow-suggestions" class="flex flex-col gap-2" v-if="settings.mode === 'text'">
-          <div 
-            class="flex items-center justify-between p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:border-[#FFBA49] transition-all cursor-pointer group"
-            @click="settings.allowSuggestions = !settings.allowSuggestions"
-          >
-            <div class="flex flex-col">
-              <span class="font-bold text-primary transition-colors">{{ $t('create_game.allow_suggestions') }}</span>
-              <span class="text-sm text-muted-foreground mt-0.5">{{ $t('create_game.allow_suggestions_desc') }}</span>
-            </div>
-            <div class="relative shrink-0 ml-4">
-              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.allowSuggestions ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
-                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.allowSuggestions ? 'translate-x-5' : 'translate-x-0']">
-                  <Check v-if="settings.allowSuggestions" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
-                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div id="select-playlist" class="flex flex-col gap-2">
           <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
@@ -143,6 +126,52 @@
           <Btn id="start-btn" variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="playlists.length === 0">
             {{ $t('create_game.start_button') }}
           </Btn>
+        </div>
+      </div>
+      </div>
+
+      <!-- Options Panel -->
+      <div class="bg-white p-8 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full lg:max-w-sm flex flex-col gap-6 sticky top-0 overflow-y-auto custom-scrollbar" style="max-height: 100%;">
+        <h3 class="text-xl font-black text-primary">{{ $t('create_game.options_title') }}</h3>
+        
+        <div class="flex flex-col gap-4">
+          <!-- Suggestion Option -->
+          <div 
+            :class="['flex items-center justify-between p-4 rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm transition-all', settings.mode === 'text' ? 'hover:border-[#FFBA49] cursor-pointer bg-white' : 'opacity-50 cursor-not-allowed bg-gray-50']"
+            @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
+          >
+            <div class="flex flex-col pr-4">
+              <span class="font-bold text-primary transition-colors text-sm">{{ $t('create_game.allow_suggestions') }}</span>
+              <span class="text-xs text-muted-foreground mt-0.5 leading-tight">{{ $t('create_game.allow_suggestions_desc') }}</span>
+            </div>
+            <div class="relative shrink-0">
+              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.allowSuggestions && settings.mode === 'text' ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
+                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.allowSuggestions && settings.mode === 'text' ? 'translate-x-5' : 'translate-x-0']">
+                  <Check v-if="settings.allowSuggestions && settings.mode === 'text'" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
+                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Penalty Option -->
+          <div 
+            class="flex items-center justify-between p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:border-[#FFBA49] transition-all cursor-pointer"
+            @click="settings.penaltyOnWrongAnswer = !settings.penaltyOnWrongAnswer"
+          >
+            <div class="flex flex-col pr-4">
+              <span class="font-bold text-primary transition-colors text-sm">{{ $t('create_game.auto_correction_penalty') }}</span>
+              <span class="text-xs text-muted-foreground mt-0.5 leading-tight">{{ $t('create_game.auto_correction_penalty_desc') }}</span>
+            </div>
+            <div class="relative shrink-0">
+              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.penaltyOnWrongAnswer ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
+                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.penaltyOnWrongAnswer ? 'translate-x-5' : 'translate-x-0']">
+                  <Check v-if="settings.penaltyOnWrongAnswer" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
+                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -190,6 +219,7 @@ const settings = ref({
   duration: 30,
   mode: 'text',
   allowSuggestions: true,
+  penaltyOnWrongAnswer: false,
   playlistId: '',
   localTracks: [] as any[]
 });

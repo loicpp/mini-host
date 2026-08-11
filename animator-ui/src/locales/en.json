@@ -71,7 +71,10 @@
     "quick_mode_normal": "Normal",
     "quick_mode_quick": "Quick",
     "playlist_placeholder": "Select a playlist...",
-    "no_playlist_available": "No playlist available. Create one first!"
+    "no_playlist_available": "No playlist available. Create one first!",
+    "options_title": "Additional Options:",
+    "auto_correction_penalty": "Error Penalty:",
+    "auto_correction_penalty_desc": "Automatically lose 1 point with auto-correction when the answer is wrong."
   },
   "playlists": {
     "quit_edition": "Quit editing",

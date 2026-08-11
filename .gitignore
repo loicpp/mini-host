@@ -6,6 +6,7 @@ venv/
 __pycache__/
 *.pyc
 .flatpak-builder
+build-dir
 *.flatpak
 repo
 

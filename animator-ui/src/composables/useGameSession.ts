@@ -44,7 +44,8 @@ export function useGameSession() {
         musicDuration: settings.musicDuration || 15,
         duration: settings.duration,
         mode: settings.mode,
-        allowSuggestions: settings.allowSuggestions ?? true
+        allowSuggestions: settings.allowSuggestions ?? true,
+        penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false
       };
     }
 

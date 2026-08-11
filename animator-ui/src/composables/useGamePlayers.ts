@@ -173,6 +173,8 @@ export function useGamePlayers() {
         
         if (isCorrect && !pendingPoints.value[id]) {
           award(id, 1);
+        } else if (!isCorrect && gameSettings.value?.penaltyOnWrongAnswer && !pendingPoints.value[id]) {
+          award(id, -1);
         }
       }
     }
