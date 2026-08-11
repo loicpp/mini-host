@@ -8,7 +8,7 @@
       <div class="flex justify-end items-center mb-4 gap-3 bg-muted/30 p-3 rounded-xl border border-[rgba(0,0,0,0.03)]">
         <label class="text-muted-foreground font-bold text-sm flex items-center gap-2"><PlayCircle class="w-4 h-4" /> {{ $t('playlists.test_duration') }}</label>
         <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[rgba(0,0,0,0.08)] shadow-sm">
-          <input type="number" :value="testDuration" @input="$emit('update:testDuration', Number(($event.target as HTMLInputElement).value))" min="1" max="100" step="1" class="w-12 text-center border-none outline-none font-bold text-primary" />
+          <input type="number" :value="testDuration" @input="$emit('update:testDuration', Number(($event.target as HTMLInputElement).value))" @blur="$emit('update:testDuration', Math.min(Math.max(Number(($event.target as HTMLInputElement).value) || 1, 1), 100))" min="1" max="100" step="1" class="w-12 text-center border-none outline-none font-bold text-primary" />
           <span class="text-xs text-muted-foreground font-bold uppercase tracking-wider">{{ $t('playlists.sec') }}</span>
         </div>
       </div>

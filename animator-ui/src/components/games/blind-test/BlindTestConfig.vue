@@ -148,7 +148,7 @@
                 <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" class="w-full" />
               </div>
               <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="settings.blockDuration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <input type="number" v-model.number="settings.blockDuration" min="0" max="30" @blur="settings.blockDuration = Math.min(Math.max(settings.blockDuration || 0, 0), 30)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
                 <span class="text-sm font-bold text-gray-800">s</span>
               </div>
             </div>
@@ -169,7 +169,7 @@
                 <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
               </div>
               <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="settings.musicDuration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <input type="number" v-model.number="settings.musicDuration" min="1" max="100" @blur="settings.musicDuration = Math.min(Math.max(settings.musicDuration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
                 <span class="text-sm font-bold text-gray-800">s</span>
               </div>
             </div>
@@ -190,7 +190,7 @@
                 <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
               </div>
               <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="settings.duration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <input type="number" v-model.number="settings.duration" min="1" max="100" @blur="settings.duration = Math.min(Math.max(settings.duration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
                 <span class="text-sm font-bold text-gray-800">s</span>
               </div>
             </div>
@@ -340,26 +340,41 @@ onMounted(async () => {
 });
 
 watch(() => settings.value.musicDuration, (newVal) => {
-  const effectiveVal = Math.min(Math.max(newVal, 1), 100);
-  if (settings.value.duration < effectiveVal) {
-    settings.value.duration = effectiveVal;
-  }
-  if (settings.value.blockDuration > effectiveVal) {
-    settings.value.blockDuration = effectiveVal;
+  if (typeof newVal === 'number') {
+    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    if (newVal !== effectiveVal) {
+      settings.value.musicDuration = effectiveVal;
+    }
+    if (settings.value.duration < effectiveVal) {
+      settings.value.duration = effectiveVal;
+    }
+    if (settings.value.blockDuration > effectiveVal) {
+      settings.value.blockDuration = effectiveVal;
+    }
   }
 });
 
 watch(() => settings.value.duration, (newVal) => {
-  const effectiveVal = Math.min(Math.max(newVal, 1), 100);
-  if (settings.value.musicDuration > effectiveVal) {
-    settings.value.musicDuration = effectiveVal;
+  if (typeof newVal === 'number') {
+    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    if (newVal !== effectiveVal) {
+      settings.value.duration = effectiveVal;
+    }
+    if (settings.value.musicDuration > effectiveVal) {
+      settings.value.musicDuration = effectiveVal;
+    }
   }
 });
 
 watch(() => settings.value.blockDuration, (newVal) => {
-  const effectiveVal = Math.min(Math.max(newVal, 0), 30);
-  if (settings.value.musicDuration < effectiveVal) {
-    settings.value.musicDuration = effectiveVal;
+  if (typeof newVal === 'number') {
+    const effectiveVal = Math.min(Math.max(newVal, 0), 30);
+    if (newVal !== effectiveVal) {
+      settings.value.blockDuration = effectiveVal;
+    }
+    if (settings.value.musicDuration < effectiveVal) {
+      settings.value.musicDuration = effectiveVal;
+    }
   }
 });
 
