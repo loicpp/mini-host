@@ -1,46 +1,142 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-full w-full relative p-6">
-    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
+  <div class="flex flex-col items-center justify-start min-h-full w-full relative p-4 bg-[#F8F9FA]">
+    <!-- Back Button -->
+    <button class="absolute top-4 left-4 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
       <ChevronLeft class="w-4 h-4" /> {{ $t('create_game.back') }}
     </button>
-    
-    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-6xl justify-center items-start lg:h-[85vh]">
-      <!-- Main Configuration Panel -->
-      <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-2xl overflow-y-auto custom-scrollbar" style="max-height: 100%;">
-        <h2 class="text-3xl font-black text-primary text-center mb-2">{{ $t('create_game.title') }}</h2>
-        <p class="text-muted-foreground text-center mb-8">{{ $t('create_game.subtitle') }}</p>
+
+    <!-- Main Card -->
+    <div class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm w-full max-w-2xl flex flex-col gap-6 mt-4">
       
-      <div id="quick-modes" class="bg-muted/50 p-5 rounded-2xl border border-[rgba(0,0,0,0.05)] mb-8">
-        <p class="font-bold text-primary mb-4 text-sm uppercase tracking-wider">{{ $t('create_game.quick_modes') }}</p>
-        
-        <div class="flex items-center gap-3 mb-3">
-          <span class="font-bold text-muted-foreground text-sm w-16">{{ $t('create_game.buzzer') }}</span>
-          <div class="flex flex-1 gap-2">
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 15, 15)">{{ $t('create_game.quick_mode_normal') }}</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 2, 10)">{{ $t('create_game.quick_mode_quick') }}</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 0, 30, 30)">Fun</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('buzzer', 10, 30, 30)">Peaceful</Btn>
+      <div class="flex flex-col items-center">
+        <h2 class="text-2xl font-black text-primary mb-1">{{ $t('create_game.title') }}</h2>
+        <p class="text-muted-foreground text-center text-sm">{{ $t('create_game.subtitle') }}</p>
+      </div>
+      
+      <!-- Step 1: Game mode -->
+      <StepSection 
+        number="1" 
+        :title="$t('create_game.step1_title')" 
+        :description="$t('create_game.step1_desc')"
+      >
+        <div class="flex flex-col sm:flex-row gap-4">
+          <OptionCard 
+            :title="$t('create_game.mode_buzzer_title')" 
+            :description="$t('create_game.mode_buzzer_desc')" 
+            layout="horizontal"
+            :selected="settings.mode === 'buzzer'"
+            @click="settings.mode = 'buzzer'"
+          >
+            <template #icon>
+              <Bell class="w-5 h-5" />
+            </template>
+          </OptionCard>
+          
+          <OptionCard 
+            :title="$t('create_game.mode_text_title')" 
+            :description="$t('create_game.mode_text_desc')" 
+            layout="horizontal"
+            :selected="settings.mode === 'text'"
+            @click="settings.mode = 'text'"
+          >
+            <template #icon>
+              <Type class="w-5 h-5" />
+            </template>
+          </OptionCard>
+        </div>
+      </StepSection>
+
+      <!-- Step 2: Quick game mode -->
+      <StepSection 
+        number="2" 
+        :title="$t('create_game.step2_title')" 
+        :description="$t('create_game.step2_desc')"
+      >
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          <OptionCard 
+            :title="$t('create_game.quick_mode_normal')" 
+            :description="$t('create_game.normal_desc')" 
+            layout="vertical"
+            :selected="isPresetSelected(0, 15, 15, true, false)"
+            @click="applyPreset(0, 15, 15, true, false)"
+          >
+            <template #icon>
+              <Clock class="w-4 h-4" />
+            </template>
+          </OptionCard>
+
+          <OptionCard 
+            :title="$t('create_game.quick_mode_hard')" 
+            :description="$t('create_game.hard_desc')" 
+            layout="vertical"
+            :selected="isPresetSelected(0, 5, 10, false, true)"
+            @click="applyPreset(0, 5, 10, false, true)"
+          >
+            <template #icon>
+              <Zap class="w-4 h-4" />
+            </template>
+          </OptionCard>
+
+          <OptionCard 
+            title="Fun" 
+            :description="$t('create_game.fun_desc')" 
+            layout="vertical"
+            :selected="isPresetSelected(0, 30, 30, true, false)"
+            @click="applyPreset(0, 30, 30, true, false)"
+          >
+            <template #icon>
+              <Smile class="w-4 h-4" />
+            </template>
+          </OptionCard>
+
+          <OptionCard 
+            title="Peaceful" 
+            :description="$t('create_game.peaceful_desc')" 
+            layout="vertical"
+            :selected="isPresetSelected(10, 30, 30, true, false)"
+            @click="applyPreset(10, 30, 30, true, false)"
+          >
+            <template #icon>
+              <Leaf class="w-4 h-4" />
+            </template>
+          </OptionCard>
+        </div>
+
+        <!-- Summary Bar -->
+        <div 
+          class="bg-[#F8F9FA] rounded-xl flex items-center justify-between p-3 px-5 text-sm cursor-pointer hover:bg-gray-100 transition-colors group mt-6"
+          @click="showAdjust = !showAdjust"
+        >
+          <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2 text-gray-500">
+              <Clock class="w-4 h-4 text-[#FFBA49]" />
+              <span>{{ $t('create_game.block_short') }} <strong class="text-gray-800 inline-block w-8 text-right">{{ settings.blockDuration }}s</strong></span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-500">
+              <Music class="w-4 h-4 text-[#FFBA49]" />
+              <span>{{ $t('create_game.music_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.musicDuration }}s</strong></span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-500">
+              <Hourglass class="w-4 h-4 text-[#FFBA49]" />
+              <span>{{ $t('create_game.thinking_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.duration }}s</strong></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 font-medium transition-colors text-gray-500 group-hover:text-gray-800">
+            {{ $t('create_game.adjust') }}
+            <ChevronDown class="w-4 h-4 transition-transform duration-300" :class="{'rotate-180': showAdjust}" />
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <span class="font-bold text-muted-foreground text-sm w-16">{{ $t('create_game.text') }}</span>
-          <div class="flex flex-1 gap-2">
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 15, 15)">{{ $t('create_game.quick_mode_normal') }}</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 2, 10)">{{ $t('create_game.quick_mode_quick') }}</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 0, 30, 30)">Fun</Btn>
-            <Btn variant="secondary" size="sm" className="flex-1 text-xs" @click="applyPreset('text', 10, 30, 30)">Peaceful</Btn>
-          </div>
-        </div>
-      </div>
-      
-      <div class="flex flex-col gap-6">
-        <div id="time-sliders" class="flex flex-col gap-6">
-          <div class="flex flex-col gap-2">
-            <label class="font-bold text-primary flex justify-between items-center w-full">
-              <span class="flex items-center">
-                {{ $t('create_game.block_duration') }} 
-                <div class="group relative flex items-center ml-2">
+        <!-- Adjust Panel (Sliders & Options) -->
+        <div v-show="showAdjust" class="mt-6 flex flex-col gap-8 px-2">
+          <!-- Sliders -->
+          <div class="flex flex-col gap-6">
+            <!-- Initial block -->
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-700 w-56 shrink-0 flex items-center gap-2">
+                <Clock class="w-4 h-4 text-gray-400 shrink-0" />
+                {{ $t('create_game.block_duration') }}
+                <div class="group relative flex items-center ml-1">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
                   <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
                     {{ $t('create_game.block_duration_tooltip') }}
@@ -48,18 +144,20 @@
                   </div>
                 </div>
               </span>
-              <div class="flex items-center text-[#FFBA49]">
-                <input type="number" v-model.number="settings.blockDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="0" max="30" @keydown="preventNonNumeric" @blur="clampValue('blockDuration', 0, 30)" />s
+              <div class="flex-1 px-4">
+                <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" class="w-full" />
               </div>
-            </label>
-            <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" />
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label class="font-bold text-primary flex justify-between items-center w-full">
-              <span class="flex items-center">
-                {{ $t('create_game.music_duration') }} 
-                <div class="group relative flex items-center ml-2">
+              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
+                <input type="number" v-model.number="settings.blockDuration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <span class="text-sm font-bold text-gray-800">s</span>
+              </div>
+            </div>
+            <!-- Music duration -->
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-700 w-56 shrink-0 flex items-center gap-2">
+                <Music class="w-4 h-4 text-gray-400 shrink-0" />
+                {{ $t('create_game.music_duration') }}
+                <div class="group relative flex items-center ml-1">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
                   <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
                     {{ $t('create_game.music_duration_tooltip') }}
@@ -67,18 +165,20 @@
                   </div>
                 </div>
               </span>
-              <div class="flex items-center text-[#FFBA49]">
-                <input type="number" v-model.number="settings.musicDuration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('musicDuration', 1, 100)" />s
+              <div class="flex-1 px-4">
+                <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
               </div>
-            </label>
-            <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label class="font-bold text-primary flex justify-between items-center w-full">
-              <span class="flex items-center">
-                {{ $t('create_game.total_duration') }} 
-                <div class="group relative flex items-center ml-2">
+              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
+                <input type="number" v-model.number="settings.musicDuration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <span class="text-sm font-bold text-gray-800">s</span>
+              </div>
+            </div>
+            <!-- Thinking time -->
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-700 w-56 shrink-0 flex items-center gap-2">
+                <Hourglass class="w-4 h-4 text-gray-400 shrink-0" />
+                {{ $t('create_game.total_duration') }}
+                <div class="group relative flex items-center ml-1">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
                   <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
                     {{ $t('create_game.total_duration_tooltip') }}
@@ -86,109 +186,108 @@
                   </div>
                 </div>
               </span>
-              <div class="flex items-center text-[#FFBA49]">
-                <input type="number" v-model.number="settings.duration" class="w-14 text-right bg-transparent border-b border-transparent hover:border-[#FFBA49] focus:border-[#FFBA49] focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" min="1" max="100" @keydown="preventNonNumeric" @blur="clampValue('duration', 1, 100)" />s
+              <div class="flex-1 px-4">
+                <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
               </div>
-            </label>
-            <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" />
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="font-bold text-primary">{{ $t('create_game.game_mode') }}</label>
-          <div id="game-type-selector">
-            <CustomSelect 
-              v-model="settings.mode"
-              :options="modeOptions"
-              placement="top"
-            />
-          </div>
-        </div>
-
-
-        <div id="select-playlist" class="flex flex-col gap-2">
-          <label class="font-bold text-primary">{{ $t('create_game.starting_playlist') }}</label>
-          <div v-if="playlists.length > 0">
-            <CustomSelect 
-              v-model="settings.playlistId"
-              :options="playlistOptions"
-              :placeholder="$t('create_game.playlist_placeholder')"
-              placement="top"
-            />
-          </div>
-          <div v-else class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
-            <p class="text-amber-800 text-sm font-medium text-center">{{ $t('create_game.no_playlist_available') }}</p>
-            <Btn variant="dark" @click="$emit('configure-playlists')">{{ $t('create_game.create_first_playlist') }}</Btn>
-          </div>
-        </div>
-        
-        <div>
-          <Btn id="start-btn" variant="primary" size="lg" className="w-full mt-4 font-bold text-lg" @click="startGame" :disabled="playlists.length === 0">
-            {{ $t('create_game.start_button') }}
-          </Btn>
-        </div>
-      </div>
-      </div>
-
-      <!-- Options Panel -->
-      <div class="bg-white p-8 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full lg:max-w-sm flex flex-col gap-6 sticky top-0 overflow-y-auto custom-scrollbar" style="max-height: 100%;">
-        <h3 class="text-xl font-black text-primary">{{ $t('create_game.options_title') }}</h3>
-        
-        <div class="flex flex-col gap-4">
-          <!-- Suggestion Option -->
-          <div 
-            :class="['flex items-center justify-between p-4 rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm transition-all', settings.mode === 'text' ? 'hover:border-[#FFBA49] cursor-pointer bg-white' : 'opacity-50 cursor-not-allowed bg-gray-50']"
-            @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
-          >
-            <div class="flex flex-col pr-4">
-              <span class="font-bold text-primary transition-colors text-sm">{{ $t('create_game.allow_suggestions') }}</span>
-              <span class="text-xs text-muted-foreground mt-0.5 leading-tight">{{ $t('create_game.allow_suggestions_desc') }}</span>
+              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
+                <input type="number" v-model.number="settings.duration" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                <span class="text-sm font-bold text-gray-800">s</span>
+              </div>
             </div>
-            <div class="relative shrink-0">
-              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.allowSuggestions && settings.mode === 'text' ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
-                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.allowSuggestions && settings.mode === 'text' ? 'translate-x-5' : 'translate-x-0']">
-                  <Check v-if="settings.allowSuggestions && settings.mode === 'text'" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
-                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
+          </div>
+
+          <!-- Additional options -->
+          <div class="flex flex-col gap-1 mt-2">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.options_title') }}</h4>
+            <div 
+              class="flex items-center justify-between p-3 rounded-xl transition-all" 
+              :class="settings.mode === 'buzzer' ? 'opacity-40 pointer-events-none' : 'hover:bg-gray-50 cursor-pointer'"
+              @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-800">{{ $t('create_game.allow_suggestions') }}</span>
+                <div class="group relative flex items-center">
+                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                    {{ $t('create_game.allow_suggestions_desc') }}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </div>
               </div>
+              <div 
+                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.allowSuggestions && settings.mode === 'text' ? 'bg-[#FFBA49]' : 'bg-gray-200']"
+              >
+                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.allowSuggestions && settings.mode === 'text' ? 'translate-x-6' : 'translate-x-0']"></div>
+              </div>
             </div>
-          </div>
-
-          <!-- Penalty Option -->
-          <div 
-            class="flex items-center justify-between p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] shadow-sm hover:border-[#FFBA49] transition-all cursor-pointer"
-            @click="settings.penaltyOnWrongAnswer = !settings.penaltyOnWrongAnswer"
-          >
-            <div class="flex flex-col pr-4">
-              <span class="font-bold text-primary transition-colors text-sm">{{ $t('create_game.auto_correction_penalty') }}</span>
-              <span class="text-xs text-muted-foreground mt-0.5 leading-tight">{{ $t('create_game.auto_correction_penalty_desc') }}</span>
-            </div>
-            <div class="relative shrink-0">
-              <div :class="['w-11 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5', settings.penaltyOnWrongAnswer ? 'bg-[#FFBA49] shadow-inner' : 'bg-gray-200']">
-                <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center', settings.penaltyOnWrongAnswer ? 'translate-x-5' : 'translate-x-0']">
-                  <Check v-if="settings.penaltyOnWrongAnswer" class="w-3 h-3 text-[#FFBA49]" strokeWidth="4" />
-                  <X v-else class="w-3 h-3 text-gray-400" strokeWidth="4" />
+            <div 
+              class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+              @click="settings.penaltyOnWrongAnswer = !settings.penaltyOnWrongAnswer"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-800">{{ $t('create_game.auto_correction_penalty') }}</span>
+                <div class="group relative flex items-center">
+                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                    {{ $t('create_game.auto_correction_penalty_desc') }}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </div>
+              </div>
+              <div 
+                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.penaltyOnWrongAnswer ? 'bg-[#FFBA49]' : 'bg-gray-200']"
+              >
+                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.penaltyOnWrongAnswer ? 'translate-x-6' : 'translate-x-0']"></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </StepSection>
+
+      <!-- Step 3: Starting playlist -->
+      <StepSection 
+        number="3" 
+        :title="$t('create_game.step3_title')" 
+        :description="$t('create_game.step3_desc')"
+      >
+        <div v-if="playlists.length > 0" class="w-full">
+          <CustomSelect 
+            v-model="settings.playlistId"
+            :options="playlistOptions"
+            :placeholder="$t('create_game.playlist_placeholder')"
+            placement="top"
+            class="bg-[#F8F9FA]"
+          />
+        </div>
+        <div v-else class="bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
+          <p class="text-amber-800 text-sm font-medium text-center">{{ $t('create_game.no_playlist_available') }}</p>
+          <Btn variant="dark" @click="$emit('configure-playlists')">{{ $t('create_game.create_first_playlist') }}</Btn>
+        </div>
+      </StepSection>
+    </div>
+
+    <!-- Create Button -->
+    <div class="w-full max-w-2xl mt-4 pb-4">
+      <Btn variant="primary" size="lg" className="w-full font-bold text-lg h-14 rounded-2xl shadow-md flex items-center justify-center gap-2" @click="startGame" :disabled="playlists.length === 0">
+        <Play class="w-5 h-5 fill-current" />
+        {{ $t('create_game.start_button') }}
+      </Btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { ChevronLeft, Folder, Cloud, CircleDot, Keyboard, Check, X, Info } from '@lucide/vue';
+import { ChevronLeft, Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
 import Slider from '../../ui/Slider.vue';
+import OptionCard from '../../ui/OptionCard.vue';
+import StepSection from '../../ui/StepSection.vue';
 import { useTutorial } from '../../../composables/useTutorial.ts';
 
 const { playInitBlindTestSequence } = useTutorial();
-
 const { t } = useI18n();
 
 const emit = defineEmits<{
@@ -197,6 +296,7 @@ const emit = defineEmits<{
   (e: 'configure-playlists'): void;
 }>();
 
+const showAdjust = ref(false);
 const playlists = ref<any[]>([]);
 
 const playlistOptions = computed(() => {
@@ -208,16 +308,11 @@ const playlistOptions = computed(() => {
   }));
 });
 
-const modeOptions = computed(() => [
-  { value: 'buzzer', label: t('create_game.mode_buzzer'), icon: CircleDot },
-  { value: 'text', label: t('create_game.mode_text'), icon: Keyboard }
-]);
-
 const settings = ref({
   blockDuration: 0,
   musicDuration: 15,
   duration: 30,
-  mode: 'text',
+  mode: 'buzzer',
   allowSuggestions: true,
   penaltyOnWrongAnswer: false,
   playlistId: '',
@@ -244,20 +339,6 @@ onMounted(async () => {
   playInitBlindTestSequence();
 });
 
-const preventNonNumeric = (e: KeyboardEvent) => {
-  if (['e', 'E', '+', '-', '.', ','].includes(e.key)) {
-    e.preventDefault();
-  }
-};
-
-const clampValue = (field: 'blockDuration' | 'musicDuration' | 'duration', min: number, max: number) => {
-  let val = Number(settings.value[field]);
-  if (isNaN(val)) val = min;
-  if (val < min) val = min;
-  if (val > max) val = max;
-  settings.value[field] = val;
-};
-
 watch(() => settings.value.musicDuration, (newVal) => {
   const effectiveVal = Math.min(Math.max(newVal, 1), 100);
   if (settings.value.duration < effectiveVal) {
@@ -282,14 +363,37 @@ watch(() => settings.value.blockDuration, (newVal) => {
   }
 });
 
-const applyPreset = (mode: string, block: number, music: number, total: number) => {
-  settings.value.mode = mode;
+watch(() => settings.value.mode, (newMode) => {
+  if (newMode === 'buzzer') {
+    settings.value.allowSuggestions = false;
+  } else {
+    if (!settings.value.penaltyOnWrongAnswer || settings.value.musicDuration !== 5) {
+      settings.value.allowSuggestions = true;
+    }
+  }
+});
+
+const isPresetSelected = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
+  const expectedSuggestions = settings.value.mode === 'buzzer' ? false : suggestions;
+  return settings.value.blockDuration === block &&
+         settings.value.musicDuration === music &&
+         settings.value.duration === total &&
+         settings.value.allowSuggestions === expectedSuggestions &&
+         settings.value.penaltyOnWrongAnswer === penalty;
+};
+
+const applyPreset = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
   settings.value.blockDuration = block;
   settings.value.musicDuration = music;
   settings.value.duration = total;
+  settings.value.penaltyOnWrongAnswer = penalty;
+  
+  if (settings.value.mode === 'text') {
+    settings.value.allowSuggestions = suggestions;
+  } else {
+    settings.value.allowSuggestions = false;
+  }
 };
-
-
 
 const startGame = () => {
   let musicDuration = Math.floor(Number(settings.value.musicDuration));
@@ -327,3 +431,14 @@ const startGame = () => {
   emit('start-game', finalSettings);
 };
 </script>
+
+<style scoped>
+input[type="number"].no-spinners::-webkit-inner-spin-button,
+input[type="number"].no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"].no-spinners {
+  -moz-appearance: textfield;
+}
+</style>
