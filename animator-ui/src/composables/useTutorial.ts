@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { driver } from 'driver.js';
+import { driver, PopoverDOM } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { tutorialMockService } from '../services/tutorialMockService';
 import { gameId, selectedTrack } from './state';
@@ -23,8 +23,44 @@ export function useTutorial() {
     playHomeSequence();
   };
 
+  const moveToNextStep = (id: string) => {
+    const target = document.querySelector(id);
+    if (target) {
+      target.addEventListener('click', () => {
+        setTimeout(() => { if (driverObj) driverObj.moveNext(); }, 300);
+      }, { once: true });
+    }
+  };
+
+  const addSkipBtnWithCallback = (popover: PopoverDOM, callback: () => void) => {
+    const skipBtn = document.createElement("button");
+    skipBtn.className = "driver-popover-footer-btn";
+    skipBtn.innerText = t('tutorial.buttons.skip');
+    popover.footerButtons.appendChild(skipBtn);
+    skipBtn.addEventListener('click', () => {
+      callback();
+    }, { once: true });
+  }
+
   const playHomeSequence = async () => {
     if (!isTutorialActive.value) return;
+
+    let hasPlaylistsWithTracks = false;
+    try {
+      const res = await fetch('http://127.0.0.1:5000/api/playlists');
+      if (res.ok) {
+        const data = await res.json();
+        let loadedPlaylists = [];
+        if (Array.isArray(data)) {
+          loadedPlaylists = data;
+        } else if (data.playlists) {
+          loadedPlaylists = data.playlists;
+        }
+        hasPlaylistsWithTracks = loadedPlaylists.some((pl: any) => pl.tracks && pl.tracks.length > 0);
+      }
+    } catch(e) {
+      console.warn("Could not load playlists for tutorial skip check", e);
+    }
 
     try {
       setTimeout(() => {
@@ -46,19 +82,12 @@ export function useTutorial() {
                 side: 'bottom',
                 align: 'start',
                 onPopoverRender: (popover) => {
-                  const skipPlaylistCreation = document.createElement("button");
-                  skipPlaylistCreation.className = "driver-popover-footer-btn";
-                  skipPlaylistCreation.innerText = t('tutorial.buttons.skip');
-                  // Add this class to give the button the default driver.js styling.
-                  // Leave it out if you want to apply your own styles instead.
-                  skipPlaylistCreation.classList.add("driver-popover-footer-btn");
-                  popover.footerButtons.appendChild(skipPlaylistCreation);
-
-                  skipPlaylistCreation.addEventListener("click", () => {
-                    driverObj.destroy();
-                    playlistCreated = true;
-                    resumeHomeSequence();
-                  });
+                  if (hasPlaylistsWithTracks) {
+                    addSkipBtnWithCallback(popover, () => {
+                      playlistCreated = true;
+                      resumeHomeSequence();
+                    });
+                  }
                 },
               }
             },
@@ -513,64 +542,98 @@ export function useTutorial() {
         progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
           {
-            element: '#quick-modes',
+            element: '#blind-test-main-card',
             disableActiveInteraction: true,
             popover: {
-              title: t('tutorial.initBlindTestSequence.step1.title'),
-              description: t('tutorial.initBlindTestSequence.step1.description'),
+              title: t('tutorial.initBlindTestSequence.presentation.title'),
+              description: t('tutorial.initBlindTestSequence.presentation.description'),
               side: 'bottom',
               align: 'start',
               onPopoverRender: (popover) => {
-                const skipPlaylistCreation = document.createElement("button");
-                skipPlaylistCreation.className = "driver-popover-footer-btn";
-                skipPlaylistCreation.innerText = t('tutorial.buttons.skip');
-                // Add this class to give the button the default driver.js styling.
-                // Leave it out if you want to apply your own styles instead.
-                skipPlaylistCreation.classList.add("driver-popover-footer-btn");
-                popover.footerButtons.appendChild(skipPlaylistCreation);
-
-                skipPlaylistCreation.addEventListener("click", () => {
-                  driverObj.drive(5);
+                addSkipBtnWithCallback(popover, () => {
+                  const target = document.querySelector('#mode-text-card') as HTMLElement;
+                  if (target) {
+                    target.click();
+                  }
+                  if (driverObj) driverObj.drive(8);
                 });
               }
             }
           },
           {
-            element: '#time-sliders',
+            element: '#input-settings',
             disableActiveInteraction: true,
             popover: {
-              title: t('tutorial.initBlindTestSequence.step2.title'),
-              description: t('tutorial.initBlindTestSequence.step2.description'),
+              title: t('tutorial.initBlindTestSequence.input-mode.title'),
+              description: t('tutorial.initBlindTestSequence.input-mode.description'),
+              side: 'bottom',
+              align: 'start'
+            }          
+          },
+          {
+            element: '#mode-text-card',
+            popover: {
+              title: t('tutorial.initBlindTestSequence.text-input.title'),
+              description: t('tutorial.initBlindTestSequence.text-input.description'),
+              side: 'bottom',
+              align: 'start',
+              showButtons: [],
+              onNextClick: () => {},
+              onPopoverRender: () => {
+                moveToNextStep('#mode-text-card');
+              }
+            }
+          },
+          {
+            element: '#game-settings',
+            disableActiveInteraction: true,
+            popover: {
+              title: t('tutorial.initBlindTestSequence.game-settings.title'),
+              description: t('tutorial.initBlindTestSequence.game-settings.description'),
               side: 'bottom',
               align: 'start'
             }
           },
           {
-            element: '#game-type-selector',
+            element: '#adjust-summary-bar',
+            popover: {
+              title: t('tutorial.initBlindTestSequence.adjust-summary.title'),
+              description: t('tutorial.initBlindTestSequence.adjust-summary.description'),
+              side: 'bottom',
+              align: 'start',
+              showButtons: [],
+              onNextClick: () => {},
+              onPopoverRender: () => {
+                moveToNextStep('#adjust-summary-bar');
+              }
+            }
+          },
+          {
+            element: '#sliders-panel',
             disableActiveInteraction: true,
             popover: {
-              title: t('tutorial.initBlindTestSequence.step3.title'),
-              description: t('tutorial.initBlindTestSequence.step3.description'),
+              title: t('tutorial.initBlindTestSequence.time-limit.title'),
+              description: t('tutorial.initBlindTestSequence.time-limit.description'),
+              side: 'bottom',
+              align: 'start',
+            }
+          },
+          {
+            element: '#additional-options',
+            disableActiveInteraction: true,
+            popover: {
+              title: t('tutorial.initBlindTestSequence.additional-settings.title'),
+              description: t('tutorial.initBlindTestSequence.additional-settings.description'),
               side: 'bottom',
               align: 'start'
             }
           },
           {
-            element: '#allow-suggestions',
+            element: '#playlist-settings',
             disableActiveInteraction: true,
             popover: {
-              title: t('tutorial.initBlindTestSequence.step4.title'),
-              description: t('tutorial.initBlindTestSequence.step4.description'),
-              side: 'bottom',
-              align: 'start'
-            }
-          },
-          {
-            element: '#select-playlist',
-            disableActiveInteraction: true,
-            popover: {
-              title: t('tutorial.initBlindTestSequence.step5.title'),
-              description: t('tutorial.initBlindTestSequence.step5.description'),
+              title: t('tutorial.initBlindTestSequence.playlist.title'),
+              description: t('tutorial.initBlindTestSequence.playlist.description'),
               side: 'bottom',
               align: 'start'
             }
@@ -578,8 +641,8 @@ export function useTutorial() {
           {
             element: '#start-btn',
             popover: {
-              title: t('tutorial.initBlindTestSequence.step6.title'),
-              description: t('tutorial.initBlindTestSequence.step6.description'),
+              title: t('tutorial.initBlindTestSequence.start-game.title'),
+              description: t('tutorial.initBlindTestSequence.start-game.description'),
               side: 'bottom',
               align: 'start',
               showButtons: [],

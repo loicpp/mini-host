@@ -47,9 +47,9 @@
     "back": "Retour",
     "title": "Nouvelle Partie",
     "subtitle": "Configurez les paramètres de votre partie.",
-    "step1_title": "Mode de saisie",
+    "step1_title": "Mode de réponse",
     "step1_desc": "Choisissez comment les joueurs répondent",
-    "step2_title": "Mode rapide",
+    "step2_title": "Mode de jeu",
     "step2_desc": "Sélectionnez un préréglage — ajuste le temps & les options",
     "step3_title": "Playlist de départ",
     "step3_desc": "Sélectionnez la playlist à utiliser pour la partie",
@@ -480,29 +480,41 @@
       }
     },
     "initBlindTestSequence": {
-      "step1": {
-        "title": "Modes rapides",
-        "description": "Nous arrivons sur la configuration de la partie. Il est possible ici de modifier les paramètres par défaut de la partie. Les boutons ici présents vous permettent de choisir un mode rapide pour votre partie.<br/><br/>Si vous savez déjà comment configurer votre partie, vous pouvez passer directement à l'étape suivante en cliquant sur le bouton \"Passer\"."
+      "presentation": {
+        "title": "Configuration de la partie",
+        "description": "Nous arrivons sur la configuration de la partie. Il est possible ici de modifier les paramètres par défaut de la partie. La configuration se fait en trois étapes.<br/><br/>Si vous savez déjà comment configurer votre partie, vous pouvez passer directement à l'étape suivante en cliquant sur le bouton \"Passer\"."
       },
-      "step2": {
+      "input-mode": {
+        "title": "Mode de réponse",
+        "description": "Première étape, il vous ait demandé de choisir le mode de réponse des joueurs. Vous pouvez choisir ici : Buzzer ou Saisie."
+      },
+      "text-input": {
+        "title": "Saisie",
+        "description": "Pour ce tutorial, nous allons utiliser le mode Saisie. Cela permettra aux joueurs de taper leur réponse."
+      },
+      "game-settings": {
+        "title": "Modes de jeu",
+        "description": "Deuxième étape, il vous ait demandé de choisir le mode de jeu. Vous pouvez utiliser les modes rapides pour configurer votre partie ou bien ajuster les paramètres manuellement."
+      },
+      "adjust-summary": {
+        "title": "Paramètres avancés",
+        "description": "Vous pouvez également paramétrer manuellement votre partie. Cliquez sur cette barre pour ouvrir les paramètres avancés."
+      },
+      "time-limit": {
         "title": "Temps",
-        "description": "Il est possible de modifier vous-même les paramètres de la partie. Vous pouvez dans un premier temps régler le temps pendant lequel les joueurs peuvent être bloqués au début, puis le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre. Des icônes ⓘ vous permettent d'avoir plus d'informations sur chaque réglage."
+        "description": "Vous pouvez régler le temps de blocage au début, le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre."
       },
-      "step3": {
-        "title": "Mode de jeu",
-        "description": "Ensuite, vous pouvez choisir ici le type de réponse : Buzzer ou Saisie."
+      "additional-settings": {
+        "title": "Options supplémentaires",
+        "description": "En dessous, vous avez les options supplémentaires permettant l'activation de fonctionnalitées pour votre partie."
       },
-      "step4": {
-        "title": "Suggestions",
-        "description": "Si vous êtes en mode saisie. Il vous est possible d'activer ou de désactiver les suggestions pour les joueurs. Si elles sont activées, les joueurs pourront voir des suggestions de réponses lorsqu'ils saisissent leur réponse."
-      },
-      "step5": {
+      "playlist": {
         "title": "Playlist",
-        "description": "Enfin, vous pouvez choisir la playlist que vous souhaitez utiliser pour cette partie. La première playlist devrait être sélectionnée par défaut dans cette liste !"
+        "description": "Dernière étape, vous choisissez la playlist avec laquelle vous voulez jouer."
       },
-      "step6": {
+      "start-game": {
         "title": "Lancer la partie",
-        "description": "Une fois vos paramètres configurés, cliquez sur créer la partie !"
+        "description": "Enfin, cliquez sur ce bouton pour lancer la partie !"
       }
     },
     "gameSessionSequence": {

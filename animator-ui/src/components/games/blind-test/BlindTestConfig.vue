@@ -6,7 +6,7 @@
     </button>
 
     <!-- Main Card -->
-    <div class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm w-full max-w-2xl flex flex-col gap-6 mt-4">
+    <div id="blind-test-main-card" class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm w-full max-w-2xl flex flex-col gap-6 mt-4">
       
       <div class="flex flex-col items-center">
         <h2 class="text-2xl font-black text-primary mb-1">{{ $t('create_game.title') }}</h2>
@@ -15,6 +15,7 @@
       
       <!-- Step 1: Game mode -->
       <StepSection 
+        id="input-settings"
         number="1" 
         :title="$t('create_game.step1_title')" 
         :description="$t('create_game.step1_desc')"
@@ -33,6 +34,7 @@
           </OptionCard>
           
           <OptionCard 
+            id="mode-text-card"
             :title="$t('create_game.mode_text_title')" 
             :description="$t('create_game.mode_text_desc')" 
             layout="horizontal"
@@ -47,13 +49,15 @@
       </StepSection>
 
       <!-- Step 2: Quick game mode -->
-      <StepSection 
+      <StepSection
+       id="game-settings"
         number="2" 
         :title="$t('create_game.step2_title')" 
         :description="$t('create_game.step2_desc')"
       >
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
           <OptionCard 
+            id="preset-normal-card"
             :title="$t('create_game.quick_mode_normal')" 
             :description="$t('create_game.normal_desc')" 
             layout="vertical"
@@ -102,11 +106,12 @@
           </OptionCard>
         </div>
 
-        <!-- Summary Bar -->
+        <!-- Summary Bar and Adjustments -->
+          <!-- Summary Bar -->
         <div 
+          id="adjust-summary-bar"
           class="bg-[#F8F9FA] rounded-xl flex items-center justify-between p-3 px-5 text-sm cursor-pointer hover:bg-gray-100 transition-colors group mt-6"
-          @click="showAdjust = !showAdjust"
-        >
+          @click="showAdjust = !showAdjust">
           <div class="flex items-center gap-6">
             <div class="flex items-center gap-2 text-gray-500">
               <Clock class="w-4 h-4 text-[#FFBA49]" />
@@ -130,7 +135,7 @@
         <!-- Adjust Panel (Sliders & Options) -->
         <div v-show="showAdjust" class="mt-6 flex flex-col gap-8 px-2">
           <!-- Sliders -->
-          <div class="flex flex-col gap-6">
+          <div id="sliders-panel" class="flex flex-col gap-6">
             <!-- Initial block -->
             <div class="flex items-center justify-between">
               <span class="text-sm font-medium text-gray-700 w-56 shrink-0 flex items-center gap-2">
@@ -197,9 +202,10 @@
           </div>
 
           <!-- Additional options -->
-          <div class="flex flex-col gap-1 mt-2">
+          <div id="additional-options" class="flex flex-col gap-1 mt-2">
             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.options_title') }}</h4>
             <div 
+              id="allow-suggestions"
               class="flex items-center justify-between p-3 rounded-xl transition-all" 
               :class="settings.mode === 'buzzer' ? 'opacity-40 pointer-events-none' : 'hover:bg-gray-50 cursor-pointer'"
               @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
@@ -246,6 +252,7 @@
 
       <!-- Step 3: Starting playlist -->
       <StepSection 
+        id="playlist-settings"
         number="3" 
         :title="$t('create_game.step3_title')" 
         :description="$t('create_game.step3_desc')"
@@ -268,7 +275,7 @@
 
     <!-- Create Button -->
     <div class="w-full max-w-2xl mt-4 pb-4">
-      <Btn variant="primary" size="lg" className="w-full font-bold text-lg h-14 rounded-2xl shadow-md flex items-center justify-center gap-2" @click="startGame" :disabled="playlists.length === 0">
+      <Btn id="start-btn" variant="primary" size="lg" className="w-full font-bold text-lg h-14 rounded-2xl shadow-md flex items-center justify-center gap-2" @click="startGame" :disabled="playlists.length === 0">
         <Play class="w-5 h-5 fill-current" />
         {{ $t('create_game.start_button') }}
       </Btn>
@@ -311,9 +318,9 @@ const playlistOptions = computed(() => {
 const settings = ref({
   blockDuration: 0,
   musicDuration: 15,
-  duration: 30,
+  duration: 15,
   mode: 'buzzer',
-  allowSuggestions: true,
+  allowSuggestions: false,
   penaltyOnWrongAnswer: false,
   playlistId: '',
   localTracks: [] as any[]

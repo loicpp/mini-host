@@ -47,15 +47,15 @@
     "back": "Back",
     "title": "New Game",
     "subtitle": "Configure your game settings.",
-    "step1_title": "Input mode",
+    "step1_title": "Response mode",
     "step1_desc": "Choose how players will answer",
-    "step2_title": "Quick game mode",
+    "step2_title": "Game mode",
     "step2_desc": "Select a preset — adjusts timing & options automatically",
     "step3_title": "Starting playlist",
     "step3_desc": "Select the playlist to use for the game",
     "mode_buzzer_title": "Buzzer",
     "mode_buzzer_desc": "First to buzz answer",
-    "mode_text_title": "Text Input",
+    "mode_text_title": "Typing",
     "mode_text_desc": "Everyone types their answer.",
     "adjust": "Adjust",
     "normal_desc": "Standard rules",
@@ -480,29 +480,41 @@
       }
     },
     "initBlindTestSequence": {
-      "step1": {
-        "title": "Quick modes",
-        "description": "We are now at the game configuration. It is possible here to modify the default settings of the game. The buttons present here allow you to choose a quick mode for your game.<br/><br/>If you already know how to configure your game, you can skip directly to the next step by clicking the \"Skip\" button."
+      "presentation": {
+        "title": "Game configuration",
+        "description": "We are now at the game configuration. It is possible here to modify the default settings of the game. The configuration is done in three steps.<br/><br/>If you already know how to configure your game, you can skip directly to the next step by clicking the \"Skip\" button."
       },
-      "step2": {
+      "input-mode": {
+        "title": "Ans wer mode",
+        "description": "First step, you are asked to choose the players' answer mode. You can choose here: Buzzer or Typing."
+      },
+      "text-input": {
+        "title": "Typing",
+        "description": "For this tutorial, we will use the Typing mode. This will allow players to type their answers."
+      },
+      "game-settings": {
+        "title": "Game modes",
+        "description": "Second step, you are asked to choose the game mode. You can use quick modes to configure your game or adjust the settings manually."
+      },
+      "adjust-summary": {
+        "title": "Advanced settings",
+        "description": "You can also manually configure your game. Click on this bar to open the advanced settings."
+      },
+      "time-limit": {
         "title": "Time",
-        "description": "If you wish, you can modify your own settings. You can first adjust the time during which players can be blocked at the start, then the track duration, as well as the total time during which players can answer. ⓘ icons give you more information on each setting."
+        "description": "You can adjust the initial block time, the track duration, as well as the total time during which players can answer."
       },
-      "step3": {
-        "title": "Game mode",
-        "description": "Then, you can choose the answer type here: Buzzer or Typing."
+      "additional-settings": {
+        "title": "Additional options",
+        "description": "Below, you have additional options allowing the activation of features for your game."
       },
-      "step4": {
-        "title": "Suggestions",
-        "description": "If you are in typing mode. It is possible to enable or disable suggestions for players. If enabled, players will be able to see answer suggestions as they type their answer."
-      },
-      "step5": {
+      "playlist": {
         "title": "Playlist",
-        "description": "Finally, you can choose the playlist you want to use for this game. The first playlist should be selected by default in this list!"
+        "description": "Last step, you choose the playlist you want to play with."
       },
-      "step6": {
+      "start-game": {
         "title": "Launch the game",
-        "description": "Once your settings are configured, click on create game!"
+        "description": "Finally, click on this button to launch the game!"
       }
     },
     "gameSessionSequence": {
