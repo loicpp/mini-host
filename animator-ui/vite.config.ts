@@ -9,8 +9,16 @@ export default defineConfig({
     host: '127.0.0.1'
   },
   build: {
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
-      external: ['react-native-fs', 'fs', 'path', 'buffer']
+      external: ['react-native-fs', 'fs', 'path', 'buffer'],
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
     }
   }
 })
