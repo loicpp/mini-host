@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full h-full">
+  <div class="flex w-full h-full" @click="handleGlobalClick">
     <GameSidebar 
       :status="status"
       :currentSource="currentSource"
@@ -25,9 +25,9 @@
       @auto-correct="handleAutoCorrect"
     />
 
-    <main class="flex-1 overflow-y-auto relative p-8">
-      <div v-if="gameId" class="flex flex-col gap-6">
-        <div class="flex items-center justify-between mb-2 pb-4 border-b border-[rgba(0,0,0,0.05)]">
+    <main class="flex-1 flex flex-col overflow-hidden relative p-8">
+      <div v-if="gameId" class="flex flex-col gap-6 h-full min-h-0">
+        <div class="flex items-center justify-between mb-2 pb-4 border-b border-[rgba(0,0,0,0.05)] shrink-0">
           <div id="game-status" class="flex items-center gap-3">
             <Badge :color="status === 'waiting' ? 'gray' : status === 'playing' ? 'blue' : status === 'reviewing' ? 'green' : status === 'results' ? 'pink' : 'gray'" class="px-3 py-1 text-xs uppercase tracking-wider">{{ statusDisplay }}</Badge>
           </div>
@@ -44,6 +44,7 @@
         </div>
 
         <LocalTracksView 
+          class="flex-1 min-h-0"
           id="track-selection-panel"
           v-if="status === 'waiting' && (currentSource === 'local' || (currentSource === 'soundcloud' && localTracks.length > 0))"
           :localTracks="localTracks"
@@ -334,7 +335,19 @@ const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched,
 const handleSelectTrack = async (track: any) => {
   selectTrack(track);
   await nextTick();
-  advanceToTrackSelected();
+  if (track) {
+    advanceToTrackSelected();
+  }
+};
+
+const handleGlobalClick = (e: Event) => {
+  if (!selectedTrack.value) return;
+  const target = e.target as HTMLElement;
+  // Ignore clicks on buttons, inputs, links, or specific modals to avoid unwanted deselections
+  if (target && target.closest('button, input, a, [role="button"], #player-list')) {
+    return;
+  }
+  handleSelectTrack(null);
 };
 
 const handlePlayMusic = async () => {

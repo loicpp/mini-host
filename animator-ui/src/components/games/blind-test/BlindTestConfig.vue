@@ -211,6 +211,7 @@
               @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
             >
               <div class="flex items-center gap-2">
+                <Lightbulb class="w-4 h-4 text-gray-400" />
                 <span class="text-sm font-bold text-gray-800">{{ $t('create_game.allow_suggestions') }}</span>
                 <div class="group relative flex items-center">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
@@ -231,6 +232,7 @@
               @click="settings.penaltyOnWrongAnswer = !settings.penaltyOnWrongAnswer"
             >
               <div class="flex items-center gap-2">
+                <AlertTriangle class="w-4 h-4 text-gray-400" />
                 <span class="text-sm font-bold text-gray-800">{{ $t('create_game.auto_correction_penalty') }}</span>
                 <div class="group relative flex items-center">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
@@ -285,7 +287,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { ChevronLeft, Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info } from '@lucide/vue';
+import { ChevronLeft, Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';

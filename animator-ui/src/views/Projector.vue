@@ -52,7 +52,7 @@
                <p class="text-2xl font-bold text-[#FFBA49]">{{ $t(`create_game.mode_${game.data.settings.mode}`) }}</p>
             </div>
 
-            <div class="flex gap-4 w-full">
+            <div class="flex gap-4 w-full mb-6">
                 <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="game.data.settings.blockDuration > 0">
                     <div class="text-[#00d2ff] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.5)]"></span>{{ $t('projector.block') }}</div>
                     <div class="text-4xl font-black text-white">{{ game.data.settings.blockDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
@@ -66,9 +66,21 @@
                     <div class="text-4xl font-black text-white">{{ game.data.settings.duration - game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
                 </div>
             </div>
+
+            <!-- Additional options -->
+            <div class="flex flex-wrap gap-3" v-if="(game.data.settings.mode === 'text' && game.data.settings.allowSuggestions) || game.data.settings.penaltyOnWrongAnswer">
+               <div class="flex items-center gap-2 bg-black/20 px-4 py-2.5 rounded-xl border border-white/5 shadow-inner" v-if="game.data.settings.mode === 'text' && game.data.settings.allowSuggestions">
+                 <Lightbulb class="w-5 h-5 text-[#FFBA49]" />
+                 <span class="font-medium text-white/90 text-sm">{{ $t('create_game.allow_suggestions') }}</span>
+               </div>
+               
+               <div class="flex items-center gap-2 bg-black/20 px-4 py-2.5 rounded-xl border border-white/5 shadow-inner" v-if="game.data.settings.penaltyOnWrongAnswer">
+                 <AlertTriangle class="w-5 h-5 text-[#ff4d4d]" /> 
+                 <span class="font-medium text-white/90 text-sm">{{ $t('create_game.auto_correction_penalty') }}</span>
+               </div>
+            </div>
           </div>
         </div>
-
 
         <h1 class="text-6xl font-black text-white mb-6">{{ $t('projector.get_ready') }}</h1>
         
@@ -194,7 +206,7 @@ import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
-import { AlarmClock, PartyPopper, Trophy, Medal, Info } from '@lucide/vue';
+import { AlarmClock, PartyPopper, Trophy, Medal, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
 import QRCode from 'qrcode';
 
 let originalTitle = '';

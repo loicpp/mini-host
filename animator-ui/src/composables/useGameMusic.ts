@@ -27,12 +27,16 @@ export function useGameMusic() {
     return localTracks.value.find((t: Track) => t.id === lastId) || null;
   });
 
-  const selectTrack = (track: Track) => {
+  const selectTrack = (track: Track | null) => {
     selectedTrack.value = track;
-    nextTrackInfo.value.answer = track.artist ? `${track.title} - ${track.artist}` : track.title;
-    
-    if (typeof musicManager.preload === 'function') {
-      musicManager.preload(track).catch((e: any) => console.warn("Preload failed", e));
+    if (track) {
+      nextTrackInfo.value.answer = track.artist ? `${track.title} - ${track.artist}` : track.title;
+      
+      if (typeof musicManager.preload === 'function') {
+        musicManager.preload(track).catch((e: any) => console.warn("Preload failed", e));
+      }
+    } else {
+      nextTrackInfo.value.answer = '';
     }
   };
 

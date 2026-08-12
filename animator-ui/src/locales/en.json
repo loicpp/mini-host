@@ -302,7 +302,11 @@
     "reconnecting": "Attempting to reconnect..."
   },
   "local_tracks": {
-    "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left."
+    "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left.",
+    "search": "Search for music...",
+    "sort_by_title": "Title",
+    "sort_by_artist": "Artist",
+    "no_result": "No results for this search."
   },
   "app": {
     "cancel": "Cancel",
