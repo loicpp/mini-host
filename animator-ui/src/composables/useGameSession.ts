@@ -45,7 +45,8 @@ export function useGameSession() {
         duration: settings.duration,
         mode: settings.mode,
         allowSuggestions: settings.allowSuggestions ?? true,
-        penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false
+        penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false,
+        playlist: settings.playlist
       };
     }
 

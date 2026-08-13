@@ -47,7 +47,7 @@
       <Btn variant="primary" @click="$emit('add-local-file')">
         <FileAudio class="w-4 h-4 mr-2" /> {{ $t('playlists.import_track') }}
       </Btn>
-      <Btn variant="primary" @click="$emit('add-local-folder')">
+      <Btn v-if="!hideFolderOption" variant="primary" @click="$emit('add-local-folder')">
         <FolderPlus class="w-4 h-4 mr-2" /> {{ $t('playlists.import_folder') }}
       </Btn>
     </div>
@@ -150,6 +150,7 @@ const props = defineProps<{
   duplicateWarning: string | null;
   initialSearchQuery?: string;
   autofocusSearch?: boolean;
+  hideFolderOption?: boolean;
 }>();
 
 const emit = defineEmits<{

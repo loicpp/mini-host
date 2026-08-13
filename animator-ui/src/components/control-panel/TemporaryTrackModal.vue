@@ -14,6 +14,7 @@
         :newTrack="tempNewTrack"
         :initialSearchQuery="initialQuery"
         :autofocusSearch="true"
+        :hideFolderOption="true"
         @update:newTrack="tempNewTrack = $event"
         :duplicateWarning="tempDuplicateWarning"
         @reset-duplicate-warning="tempDuplicateWarning = null"
