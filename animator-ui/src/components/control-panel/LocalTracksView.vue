@@ -77,6 +77,7 @@ import { ref, computed, nextTick, onUnmounted } from 'vue';
 import { Search, ArrowUpDown, X, Plus } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
 import { searchQuery } from '../../composables/state';
+import Fuse from 'fuse.js';
 
 onUnmounted(() => {
   searchQuery.value = '';
@@ -132,20 +133,38 @@ const processedTracks = computed(() => {
   let tracks = [...props.localTracks];
   
   if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
-    tracks = tracks.filter(t => 
-      t.title.toLowerCase().includes(q) || 
-      t.artist.toLowerCase().includes(q)
-    );
+    const q = searchQuery.value;
+    
+    // Configurer fuse.js avec un seuil (threshold) représentant le pourcentage d'erreur
+    // 0.0 = Correspondance parfaite, 1.0 = N'importe quoi
+    // 0.2 = Autorise environ 20% d'erreur (fautes de frappe, mots inversés)
+    const fuse = new Fuse(tracks, {
+      keys: [
+        { name: 'title', weight: 1 },
+        { name: 'artist', weight: 1 },
+        { name: 'combined', getFn: (track) => `${track.title} ${track.artist}` },
+        { name: 'combined_reverse', getFn: (track) => `${track.artist} ${track.title}` }
+      ],
+      threshold: 0.2,
+      ignoreLocation: true,
+      includeScore: true,
+    });
+    
+    // Extraire les résultats originaux
+    tracks = fuse.search(q).map(result => result.item);
   }
   
-  tracks.sort((a, b) => {
-    if (sortBy.value === 'title') {
-      return a.title.localeCompare(b.title);
-    } else {
-      return a.artist.localeCompare(b.artist);
-    }
-  });
+  // Appliquer le tri uniquement si on ne fait pas de recherche 
+  // (sinon on garde l'ordre de pertinence de Fuse)
+  if (!searchQuery.value) {
+    tracks.sort((a, b) => {
+      if (sortBy.value === 'title') {
+        return a.title.localeCompare(b.title);
+      } else {
+        return a.artist.localeCompare(b.artist);
+      }
+    });
+  }
   
   return tracks;
 });

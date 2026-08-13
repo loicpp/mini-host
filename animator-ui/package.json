@@ -17,6 +17,7 @@
     "@types/qrcode": "^1.5.6",
     "driver.js": "^1.8.0",
     "firebase": "^12.15.0",
+    "fuse.js": "^7.5.0",
     "jsmediatags": "^3.9.7",
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.3",

@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status, autoCorrectResults } from './state';
+import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status, autoCorrectResults, wasAutoCorrected } from './state';
 import { animatorService } from '../services/animatorService';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
@@ -130,6 +130,7 @@ export function useGamePlayers() {
     }
     pendingPoints.value = {};
     autoCorrectResults.value = {};
+    wasAutoCorrected.value = false;
     await animatorService.updateRanks(gameId.value);
   };
 
@@ -147,7 +148,7 @@ export function useGamePlayers() {
         }
       }
       
-      if (hasAnswers && !hasPointsAwarded) {
+      if (hasAnswers && !hasPointsAwarded && !wasAutoCorrected.value) {
         const confirmed = await showConfirm({
           title: t('control_panel.reveal_no_points_title', 'Aucun point attribué'),
           message: t('control_panel.reveal_no_points_message', 'Des joueurs ont répondu mais aucun point n\'a été attribué. Voulez-vous vraiment révéler les résultats ?'),
@@ -166,6 +167,7 @@ export function useGamePlayers() {
   };
 
   const autoCorrect = () => {
+    wasAutoCorrected.value = true;
     if (!nextTrackInfo.value.answer) return;
     const target = nextTrackInfo.value.answer.toLowerCase().replace(/[^a-z0-9]/g, '');
     

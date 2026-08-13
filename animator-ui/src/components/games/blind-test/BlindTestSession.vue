@@ -57,12 +57,13 @@
           @open-temp-track-modal="openTempTrackModal"
         />
 
-        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-6 rounded-2xl flex flex-wrap items-center justify-center gap-6 mb-4 shadow-sm">
-          <h3 class="text-xl font-bold text-blue-700 m-0 flex items-center gap-2">
-            🎵 {{ $t('control_panel.expected') }} <span class="px-3 py-1 bg-white rounded-lg border border-blue-200 shadow-sm ml-2">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
+        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-4 sm:p-6 rounded-2xl flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-4 shadow-sm w-full overflow-hidden">
+          <h3 class="text-lg sm:text-xl font-bold text-blue-700 m-0 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center max-w-full min-w-0">
+            <span class="shrink-0">🎵 {{ $t('control_panel.expected') }}</span> 
+            <span class="px-3 py-1 sm:px-4 sm:py-2 bg-white rounded-xl border border-blue-200 shadow-sm break-words max-w-full min-w-0">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
           </h3>
-          <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md" @click="handleAutoCorrect">
-            <Wand2 class="w-4 h-4 mr-2" /> {{ $t('control_panel.auto_correct') }}
+          <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md shrink-0 whitespace-nowrap" @click="handleAutoCorrect">
+            <Wand2 class="w-4 h-4 mr-2 shrink-0" /> {{ $t('control_panel.auto_correct') }}
           </Btn>
         </div>
 
