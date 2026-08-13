@@ -33,6 +33,7 @@
     <TrackAdder 
       :playlistType="playlist.type"
       :newTrack="newTrack"
+      :autofocusSearch="true"
       @update:newTrack="$emit('update:newTrack', $event)"
       :duplicateWarning="duplicateWarning"
       @reset-duplicate-warning="$emit('reset-duplicate-warning')"

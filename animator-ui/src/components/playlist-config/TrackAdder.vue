@@ -11,7 +11,9 @@
         v-model="searchQuery" 
         @input="onSearchInput"
         @focus="onSearchInput"
-        @keydown.enter="applyCustomSearch"
+        @keydown.enter="handleEnter"
+        @keydown.down.prevent="selectNextSuggestion"
+        @keydown.up.prevent="selectPrevSuggestion"
         @keydown.esc="clearSearch"
         @blur="handleSearchBlur"
         :placeholder="$t('playlists.search_sc_placeholder')" 
@@ -26,7 +28,9 @@
             v-for="(item, index) in suggestions" 
             :key="index"
             @mousedown.prevent="selectSuggestion(item)"
-            class="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b border-muted transition-colors last:border-b-0"
+            @mouseenter="selectedSuggestionIndex = index"
+            class="flex items-center gap-3 p-3 cursor-pointer border-b border-muted transition-colors last:border-b-0"
+            :class="index === selectedSuggestionIndex ? 'bg-muted' : 'hover:bg-muted'"
             :title="item.title + ' - ' + item.artist"
           >
             <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted" />
@@ -111,7 +115,7 @@
       </div>
       
       <div class="flex gap-4" v-if="playlistType === 'soundcloud'">
-        <TextInput id="soundcloud-track-url" :modelValue="newTrack.url" @input="updateUrl" :placeholder="$t('playlists.sc_url')" inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground" focusClass="focus:ring-2 focus:ring-blue-400" wrapperClass="flex-2" clearable @clear="updateUrl({ target: { value: '' } } as unknown as Event)" />
+        <TextInput ref="urlInputRef" id="soundcloud-track-url" :modelValue="newTrack.url" @input="updateUrl" @keydown.enter="$emit('add-sc-track')" :placeholder="$t('playlists.sc_url')" inputClass="bg-white border border-blue-100 shadow-sm px-4 py-3 rounded-xl font-medium text-foreground" focusClass="focus:ring-2 focus:ring-blue-400" wrapperClass="flex-2" clearable @clear="updateUrl({ target: { value: '' } } as unknown as Event)" />
         <Btn id="soundcloud-add-track-btn" variant="primary" @click="$emit('add-sc-track')" :disabled="!newTrack.url.trim()">{{ $t('playlists.add') }}</Btn>
       </div>
       
@@ -175,6 +179,48 @@ watch(suggestions, (newVal) => {
 const isEditingTrack = ref(false);
 const editInput = ref<any>(null);
 const searchInputRef = ref<any>(null);
+const urlInputRef = ref<any>(null);
+const selectedSuggestionIndex = ref(-1);
+
+watch(suggestions, () => {
+  selectedSuggestionIndex.value = -1;
+});
+
+const selectNextSuggestion = () => {
+  if (suggestions.value.length > 0) {
+    if (selectedSuggestionIndex.value < suggestions.value.length - 1) {
+      selectedSuggestionIndex.value++;
+    } else {
+      selectedSuggestionIndex.value = 0;
+    }
+  }
+};
+
+const selectPrevSuggestion = () => {
+  if (suggestions.value.length > 0) {
+    if (selectedSuggestionIndex.value > 0) {
+      selectedSuggestionIndex.value--;
+    } else {
+      selectedSuggestionIndex.value = suggestions.value.length - 1;
+    }
+  }
+};
+
+const handleEnter = () => {
+  if (selectedSuggestionIndex.value >= 0 && selectedSuggestionIndex.value < suggestions.value.length) {
+    selectSuggestion(suggestions.value[selectedSuggestionIndex.value] as any);
+  } else {
+    applyCustomSearch();
+  }
+};
+
+watch(() => props.newTrack.url, (newUrl, oldUrl) => {
+  if (oldUrl && !newUrl) {
+    nextTick(() => {
+      searchInputRef.value?.focus();
+    });
+  }
+});
 
 onMounted(() => {
   if (props.initialSearchQuery && !props.newTrack.title) {
@@ -226,6 +272,10 @@ const selectSuggestion = async (item: {title: string, artist: string, url?: stri
       setTimeout(() => advanceToCertification(), 100);
     });
   }
+  
+  nextTick(() => {
+    urlInputRef.value?.focus();
+  });
 };
 
 const startEdit = async () => {

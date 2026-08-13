@@ -96,7 +96,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       await autoCertifyTrack(trackToAdd);
     }
     
-    selectedPlaylist.value.tracks.push({
+    selectedPlaylist.value.tracks.unshift({
       id: trackToAdd.id,
       title: trackToAdd.title.trim() || 'Titre Inconnu',
       artist: trackToAdd.artist.trim() || 'Artiste Inconnu',
@@ -137,7 +137,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       }
     }
     
-    selectedPlaylist.value.tracks.push({
+    selectedPlaylist.value.tracks.unshift({
       id: pendingLocalPath.value,
       title: newTrack.value.title.trim() || 'Titre Inconnu',
       artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
@@ -226,7 +226,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       
       if (!checkForDuplicate(newTrackData, path)) {
         newTrackData = await autoCertifyTrack(newTrackData as any) as any;
-        selectedPlaylist.value.tracks.push(newTrackData);
+        selectedPlaylist.value.tracks.unshift(newTrackData);
         addedCount++;
       }
     }

@@ -13,8 +13,8 @@
         </div>
       </div>
       
-      <div id="tracks-list" class="flex flex-col gap-3">
-        <div v-for="(track, index) in tracks" :key="index" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+      <TransitionGroup name="list" tag="div" id="tracks-list" class="flex flex-col gap-3 relative">
+        <div v-for="(track, index) in tracks" :key="track.url" class="flex items-center justify-between p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
           <div class="flex flex-col min-w-0 pr-4 flex-1">
             <div v-if="editingTrackIndex === index" class="flex items-center gap-2 w-full bg-slate-50 h-[60px] px-2 rounded-xl border border-slate-200 relative">
               <div class="relative z-50 flex-1 min-w-0">
@@ -84,7 +84,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </TransitionGroup>
     </div>
   </div>
 </template>
@@ -193,3 +193,20 @@ const cancelEditTrack = () => {
   clearSearch();
 };
 </script>
+
+<style scoped>
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.4s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.list-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>
