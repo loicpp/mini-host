@@ -611,5 +611,11 @@
     "version": "Version:",
     "ecosystem": "Ecosystem:",
     "view_project": "View project"
+  },
+  "update": {
+    "title": "New version available",
+    "message": "MiniHost version {latest} is available. You are currently using version {current}.",
+    "see_latest": "See the new version",
+    "ok": "Ok"
   }
 }

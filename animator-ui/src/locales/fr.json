@@ -611,5 +611,11 @@
     "version": "Version :",
     "ecosystem": "Écosystème :",
     "view_project": "Voir le projet"
+  },
+  "update": {
+    "title": "Nouvelle version disponible",
+    "message": "La version {latest} de MiniHost est disponible. Vous utilisez actuellement la version {current}.",
+    "see_latest": "Voir la nouvelle version",
+    "ok": "Ok"
   }
 }

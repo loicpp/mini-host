@@ -44,6 +44,7 @@ import { useTutorial } from '../composables/useTutorial';
 import { useDialog } from '../composables/useDialog';
 import { useI18n } from 'vue-i18n';
 import { XCircle } from '@lucide/vue';
+import { updateService } from '../services/updateService';
 
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
 const { isTutorialActive, exitTutorial } = useTutorial();
@@ -74,7 +75,30 @@ onMounted(() => {
       console.warn(e);
     }
   });
+
+  checkUpdates();
 });
+
+async function checkUpdates() {
+  try {
+    const update = await updateService.checkForUpdates();
+    if (update.available) {
+      const confirmed = await showConfirm({
+        title: t('update.title'),
+        message: t('update.message', { latest: update.latestVersion, current: update.currentVersion }),
+        confirmText: t('update.see_latest'),
+        cancelText: t('update.ok'),
+        confirmVariant: 'primary'
+      });
+
+      if (confirmed) {
+        window.open('https://github.com/loicpp/mini-host/releases/latest', '_blank');
+      }
+    }
+  } catch (error) {
+    console.error('Erreur réseau lors de la vérification des mises à jour:', error);
+  }
+}
 
 onUnmounted(() => {
   stopConnectionMonitor();
