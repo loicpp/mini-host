@@ -41,7 +41,8 @@
     "logout_subtitle": "Disconnect from the current account",
     "cancel": "Cancel",
     "save": "Save",
-    "version": "Version:"
+    "version": "Version:",
+    "licenses": "Licenses"
   },
   "create_game": {
     "back": "Back",
@@ -602,5 +603,13 @@
         "description": "That's all for now! You can delete the game."
       }
     }
+  },
+  "licenses_modal": {
+    "title": "Open Source Licenses",
+    "description": "This software uses the following open source libraries. We warmly thank their authors.",
+    "author": "Author:",
+    "version": "Version:",
+    "ecosystem": "Ecosystem:",
+    "view_project": "View project"
   }
 }

@@ -1,0 +1,1160 @@
+{
+  "@babel/helper-string-parser@7.29.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "url": "https://babel.dev/team",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/helper-string-parser",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/helper-string-parser/LICENSE"
+  },
+  "@babel/helper-validator-identifier@7.29.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "url": "https://babel.dev/team",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/helper-validator-identifier",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/helper-validator-identifier/LICENSE"
+  },
+  "@babel/parser@7.29.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "url": "https://babel.dev/team",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/parser",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/parser/LICENSE"
+  },
+  "@babel/types@7.29.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "url": "https://babel.dev/team",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@babel/types/LICENSE"
+  },
+  "@firebase/ai@2.13.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/ai",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/ai/README.md"
+  },
+  "@firebase/analytics-compat@0.2.28": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics-compat/README.md"
+  },
+  "@firebase/analytics-types@0.8.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics-types/README.md"
+  },
+  "@firebase/analytics@0.10.22": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/analytics/README.md"
+  },
+  "@firebase/app-check-compat@0.4.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-compat/README.md"
+  },
+  "@firebase/app-check-interop-types@0.3.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-interop-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-interop-types/README.md"
+  },
+  "@firebase/app-check-types@0.5.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check-types/README.md"
+  },
+  "@firebase/app-check@0.12.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-check/README.md"
+  },
+  "@firebase/app-compat@0.5.14": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-compat/README.md"
+  },
+  "@firebase/app-types@0.9.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app-types/README.md"
+  },
+  "@firebase/app@0.15.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/app/README.md"
+  },
+  "@firebase/auth-compat@0.6.8": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-compat/README.md"
+  },
+  "@firebase/auth-interop-types@0.2.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-interop-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-interop-types/README.md"
+  },
+  "@firebase/auth-types@0.13.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth-types/README.md"
+  },
+  "@firebase/auth@1.13.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/auth/README.md"
+  },
+  "@firebase/component@0.7.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/component",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/component/README.md"
+  },
+  "@firebase/data-connect@0.7.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/data-connect",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/data-connect/README.md"
+  },
+  "@firebase/database-compat@2.1.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database-compat/README.md"
+  },
+  "@firebase/database-types@1.0.20": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database-types/README.md"
+  },
+  "@firebase/database@1.1.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/database/README.md"
+  },
+  "@firebase/firestore-compat@0.4.11": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore-compat/README.md"
+  },
+  "@firebase/firestore-types@3.0.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore-types/README.md"
+  },
+  "@firebase/firestore@4.16.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/firestore/README.md"
+  },
+  "@firebase/functions-compat@0.4.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/functions-compat"
+  },
+  "@firebase/functions-types@0.6.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/functions-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/functions-types/README.md"
+  },
+  "@firebase/functions@0.13.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/functions",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/functions/README.md"
+  },
+  "@firebase/installations-compat@0.2.22": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/installations-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/installations-compat/README.md"
+  },
+  "@firebase/installations-types@0.5.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/installations-types"
+  },
+  "@firebase/installations@0.6.22": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/installations"
+  },
+  "@firebase/logger@0.5.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/logger",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/logger/README.md"
+  },
+  "@firebase/messaging-compat@0.2.27": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging-compat/README.md"
+  },
+  "@firebase/messaging-interop-types@0.2.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging-interop-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging-interop-types/README.md"
+  },
+  "@firebase/messaging@0.13.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/messaging/README.md"
+  },
+  "@firebase/performance-compat@0.2.25": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/performance-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/performance-compat/README.md"
+  },
+  "@firebase/performance-types@0.2.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/performance-types"
+  },
+  "@firebase/performance@0.7.12": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/performance",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/performance/README.md"
+  },
+  "@firebase/remote-config-compat@0.2.26": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config-compat/README.md"
+  },
+  "@firebase/remote-config-types@0.5.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config-types/README.md"
+  },
+  "@firebase/remote-config@0.8.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/remote-config/README.md"
+  },
+  "@firebase/storage-compat@0.4.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage-compat",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage-compat/README.md"
+  },
+  "@firebase/storage-types@0.8.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage-types/README.md"
+  },
+  "@firebase/storage@0.14.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/storage/README.md"
+  },
+  "@firebase/util@1.15.1": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/util",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/util/README.md"
+  },
+  "@firebase/webchannel-wrapper@1.0.6": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/webchannel-wrapper",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@firebase/webchannel-wrapper/README.md"
+  },
+  "@grpc/grpc-js@1.9.16": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
+    "publisher": "Google Inc.",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@grpc/grpc-js",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@grpc/grpc-js/LICENSE"
+  },
+  "@grpc/proto-loader@0.7.15": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/grpc/grpc-node",
+    "publisher": "Google Inc.",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@grpc/proto-loader",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@grpc/proto-loader/LICENSE"
+  },
+  "@intlify/core-base@11.4.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/core-base",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/core-base/LICENSE"
+  },
+  "@intlify/devtools-types@11.4.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/devtools-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/devtools-types/LICENSE"
+  },
+  "@intlify/message-compiler@11.4.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/message-compiler",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/message-compiler/LICENSE"
+  },
+  "@intlify/shared@11.4.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/shared",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@intlify/shared/LICENSE"
+  },
+  "@jridgewell/gen-mapping@0.3.13": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/gen-mapping",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/gen-mapping/LICENSE"
+  },
+  "@jridgewell/remapping@2.3.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/remapping",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/remapping/LICENSE"
+  },
+  "@jridgewell/resolve-uri@3.1.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/resolve-uri",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/resolve-uri",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/resolve-uri/LICENSE"
+  },
+  "@jridgewell/sourcemap-codec@1.5.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/sourcemap-codec",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/sourcemap-codec/LICENSE"
+  },
+  "@jridgewell/trace-mapping@0.3.31": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/trace-mapping",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@jridgewell/trace-mapping/LICENSE"
+  },
+  "@lucide/vue@1.25.0": {
+    "licenses": "ISC",
+    "repository": "https://github.com/lucide-icons/lucide",
+    "publisher": "Eric Fennis",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@lucide/vue",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@lucide/vue/LICENSE"
+  },
+  "@oxc-project/types@0.138.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/oxc-project/oxc",
+    "publisher": "Boshen and oxc contributors",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@oxc-project/types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@oxc-project/types/LICENSE"
+  },
+  "@protobufjs/aspromise@1.1.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/aspromise",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/aspromise/LICENSE"
+  },
+  "@protobufjs/base64@1.1.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/base64",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/base64/LICENSE"
+  },
+  "@protobufjs/codegen@2.0.5": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/codegen",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/codegen/LICENSE"
+  },
+  "@protobufjs/eventemitter@1.1.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/eventemitter",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/eventemitter/LICENSE"
+  },
+  "@protobufjs/fetch@1.1.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/fetch",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/fetch/LICENSE"
+  },
+  "@protobufjs/float@1.0.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/float",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/float/LICENSE"
+  },
+  "@protobufjs/path@1.1.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/path",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/path/LICENSE"
+  },
+  "@protobufjs/pool@1.1.0": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/pool",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/pool/LICENSE"
+  },
+  "@protobufjs/utf8@1.1.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/protobufjs/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/utf8",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@protobufjs/utf8/LICENSE"
+  },
+  "@rolldown/binding-linux-x64-gnu@1.1.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/binding-linux-x64-gnu",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/binding-linux-x64-gnu/README.md"
+  },
+  "@rolldown/binding-linux-x64-musl@1.1.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/binding-linux-x64-musl",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/binding-linux-x64-musl/README.md"
+  },
+  "@rolldown/pluginutils@1.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/plugins",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/pluginutils",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@rolldown/pluginutils/LICENSE"
+  },
+  "@tailwindcss/node@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/node",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/node/LICENSE"
+  },
+  "@tailwindcss/oxide-linux-x64-gnu@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide-linux-x64-gnu",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide-linux-x64-gnu/LICENSE"
+  },
+  "@tailwindcss/oxide-linux-x64-musl@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide-linux-x64-musl",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide-linux-x64-musl/LICENSE"
+  },
+  "@tailwindcss/oxide@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/oxide/LICENSE"
+  },
+  "@tailwindcss/vite@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/vite",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@tailwindcss/vite/LICENSE"
+  },
+  "@types/node@26.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@types/node",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@types/node/LICENSE"
+  },
+  "@vue/compiler-core@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-core",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-core/LICENSE"
+  },
+  "@vue/compiler-dom@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-dom",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-dom/LICENSE"
+  },
+  "@vue/compiler-sfc@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-sfc",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-sfc/LICENSE"
+  },
+  "@vue/compiler-ssr@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-ssr",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/compiler-ssr/LICENSE"
+  },
+  "@vue/devtools-api@6.6.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/vue-devtools",
+    "publisher": "Guillaume Chau",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/devtools-api"
+  },
+  "@vue/reactivity@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/reactivity",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/reactivity/LICENSE"
+  },
+  "@vue/runtime-core@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/runtime-core",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/runtime-core/LICENSE"
+  },
+  "@vue/runtime-dom@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/runtime-dom",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/runtime-dom/LICENSE"
+  },
+  "@vue/server-renderer@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/server-renderer",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/server-renderer/LICENSE"
+  },
+  "@vue/shared@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/shared",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/@vue/shared/LICENSE"
+  },
+  "ansi-regex@5.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/ansi-regex",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/ansi-regex",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/ansi-regex/license"
+  },
+  "ansi-styles@4.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/ansi-styles",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/ansi-styles",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/ansi-styles/license"
+  },
+  "cliui@8.0.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/cliui",
+    "publisher": "Ben Coe",
+    "email": "ben@npmjs.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/cliui",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/cliui/LICENSE.txt"
+  },
+  "color-convert@2.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Qix-/color-convert",
+    "publisher": "Heather Arthur",
+    "email": "fayearthur@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/color-convert",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/color-convert/LICENSE"
+  },
+  "color-name@1.1.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/colorjs/color-name",
+    "publisher": "DY",
+    "email": "dfcreative@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/color-name",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/color-name/LICENSE"
+  },
+  "csstype@3.2.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/frenic/csstype",
+    "publisher": "Fredrik Nicol",
+    "email": "fredrik.nicol@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/csstype",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/csstype/LICENSE"
+  },
+  "detect-libc@2.1.2": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/lovell/detect-libc",
+    "publisher": "Lovell Fuller",
+    "email": "npm@lovell.info",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/detect-libc",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/detect-libc/LICENSE"
+  },
+  "emoji-regex@8.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mathiasbynens/emoji-regex",
+    "publisher": "Mathias Bynens",
+    "url": "https://mathiasbynens.be/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/emoji-regex",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/emoji-regex/LICENSE-MIT.txt"
+  },
+  "enhanced-resolve@5.24.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/webpack/enhanced-resolve",
+    "publisher": "Tobias Koppers @sokra",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/enhanced-resolve",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/enhanced-resolve/LICENSE"
+  },
+  "entities@7.0.1": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/fb55/entities",
+    "publisher": "Felix Boehm",
+    "email": "me@feedic.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/entities",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/entities/LICENSE"
+  },
+  "escalade@3.2.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lukeed/escalade",
+    "publisher": "Luke Edwards",
+    "email": "luke.edwards05@gmail.com",
+    "url": "https://lukeed.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/escalade",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/escalade/license"
+  },
+  "estree-walker@2.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Rich-Harris/estree-walker",
+    "publisher": "Rich Harris",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/estree-walker",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/estree-walker/LICENSE"
+  },
+  "faye-websocket@0.11.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/faye-websocket-node",
+    "publisher": "James Coglan",
+    "email": "jcoglan@gmail.com",
+    "url": "http://jcoglan.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/faye-websocket",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/faye-websocket/LICENSE.md"
+  },
+  "fdir@6.5.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/thecodrr/fdir",
+    "publisher": "thecodrr",
+    "email": "thecodrr@protonmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/fdir",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/fdir/LICENSE"
+  },
+  "firebase@12.15.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "email": "firebase-support@google.com",
+    "url": "https://firebase.google.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/firebase",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/firebase/README.md"
+  },
+  "get-caller-file@2.0.5": {
+    "licenses": "ISC",
+    "repository": "https://github.com/stefanpenner/get-caller-file",
+    "publisher": "Stefan Penner",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/get-caller-file",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/get-caller-file/LICENSE.md"
+  },
+  "graceful-fs@4.2.11": {
+    "licenses": "ISC",
+    "repository": "https://github.com/isaacs/node-graceful-fs",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/graceful-fs",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/graceful-fs/LICENSE"
+  },
+  "http-parser-js@0.5.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/creationix/http-parser-js",
+    "publisher": "Tim Caswell",
+    "url": "https://github.com/creationix",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/http-parser-js",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/http-parser-js/LICENSE.md"
+  },
+  "idb@7.1.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/jakearchibald/idb",
+    "publisher": "Jake Archibald",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/idb",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/idb/LICENSE"
+  },
+  "is-fullwidth-code-point@3.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/is-fullwidth-code-point",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/is-fullwidth-code-point",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/is-fullwidth-code-point/license"
+  },
+  "jiti@2.7.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/unjs/jiti",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/jiti",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/jiti/LICENSE"
+  },
+  "lightningcss-linux-x64-gnu@1.32.0": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss-linux-x64-gnu",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss-linux-x64-gnu/LICENSE"
+  },
+  "lightningcss-linux-x64-musl@1.32.0": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss-linux-x64-musl",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss-linux-x64-musl/LICENSE"
+  },
+  "lightningcss@1.32.0": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lightningcss/LICENSE"
+  },
+  "lodash.camelcase@4.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lodash.camelcase",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/lodash.camelcase/LICENSE"
+  },
+  "long@5.3.2": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/dcodeIO/long.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/long",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/long/LICENSE"
+  },
+  "magic-string@0.30.21": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Rich-Harris/magic-string",
+    "publisher": "Rich Harris",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/magic-string",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/magic-string/LICENSE"
+  },
+  "nanoid@3.3.17": {
+    "licenses": "MIT",
+    "repository": "https://github.com/ai/nanoid",
+    "publisher": "Andrey Sitnik",
+    "email": "andrey@sitnik.ru",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/nanoid",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/nanoid/LICENSE"
+  },
+  "picocolors@1.1.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/alexeyraspopov/picocolors",
+    "publisher": "Alexey Raspopov",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/picocolors",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/picocolors/LICENSE"
+  },
+  "picomatch@4.0.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/micromatch/picomatch",
+    "publisher": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/picomatch",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/picomatch/LICENSE"
+  },
+  "player-app@0.0.0": {
+    "licenses": "UNLICENSED",
+    "private": true,
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/README.md"
+  },
+  "postcss@8.5.25": {
+    "licenses": "MIT",
+    "repository": "https://github.com/postcss/postcss",
+    "publisher": "Andrey Sitnik",
+    "email": "andrey@sitnik.es",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/postcss",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/postcss/LICENSE"
+  },
+  "protobufjs@7.6.5": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/protobufjs/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode+protobufjs@dcode.io",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/protobufjs",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/protobufjs/LICENSE"
+  },
+  "re2js@0.4.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/le0pard/re2js",
+    "publisher": "Alexey Vasiliev",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/re2js",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/re2js/LICENSE"
+  },
+  "require-directory@2.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/troygoode/node-require-directory",
+    "publisher": "Troy Goode",
+    "email": "troygoode@gmail.com",
+    "url": "http://github.com/troygoode/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/require-directory",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/require-directory/LICENSE"
+  },
+  "rolldown@1.1.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/rolldown",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/rolldown/LICENSE"
+  },
+  "safe-buffer@5.2.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/feross/safe-buffer",
+    "publisher": "Feross Aboukhadijeh",
+    "email": "feross@feross.org",
+    "url": "https://feross.org",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/safe-buffer",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/safe-buffer/LICENSE"
+  },
+  "source-map-js@1.2.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/7rulnik/source-map-js",
+    "publisher": "Valentin 7rulnik Semirulnik",
+    "email": "v7rulnik@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/source-map-js",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/source-map-js/LICENSE"
+  },
+  "string-width@4.2.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/string-width",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/string-width",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/string-width/license"
+  },
+  "strip-ansi@6.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/strip-ansi",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/strip-ansi",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/strip-ansi/license"
+  },
+  "tailwindcss@4.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tailwindcss",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tailwindcss/LICENSE"
+  },
+  "tapable@2.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/webpack/tapable",
+    "publisher": "Tobias Koppers @sokra",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tapable",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tapable/LICENSE"
+  },
+  "tinyglobby@0.2.17": {
+    "licenses": "MIT",
+    "repository": "https://github.com/SuperchupuDev/tinyglobby",
+    "publisher": "Superchupu",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tinyglobby",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tinyglobby/LICENSE"
+  },
+  "tslib@2.8.1": {
+    "licenses": "0BSD",
+    "repository": "https://github.com/Microsoft/tslib",
+    "publisher": "Microsoft Corp.",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tslib",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/tslib/LICENSE.txt"
+  },
+  "typescript@5.9.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/microsoft/TypeScript",
+    "publisher": "Microsoft Corp.",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/typescript",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/typescript/LICENSE.txt"
+  },
+  "undici-types@8.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/nodejs/undici",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/undici-types",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/undici-types/LICENSE"
+  },
+  "vite@8.1.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vitejs/vite",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vite",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vite/LICENSE.md"
+  },
+  "vue-i18n@11.4.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vue-i18n",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vue-i18n/LICENSE"
+  },
+  "vue@3.5.39": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vue",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/vue/LICENSE"
+  },
+  "web-vitals@4.2.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/GoogleChrome/web-vitals",
+    "publisher": "Philip Walton",
+    "email": "philip@philipwalton.com",
+    "url": "http://philipwalton.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/web-vitals",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/web-vitals/LICENSE"
+  },
+  "websocket-driver@0.7.5": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/websocket-driver-node",
+    "publisher": "James Coglan",
+    "email": "jcoglan@gmail.com",
+    "url": "http://jcoglan.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/websocket-driver",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/websocket-driver/LICENSE.md"
+  },
+  "websocket-extensions@0.1.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/websocket-extensions-node",
+    "publisher": "James Coglan",
+    "email": "jcoglan@gmail.com",
+    "url": "http://jcoglan.com/",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/websocket-extensions",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/websocket-extensions/LICENSE.md"
+  },
+  "wrap-ansi@7.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/wrap-ansi",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "https://sindresorhus.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/wrap-ansi",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/wrap-ansi/license"
+  },
+  "y18n@5.0.8": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/y18n",
+    "publisher": "Ben Coe",
+    "email": "bencoe@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/y18n",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/y18n/LICENSE"
+  },
+  "yaml@2.9.0": {
+    "licenses": "ISC",
+    "repository": "https://github.com/eemeli/yaml",
+    "publisher": "Eemeli Aro",
+    "email": "eemeli@gmail.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yaml",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yaml/LICENSE"
+  },
+  "yargs-parser@21.1.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/yargs-parser",
+    "publisher": "Ben Coe",
+    "email": "ben@npmjs.com",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yargs-parser",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yargs-parser/LICENSE.txt"
+  },
+  "yargs@17.7.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/yargs/yargs",
+    "path": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yargs",
+    "licenseFile": "/home/loicpp/Documents/dev/MiniHost/player-app/node_modules/yargs/LICENSE"
+  }
+}
+

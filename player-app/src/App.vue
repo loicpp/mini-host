@@ -44,6 +44,14 @@
           />
         </div>
       </main>
+      
+      <footer class="pb-6 text-center">
+        <button @click="showLicenses = true" class="text-xs text-muted-foreground hover:text-primary underline underline-offset-2 transition-colors">
+          {{ $t('app.licenses') }}
+        </button>
+      </footer>
+      
+      <LicensesModal v-if="showLicenses" @close="showLicenses = false" />
     </div>
   </div>
 </template>
@@ -55,6 +63,7 @@ import { gameService } from './services/gameService';
 import { authService } from './services/authService';
 import Login from './components/Login.vue';
 import BlindTestPlayer from './components/games/blind-test/BlindTestPlayer.vue';
+import LicensesModal from './components/ui/LicensesModal.vue';
 
 const activePlayerComponent = computed(() => {
   if (game.value && game.value.gameType === 'blind_test') {
@@ -66,6 +75,7 @@ const activePlayerComponent = computed(() => {
 const { t } = useI18n();
 const state = ref('loading');
 const error = ref('');
+const showLicenses = ref(false);
 const gameId = ref('');
 const secret = ref('');
 const playerId = ref('');

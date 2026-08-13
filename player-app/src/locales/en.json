@@ -5,7 +5,8 @@
     "game_closed": "The game was closed by the host.",
     "connection_error": "Could not connect to the server.",
     "join_error": "Could not join the game. The code might be expired.",
-    "kicked": "You have been removed from the game by the host."
+    "kicked": "You have been removed from the game by the host.",
+    "licenses": "Open Source Licenses"
   },
   "login": {
     "title": "Join the Game",
@@ -38,5 +39,12 @@
     "buzzer_review_you_sub": "Waiting for the host to validate.",
     "buzzer_review_other": "Someone buzzed!",
     "buzzer_review_other_sub": "Waiting for the answer to be validated."
+  },
+  "licenses_modal": {
+    "title": "Open Source Licenses",
+    "author": "Author:",
+    "version": "Version:",
+    "ecosystem": "Ecosystem:",
+    "view_project": "View project"
   }
 }

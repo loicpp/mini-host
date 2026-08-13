@@ -35,9 +35,10 @@
       </div>
       
       <div class="text-center text-muted-foreground/50 text-sm mt-8 font-mono">
-        {{ $t('settings.version') }} {{ appVersion }}
+        <button @click="showLicenses = true" class="hover:text-primary transition-colors hover:underline underline-offset-2">{{ $t('settings.licenses') }}</button> - {{ $t('settings.version') }} {{ appVersion }}
       </div>
     </div>
+    <LicensesModal v-if="showLicenses" @close="showLicenses = false" />
   </div>
 </template>
 
@@ -46,6 +47,7 @@ import { ref } from 'vue';
 import { ChevronLeft, Settings, LogOut } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../ui/Btn.vue';
+import LicensesModal from '../ui/LicensesModal.vue';
 
 const { locale } = useI18n();
 
@@ -59,6 +61,7 @@ const emit = defineEmits<{
 }>();
 
 const localLanguage = ref(locale.value);
+const showLicenses = ref(false);
 
 const handleSave = () => {
   locale.value = localLanguage.value;

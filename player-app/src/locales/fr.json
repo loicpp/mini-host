@@ -5,7 +5,8 @@
     "game_closed": "La partie a été fermée par l'animateur.",
     "connection_error": "Impossible de se connecter au serveur.",
     "join_error": "Impossible de rejoindre la partie. Le code est peut-être expiré.",
-    "kicked": "Vous avez été retiré de la partie par l'animateur."
+    "kicked": "Vous avez été retiré de la partie par l'animateur.",
+    "licenses": "Licences Open Source"
   },
   "login": {
     "title": "Rejoindre la partie",
@@ -38,5 +39,12 @@
     "buzzer_review_you_sub": "En attente de la validation de l'animateur.",
     "buzzer_review_other": "Quelqu'un a buzzé !",
     "buzzer_review_other_sub": "En attente de la validation de la réponse."
+  },
+  "licenses_modal": {
+    "title": "Licences Open Source",
+    "author": "Auteur :",
+    "version": "Version :",
+    "ecosystem": "Écosystème :",
+    "view_project": "Voir le projet"
   }
 }

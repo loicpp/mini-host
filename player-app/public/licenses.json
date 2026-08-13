@@ -1,0 +1,1675 @@
+{
+  "@babel/helper-string-parser": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "version": "7.29.7",
+    "language": "JavaScript/TypeScript"
+  },
+  "@babel/helper-validator-identifier": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "version": "7.29.7",
+    "language": "JavaScript/TypeScript"
+  },
+  "@babel/parser": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "version": "7.29.7",
+    "language": "JavaScript/TypeScript"
+  },
+  "@babel/types": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "version": "7.29.7",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/ai": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "2.13.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/analytics": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.10.22",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/analytics-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.28",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/analytics-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.8.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.15.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-check": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.12.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-check-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.4.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-check-interop-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.3.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-check-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.5.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.5.14",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/app-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.9.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/auth": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "1.13.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/auth-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.6.8",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/auth-interop-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/auth-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.13.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/component": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.7.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/data-connect": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.7.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/database": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "1.1.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/database-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "2.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/database-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "1.0.20",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/firestore": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "4.16.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/firestore-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.4.11",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/firestore-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "3.0.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/functions": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.13.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/functions-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.4.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/functions-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.6.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/installations": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.6.22",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/installations-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.22",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/installations-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.5.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/logger": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.5.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/messaging": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.13.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/messaging-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.27",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/messaging-interop-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/performance": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.7.12",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/performance-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.25",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/performance-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/remote-config": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.8.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/remote-config-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.2.26",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/remote-config-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.5.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/storage": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.14.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/storage-compat": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.4.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/storage-types": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "0.8.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/util": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "1.15.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@firebase/webchannel-wrapper": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "1.0.6",
+    "language": "JavaScript/TypeScript"
+  },
+  "@grpc/grpc-js": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
+    "publisher": "Google Inc.",
+    "version": "1.9.16",
+    "language": "JavaScript/TypeScript"
+  },
+  "@grpc/proto-loader": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/grpc/grpc-node",
+    "publisher": "Google Inc.",
+    "version": "0.7.15",
+    "language": "JavaScript/TypeScript"
+  },
+  "@intlify/core-base": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "version": "11.4.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@intlify/devtools-types": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "version": "11.4.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@intlify/message-compiler": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "version": "11.4.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@intlify/shared": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "version": "11.4.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@jridgewell/gen-mapping": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "version": "0.3.13",
+    "language": "JavaScript/TypeScript"
+  },
+  "@jridgewell/remapping": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "version": "2.3.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@jridgewell/resolve-uri": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/resolve-uri",
+    "publisher": "Justin Ridgewell",
+    "version": "3.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@jridgewell/sourcemap-codec": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "version": "1.5.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@jridgewell/trace-mapping": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jridgewell/sourcemaps",
+    "publisher": "Justin Ridgewell",
+    "version": "0.3.31",
+    "language": "JavaScript/TypeScript"
+  },
+  "@lucide/vue": {
+    "licenses": "ISC",
+    "repository": "https://github.com/lucide-icons/lucide",
+    "publisher": "Eric Fennis",
+    "version": "1.25.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@oxc-project/types": {
+    "licenses": "MIT",
+    "repository": "https://github.com/oxc-project/oxc",
+    "publisher": "Boshen and oxc contributors",
+    "version": "0.138.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/aspromise": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/base64": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/codegen": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "2.0.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/eventemitter": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/fetch": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/float": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.0.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/path": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/pool": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "@protobufjs/utf8": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/protobufjs/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "1.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "@rolldown/binding-linux-x64-gnu": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "publisher": "",
+    "version": "1.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@rolldown/binding-linux-x64-musl": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "publisher": "",
+    "version": "1.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@rolldown/pluginutils": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/plugins",
+    "publisher": "",
+    "version": "1.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@tailwindcss/node": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@tailwindcss/oxide": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@tailwindcss/oxide-linux-x64-gnu": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@tailwindcss/oxide-linux-x64-musl": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@tailwindcss/vite": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "@types/node": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "publisher": "",
+    "version": "26.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "@types/qrcode": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "publisher": "",
+    "version": "1.5.6",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/compiler-core": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/compiler-dom": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/compiler-sfc": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/compiler-ssr": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/devtools-api": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/vue-devtools",
+    "publisher": "Guillaume Chau",
+    "version": "6.6.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/reactivity": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/runtime-core": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/runtime-dom": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/server-renderer": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "@vue/shared": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "altgraph": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.17.5",
+    "language": "Python"
+  },
+  "animator-ui": {
+    "licenses": "UNLICENSED",
+    "repository": "",
+    "publisher": "",
+    "version": "0.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "ansi-regex": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/ansi-regex",
+    "publisher": "Sindre Sorhus",
+    "version": "5.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "ansi-styles": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/ansi-styles",
+    "publisher": "Sindre Sorhus",
+    "version": "4.3.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "anyio": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "4.14.1",
+    "language": "Python"
+  },
+  "blinker": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "1.9.0",
+    "language": "Python"
+  },
+  "bottle": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.13.4",
+    "language": "Python"
+  },
+  "CacheControl": {
+    "licenses": "Apache-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "0.14.4",
+    "language": "Python"
+  },
+  "camelcase": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/camelcase",
+    "publisher": "Sindre Sorhus",
+    "version": "5.3.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "certifi": {
+    "licenses": "Mozilla Public License 2.0 (MPL 2.0)",
+    "repository": "",
+    "publisher": "",
+    "version": "2026.6.17",
+    "language": "Python"
+  },
+  "cffi": {
+    "licenses": "MIT-0",
+    "repository": "",
+    "publisher": "",
+    "version": "2.1.0",
+    "language": "Python"
+  },
+  "charset-normalizer": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "3.4.9",
+    "language": "Python"
+  },
+  "click": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "8.4.2",
+    "language": "Python"
+  },
+  "cliui": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/cliui",
+    "publisher": "Ben Coe",
+    "version": "6.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "color-convert": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Qix-/color-convert",
+    "publisher": "Heather Arthur",
+    "version": "2.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "color-name": {
+    "licenses": "MIT",
+    "repository": "https://github.com/colorjs/color-name",
+    "publisher": "DY",
+    "version": "1.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "coverage": {
+    "licenses": "Apache-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "7.15.1",
+    "language": "Python"
+  },
+  "cryptography": {
+    "licenses": "Apache-2.0 OR BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "49.0.0",
+    "language": "Python"
+  },
+  "csstype": {
+    "licenses": "MIT",
+    "repository": "https://github.com/frenic/csstype",
+    "publisher": "Fredrik Nicol",
+    "version": "3.2.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "decamelize": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/decamelize",
+    "publisher": "Sindre Sorhus",
+    "version": "1.2.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "detect-libc": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/lovell/detect-libc",
+    "publisher": "Lovell Fuller",
+    "version": "2.1.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "dijkstrajs": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tcort/dijkstrajs",
+    "publisher": "",
+    "version": "1.0.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "driver.js": {
+    "licenses": "MIT",
+    "repository": "https://github.com/nilbuild/driver.js",
+    "publisher": "Kamran Ahmed",
+    "version": "1.8.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "emoji-regex": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mathiasbynens/emoji-regex",
+    "publisher": "Mathias Bynens",
+    "version": "8.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "enhanced-resolve": {
+    "licenses": "MIT",
+    "repository": "https://github.com/webpack/enhanced-resolve",
+    "publisher": "Tobias Koppers @sokra",
+    "version": "5.24.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "entities": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/fb55/entities",
+    "publisher": "Felix Boehm",
+    "version": "7.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "escalade": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lukeed/escalade",
+    "publisher": "Luke Edwards",
+    "version": "3.2.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "estree-walker": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Rich-Harris/estree-walker",
+    "publisher": "Rich Harris",
+    "version": "2.0.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "faye-websocket": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/faye-websocket-node",
+    "publisher": "James Coglan",
+    "version": "0.11.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "fdir": {
+    "licenses": "MIT",
+    "repository": "https://github.com/thecodrr/fdir",
+    "publisher": "thecodrr",
+    "version": "6.5.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "find-up": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/find-up",
+    "publisher": "Sindre Sorhus",
+    "version": "4.1.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "firebase": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/firebase/firebase-js-sdk",
+    "publisher": "Firebase",
+    "version": "12.15.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "firebase_admin": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "7.5.0",
+    "language": "Python"
+  },
+  "flake8": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "7.3.0",
+    "language": "Python"
+  },
+  "Flask": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "3.1.3",
+    "language": "Python"
+  },
+  "flask-cors": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "6.0.5",
+    "language": "Python"
+  },
+  "fuse.js": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/krisk/Fuse",
+    "publisher": "Kiro Risk",
+    "version": "7.5.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "get-caller-file": {
+    "licenses": "ISC",
+    "repository": "https://github.com/stefanpenner/get-caller-file",
+    "publisher": "Stefan Penner",
+    "version": "2.0.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "google-api-core": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.31.0",
+    "language": "Python"
+  },
+  "google-auth": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.55.2",
+    "language": "Python"
+  },
+  "google-cloud-core": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.6.0",
+    "language": "Python"
+  },
+  "google-cloud-firestore": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.28.0",
+    "language": "Python"
+  },
+  "google-cloud-storage": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "3.12.0",
+    "language": "Python"
+  },
+  "google-crc32c": {
+    "licenses": "UNKNOWN",
+    "repository": "",
+    "publisher": "",
+    "version": "1.8.0",
+    "language": "Python"
+  },
+  "google-resumable-media": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.10.0",
+    "language": "Python"
+  },
+  "googleapis-common-protos": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "1.75.0",
+    "language": "Python"
+  },
+  "graceful-fs": {
+    "licenses": "ISC",
+    "repository": "https://github.com/isaacs/node-graceful-fs",
+    "publisher": "",
+    "version": "4.2.11",
+    "language": "JavaScript/TypeScript"
+  },
+  "grpcio": {
+    "licenses": "Apache-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "1.81.1",
+    "language": "Python"
+  },
+  "grpcio-status": {
+    "licenses": "Apache-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "1.81.1",
+    "language": "Python"
+  },
+  "h11": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.16.0",
+    "language": "Python"
+  },
+  "h2": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "4.3.0",
+    "language": "Python"
+  },
+  "hpack": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "4.2.0",
+    "language": "Python"
+  },
+  "http-parser-js": {
+    "licenses": "MIT",
+    "repository": "https://github.com/creationix/http-parser-js",
+    "publisher": "Tim Caswell",
+    "version": "0.5.10",
+    "language": "JavaScript/TypeScript"
+  },
+  "httpcore": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "1.0.9",
+    "language": "Python"
+  },
+  "httpx": {
+    "licenses": "BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.28.1",
+    "language": "Python"
+  },
+  "hyperframe": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "6.1.0",
+    "language": "Python"
+  },
+  "idb": {
+    "licenses": "ISC",
+    "repository": "https://github.com/jakearchibald/idb",
+    "publisher": "Jake Archibald",
+    "version": "7.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "idna": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "3.18",
+    "language": "Python"
+  },
+  "iniconfig": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "2.3.0",
+    "language": "Python"
+  },
+  "is-fullwidth-code-point": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/is-fullwidth-code-point",
+    "publisher": "Sindre Sorhus",
+    "version": "3.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "itsdangerous": {
+    "licenses": "BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.2.0",
+    "language": "Python"
+  },
+  "Jinja2": {
+    "licenses": "BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "3.1.6",
+    "language": "Python"
+  },
+  "jiti": {
+    "licenses": "MIT",
+    "repository": "https://github.com/unjs/jiti",
+    "publisher": "",
+    "version": "2.7.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "jsmediatags": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/aadsm/jsmediatags",
+    "publisher": "Ant\u00f3nio Afonso",
+    "version": "3.9.7",
+    "language": "JavaScript/TypeScript"
+  },
+  "lightningcss": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "publisher": "",
+    "version": "1.32.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "lightningcss-linux-x64-gnu": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "publisher": "",
+    "version": "1.32.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "lightningcss-linux-x64-musl": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/parcel-bundler/lightningcss",
+    "publisher": "",
+    "version": "1.32.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "locate-path": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/locate-path",
+    "publisher": "Sindre Sorhus",
+    "version": "5.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "lodash.camelcase": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "version": "4.3.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "long": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/dcodeIO/long.js",
+    "publisher": "Daniel Wirtz",
+    "version": "5.3.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "magic-string": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Rich-Harris/magic-string",
+    "publisher": "Rich Harris",
+    "version": "0.30.21",
+    "language": "JavaScript/TypeScript"
+  },
+  "MarkupSafe": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "3.0.3",
+    "language": "Python"
+  },
+  "mccabe": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.7.0",
+    "language": "Python"
+  },
+  "msgpack": {
+    "licenses": "Apache-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "1.2.1",
+    "language": "Python"
+  },
+  "nanoid": {
+    "licenses": "MIT",
+    "repository": "https://github.com/ai/nanoid",
+    "publisher": "Andrey Sitnik",
+    "version": "3.3.16",
+    "language": "JavaScript/TypeScript"
+  },
+  "p-limit": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/p-limit",
+    "publisher": "Sindre Sorhus",
+    "version": "2.3.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "p-locate": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/p-locate",
+    "publisher": "Sindre Sorhus",
+    "version": "4.1.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "p-try": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/p-try",
+    "publisher": "Sindre Sorhus",
+    "version": "2.2.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "packaging": {
+    "licenses": "Apache-2.0 OR BSD-2-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "26.2",
+    "language": "Python"
+  },
+  "path-exists": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/path-exists",
+    "publisher": "Sindre Sorhus",
+    "version": "4.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "picocolors": {
+    "licenses": "ISC",
+    "repository": "https://github.com/alexeyraspopov/picocolors",
+    "publisher": "Alexey Raspopov",
+    "version": "1.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "picomatch": {
+    "licenses": "MIT",
+    "repository": "https://github.com/micromatch/picomatch",
+    "publisher": "Jon Schlinkert",
+    "version": "4.0.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "pillow": {
+    "licenses": "MIT-CMU",
+    "repository": "",
+    "publisher": "",
+    "version": "12.3.0",
+    "language": "Python"
+  },
+  "player-app": {
+    "licenses": "UNLICENSED",
+    "repository": "",
+    "publisher": "",
+    "version": "0.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "pluggy": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "1.6.0",
+    "language": "Python"
+  },
+  "pngjs": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lukeapage/pngjs",
+    "publisher": "",
+    "version": "5.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "postcss": {
+    "licenses": "MIT",
+    "repository": "https://github.com/postcss/postcss",
+    "publisher": "Andrey Sitnik",
+    "version": "8.5.25",
+    "language": "JavaScript/TypeScript"
+  },
+  "proto-plus": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "1.28.0",
+    "language": "Python"
+  },
+  "protobuf": {
+    "licenses": "3-Clause BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "7.35.1",
+    "language": "Python"
+  },
+  "protobufjs": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/protobufjs/protobuf.js",
+    "publisher": "Daniel Wirtz",
+    "version": "7.6.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "proxy_tools": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.1.0",
+    "language": "Python"
+  },
+  "pyasn1": {
+    "licenses": "BSD-2-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "0.6.3",
+    "language": "Python"
+  },
+  "pyasn1_modules": {
+    "licenses": "BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "0.4.2",
+    "language": "Python"
+  },
+  "pycodestyle": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "2.14.0",
+    "language": "Python"
+  },
+  "pycparser": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "3.0",
+    "language": "Python"
+  },
+  "pyflakes": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "3.4.0",
+    "language": "Python"
+  },
+  "pygame": {
+    "licenses": "GNU Library or Lesser General Public License (LGPL)",
+    "repository": "",
+    "publisher": "",
+    "version": "2.6.1",
+    "language": "Python"
+  },
+  "Pygments": {
+    "licenses": "BSD-2-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "2.20.0",
+    "language": "Python"
+  },
+  "pyinstaller": {
+    "licenses": "GNU General Public License v2 (GPLv2)",
+    "repository": "",
+    "publisher": "",
+    "version": "6.21.0",
+    "language": "Python"
+  },
+  "pyinstaller-hooks-contrib": {
+    "licenses": "Apache Software License; GNU General Public License v2 (GPLv2)",
+    "repository": "",
+    "publisher": "",
+    "version": "2026.6",
+    "language": "Python"
+  },
+  "PyJWT": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "2.13.0",
+    "language": "Python"
+  },
+  "PyQt6": {
+    "licenses": "GPL-3.0-only",
+    "repository": "",
+    "publisher": "",
+    "version": "6.11.0",
+    "language": "Python"
+  },
+  "PyQt6-Qt6": {
+    "licenses": "LGPL v3",
+    "repository": "",
+    "publisher": "",
+    "version": "6.11.1",
+    "language": "Python"
+  },
+  "PyQt6-WebEngine": {
+    "licenses": "GPL-3.0-only",
+    "repository": "",
+    "publisher": "",
+    "version": "6.11.0",
+    "language": "Python"
+  },
+  "PyQt6-WebEngine-Qt6": {
+    "licenses": "LGPL v3",
+    "repository": "",
+    "publisher": "",
+    "version": "6.11.1",
+    "language": "Python"
+  },
+  "PyQt6_sip": {
+    "licenses": "BSD-2-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "13.11.1",
+    "language": "Python"
+  },
+  "pytest": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "9.1.1",
+    "language": "Python"
+  },
+  "pytest-cov": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "7.1.0",
+    "language": "Python"
+  },
+  "pytest-mock": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "3.15.1",
+    "language": "Python"
+  },
+  "pywebview": {
+    "licenses": "BSD License",
+    "repository": "",
+    "publisher": "",
+    "version": "6.2.1",
+    "language": "Python"
+  },
+  "PyYAML": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "6.0.3",
+    "language": "Python"
+  },
+  "qrcode": {
+    "licenses": "MIT",
+    "repository": "https://github.com/soldair/node-qrcode",
+    "publisher": "Ryan Day",
+    "version": "1.5.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "QtPy": {
+    "licenses": "MIT License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.4.3",
+    "language": "Python"
+  },
+  "re2js": {
+    "licenses": "MIT",
+    "repository": "https://github.com/le0pard/re2js",
+    "publisher": "Alexey Vasiliev",
+    "version": "0.4.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "redis": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "8.0.1",
+    "language": "Python"
+  },
+  "requests": {
+    "licenses": "Apache Software License",
+    "repository": "",
+    "publisher": "",
+    "version": "2.34.2",
+    "language": "Python"
+  },
+  "require-directory": {
+    "licenses": "MIT",
+    "repository": "https://github.com/troygoode/node-require-directory",
+    "publisher": "Troy Goode",
+    "version": "2.1.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "require-main-filename": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/require-main-filename",
+    "publisher": "Ben Coe",
+    "version": "2.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "rolldown": {
+    "licenses": "MIT",
+    "repository": "https://github.com/rolldown/rolldown",
+    "publisher": "",
+    "version": "1.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "safe-buffer": {
+    "licenses": "MIT",
+    "repository": "https://github.com/feross/safe-buffer",
+    "publisher": "Feross Aboukhadijeh",
+    "version": "5.2.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "set-blocking": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/set-blocking",
+    "publisher": "Ben Coe",
+    "version": "2.0.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "source-map-js": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/7rulnik/source-map-js",
+    "publisher": "Valentin 7rulnik Semirulnik",
+    "version": "1.2.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "spotipy": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "2.26.0",
+    "language": "Python"
+  },
+  "string-width": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/string-width",
+    "publisher": "Sindre Sorhus",
+    "version": "4.2.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "strip-ansi": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/strip-ansi",
+    "publisher": "Sindre Sorhus",
+    "version": "6.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "tailwindcss": {
+    "licenses": "MIT",
+    "repository": "https://github.com/tailwindlabs/tailwindcss",
+    "publisher": "",
+    "version": "4.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "tapable": {
+    "licenses": "MIT",
+    "repository": "https://github.com/webpack/tapable",
+    "publisher": "Tobias Koppers @sokra",
+    "version": "2.3.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "tinyglobby": {
+    "licenses": "MIT",
+    "repository": "https://github.com/SuperchupuDev/tinyglobby",
+    "publisher": "Superchupu",
+    "version": "0.2.17",
+    "language": "JavaScript/TypeScript"
+  },
+  "tslib": {
+    "licenses": "0BSD",
+    "repository": "https://github.com/Microsoft/tslib",
+    "publisher": "Microsoft Corp.",
+    "version": "2.8.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "typescript": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/microsoft/TypeScript",
+    "publisher": "Microsoft Corp.",
+    "version": "5.9.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "typing_extensions": {
+    "licenses": "PSF-2.0",
+    "repository": "",
+    "publisher": "",
+    "version": "4.16.0",
+    "language": "Python"
+  },
+  "undici-types": {
+    "licenses": "MIT",
+    "repository": "https://github.com/nodejs/undici",
+    "publisher": "",
+    "version": "8.3.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "urllib3": {
+    "licenses": "MIT",
+    "repository": "",
+    "publisher": "",
+    "version": "2.7.0",
+    "language": "Python"
+  },
+  "vite": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vitejs/vite",
+    "publisher": "Evan You",
+    "version": "8.1.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "vue": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/core",
+    "publisher": "Evan You",
+    "version": "3.5.39",
+    "language": "JavaScript/TypeScript"
+  },
+  "vue-i18n": {
+    "licenses": "MIT",
+    "repository": "https://github.com/intlify/vue-i18n",
+    "publisher": "kazuya kawaguchi",
+    "version": "11.4.2",
+    "language": "JavaScript/TypeScript"
+  },
+  "vue-router": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vuejs/router",
+    "publisher": "Eduardo San Martin Morote",
+    "version": "4.6.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "web-vitals": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/GoogleChrome/web-vitals",
+    "publisher": "Philip Walton",
+    "version": "4.2.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "websocket-driver": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/websocket-driver-node",
+    "publisher": "James Coglan",
+    "version": "0.7.5",
+    "language": "JavaScript/TypeScript"
+  },
+  "websocket-extensions": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/faye/websocket-extensions-node",
+    "publisher": "James Coglan",
+    "version": "0.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "Werkzeug": {
+    "licenses": "BSD-3-Clause",
+    "repository": "",
+    "publisher": "",
+    "version": "3.1.8",
+    "language": "Python"
+  },
+  "which-module": {
+    "licenses": "ISC",
+    "repository": "https://github.com/nexdrew/which-module",
+    "publisher": "nexdrew",
+    "version": "2.0.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "wrap-ansi": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/wrap-ansi",
+    "publisher": "Sindre Sorhus",
+    "version": "6.2.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "xhr2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/pwnall/node-xhr2",
+    "publisher": "Victor Costan",
+    "version": "0.1.4",
+    "language": "JavaScript/TypeScript"
+  },
+  "y18n": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/y18n",
+    "publisher": "Ben Coe",
+    "version": "4.0.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "yaml": {
+    "licenses": "ISC",
+    "repository": "https://github.com/eemeli/yaml",
+    "publisher": "Eemeli Aro",
+    "version": "2.9.0",
+    "language": "JavaScript/TypeScript"
+  },
+  "yargs": {
+    "licenses": "MIT",
+    "repository": "https://github.com/yargs/yargs",
+    "publisher": "",
+    "version": "15.4.1",
+    "language": "JavaScript/TypeScript"
+  },
+  "yargs-parser": {
+    "licenses": "ISC",
+    "repository": "https://github.com/yargs/yargs-parser",
+    "publisher": "Ben Coe",
+    "version": "18.1.3",
+    "language": "JavaScript/TypeScript"
+  },
+  "yt-dlp": {
+    "licenses": "Unlicense",
+    "repository": "",
+    "publisher": "",
+    "version": "2026.7.4",
+    "language": "Python"
+  }
+}
