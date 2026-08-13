@@ -4,7 +4,6 @@
     "subtitle": "Manage your Blind Test game",
     "new_game": "New Game",
     "resume_game": "Resume Game",
-    "playlists": "Setup (Playlists)",
     "setup": "Setup",
     "diagnostics": "Run Diagnostics",
     "settings": "Global Settings",
@@ -34,9 +33,6 @@
     "back": "Back",
     "title": "Settings",
     "subtitle": "Select the default audio source for your games.",
-    "source": "Audio Source:",
-    "source_soundcloud": "☁️ SoundCloud Link",
-    "source_local": "📁 Audio File (Local MP3)",
     "language": "Interface Language:",
     "logout_title": "Log out from the control panel",
     "logout_subtitle": "Disconnect from the current account",
@@ -67,9 +63,6 @@
     "block_short": "Block",
     "music_short": "Music",
     "thinking_short": "Total",
-    "quick_modes": "Quick Game Modes:",
-    "buzzer": "Buzzer:",
-    "text": "Text:",
     "block_duration": "Initial block time:",
     "block_duration_tooltip": "Delay at the beginning of the round where answering is disabled. Ideal to let everyone listen to the music before the first guesses.",
     "music_duration": "Music duration:",
@@ -82,13 +75,10 @@
     "allow_suggestions_desc": "Show hints while typing",
     "mode_buzzer": "Buzzer (First to click answers)",
     "mode_text": "Text Input (Everyone types their answer)",
-    "starting_playlist": "Starting playlist:",
     "tracks": "tracks",
     "no_playlist": "You don't have any {type} playlist configured.",
     "create_first_playlist": "Create my first playlist",
     "start_button": "Create game",
-    "local": "local",
-    "soundcloud": "SoundCloud",
     "quick_mode_normal": "Normal",
     "quick_mode_hard": "Hard",
     "quick_mode_fun": "Fun",
@@ -119,14 +109,9 @@
     "certified": "Music certified by iTunes",
     "not_certified": "Music not recognized by iTunes",
     "add_sc": "Add a track (SoundCloud)",
-    "track_title": "Track title",
-    "artist": "Artist",
     "sc_url": "Full SoundCloud link",
     "add": "Add",
     "add_local": "Add local files",
-    "local_help": "Select one or more files, or an entire folder. Title and artist will be extracted automatically if possible.",
-    "select_files": "Select files",
-    "select_folder": "Select a folder",
     "import_track": "Import a track",
     "import_folder": "Import a folder",
     "playlist_empty": "This playlist is empty.",
@@ -173,8 +158,6 @@
     "nobody_found": "Nobody found it (Reveal)",
     "reveal_results": "Reveal Results",
     "next_round": "Next Round",
-    "scores": "Scores",
-    "no_players": "No players",
     "close_projector": "Close Projector",
     "open_projector": "Open Projector",
     "game_info": "Game Info",
@@ -196,7 +179,6 @@
     "close": "Close",
     "step_internet": "Internet Connectivity",
     "step_local_perms": "Local write permissions",
-    "step_projector": "Projector Communication",
     "step_backend": "Local Backend Connection",
     "step_itunes": "iTunes API Availability",
     "step_lastfm": "Last.fm API Availability",
@@ -212,18 +194,13 @@
     "no_internet": "No internet connection",
     "perms_ok": "Configuration saved locally",
     "perms_error": "Could not write configuration",
-    "proj_ok": "Projector is listening",
-    "proj_error": "Projector API error",
     "backend_ok": "Backend is reachable and healthy",
     "backend_error": "Backend is not running or unreachable",
     "itunes_ok": "iTunes API available for suggestions",
     "itunes_warning": "iTunes API unreachable (suggestions will fail)",
     "lastfm_ok": "Last.fm API available for generation",
     "lastfm_warning": "Last.fm API not configured (generation disabled)",
-    "playback_ok": "Audio playback works",
     "playback_error": "Playback error",
-    "create_ok": "Game created (ID:",
-    "create_error": "Creation error:",
     "realtime_ok": "Realtime events working",
     "realtime_error": "Timeout for synchronization (WebSockets blocked?)",
     "popup_ok": "Pop-ups allowed",
@@ -233,8 +210,6 @@
     "qrcode_ok": "QR Code generated locally successfully",
     "qrcode_error": "QR Code generation failed",
     "qrcode_invalid": "Invalid QR Code data",
-    "fetch_ok": "Game successfully fetched",
-    "fetch_error": "Cannot read game:",
     "cleanup_ok": "Temporary data cleaned",
     "cleanup_error": "Cleanup error:",
     "backend_unavailable": "Backend unavailable",
@@ -251,7 +226,6 @@
   "projector": {
     "scan_to_play": "Scan to play!",
     "connecting": "Connecting to the game...",
-    "join_game": "Join the game",
     "scan_to_join": "Scan to join!",
     "rules": "Game Rules",
     "get_ready": "Get ready!",
@@ -283,8 +257,6 @@
     "a_player": "A player",
     "players_status": "Live Player Status",
     "round_results": "Round results",
-    "points_won": "Points won (this round)",
-    "no_points_won": "No points won this round...",
     "manage_players": "Manage Players",
     "no_players_connected": "No players connected.",
     "anonymous": "Anonymous",
@@ -320,7 +292,6 @@
     "search": "Search or add music...",
     "sort_by_title": "Title",
     "sort_by_artist": "Artist",
-    "no_result": "No results for this search.",
     "search_temp_title": "Search",
     "search_temp_desc": "Add a temporary track",
     "temporary_track": "Temporary track",
@@ -423,7 +394,6 @@
         "description": "Finally, this last button allows you to access the global settings of MiniHost. You can configure the application according to your preferences here."
       },
       "step7": {
-        "title": "Setup",
         "description": "To start creating blind test games, we need a playlist. Click on Setup!"
       }
     },
@@ -491,7 +461,6 @@
     },
     "resumeHomeSequence": {
       "step1": {
-        "title": "Create a game",
         "description": "Now that we have created a playlist. We can start a game.\nClick here to create a game!"
       }
     },
@@ -581,7 +550,6 @@
         "description": "When players answer, their status is updated in real time."
       },
       "step8": {
-        "title": "List of answers",
         "description": "Once all players have answered, the timer automatically stops and their answers appear here. You can then award or remove points."
       },
       "step9": {
@@ -589,7 +557,6 @@
         "description": "To speed up the correction, you can use this button to automatically grade players' answers."
       },
       "step10": {
-        "title": "List of answers",
         "description": "Auto-correction has been applied. You see here that Alice found the track."
       },
       "step11": {

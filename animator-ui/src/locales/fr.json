@@ -4,7 +4,6 @@
     "subtitle": "Gérez votre partie de Blind Test",
     "new_game": "Nouvelle Partie",
     "resume_game": "Reprendre la partie",
-    "playlists": "Mise en place (Playlists)",
     "setup": "Mise en place",
     "diagnostics": "Lancer les diagnostics",
     "settings": "Paramètres globaux",
@@ -34,9 +33,6 @@
     "back": "Retour",
     "title": "Paramètres",
     "subtitle": "Sélectionnez la source de musique qui sera utilisée par défaut pour vos parties.",
-    "source": "Source Audio :",
-    "source_soundcloud": "☁️ Lien SoundCloud",
-    "source_local": "📁 Fichier Audio (MP3 Local)",
     "language": "Langue de l'interface :",
     "logout_title": "Déconnexion de la régie",
     "logout_subtitle": "Se déconnecter du compte actuel",
@@ -67,9 +63,6 @@
     "block_short": "Blocage",
     "music_short": "Musique",
     "thinking_short": "Total",
-    "quick_modes": "Modes de jeu rapides :",
-    "buzzer": "Buzzer :",
-    "text": "Saisie :",
     "block_duration": "Temps de blocage :",
     "block_duration_tooltip": "Délai au début de la manche où il est impossible de répondre. Idéal pour laisser tout le monde écouter la musique avant les premières propositions.",
     "music_duration": "Temps de la musique :",
@@ -82,13 +75,10 @@
     "allow_suggestions_desc": "Afficher les suggestions pendant la frappe",
     "mode_buzzer": "Buzzer (Le premier qui clique répond)",
     "mode_text": "Saisie de la musique (Chacun tape sa réponse)",
-    "starting_playlist": "Playlist de départ :",
     "tracks": "titres",
     "no_playlist": "Vous n'avez aucune playlist {type} configurée.",
     "create_first_playlist": "Créer ma première playlist",
     "start_button": "Créer la partie",
-    "local": "locale",
-    "soundcloud": "SoundCloud",
     "quick_mode_normal": "Normal",
     "quick_mode_hard": "Difficile",
     "quick_mode_fun": "Fun",
@@ -116,14 +106,9 @@
     "back": "Retour aux playlists",
     "editing": "Édition :",
     "add_sc": "Ajouter un titre (SoundCloud)",
-    "track_title": "Titre du morceau",
-    "artist": "Artiste",
     "sc_url": "Lien SoundCloud complet",
     "add": "Ajouter",
     "add_local": "Ajouter des fichiers locaux",
-    "local_help": "Sélectionnez un ou plusieurs fichiers, ou un dossier entier. Le titre et l'artiste seront extraits automatiquement si possible.",
-    "select_files": "Sélectionner des fichiers",
-    "select_folder": "Sélectionner un dossier",
     "import_track": "Importer une musique",
     "import_folder": "Importer un dossier",
     "playlist_empty": "Cette playlist est vide.",
@@ -173,8 +158,6 @@
     "nobody_found": "Personne n'a trouvé (Dévoiler)",
     "reveal_results": "Dévoiler les Résultats",
     "next_round": "Prochain Tour",
-    "scores": "Scores",
-    "no_players": "Aucun joueur",
     "close_projector": "Fermer le Projecteur",
     "open_projector": "Ouvrir le Projecteur",
     "game_info": "Infos de la partie",
@@ -196,7 +179,6 @@
     "close": "Fermer",
     "step_internet": "Connectivité Internet",
     "step_local_perms": "Droits d'écriture locaux",
-    "step_projector": "Communication Projecteur",
     "step_backend": "Connexion au Backend Local",
     "step_itunes": "Disponibilité de l'API iTunes",
     "step_lastfm": "Disponibilité de l'API Last.fm",
@@ -212,18 +194,13 @@
     "no_internet": "Pas de connexion Internet",
     "perms_ok": "Configuration sauvegardée localement",
     "perms_error": "Impossible d'écrire la configuration",
-    "proj_ok": "Projecteur en écoute",
-    "proj_error": "Erreur d'API Projecteur",
     "backend_ok": "Backend joignable et sain",
     "backend_error": "Le backend n'est pas lancé ou inaccessible",
     "itunes_ok": "API iTunes disponible pour les suggestions",
     "itunes_warning": "API iTunes inaccessible (les suggestions échoueront)",
     "lastfm_ok": "API Last.fm disponible pour la génération",
     "lastfm_warning": "API Last.fm non configurée (génération désactivée)",
-    "playback_ok": "La lecture audio fonctionne",
     "playback_error": "Erreur de lecture",
-    "create_ok": "Partie créée (ID:",
-    "create_error": "Erreur création:",
     "realtime_ok": "Événements temps réel fonctionnels",
     "realtime_error": "Délai dépassé pour la synchronisation (WebSockets bloqués ?)",
     "popup_ok": "Pop-ups autorisées",
@@ -233,8 +210,6 @@
     "qrcode_ok": "QR Code généré localement avec succès",
     "qrcode_error": "Échec de la génération du QR Code",
     "qrcode_invalid": "Données du QR Code invalides",
-    "fetch_ok": "Partie récupérée avec succès",
-    "fetch_error": "Impossible de lire la partie:",
     "cleanup_ok": "Données temporaires nettoyées",
     "cleanup_error": "Erreur de nettoyage:",
     "backend_unavailable": "Backend indisponible",
@@ -251,7 +226,6 @@
   "projector": {
     "scan_to_play": "Scannez pour jouer !",
     "connecting": "Connexion à la partie...",
-    "join_game": "Rejoignez la partie",
     "scan_to_join": "Scannez pour participer !",
     "rules": "Règles de la partie",
     "get_ready": "Préparez-vous !",
@@ -283,8 +257,6 @@
     "a_player": "Un joueur",
     "players_status": "Statut des joueurs en direct",
     "round_results": "Résultats de la manche",
-    "points_won": "Points remportés (cette manche)",
-    "no_points_won": "Personne n'a remporté de points sur cette manche...",
     "manage_players": "Gestion des Joueurs",
     "no_players_connected": "Aucun joueur connecté.",
     "anonymous": "Anonyme",
@@ -320,7 +292,6 @@
     "search": "Rechercher ou ajouter une musique...",
     "sort_by_title": "Titre",
     "sort_by_artist": "Artiste",
-    "no_result": "Aucun résultat pour cette recherche.",
     "search_temp_title": "Rechercher",
     "search_temp_desc": "Ajouter une musique temporaire",
     "temporary_track": "Musique temporaire",
@@ -423,7 +394,6 @@
         "description": "Enfin, ce dernier bouton vous permet d'accéder aux paramètres globaux de MiniHost. Vous pourrez y configurer l'application selon vos préférences."
       },
       "step7": {
-        "title": "Mise en place",
         "description": "Pour commencer à créer des parties de blind test, il va nous falloir une playlist. Cliquez sur Mise en place !"
       }
     },
@@ -491,7 +461,6 @@
     },
     "resumeHomeSequence": {
       "step1": {
-        "title": "Créer une partie",
         "description": "Maintenant que nous avons créer une playlist. Nous allons pouvoir commencer une partie.\nCliquez ici pour créer une partie !"
       }
     },
@@ -581,7 +550,6 @@
         "description": "Quand les joueurs répondent, leur statut est mis à jour au fur et à mesure."
       },
       "step8": {
-        "title": "Liste des réponses",
         "description": "Une fois que tous les joueurs ont répondus, on arrête automatiquement le tour et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
       },
       "step9": {
@@ -589,7 +557,6 @@
         "description": "Pour accélerer la correction, vous pouvez utiliser ce bouton pour corriger automatiquement les réponses des joueurs."
       },
       "step10": {
-        "title": "Liste des réponses",
         "description": "L'auto-correction a été appliquée. Vous voyez ici que Alice a trouvé la musique."
       },
       "step11": {
