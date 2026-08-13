@@ -93,8 +93,67 @@
 
     <div class="h-px bg-[rgba(0,0,0,0.05)] w-full my-4 shrink-0"></div>
 
-    <div class="flex-1 overflow-y-auto min-h-0 pr-2">
-      <!-- Scores section removed per user request -->
+    <div class="flex-1 overflow-y-auto min-h-0 flex flex-col justify-start">
+      <button 
+        v-if="gameId && gameSettings" 
+        @click="$emit('open-settings')"
+        class="w-full text-left bg-gray-50 opacity-70 hover:opacity-100 transition-all cursor-pointer border border-gray-100 p-4 rounded-xl shadow-sm text-sm flex flex-col gap-3 relative overflow-hidden group"
+      >
+        <!-- Background decoration -->
+        <div class="absolute -right-4 -top-4 w-16 h-16 bg-white/40 rounded-full blur-xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5"><Info class="w-3.5 h-3.5" /> {{ $t('sidebar.game_info') }}</span>
+          <span class="font-mono font-bold text-primary bg-white px-2 py-0.5 rounded border border-gray-100 shadow-sm">#{{ gameId }}</span>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 font-medium flex items-center gap-1.5"><MessageSquare class="w-3.5 h-3.5 text-gray-400" /> {{ $t('sidebar.response_type') }}</span>
+          <span class="font-bold text-gray-800 flex items-center gap-1.5 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+            <Bell v-if="gameMode === 'buzzer'" class="w-3.5 h-3.5 text-gray-400" />
+            <Type v-else class="w-3.5 h-3.5 text-gray-400" />
+            {{ gameMode === 'buzzer' ? $t('create_game.mode_buzzer_title') : $t('create_game.mode_text_title') }}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 font-medium flex items-center gap-1.5"><Gamepad2 class="w-3.5 h-3.5 text-gray-400" /> {{ $t('sidebar.game_mode') }}</span>
+          <span class="font-bold text-gray-800 flex items-center gap-1.5 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+            <Clock v-if="gameSettings.preset === 'normal'" class="w-3.5 h-3.5 text-gray-400" />
+            <Zap v-else-if="gameSettings.preset === 'hard'" class="w-3.5 h-3.5 text-gray-400" />
+            <Smile v-else-if="gameSettings.preset === 'fun'" class="w-3.5 h-3.5 text-gray-400" />
+            <Leaf v-else-if="gameSettings.preset === 'peaceful'" class="w-3.5 h-3.5 text-gray-400" />
+            <Settings2 v-else class="w-3.5 h-3.5 text-gray-400" />
+            {{ $t('create_game.quick_mode_' + (gameSettings.preset || 'custom')) }}
+          </span>
+        </div>
+
+        <div class="flex gap-2 mt-1">
+          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" title="Temps de blocage">
+            <Clock class="w-3.5 h-3.5 text-gray-400" />
+            <span class="font-bold text-xs">{{ gameSettings.blockDuration }}s</span>
+          </div>
+          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" title="Durée de la musique">
+            <Music class="w-3.5 h-3.5 text-amber-500" />
+            <span class="font-bold text-xs">{{ gameSettings.musicDuration }}s</span>
+          </div>
+          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" title="Temps total">
+            <Hourglass class="w-3.5 h-3.5 text-blue-500" />
+            <span class="font-bold text-xs">{{ gameSettings.duration }}s</span>
+          </div>
+        </div>
+
+        <div v-if="(gameMode === 'text' && gameSettings.allowSuggestions) || gameSettings.penaltyOnWrongAnswer" class="flex flex-wrap gap-2 mt-1 border-t border-gray-100 pt-3">
+          <div v-if="gameMode === 'text' && gameSettings.allowSuggestions" class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 shadow-sm">
+            <Lightbulb class="w-3.5 h-3.5" />
+            {{ $t('create_game.allow_suggestions_short') }}
+          </div>
+          <div v-if="gameSettings.penaltyOnWrongAnswer" class="flex items-center gap-1.5 text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded-full border border-rose-100 shadow-sm">
+            <AlertTriangle class="w-3.5 h-3.5" />
+            {{ $t('create_game.auto_correction_penalty_short') }}
+          </div>
+        </div>
+      </button>
     </div>
 
     <div class="mt-4 pt-4 border-t border-[rgba(0,0,0,0.05)] shrink-0">
@@ -107,7 +166,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye } from '@lucide/vue';
+import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Lightbulb, AlertTriangle, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2 } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
 import Btn from '../ui/Btn.vue';
 import BackButton from '../ui/BackButton.vue';
@@ -121,6 +180,8 @@ const props = defineProps<{
   selectedTrack: Track | null;
   nextTrackInfo: { answer: string };
   gameMode: string;
+  gameId?: string;
+  gameSettings?: any;
   hasBuzzed: boolean;
   lastPlayedTrack?: Track | null;
   players?: Record<string, any>;
@@ -143,6 +204,7 @@ const emit = defineEmits<{
   (e: 'load-playlist', tracks: Track[]): void;
   (e: 'update:searchQuery', val: string): void;
   (e: 'update:nextTrackInfo', val: { answer: string }): void;
+  (e: 'open-settings'): void;
 }>();
 
 const handleToggleProjector = () => {

@@ -44,6 +44,11 @@ export class FirebaseGameRepository implements GameRepository {
     await update(gameRef, updates);
   }
 
+  async updateGameSettings(gameId: string, settings: any) {
+    const gameRef = ref(db, `games/${gameId}`);
+    await update(gameRef, { 'data/settings': settings });
+  }
+
   listenToPlayers(gameId: string, callback: (players: any) => void) {
     const playersRef = ref(db, `games/${gameId}/players`);
     return onValue(playersRef, (snapshot) => {

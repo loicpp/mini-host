@@ -7,7 +7,8 @@
     "playlists": "Mise en place (Playlists)",
     "setup": "Mise en place",
     "diagnostics": "Lancer les diagnostics",
-    "settings": "Paramètres globaux"
+    "settings": "Paramètres globaux",
+    "game_settings": "Paramètres de la partie"
   },
   "setup": {
     "back": "Retour",
@@ -77,6 +78,7 @@
     "total_duration_tooltip": "Durée totale de la manche. Elle inclut le temps de blocage, le temps de musique, ainsi que le silence éventuel à la fin.",
     "game_mode": "Mode de jeu :",
     "allow_suggestions": "Propositions de saisie",
+    "allow_suggestions_short": "Suggestions",
     "allow_suggestions_desc": "Afficher les suggestions pendant la frappe",
     "mode_buzzer": "Buzzer (Le premier qui clique répond)",
     "mode_text": "Saisie de la musique (Chacun tape sa réponse)",
@@ -89,10 +91,14 @@
     "soundcloud": "SoundCloud",
     "quick_mode_normal": "Normal",
     "quick_mode_hard": "Difficile",
+    "quick_mode_fun": "Fun",
+    "quick_mode_peaceful": "Paisible",
+    "quick_mode_custom": "Personnalisé",
     "playlist_placeholder": "Sélectionnez une playlist...",
     "no_playlist_available": "Aucune playlist disponible. Créez-en une d'abord !",
     "options_title": "Options additionnelles :",
     "auto_correction_penalty": "Pénalité d'erreur",
+    "auto_correction_penalty_short": "Pénalité",
     "auto_correction_penalty_desc": "Perdre des points sur les mauvaises réponses"
   },
   "playlists": {
@@ -170,7 +176,10 @@
     "scores": "Scores",
     "no_players": "Aucun joueur",
     "close_projector": "Fermer le Projecteur",
-    "open_projector": "Ouvrir le Projecteur"
+    "open_projector": "Ouvrir le Projecteur",
+    "game_info": "Infos de la partie",
+    "response_type": "Réponse",
+    "game_mode": "Mode"
   },
   "players_grid": {
     "no_answer": "Aucune réponse",

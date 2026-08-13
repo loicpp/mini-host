@@ -7,7 +7,8 @@
     "playlists": "Setup (Playlists)",
     "setup": "Setup",
     "diagnostics": "Run Diagnostics",
-    "settings": "Global Settings"
+    "settings": "Global Settings",
+    "game_settings": "Game Settings"
   },
   "setup": {
     "back": "Back",
@@ -77,6 +78,7 @@
     "total_duration_tooltip": "Total duration of the round. It includes the blocking time, the music time, and any silence at the end.",
     "game_mode": "Game mode:",
     "allow_suggestions": "Input Suggestions",
+    "allow_suggestions_short": "Suggestions",
     "allow_suggestions_desc": "Show hints while typing",
     "mode_buzzer": "Buzzer (First to click answers)",
     "mode_text": "Text Input (Everyone types their answer)",
@@ -89,10 +91,14 @@
     "soundcloud": "SoundCloud",
     "quick_mode_normal": "Normal",
     "quick_mode_hard": "Hard",
+    "quick_mode_fun": "Fun",
+    "quick_mode_peaceful": "Peaceful",
+    "quick_mode_custom": "Custom",
     "playlist_placeholder": "Select a playlist...",
     "no_playlist_available": "No playlist available. Create one first!",
     "options_title": "Additional Options:",
     "auto_correction_penalty": "Error Penalty",
+    "auto_correction_penalty_short": "Penalty",
     "auto_correction_penalty_desc": "Lose points on wrong answers"
   },
   "playlists": {
@@ -170,7 +176,10 @@
     "scores": "Scores",
     "no_players": "No players",
     "close_projector": "Close Projector",
-    "open_projector": "Open Projector"
+    "open_projector": "Open Projector",
+    "game_info": "Game Info",
+    "response_type": "Response",
+    "game_mode": "Preset"
   },
   "players_grid": {
     "no_answer": "No answer",

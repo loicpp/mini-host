@@ -18,6 +18,10 @@ export const animatorService = {
     return gameRepo.updateGameState(gameId, status, trackInfo);
   },
 
+  async updateGameSettings(gameId: string, settings: any) {
+    return gameRepo.updateGameSettings(gameId, settings);
+  },
+
   listenToPlayers(gameId: string, callback: (players: any) => void) {
     return gameRepo.listenToPlayers(gameId, callback);
   },

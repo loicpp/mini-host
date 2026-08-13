@@ -46,6 +46,7 @@ export function useGameSession() {
         mode: settings.mode,
         allowSuggestions: settings.allowSuggestions ?? true,
         penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false,
+        preset: settings.preset || 'custom',
         playlist: settings.playlist
       };
     }
@@ -240,6 +241,32 @@ export function useGameSession() {
     }
   };
 
+  const updateGameSettings = async (newSettings: any) => {
+    if (!gameId.value) return;
+    gameSettings.value = { ...gameSettings.value, ...newSettings };
+    
+    try {
+      await animatorService.updateGameSettings(gameId.value, gameSettings.value);
+    } catch (e) {
+      console.warn("Could not update settings in Firebase", e);
+    }
+
+    try {
+      await fetch('http://127.0.0.1:5000/api/game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          localTracks: localTracks.value, 
+          playedTracks: playedTracks.value, 
+          settings: gameSettings.value,
+          gameType: gameType.value 
+        })
+      });
+    } catch (e) {
+      console.warn("Could not sync settings to python backend", e);
+    }
+  };
+
   const restartGame = async () => {
     status.value = 'waiting';
     try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
@@ -275,6 +302,7 @@ export function useGameSession() {
     toggleProjector,
     nextRound,
     endGame,
-    restartGame
+    restartGame,
+    updateGameSettings
   };
 }

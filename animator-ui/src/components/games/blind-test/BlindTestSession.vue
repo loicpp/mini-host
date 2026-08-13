@@ -10,6 +10,8 @@
       :localTracks="localTracks"
       :selectedTrack="selectedTrack"
       :gameMode="gameSettings.mode"
+      :gameId="gameId"
+      :gameSettings="gameSettings"
       :hasBuzzed="hasBuzzed"
       :lastPlayedTrack="lastPlayedTrack"
       :players="displayedPlayers"
@@ -24,6 +26,7 @@
       @resume-music="resumeMusic"
       @correct-buzzer="correctBuzzer"
       @auto-correct="handleAutoCorrect"
+      @open-settings="isSettingsDrawerOpen = true"
     />
 
     <main class="flex-1 flex flex-col overflow-hidden relative p-8">
@@ -306,6 +309,12 @@
         @track-added="handleTempTrackAdded"
       />
 
+      <GameSettingsDrawer
+        :isOpen="isSettingsDrawerOpen"
+        :gameSettings="gameSettings"
+        @close="isSettingsDrawerOpen = false"
+        @save-settings="handleSaveSettings"
+      />
     </main>
   </div>
 </template>
@@ -323,6 +332,7 @@ import GameSidebar from '../../control-panel/GameSidebar.vue';
 import LocalTracksView from '../../control-panel/LocalTracksView.vue';
 import PlayersGrid from '../../control-panel/PlayersGrid.vue';
 import TemporaryTrackModal from '../../control-panel/TemporaryTrackModal.vue';
+import GameSettingsDrawer from '../../control-panel/GameSettingsDrawer.vue';
 
 import { 
   gameId, status, currentSource, isProjectorOpen, searchQuery, nextTrackInfo,
@@ -339,7 +349,7 @@ import { onMounted, onUnmounted, nextTick, watch } from 'vue';
 const { t } = useI18n();
 const router = useRouter();
 
-const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame } = useGameSession();
+const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame, updateGameSettings } = useGameSession();
 const { 
   displayedPlayers, sortedPlayersList, playersRoundResults, hasBuzzed, 
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
@@ -349,12 +359,24 @@ const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched,
 
 const gameSidebarRef = ref<any>(null);
 
+const isSettingsDrawerOpen = ref(false);
+
+const handleSaveSettings = async (newSettings: any) => {
+  await updateGameSettings(newSettings);
+  isSettingsDrawerOpen.value = false;
+};
+
 const handleKeydown = (e: KeyboardEvent) => {
   const target = e.target as HTMLElement;
   const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
   if (e.key === 'Escape') {
-    if (isPlayerActionsModalOpen.value) {
+    if (isSettingsDrawerOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      isSettingsDrawerOpen.value = false;
+      return;
+    } else if (isPlayerActionsModalOpen.value) {
       e.preventDefault();
       e.stopPropagation();
       isPlayerActionsModalOpen.value = false;

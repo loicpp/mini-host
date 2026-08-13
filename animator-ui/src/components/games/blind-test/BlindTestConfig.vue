@@ -82,7 +82,7 @@
           </OptionCard>
 
           <OptionCard 
-            title="Fun" 
+            :title="$t('create_game.quick_mode_fun')" 
             :description="$t('create_game.fun_desc')" 
             layout="vertical"
             :selected="isPresetSelected(0, 30, 30, true, false)"
@@ -94,7 +94,7 @@
           </OptionCard>
 
           <OptionCard 
-            title="Peaceful" 
+            :title="$t('create_game.quick_mode_peaceful')" 
             :description="$t('create_game.peaceful_desc')" 
             layout="vertical"
             :selected="isPresetSelected(10, 30, 30, true, false)"
@@ -445,11 +445,27 @@ const startGame = () => {
   
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
   
+  const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean) => {
+    const expectedSuggestions = settings.value.mode === 'buzzer' ? false : s;
+    return blockDuration === b &&
+           musicDuration === m &&
+           duration === t &&
+           settings.value.allowSuggestions === expectedSuggestions &&
+           settings.value.penaltyOnWrongAnswer === p;
+  };
+  
+  let preset = 'custom';
+  if (checkPreset(0, 15, 15, true, false)) preset = 'normal';
+  else if (checkPreset(0, 5, 10, false, true)) preset = 'hard';
+  else if (checkPreset(0, 30, 30, true, false)) preset = 'fun';
+  else if (checkPreset(10, 30, 30, true, false)) preset = 'peaceful';
+  
   const finalSettings = {
     ...settings.value,
     duration,
     musicDuration,
     blockDuration,
+    preset,
     playlist: selectedPlaylist
   };
   

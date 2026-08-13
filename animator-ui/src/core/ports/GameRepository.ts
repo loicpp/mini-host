@@ -2,6 +2,7 @@ export interface GameRepository {
   createGame(gameType: string, settings?: any): Promise<{ gameId: string, secret: string }>;
   getGame(gameId: string): Promise<any>;
   updateGameState(gameId: string, status: string, trackInfo?: any): Promise<void>;
+  updateGameSettings(gameId: string, settings: any): Promise<void>;
   listenToPlayers(gameId: string, callback: (players: any) => void): () => void;
   listenToPressedBuzzer(gameId: string, callback: (buzzer: any) => void): () => void;
   clearPlayerGuess(gameId: string, playerId: string): Promise<void>;
