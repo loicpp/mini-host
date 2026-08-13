@@ -3,6 +3,7 @@ import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackI
 import { animatorService } from '../services/animatorService';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
+import Fuse from 'fuse.js';
 
 export function useGamePlayers() {
   const { t } = useI18n();
@@ -169,30 +170,43 @@ export function useGamePlayers() {
   const autoCorrect = () => {
     wasAutoCorrected.value = true;
     if (!nextTrackInfo.value.answer) return;
-    const target = nextTrackInfo.value.answer.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    const target = nextTrackInfo.value.answer;
+    const fuseTarget = new Fuse([target], {
+      includeScore: true,
+      threshold: 0.3,
+      ignoreLocation: true
+    });
     
     for (const id in players.value) {
       const guess = players.value[id]?.currentGuess;
       if (guess && guess.title) {
-        const gTitle = guess.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const gArtist = (guess.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        
-        const guessFull1 = gTitle + gArtist;
-        const guessFull2 = gArtist + gTitle;
-        
-        const hasTitle = gTitle.length > 2 && (target.includes(gTitle) || gTitle.includes(target));
-        const hasArtist = gArtist.length > 2 && (target.includes(gArtist) || gArtist.includes(target));
+        const queries = [guess.title];
+        if (guess.artist) {
+          queries.push(`${guess.title} - ${guess.artist}`);
+          queries.push(`${guess.artist} - ${guess.title}`);
+        }
         
         let isCorrect = false;
-
-        if (hasTitle && hasArtist) {
-          isCorrect = true;
-        } else if (guessFull1.length > 2 && (target.includes(guessFull1) || guessFull1.includes(target))) {
-          isCorrect = true;
-        } else if (guessFull2.length > 2 && (target.includes(guessFull2) || guessFull2.includes(target))) {
-          isCorrect = true;
-        } else if (hasTitle && target.length <= gTitle.length + 5) {
-          isCorrect = true;
+        
+        // Forward check: search each query against the target
+        for (const q of queries) {
+          if (fuseTarget.search(q).length > 0) {
+            isCorrect = true;
+            break;
+          }
+        }
+        
+        // Reverse check: search the target against the guess combinations
+        if (!isCorrect) {
+          const fuseGuess = new Fuse(queries, {
+            includeScore: true,
+            threshold: 0.2,
+            ignoreLocation: true
+          });
+          if (fuseGuess.search(target).length > 0) {
+            isCorrect = true;
+          }
         }
         
         autoCorrectResults.value[id] = isCorrect;
