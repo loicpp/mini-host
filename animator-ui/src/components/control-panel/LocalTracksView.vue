@@ -7,6 +7,7 @@
           <Search class="h-4 w-4 text-muted-foreground" />
         </div>
         <input 
+          ref="searchInput"
           type="text" 
           v-model="searchQuery" 
           @keydown.esc="searchQuery = ''"
@@ -95,6 +96,13 @@ const emit = defineEmits<{
 
 const sortBy = ref<'title' | 'artist'>('title');
 const trackListContainer = ref<HTMLElement | null>(null);
+const searchInput = ref<HTMLInputElement | null>(null);
+
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  searchInput.value?.focus();
+});
 
 const scrollToTrack = (trackId: string) => {
   nextTick(() => {
@@ -114,7 +122,11 @@ const scrollToTrack = (trackId: string) => {
   });
 };
 
-defineExpose({ scrollToTrack });
+const focusSearch = () => {
+  searchInput.value?.focus();
+};
+
+defineExpose({ scrollToTrack, focusSearch });
 
 const processedTracks = computed(() => {
   let tracks = [...props.localTracks];
@@ -173,9 +185,16 @@ const toggleSort = () => {
 const handleEnterKey = () => {
   if (processedTracks.value.length === 1) {
     const track = processedTracks.value[0];
-    emit('select-track', props.selectedTrack?.id === track.id ? null : track);
+    const isSelecting = props.selectedTrack?.id !== track.id;
+    emit('select-track', isSelecting ? track : null);
+    if (isSelecting) {
+      searchInput.value?.blur();
+    } else {
+      searchInput.value?.focus();
+    }
   } else if (searchQuery.value && searchQuery.value.trim().length >= 5) {
     emit('open-temp-track-modal', searchQuery.value);
+    searchInput.value?.blur();
   }
 };
 </script>

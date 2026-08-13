@@ -1,5 +1,6 @@
 <template>
   <button 
+    ref="btnRef"
     :disabled="disabled"
     :class="[
       baseClass,
@@ -15,7 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+const btnRef = ref<HTMLButtonElement | null>(null);
+defineExpose({ btnRef });
 
 const { variant = "primary", size = "md", className = "", disabled = false } = defineProps<{
   variant?: "primary" | "secondary" | "ghost" | "danger" | "success" | "dark" | "cyan" | "orange" | "blue" | "pink" | "gray" | "soft" | "ghost-yellow" | "ghost-orange" | "ghost-red" | "dark-gray" | "black" | "gray-medium"

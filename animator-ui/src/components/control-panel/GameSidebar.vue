@@ -70,10 +70,10 @@
 
       <div class="flex flex-col gap-3 w-full" v-if="status === 'reviewing'">
         <template v-if="gameMode === 'buzzer' && hasBuzzed">
-          <Btn variant="ghost" className="w-full font-bold text-blue-600 border border-blue-200 bg-blue-50" @click="$emit('resume-music')">
+          <Btn id="btn-reject-buzzer" ref="rejectBuzzerBtn" variant="ghost" className="w-full font-bold text-blue-600 border border-blue-200 bg-blue-50" @click="$emit('resume-music')">
             <X class="w-4 h-4 mr-2" /> {{ $t('sidebar.wrong_resume') }}
           </Btn>
-          <Btn variant="pink" className="w-full font-bold" @click="$emit('correct-buzzer')">
+          <Btn id="btn-validate-buzzer" ref="validateBuzzerBtn" variant="pink" className="w-full font-bold" @click="$emit('correct-buzzer')">
             <Check class="w-4 h-4 mr-2" /> {{ $t('sidebar.correct_reveal') }}
           </Btn>
         </template>
@@ -159,5 +159,13 @@ watch(() => localNextTrackInfo.value.answer, () => {
 });
 watch(() => props.nextTrackInfo.answer, (val) => {
   localNextTrackInfo.value.answer = val;
+});
+
+const validateBuzzerBtn = ref<any>(null);
+const rejectBuzzerBtn = ref<any>(null);
+
+defineExpose({
+  validateBuzzerBtn,
+  rejectBuzzerBtn
 });
 </script>

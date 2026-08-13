@@ -19,7 +19,7 @@ let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
 export function useGameMusic() {
   const { t } = useI18n();
   const { showAlert } = useDialog();
-  const { setPlayerBlock } = useGamePlayers();
+  const { setPlayerBlock, revealResults } = useGamePlayers();
 
   const lastPlayedTrack = computed(() => {
     if (playedTracks.value.length === 0) return null;
@@ -96,8 +96,12 @@ export function useGameMusic() {
 
   const stopMusic = async () => {
     await musicManager.stop();
-    status.value = 'reviewing';
-    await animatorService.updateGameState(gameId.value, 'reviewing');
+    if (gameSettings.value.mode === 'buzzer' && !pressedBuzzer.value) {
+      await revealResults();
+    } else {
+      status.value = 'reviewing';
+      await animatorService.updateGameState(gameId.value, 'reviewing');
+    }
   };
 
   const pauseMusic = async () => {

@@ -1,6 +1,7 @@
 <template>
   <div class="flex w-full h-full" @click="handleGlobalClick">
     <GameSidebar 
+      ref="gameSidebarRef"
       :status="status"
       :currentSource="currentSource"
       :isProjectorOpen="isProjectorOpen"
@@ -332,7 +333,7 @@ import { useGameSession } from '../../../composables/useGameSession';
 import { useGamePlayers } from '../../../composables/useGamePlayers';
 import { useGameMusic } from '../../../composables/useGameMusic';
 import { useTutorial } from '../../../composables/useTutorial';
-import { onMounted, nextTick } from 'vue';
+import { onMounted, onUnmounted, nextTick, watch } from 'vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -345,11 +346,86 @@ const {
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
 const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched, advanceTutorialStep, advanceToPlayerMenu, advanceToPlayerActions } = useTutorial();
 
+const gameSidebarRef = ref<any>(null);
+
+const handleKeydown = (e: KeyboardEvent) => {
+  const target = e.target as HTMLElement;
+  const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+  if (e.shiftKey && (e.key === 'P' || e.key === 'p')) {
+    e.preventDefault();
+    toggleProjector();
+    return;
+  }
+
+  if (isInput) return;
+
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    if (target.tagName === 'BUTTON' && status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
+      // Allow native spacebar to click the currently focused button
+    } else {
+      e.preventDefault();
+      if (status.value === 'waiting') {
+        if (selectedTrack.value) handlePlayMusic();
+      } else if (status.value === 'playing') {
+        stopMusic();
+      } else if (status.value === 'reviewing') {
+        if (!(gameSettings.value.mode === 'buzzer' && hasBuzzed.value)) {
+          handleRevealResults();
+        }
+      } else if (status.value === 'results') {
+        handleNextRound();
+      }
+    }
+  } else if (e.key === 'Enter') {
+    if (status.value === 'reviewing') {
+      if (gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
+        // If native focus is not on a button, force correct (valider)
+        if (target.tagName !== 'BUTTON') {
+          e.preventDefault();
+          correctBuzzer();
+        }
+      } else if (gameSettings.value.mode === 'text') {
+        e.preventDefault();
+        handleAutoCorrect();
+      }
+    } else if (status.value === 'waiting') {
+      if (selectedTrack.value) {
+        e.preventDefault();
+        handleSelectTrack(null);
+      }
+    }
+  } else if (e.key === 'ArrowUp') {
+    if (status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
+      e.preventDefault();
+      gameSidebarRef.value?.rejectBuzzerBtn?.btnRef?.focus();
+    }
+  } else if (e.key === 'ArrowDown') {
+    if (status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
+      e.preventDefault();
+      gameSidebarRef.value?.validateBuzzerBtn?.btnRef?.focus();
+    }
+  }
+};
+
+watch([() => status.value, () => hasBuzzed.value], ([newStatus, newBuzzed]) => {
+  if (newStatus === 'reviewing' && newBuzzed && gameSettings.value.mode === 'buzzer') {
+    setTimeout(() => {
+      gameSidebarRef.value?.validateBuzzerBtn?.btnRef?.focus();
+    }, 100);
+  }
+});
+
 const handleSelectTrack = async (track: any) => {
   selectTrack(track);
   await nextTick();
   if (track) {
     advanceToTrackSelected();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  } else {
+    localTracksViewRef.value?.focusSearch();
   }
 };
 
@@ -392,7 +468,12 @@ const handleEndGame = async () => {
 };
 
 onMounted(async () => {
+  window.addEventListener('keydown', handleKeydown);
   playGameSessionSequence();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
 });
 
 const isPlayersModalOpen = ref(false);
