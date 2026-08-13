@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full w-full relative py-12 px-6">
-    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="handleBack">
-      <ChevronLeft class="w-4 h-4" /> {{ $t('playlists.quit_edition') }}
-    </button>
+    <BackButton @click="handleBack" class="absolute top-6 left-6">
+      {{ $t('playlists.quit_edition') }}
+    </BackButton>
     
     <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-4xl">
       <h2 class="text-3xl font-black text-primary text-center mb-2 flex items-center justify-center gap-3">
@@ -62,11 +62,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ChevronLeft, ListMusic } from '@lucide/vue';
+import { ListMusic } from '@lucide/vue';
 
 import PlaylistList from '../playlist-config/PlaylistList.vue';
 import PlaylistEditor from '../playlist-config/PlaylistEditor.vue';
 import PlaylistGeneratorModal from '../playlist-config/PlaylistGeneratorModal.vue';
+import BackButton from '../ui/BackButton.vue';
 
 import { usePlaylists } from '../../composables/usePlaylists';
 import { usePlaylistEditor } from '../../composables/usePlaylistEditor';

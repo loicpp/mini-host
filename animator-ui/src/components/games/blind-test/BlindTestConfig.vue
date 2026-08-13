@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full w-full relative p-4 bg-[#F8F9FA]">
     <!-- Back Button -->
-    <button class="absolute top-4 left-4 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
-      <ChevronLeft class="w-4 h-4" /> {{ $t('create_game.back') }}
-    </button>
+    <BackButton @click="$emit('back')" class="absolute top-4 left-4">
+      {{ $t('create_game.back') }}
+    </BackButton>
 
     <!-- Main Card -->
     <div id="blind-test-main-card" class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm w-full max-w-2xl flex flex-col gap-6 mt-4">
@@ -287,13 +287,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { ChevronLeft, Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
+import { Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
 import Slider from '../../ui/Slider.vue';
 import OptionCard from '../../ui/OptionCard.vue';
 import StepSection from '../../ui/StepSection.vue';
+import BackButton from '../../ui/BackButton.vue';
 import { useTutorial } from '../../../composables/useTutorial.ts';
 
 const { playInitBlindTestSequence } = useTutorial();

@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-full w-full relative p-6">
-    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
-      <ChevronLeft class="w-4 h-4" /> {{ $t('game_selector.back') }}
-    </button>
+    <BackButton @click="$emit('back')" class="absolute top-6 left-6">
+      {{ $t('game_selector.back') }}
+    </BackButton>
     
     <div class="w-full max-w-5xl">
       <h2 class="text-4xl font-black text-primary text-center mb-2">{{ $t('game_selector.title') }}</h2>
@@ -33,8 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft, Music, HelpCircle } from '@lucide/vue';
+import { Music, HelpCircle } from '@lucide/vue';
 import SelectionCard from '../ui/SelectionCard.vue';
+import BackButton from '../ui/BackButton.vue';
 
 defineEmits<{
   (e: 'back'): void;

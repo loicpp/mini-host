@@ -29,7 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 import { Search, X } from '@lucide/vue';
 import Modal from '../ui/Modal.vue';
 import TrackAdder from '../playlist-config/TrackAdder.vue';

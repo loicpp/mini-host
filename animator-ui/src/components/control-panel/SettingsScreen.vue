@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-full w-full relative p-6">
-    <button class="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-primary font-bold text-sm transition-colors z-10" @click="$emit('back')">
-      <ChevronLeft class="w-4 h-4" /> {{ $t('settings.back') }}
-    </button>
+    <BackButton @click="$emit('back')" class="absolute top-6 left-6">
+      {{ $t('settings.back') }}
+    </BackButton>
     
     <div class="bg-white p-10 rounded-3xl border border-[rgba(0,0,0,0.08)] shadow-xl w-full max-w-lg">
       <h2 class="text-3xl font-black text-primary text-center mb-2 flex items-center justify-center gap-3">
@@ -44,10 +44,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ChevronLeft, Settings, LogOut } from '@lucide/vue';
+import { Settings, LogOut } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../ui/Btn.vue';
 import LicensesModal from '../ui/LicensesModal.vue';
+import BackButton from '../ui/BackButton.vue';
 
 const { locale } = useI18n();
 

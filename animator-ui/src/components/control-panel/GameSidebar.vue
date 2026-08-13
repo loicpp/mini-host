@@ -1,8 +1,8 @@
 <template>
   <aside class="w-[300px] bg-white text-primary p-6 flex flex-col border-r border-[rgba(0,0,0,0.05)] h-full shadow-sm">
-    <button id="btn-quit-game" class="flex items-center gap-2 text-muted-foreground hover:text-[#f1416c] font-bold text-sm mb-6 transition-colors self-start" @click="$emit('leave-game')">
-      <ChevronLeft class="w-4 h-4" /> {{ $t('sidebar.quit') }}
-    </button>
+    <BackButton id="btn-quit-game" class="mb-6 self-start hover:text-[#f1416c]" @click="$emit('leave-game')">
+      {{ $t('sidebar.quit') }}
+    </BackButton>
     
     <div class="h-[100px] shrink-0 flex flex-col justify-center">
       <div class="w-full" v-if="status !== 'waiting'">
@@ -107,9 +107,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { ChevronLeft, Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye } from '@lucide/vue';
+import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
 import Btn from '../ui/Btn.vue';
+import BackButton from '../ui/BackButton.vue';
 
 const props = defineProps<{
   status: string;

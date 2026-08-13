@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col">
     <div class="flex justify-between items-center mb-6 pb-4 border-b border-[rgba(0,0,0,0.05)]">
-      <Btn variant="soft" size="sm" @click="$emit('back')" id="btn-playlist-back">
-        <ChevronLeft class="w-4 h-4 mr-1" /> {{ $t('playlists.back') }}
-      </Btn>
+      <BackButton @click="$emit('back')" id="btn-playlist-back">
+        {{ $t('playlists.back') }}
+      </BackButton>
       <div class="flex items-center gap-3">
         <div v-if="isEditingName" class="flex items-center gap-2">
           <span class="text-[#FFBA49] font-bold text-xl">{{ $t('playlists.editing') }}</span>
@@ -59,8 +59,9 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue';
-import { ChevronLeft, Edit3 } from '@lucide/vue';
+import { Edit3 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
+import BackButton from '../ui/BackButton.vue';
 import Badge from '../ui/Badge.vue';
 import TextInput from '../ui/TextInput.vue';
 import TrackAdder from './TrackAdder.vue';
