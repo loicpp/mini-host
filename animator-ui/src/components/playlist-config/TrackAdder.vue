@@ -7,6 +7,7 @@
     
     <div v-if="playlistType === 'soundcloud' && !newTrack.title" class="relative mb-4 z-10">
       <TextInput 
+        id="track-search-input"
         ref="searchInputRef"
         v-model="searchQuery" 
         @input="onSearchInput"
@@ -142,7 +143,6 @@ import TextInput from '../ui/TextInput.vue';
 import { Track } from '../../types/playlist';
 import { useTrackSearch } from '../../composables/useTrackSearch';
 import { useTrackCertifier } from '../../composables/useTrackCertifier';
-import { useTutorial } from '../../composables/useTutorial';
 
 const props = defineProps<{
   playlistType?: 'soundcloud' | 'local';
@@ -164,17 +164,6 @@ const emit = defineEmits<{
 
 const { searchQuery, suggestions, isSearching, handleSearch, handleSearchBlur, clearSearch } = useTrackSearch();
 const { autoCertifyTrack } = useTrackCertifier();
-const { isTutorialActive, advanceToSuggestions, advanceToCertification } = useTutorial();
-
-const tutorialAdvancedToSuggestions = ref(false);
-watch(suggestions, (newVal) => {
-  if (newVal.length > 0 && isTutorialActive.value && !tutorialAdvancedToSuggestions.value) {
-    tutorialAdvancedToSuggestions.value = true;
-    nextTick(() => {
-      setTimeout(() => advanceToSuggestions(), 100);
-    });
-  }
-});
 
 const isEditingTrack = ref(false);
 const editInput = ref<any>(null);
@@ -290,12 +279,6 @@ const selectSuggestion = async (item: {title: string, artist: string, url?: stri
   
   emit('update:newTrack', updatedTrack);
   clearSearch();
-  
-  if (isTutorialActive.value) {
-    nextTick(() => {
-      setTimeout(() => advanceToCertification(), 100);
-    });
-  }
   
   nextTick(() => {
     urlInputRef.value?.focus();

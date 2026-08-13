@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { ChevronLeft, Edit3 } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Badge from '../ui/Badge.vue';
@@ -68,7 +68,7 @@ import TrackList from './TrackList.vue';
 import { Playlist, Track } from '../../types/playlist';
 import { useTutorial } from '../../composables/useTutorial';
 
-const { isTutorialActive, playPlaylistEditorSequence, advanceToTrackAdded } = useTutorial();
+const { playPlaylistEditorSequence } = useTutorial();
 
 onMounted(() => {
   playPlaylistEditorSequence();
@@ -82,13 +82,7 @@ const props = defineProps<{
   testDuration: number;
 }>();
 
-watch(() => props.playlist?.tracks?.length, (newLen, oldLen) => {
-  if ((newLen || 0) > (oldLen || 0) && isTutorialActive.value) {
-    nextTick(() => {
-      setTimeout(() => advanceToTrackAdded(), 100);
-    });
-  }
-});
+
 
 const emit = defineEmits<{
   (e: 'back'): void;

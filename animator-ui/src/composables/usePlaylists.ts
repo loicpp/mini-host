@@ -4,12 +4,14 @@ import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
 import { useTrackCertifier } from './useTrackCertifier';
 
+export const globalPlaylists = ref<Playlist[]>([]);
+
 export function usePlaylists() {
   const { showConfirm, showAlert } = useDialog();
   const { t } = useI18n();
   const { autoCertifyTrack } = useTrackCertifier();
   
-  const playlists = ref<Playlist[]>([]);
+  const playlists = globalPlaylists;
   const isGenerating = ref(false);
 
   const loadPlaylists = async () => {

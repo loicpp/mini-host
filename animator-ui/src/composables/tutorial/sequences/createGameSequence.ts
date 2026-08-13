@@ -1,0 +1,47 @@
+import { driver } from 'driver.js';
+import i18n from '../../../i18n';
+import { tutorialState, isTutorialActive } from '../state';
+import { goBackToSequence } from '../utils';
+import { resumeHomeSequence } from './homeSequence';
+
+const { t } = i18n.global;
+
+export const playCreateGameSequence = (router?: any, startIndex: number = 1) => {
+  if (!isTutorialActive.value) return;
+  setTimeout(() => {
+    if (tutorialState.driverObj) {
+      tutorialState.driverObj.destroy();
+    }
+    tutorialState.driverObj = driver({
+      allowClose: false,
+      showButtons: ['next', 'previous'],
+      nextBtnText: t('tutorial.buttons.next'),
+      prevBtnText: t('tutorial.buttons.prev'),
+      doneBtnText: t('tutorial.buttons.done'),
+      onPrevClick: () => {
+        if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
+      },
+      steps: [
+        { popover: { title: 'dummy', description: '' }, element: 'body' }, // index 0
+        {
+          element: '#game-type-selector',
+          popover: {
+            title: t('tutorial.createGameSequence.step1.title'),
+            description: t('tutorial.createGameSequence.step1.description'),
+            side: 'top',
+            align: 'start',
+            showButtons: ['next', 'previous'],
+            onPrevClick: () => {
+              goBackToSequence(router, '/', resumeHomeSequence, 1);
+            },
+            onNextClick: () => {
+              if (router) router.push('/blind-test/init');
+            }
+          }
+        },
+        { popover: { title: 'dummy', description: '' }, element: 'body' } // index 2
+      ]
+    });
+    tutorialState.driverObj.drive(startIndex);
+  }, 500);
+};
