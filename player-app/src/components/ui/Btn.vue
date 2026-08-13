@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   variant: { type: String, default: "primary" },
   size: { type: String, default: "md" },
   className: { type: String, default: "" },

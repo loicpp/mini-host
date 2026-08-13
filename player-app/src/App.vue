@@ -118,7 +118,7 @@ onMounted(async () => {
         state.value = 'error';
       }
     });
-  } catch (e) {
+  } catch (_e) {
     error.value = t('app.connection_error');
     state.value = 'error';
   }

@@ -1,5 +1,5 @@
 import { db, auth } from '../firebase';
-import { ref, set, onValue, runTransaction } from "firebase/database";
+import { ref, set, onValue } from "firebase/database";
 
 export const gameService = {
 
@@ -64,7 +64,7 @@ export const gameService = {
         currentStatus = snap.val();
       }
       triggerCallback();
-    }, (error) => {
+    }, (_error) => {
       gameExists = false;
       triggerCallback();
     });
@@ -113,7 +113,7 @@ export const gameService = {
     try {
       await set(buzzerRef, user.uid);
       return true; // Si la promesse se résout, c'est que la règle !data.exists() a été respectée (on est le premier)
-    } catch (error) {
+    } catch (_error) {
       return false; // Si une erreur est levée (Permission denied), quelqu'un a été plus rapide
     }
   }

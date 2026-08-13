@@ -31,7 +31,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const props = defineProps({
+defineProps({
   gameId: {
     type: String,
     required: true
