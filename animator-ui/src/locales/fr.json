@@ -299,7 +299,10 @@
     "delete_game": "Quitter et supprimer",
     "backend_disconnected": "Impossible de contacter le serveur local (backend). Assurez-vous que l'application de bureau est bien lancée.",
     "backend_disconnected_title": "Connexion perdue",
-    "reconnecting": "Tentative de reconnexion..."
+    "reconnecting": "Tentative de reconnexion...",
+    "reveal_no_points_title": "Aucun point attribué",
+    "reveal_no_points_message": "Des joueurs ont répondu mais aucun point n'a été attribué. Voulez-vous vraiment révéler les résultats sans donner de points ?",
+    "reveal_no_points_confirm": "Oui, révéler"
   },
   "local_tracks": {
     "no_folder": "Aucun dossier sélectionné. Cliquez sur ⚙️ pour configurer vos playlists.",

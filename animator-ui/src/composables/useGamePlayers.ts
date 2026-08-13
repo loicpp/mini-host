@@ -134,6 +134,30 @@ export function useGamePlayers() {
   };
 
   const revealResults = async () => {
+    if (gameSettings.value.mode === 'text' && status.value === 'reviewing') {
+      let hasAnswers = false;
+      let hasPointsAwarded = false;
+      
+      for (const id in displayedPlayers.value) {
+        if (displayedPlayers.value[id].hasAnswered) {
+          hasAnswers = true;
+        }
+        if (displayedPlayers.value[id].pendingPoints !== 0) {
+          hasPointsAwarded = true;
+        }
+      }
+      
+      if (hasAnswers && !hasPointsAwarded) {
+        const confirmed = await showConfirm({
+          title: t('control_panel.reveal_no_points_title', 'Aucun point attribué'),
+          message: t('control_panel.reveal_no_points_message', 'Des joueurs ont répondu mais aucun point n\'a été attribué. Voulez-vous vraiment révéler les résultats ?'),
+          confirmText: t('control_panel.reveal_no_points_confirm', 'Oui, révéler'),
+          confirmVariant: 'primary'
+        });
+        if (!confirmed) return;
+      }
+    }
+
     status.value = 'results';
     await applyPendingPoints();
     await animatorService.clearPressedBuzzer(gameId.value);

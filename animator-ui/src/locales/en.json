@@ -297,9 +297,12 @@
     "game_finished_message": "The game has been stopped. You can restart a new session with the same players.",
     "back_to_menu": "Return to main menu",
     "delete_game": "Quit and delete",
-    "backend_disconnected": "Cannot reach local server (backend). Please make sure the desktop app is running.",
-    "backend_disconnected_title": "Connection lost",
-    "reconnecting": "Attempting to reconnect..."
+    "backend_disconnected": "Cannot connect to the local server (backend). Ensure the desktop app is running.",
+    "backend_disconnected_title": "Connection Lost",
+    "reconnecting": "Attempting to reconnect...",
+    "reveal_no_points_title": "No points awarded",
+    "reveal_no_points_message": "Players have answered but no points were awarded. Do you really want to reveal the results without giving any points?",
+    "reveal_no_points_confirm": "Yes, reveal"
   },
   "local_tracks": {
     "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left.",

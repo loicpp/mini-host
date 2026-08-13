@@ -352,6 +352,39 @@ const handleKeydown = (e: KeyboardEvent) => {
   const target = e.target as HTMLElement;
   const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
+  if (e.key === 'Escape') {
+    if (isPlayerActionsModalOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      isPlayerActionsModalOpen.value = false;
+      return;
+    } else if (isPlayersModalOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      isPlayersModalOpen.value = false;
+      return;
+    } else if (isTempTrackModalOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      isTempTrackModalOpen.value = false;
+      return;
+    }
+  }
+
+  if (e.key === 'Enter') {
+    if (isPlayerActionsModalOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      savePlayerActions();
+      return;
+    } else if (isPlayersModalOpen.value) {
+      e.preventDefault();
+      e.stopPropagation();
+      isPlayersModalOpen.value = false;
+      return;
+    }
+  }
+
   if (e.shiftKey && (e.key === 'P' || e.key === 'p')) {
     e.preventDefault();
     toggleProjector();

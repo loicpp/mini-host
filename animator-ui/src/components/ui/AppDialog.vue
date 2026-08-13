@@ -32,8 +32,30 @@ import { TriangleAlert, Info } from '@lucide/vue';
 import Modal from './Modal.vue';
 import Btn from './Btn.vue';
 import { useDialog } from '../../composables/useDialog';
+import { onMounted, onUnmounted } from 'vue';
 
 const { isOpen, options, handleConfirm, handleCancel } = useDialog();
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (!isOpen.value) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    e.stopPropagation();
+    handleCancel();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    e.stopPropagation();
+    handleConfirm();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown, { capture: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeydown, { capture: true });
+});
 </script>
 
 <style>
