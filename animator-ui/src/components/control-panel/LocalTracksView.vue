@@ -44,12 +44,14 @@
             :class="getTrackClasses(track)"
             @click.stop="$emit('select-track', selectedTrack?.id === track.id ? null : track)"
           >
-            <div class="text-3xl mr-4" :title="track.isTemporary ? $t('local_tracks.temporary_track') : ''">
-              🎵
-            </div>
-            <div class="flex flex-col min-w-0" :title="`${track.title} - ${track.artist}`">
-              <h4 class="m-0 text-primary font-bold truncate">{{ track.title }}</h4>
-              <p class="m-0 text-muted-foreground text-xs truncate">{{ track.artist }}</p>
+            <div :class="['flex items-center w-full min-w-0 transition-opacity duration-200', playedTracks.includes(track.id || '') ? 'opacity-40 grayscale' : '']">
+              <div class="text-3xl mr-4 shrink-0" :title="track.isTemporary ? $t('local_tracks.temporary_track') : ''">
+                🎵
+              </div>
+              <div class="flex flex-col min-w-0" :title="`${track.title} - ${track.artist}`">
+                <h4 class="m-0 text-primary font-bold truncate">{{ track.title }}</h4>
+                <p class="m-0 text-muted-foreground text-xs truncate">{{ track.artist }}</p>
+              </div>
             </div>
           </div>
           <div 
@@ -171,7 +173,6 @@ const processedTracks = computed(() => {
 
 const getTrackClasses = (track: Track) => {
   const isSelected = props.selectedTrack?.id === track.id;
-  const isPlayed = props.playedTracks.includes(track.id || '');
   
   let classes = 'flex items-center p-4 border rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-1';
   
@@ -188,10 +189,6 @@ const getTrackClasses = (track: Track) => {
     } else {
       classes += ' border-[rgba(0,0,0,0.08)] bg-white';
     }
-  }
-  
-  if (isPlayed) {
-    classes += ' opacity-40 grayscale';
   }
   
   return classes;

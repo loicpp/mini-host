@@ -186,6 +186,28 @@ watch(suggestions, () => {
   selectedSuggestionIndex.value = -1;
 });
 
+const scrollToSuggestion = () => {
+  nextTick(() => {
+    const list = document.getElementById('track-suggestions-list');
+    if (!list) return;
+    const items = list.querySelectorAll('li');
+    const selectedItem = items[selectedSuggestionIndex.value] as HTMLElement;
+    
+    if (selectedItem) {
+      const listTop = list.scrollTop;
+      const listBottom = listTop + list.clientHeight;
+      const itemTop = selectedItem.offsetTop;
+      const itemBottom = itemTop + selectedItem.offsetHeight;
+
+      if (itemTop < listTop) {
+        list.scrollTop = itemTop;
+      } else if (itemBottom > listBottom) {
+        list.scrollTop = itemBottom - list.clientHeight;
+      }
+    }
+  });
+};
+
 const selectNextSuggestion = () => {
   if (suggestions.value.length > 0) {
     if (selectedSuggestionIndex.value < suggestions.value.length - 1) {
@@ -193,6 +215,7 @@ const selectNextSuggestion = () => {
     } else {
       selectedSuggestionIndex.value = 0;
     }
+    scrollToSuggestion();
   }
 };
 
@@ -203,6 +226,7 @@ const selectPrevSuggestion = () => {
     } else {
       selectedSuggestionIndex.value = suggestions.value.length - 1;
     }
+    scrollToSuggestion();
   }
 };
 
