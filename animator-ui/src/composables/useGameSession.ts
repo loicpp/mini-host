@@ -177,6 +177,7 @@ export function useGameSession() {
     }
     gameId.value = '';
     selectedTrack.value = null;
+    searchQuery.value = '';
   };
 
   const deleteAndLeaveGame = async () => {

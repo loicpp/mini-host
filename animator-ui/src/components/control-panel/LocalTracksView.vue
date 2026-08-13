@@ -9,6 +9,8 @@
         <input 
           type="text" 
           v-model="searchQuery" 
+          @keydown.esc="searchQuery = ''"
+          @keydown.enter="handleEnterKey"
           :placeholder="$t('local_tracks.search', 'Rechercher une musique...')"
           class="block w-full pl-10 pr-10 py-2 border border-[rgba(0,0,0,0.1)] rounded-xl leading-5 bg-white placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#FFBA49]/50 focus:border-[#FFBA49] sm:text-sm transition-all"
         >
@@ -33,18 +35,6 @@
         <div v-if="localTracks.length === 0" class="text-center p-8 text-muted-foreground font-medium italic">
           <p>{{ $t('local_tracks.no_folder') }}</p>
         </div>
-        <div v-else-if="processedTracks.length === 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-0.5">
-          <div 
-            class="flex items-center p-4 bg-white border border-[rgba(0,0,0,0.08)] border-dashed rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md hover:border-[#FFBA49] group"
-            @click.stop="$emit('open-temp-track-modal', searchQuery)"
-          >
-            <Plus class="w-8 h-8 mr-4 text-muted-foreground group-hover:text-[#FFBA49] transition-colors" />
-            <div class="flex flex-col min-w-0">
-              <h4 class="m-0 text-primary font-bold truncate">{{ $t('local_tracks.search_temp_title') }}</h4>
-              <p class="m-0 text-muted-foreground text-xs truncate">{{ $t('local_tracks.search_temp_desc') }}</p>
-            </div>
-          </div>
-        </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-0.5">
           <div 
             v-for="track in processedTracks" 
@@ -61,6 +51,18 @@
               <p class="m-0 text-muted-foreground text-xs truncate">{{ track.artist }}</p>
             </div>
           </div>
+          <div 
+            v-if="searchQuery"
+            class="flex items-center p-4 bg-transparent border-2 border-[rgba(0,0,0,0.08)] border-dashed rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md hover:border-[#FFBA49] group"
+            @click.stop="$emit('open-temp-track-modal', searchQuery)"
+          >
+            <Plus class="w-8 h-8 mr-4 text-muted-foreground group-hover:text-[#FFBA49] transition-colors" />
+            <div class="flex flex-col min-w-0">
+              <h4 class="m-0 text-primary font-bold truncate">{{ $t('local_tracks.search_temp_title') }}</h4>
+              <p class="m-0 text-muted-foreground text-xs truncate">{{ $t('local_tracks.search_temp_desc') }}</p>
+            </div>
+          </div>
+
         </div>
     </div>
     <div v-if="localTracks.length > 0" class="mt-2 text-sm font-semibold text-muted-foreground self-end px-2">
@@ -70,10 +72,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, onUnmounted } from 'vue';
 import { Search, ArrowUpDown, X, Plus } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
 import { searchQuery } from '../../composables/state';
+
+onUnmounted(() => {
+  searchQuery.value = '';
+});
 
 const props = defineProps<{
   localTracks: Track[];
@@ -82,7 +88,7 @@ const props = defineProps<{
   playedTracks: string[];
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'select-track', track: Track | null): void;
   (e: 'open-temp-track-modal', query: string): void;
 }>();
@@ -162,5 +168,14 @@ const getTrackClasses = (track: Track) => {
 
 const toggleSort = () => {
   sortBy.value = sortBy.value === 'title' ? 'artist' : 'title';
+};
+
+const handleEnterKey = () => {
+  if (processedTracks.value.length === 1) {
+    const track = processedTracks.value[0];
+    emit('select-track', props.selectedTrack?.id === track.id ? null : track);
+  } else if (searchQuery.value && searchQuery.value.trim().length >= 5) {
+    emit('open-temp-track-modal', searchQuery.value);
+  }
 };
 </script>

@@ -303,7 +303,7 @@
   },
   "local_tracks": {
     "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left.",
-    "search": "Search for music...",
+    "search": "Search or add music...",
     "sort_by_title": "Title",
     "sort_by_artist": "Artist",
     "no_result": "No results for this search.",

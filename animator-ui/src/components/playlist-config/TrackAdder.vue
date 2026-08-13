@@ -7,6 +7,7 @@
     
     <div v-if="playlistType === 'soundcloud' && !newTrack.title" class="relative mb-4 z-10">
       <TextInput 
+        ref="searchInputRef"
         v-model="searchQuery" 
         @input="onSearchInput"
         @focus="onSearchInput"
@@ -144,6 +145,7 @@ const props = defineProps<{
   newTrack: Track;
   duplicateWarning: string | null;
   initialSearchQuery?: string;
+  autofocusSearch?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -170,15 +172,21 @@ watch(suggestions, (newVal) => {
   }
 });
 
+const isEditingTrack = ref(false);
+const editInput = ref<any>(null);
+const searchInputRef = ref<any>(null);
+
 onMounted(() => {
   if (props.initialSearchQuery && !props.newTrack.title) {
     searchQuery.value = props.initialSearchQuery;
     handleSearch(props.playlistType || 'soundcloud');
   }
+  if (props.autofocusSearch) {
+    nextTick(() => {
+      searchInputRef.value?.focus();
+    });
+  }
 });
-
-const isEditingTrack = ref(false);
-const editInput = ref<any>(null);
 
 const onSearchInput = () => {
   emit('reset-duplicate-warning');

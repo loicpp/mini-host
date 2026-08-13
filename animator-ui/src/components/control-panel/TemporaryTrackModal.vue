@@ -13,6 +13,7 @@
         :playlistType="currentSource === 'soundcloud' ? 'soundcloud' : 'local'"
         :newTrack="tempNewTrack"
         :initialSearchQuery="initialQuery"
+        :autofocusSearch="true"
         @update:newTrack="tempNewTrack = $event"
         :duplicateWarning="tempDuplicateWarning"
         @reset-duplicate-warning="tempDuplicateWarning = null"

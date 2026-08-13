@@ -303,7 +303,7 @@
   },
   "local_tracks": {
     "no_folder": "Aucun dossier sélectionné. Cliquez sur ⚙️ pour configurer vos playlists.",
-    "search": "Rechercher une musique...",
+    "search": "Rechercher ou ajouter une musique...",
     "sort_by_title": "Titre",
     "sort_by_artist": "Artiste",
     "no_result": "Aucun résultat pour cette recherche.",
