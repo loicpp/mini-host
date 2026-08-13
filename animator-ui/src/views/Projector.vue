@@ -62,7 +62,7 @@
                     <div class="text-4xl font-black text-white">{{ game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
                 </div>
                 <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="game.data.settings.duration > 0">
-                    <div class="text-[#ff4d4d] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span>{{ $t('projector.reflection') }}</div>
+                    <div class="text-[#ff4d4d] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span>{{ $t('projector.total_time') }}</div>
                     <div class="text-4xl font-black text-white">{{ game.data.settings.duration }}<span class="text-xl text-white/50 ml-1">s</span></div>
                 </div>
             </div>
