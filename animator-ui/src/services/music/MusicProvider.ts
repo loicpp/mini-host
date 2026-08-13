@@ -4,6 +4,9 @@ export interface Track {
   artist: string;
   duration: number; // in milliseconds
   source: 'local' | 'soundcloud';
+  url?: string;
+  isTemporary?: boolean;
+  isCertified?: boolean;
 }
 
 export interface MusicProvider {

@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div :class="['app-modal-override fixed inset-0 flex items-center justify-center p-4 font-sans', zIndexClass]" :style="customStyle">
       <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="$emit('close')"></div>
-      <div :class="`relative w-full ${maxW} bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] overflow-hidden`">
+      <div :class="`relative w-full ${maxW} bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] ${overflowClass}`">
         <slot></slot>
       </div>
     </div>
@@ -18,6 +18,10 @@ defineProps({
   zIndexClass: {
     type: String,
     default: "z-50"
+  },
+  overflowClass: {
+    type: String,
+    default: "overflow-hidden"
   },
   customStyle: {
     type: Object,

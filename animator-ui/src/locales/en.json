@@ -306,7 +306,11 @@
     "search": "Search for music...",
     "sort_by_title": "Title",
     "sort_by_artist": "Artist",
-    "no_result": "No results for this search."
+    "no_result": "No results for this search.",
+    "search_temp_title": "Search",
+    "search_temp_desc": "Add a temporary track",
+    "temporary_track": "Temporary track",
+    "add_temp_track": "Add a temporary track"
   },
   "app": {
     "cancel": "Cancel",

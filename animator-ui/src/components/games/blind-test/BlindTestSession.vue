@@ -44,6 +44,7 @@
         </div>
 
         <LocalTracksView 
+          ref="localTracksViewRef"
           class="flex-1 min-h-0"
           id="track-selection-panel"
           v-if="status === 'waiting' && (currentSource === 'local' || (currentSource === 'soundcloud' && localTracks.length > 0))"
@@ -52,6 +53,7 @@
           :currentSource="currentSource"
           :playedTracks="playedTracks"
           @select-track="handleSelectTrack"
+          @open-temp-track-modal="openTempTrackModal"
         />
 
         <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-6 rounded-2xl flex flex-wrap items-center justify-center gap-6 mb-4 shadow-sm">
@@ -294,6 +296,14 @@
         </div>
       </Modal>
 
+      <!-- Modale Ajout de Musique Temporaire -->
+      <TemporaryTrackModal 
+        :isOpen="isTempTrackModalOpen" 
+        :initialQuery="tempSearchQuery"
+        @close="isTempTrackModalOpen = false" 
+        @track-added="handleTempTrackAdded"
+      />
+
     </main>
   </div>
 </template>
@@ -310,11 +320,14 @@ import Modal from '../../ui/Modal.vue';
 import GameSidebar from '../../control-panel/GameSidebar.vue';
 import LocalTracksView from '../../control-panel/LocalTracksView.vue';
 import PlayersGrid from '../../control-panel/PlayersGrid.vue';
+import TemporaryTrackModal from '../../control-panel/TemporaryTrackModal.vue';
 
 import { 
   gameId, status, currentSource, isProjectorOpen, searchQuery, nextTrackInfo,
-  localTracks, selectedTrack, gameSettings, playedTracks, pressedBuzzer, musicProgress, musicTimeLeft
+  localTracks, playedTracks, pressedBuzzer, selectedTrack,
+  gameSettings, musicProgress, musicTimeLeft
 } from '../../../composables/state';
+import type { Track } from '../../../services/music/MusicProvider';
 import { useGameSession } from '../../../composables/useGameSession';
 import { useGamePlayers } from '../../../composables/useGamePlayers';
 import { useGameMusic } from '../../../composables/useGameMusic';
@@ -384,10 +397,27 @@ onMounted(async () => {
 
 const isPlayersModalOpen = ref(false);
 const isPlayerActionsModalOpen = ref(false);
+const isTempTrackModalOpen = ref(false);
+const tempSearchQuery = ref('');
 const selectedPlayerForActions = ref<any>(null);
 const tempScoreAdjustment = ref(0);
 const tempBlockedTurns = ref(0);
 const showUnblockOnly = ref(false);
+
+const localTracksViewRef = ref<any>(null);
+
+const openTempTrackModal = (query?: string) => {
+  tempSearchQuery.value = query || '';
+  isTempTrackModalOpen.value = true;
+};
+
+const handleTempTrackAdded = (track: Track) => {
+  searchQuery.value = '';
+  selectedTrack.value = track;
+  if (track.id && localTracksViewRef.value) {
+    localTracksViewRef.value.scrollToTrack(track.id);
+  }
+};
 
 const openPlayersModal = () => {
   isPlayersModalOpen.value = true;

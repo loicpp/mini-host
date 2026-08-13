@@ -5,6 +5,7 @@ export interface Track {
   artist: string;
   url: string;
   isCertified?: boolean;
+  isTemporary?: boolean;
 }
 
 export interface Playlist {

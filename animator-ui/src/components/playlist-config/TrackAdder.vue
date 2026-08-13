@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref, nextTick, watch, onMounted } from 'vue';
 import { PlusCircle, FolderOpen, FileAudio, FolderPlus, BadgeCheck, XCircle, X, Edit3, Plus } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import TextInput from '../ui/TextInput.vue';
@@ -143,6 +143,7 @@ const props = defineProps<{
   playlistType?: 'soundcloud' | 'local';
   newTrack: Track;
   duplicateWarning: string | null;
+  initialSearchQuery?: string;
 }>();
 
 const emit = defineEmits<{
@@ -166,6 +167,13 @@ watch(suggestions, (newVal) => {
     nextTick(() => {
       setTimeout(() => advanceToSuggestions(), 100);
     });
+  }
+});
+
+onMounted(() => {
+  if (props.initialSearchQuery && !props.newTrack.title) {
+    searchQuery.value = props.initialSearchQuery;
+    handleSearch(props.playlistType || 'soundcloud');
   }
 });
 
