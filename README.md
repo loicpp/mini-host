@@ -1,4 +1,5 @@
 ![AI](https://img.shields.io/badge/Built_with-LLM_Assistant-8A2BE2?logo=openai&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 # 🎮 MiniHost - Interactive Party & Event Game Host
 
 MiniHost is an interactive game hosting and event entertainment application designed for parties, corporate events, gatherings, and game nights with friends and family. While featuring a full-fledged music quiz (Blind Test) engine, MiniHost is architected with the ambition to host a wide range of party games, trivia quizzes, and interactive group activities.
