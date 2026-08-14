@@ -205,10 +205,10 @@
           <div id="additional-options" class="flex flex-col gap-1 mt-2">
             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.options_title') }}</h4>
             <div 
+              v-if="settings.mode === 'text'"
               id="allow-suggestions"
-              class="flex items-center justify-between p-3 rounded-xl transition-all" 
-              :class="settings.mode === 'buzzer' ? 'opacity-40 pointer-events-none' : 'hover:bg-gray-50 cursor-pointer'"
-              @click="settings.mode === 'text' && (settings.allowSuggestions = !settings.allowSuggestions)"
+              class="flex items-center justify-between p-3 rounded-xl transition-all hover:bg-gray-50 cursor-pointer" 
+              @click="settings.allowSuggestions = !settings.allowSuggestions"
             >
               <div class="flex items-center gap-2">
                 <Lightbulb class="w-4 h-4 text-gray-400" />
@@ -222,9 +222,9 @@
                 </div>
               </div>
               <div 
-                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.allowSuggestions && settings.mode === 'text' ? 'bg-[#FFBA49]' : 'bg-gray-200']"
+                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.allowSuggestions ? 'bg-[#FFBA49]' : 'bg-gray-200']"
               >
-                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.allowSuggestions && settings.mode === 'text' ? 'translate-x-6' : 'translate-x-0']"></div>
+                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.allowSuggestions ? 'translate-x-6' : 'translate-x-0']"></div>
               </div>
             </div>
             <div 
