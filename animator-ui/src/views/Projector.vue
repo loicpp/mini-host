@@ -154,7 +154,20 @@
             <li v-for="(player, index) in allPlayersSorted.slice(0, 5)" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-5 rounded-2xl text-3xl shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4">
               <span class="font-black text-[#FFBA49] w-16 text-left">#{{ index + 1 }}</span>
               <span class="flex-1 text-left font-bold">{{ player.name }}</span>
-              <span class="font-black text-emerald-400">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
+              <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 font-bold text-xl justify-end w-16" :class="player.rankChange > 0 ? 'text-emerald-400' : player.rankChange < 0 ? 'text-red-400' : 'text-white/40'">
+                  <template v-if="player.rankChange > 0">
+                    <ChevronUp class="w-6 h-6" /> {{ player.rankChange }}
+                  </template>
+                  <template v-else-if="player.rankChange < 0">
+                    <ChevronDown class="w-6 h-6" /> {{ Math.abs(player.rankChange) }}
+                  </template>
+                  <template v-else>
+                    <Minus class="w-6 h-6" />
+                  </template>
+                </div>
+                <span class="font-black text-emerald-400 w-32 text-right">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
+              </div>
             </li>
           </ul>
         </div>
@@ -206,7 +219,7 @@ import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
-import { AlarmClock, PartyPopper, Trophy, Medal, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
+import { AlarmClock, PartyPopper, Trophy, Medal, Info, Lightbulb, AlertTriangle, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
 import QRCode from 'qrcode';
 
 let originalTitle = '';

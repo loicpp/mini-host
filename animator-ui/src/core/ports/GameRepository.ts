@@ -14,5 +14,5 @@ export interface GameRepository {
   resetPlayers(gameId: string): Promise<void>;
   removePlayer(gameId: string, playerId: string): Promise<void>;
   setPlayerBlock(gameId: string, playerId: string, turns: number): Promise<void>;
-  updateRanks(gameId: string): Promise<void>;
+  updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>): Promise<void>;
 }

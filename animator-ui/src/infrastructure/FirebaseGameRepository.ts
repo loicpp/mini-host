@@ -143,7 +143,7 @@ export class FirebaseGameRepository implements GameRepository {
     await update(playerRef, { blockedTurns: turns });
   }
 
-  async updateRanks(gameId: string) {
+  async updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>) {
     const playersRef = ref(db, `games/${gameId}/players`);
     const snapshot = await get(playersRef);
     if (snapshot.exists()) {
@@ -152,6 +152,16 @@ export class FirebaseGameRepository implements GameRepository {
         .filter(id => players[id].role !== 'animator' && players[id].role !== 'projector')
         .map(id => ({ id, ...players[id] }));
       
+      const previousPlayersList = [...playersList];
+      previousPlayersList.sort((a, b) => {
+        const prevScoreA = (a.score || 0) - (lastAwardedPoints?.[a.id] || 0);
+        const prevScoreB = (b.score || 0) - (lastAwardedPoints?.[b.id] || 0);
+        const scoreDiff = prevScoreB - prevScoreA;
+        if (scoreDiff !== 0) return scoreDiff;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+      const previousRanks = new Map(previousPlayersList.map((p, i) => [p.id, i + 1]));
+
       playersList.sort((a, b) => {
         const scoreDiff = (b.score || 0) - (a.score || 0);
         if (scoreDiff !== 0) return scoreDiff;
@@ -161,9 +171,14 @@ export class FirebaseGameRepository implements GameRepository {
       const updates: any = {};
       playersList.forEach((p, index) => {
         const newRank = index + 1;
+        const oldRank = p.rank || previousRanks.get(p.id) || newRank;
+        
         if (p.rank !== newRank) {
           updates[`${p.id}/rank`] = newRank;
         }
+        
+        const rankChange = oldRank - newRank;
+        updates[`${p.id}/rankChange`] = rankChange;
       });
       
       if (Object.keys(updates).length > 0) {

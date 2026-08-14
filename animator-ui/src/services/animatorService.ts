@@ -66,7 +66,7 @@ export const animatorService = {
     return gameRepo.setPlayerBlock(gameId, playerId, turns);
   },
 
-  async updateRanks(gameId: string) {
-    return gameRepo.updateRanks(gameId);
+  async updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>) {
+    return gameRepo.updateRanks(gameId, lastAwardedPoints);
   }
 };

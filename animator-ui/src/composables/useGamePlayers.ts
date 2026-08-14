@@ -61,14 +61,6 @@ export function useGamePlayers() {
       });
     }
 
-    // Sort to find previous ranks
-    const sortedByPrevious = [...rawPlayers].sort((a, b) => {
-      const scoreDiff = b.previousScore - a.previousScore;
-      if (scoreDiff !== 0) return scoreDiff;
-      return a.name.localeCompare(b.name);
-    });
-    const previousRanks = new Map(sortedByPrevious.map((p, index) => [p.id, index + 1]));
-
     // Sort to find current ranks (and this will be the display order)
     const sortedByCurrent = [...rawPlayers].sort((a, b) => {
       const scoreDiff = b.score - a.score;
@@ -78,8 +70,7 @@ export function useGamePlayers() {
 
     return sortedByCurrent.map((p, index) => {
       const currentRank = index + 1;
-      const prevRank = previousRanks.get(p.id) || currentRank;
-      const rankChange = prevRank - currentRank; // positive = went up, negative = went down
+      const rankChange = players.value[p.id]?.rankChange || 0; // positive = went up, negative = went down
 
       return {
         ...p,
@@ -132,7 +123,7 @@ export function useGamePlayers() {
     pendingPoints.value = {};
     autoCorrectResults.value = {};
     wasAutoCorrected.value = false;
-    await animatorService.updateRanks(gameId.value);
+    await animatorService.updateRanks(gameId.value, lastAwardedPoints.value);
   };
 
   const revealResults = async () => {
@@ -266,7 +257,7 @@ export function useGamePlayers() {
       if (finalPoints === 0) return;
 
       await animatorService.awardPoints(gameId.value, playerId, finalPoints);
-      await animatorService.updateRanks(gameId.value);
+      await animatorService.updateRanks(gameId.value, { [playerId]: finalPoints });
     } catch(e) {
       console.error("Impossible d'ajuster les points manuellement:", e);
     }
