@@ -344,7 +344,6 @@ import type { Track } from '../../../services/music/MusicProvider';
 import { useGameSession } from '../../../composables/useGameSession';
 import { useGamePlayers } from '../../../composables/useGamePlayers';
 import { useGameMusic } from '../../../composables/useGameMusic';
-import { useTutorial } from '../../../composables/useTutorial';
 import { onMounted, onUnmounted, nextTick, watch } from 'vue';
 
 const { t } = useI18n();
@@ -356,7 +355,6 @@ const {
   award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
-const { playGameSessionSequence, advanceToTrackSelected, advanceToMusicLaunched, advanceTutorialStep, advanceToPlayerMenu, advanceToPlayerActions } = useTutorial();
 
 const gameSidebarRef = ref<any>(null);
 
@@ -477,7 +475,6 @@ const handleSelectTrack = async (track: any) => {
   selectTrack(track);
   await nextTick();
   if (track) {
-    advanceToTrackSelected();
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -498,35 +495,26 @@ const handleGlobalClick = (e: Event) => {
 
 const handlePlayMusic = async () => {
   playMusic();
-  await nextTick();
-  advanceToMusicLaunched();
 };
 
 const handleAutoCorrect = () => {
   autoCorrect();
-  advanceTutorialStep();
 };
 
 const handleRevealResults = async () => {
   await revealResults();
-  setTimeout(() => {
-    advanceTutorialStep();
-  }, 500);
 };
 
 const handleNextRound = () => {
   nextRound();
-  advanceTutorialStep();
 };
 
 const handleEndGame = async () => {
-  advanceTutorialStep();
   await endGame();
 };
 
 onMounted(async () => {
   window.addEventListener('keydown', handleKeydown);
-  playGameSessionSequence();
 });
 
 onUnmounted(() => {
@@ -559,9 +547,6 @@ const handleTempTrackAdded = (track: Track) => {
 
 const openPlayersModal = () => {
   isPlayersModalOpen.value = true;
-  setTimeout(() => {
-    advanceToPlayerMenu();
-  }, 600);
 };
 
 const openPlayerActionsModal = (player: any) => {
@@ -570,9 +555,6 @@ const openPlayerActionsModal = (player: any) => {
   tempBlockedTurns.value = player.blockedTurns || 0;
   showUnblockOnly.value = !!player.blockedTurns;
   isPlayerActionsModalOpen.value = true;
-  setTimeout(() => {
-    advanceToPlayerActions();
-  }, 600);
 };
 
 const hasUnsavedChanges = computed(() => {

@@ -6,16 +6,9 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
 import SetupSelectorScreen from '../components/control-panel/SetupSelectorScreen.vue';
-import { useTutorial } from '../composables/useTutorial';
 
 const router = useRouter();
-const { playSetupSequence } = useTutorial();
-
-onMounted(() => {
-  playSetupSequence();
-});
 
 const handleSelectSetup = (setupType: string) => {
   if (setupType === 'playlists') {

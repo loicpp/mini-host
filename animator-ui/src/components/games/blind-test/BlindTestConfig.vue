@@ -295,9 +295,6 @@ import Slider from '../../ui/Slider.vue';
 import OptionCard from '../../ui/OptionCard.vue';
 import StepSection from '../../ui/StepSection.vue';
 import BackButton from '../../ui/BackButton.vue';
-import { useTutorial } from '../../../composables/useTutorial.ts';
-
-const { playInitBlindTestSequence } = useTutorial();
 const { t } = useI18n();
 
 const emit = defineEmits<{
@@ -346,7 +343,6 @@ onMounted(async () => {
   } catch(e) {
     console.warn("Could not load playlists for game creation", e);
   }
-  playInitBlindTestSequence();
 });
 
 watch(() => settings.value.musicDuration, (newVal) => {
@@ -460,7 +456,7 @@ const startGame = () => {
   else if (checkPreset(0, 30, 30, true, false)) preset = 'fun';
   else if (checkPreset(10, 30, 30, true, false)) preset = 'peaceful';
   
-  const finalSettings = {
+  const finalSettings: any = {
     ...settings.value,
     duration,
     musicDuration,

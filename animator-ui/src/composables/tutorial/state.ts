@@ -9,7 +9,6 @@ export const tutorialState = reactive<{
   savedSearchQuery?: string;
   savedPlaylistName?: string;
   savedTrackInfo?: any;
-  nextSequenceOverride?: Function;
 }>({
   driverObj: null,
   playlistCreated: false

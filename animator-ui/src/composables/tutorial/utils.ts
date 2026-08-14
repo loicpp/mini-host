@@ -32,24 +32,22 @@ export const addSkipBtnWithCallback = (popover: any, callback: () => void) => {
   }
 };
 
-export const goBackToSequence = (router: any, routePath: string, callback?: Function) => {
+import router from '../../router';
+
+export const goBackToSequence = (routePath: string, callback?: () => void) => {
   if (tutorialState.driverObj) {
     tutorialState.driverObj.destroy();
   }
   
   const isSameRoute = router && router.currentRoute && router.currentRoute.value.path === routePath;
 
-  if (callback) {
-    tutorialState.nextSequenceOverride = callback;
-  }
-  
   if (router && !isSameRoute) {
     router.push(routePath);
-  } else if (isSameRoute) {
-    if (tutorialState.nextSequenceOverride) {
-      const override = tutorialState.nextSequenceOverride;
-      tutorialState.nextSequenceOverride = undefined;
-      override();
-    }
+  }
+  
+  if (callback) {
+    setTimeout(() => {
+      callback();
+    }, 500);
   }
 };

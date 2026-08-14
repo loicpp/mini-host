@@ -8,12 +8,6 @@ const dummyStep = { popover: { title: 'dummy', description: '' }, element: 'body
 
 export const playHomeSequence = async (startIndex: number = 0) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
 
   let hasPlaylistsWithTracks = false;
   try {
@@ -126,6 +120,18 @@ export const playHomeSequence = async (startIndex: number = 0) => {
               onNextClick: () => {
                 const btn = document.querySelector('#btn-setup') as HTMLButtonElement;
                 if (btn) btn.click();
+              },
+              onPopoverRender: () => {
+                const checkInterval = setInterval(() => {
+                  if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 6) {
+                    clearInterval(checkInterval); return;
+                  }
+                  if (document.querySelector('#setup-type-selector')) {
+                    clearInterval(checkInterval);
+                    if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                    setTimeout(() => import('./setupSequence').then(m => m.playSetupSequence(1)), 200);
+                  }
+                }, 200);
               }
             }
           },
@@ -141,12 +147,6 @@ export const playHomeSequence = async (startIndex: number = 0) => {
 
 export const resumeHomeSequence = (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   if (!tutorialState.playlistCreated) return;
   setTimeout(() => {
     if (tutorialState.driverObj) {
@@ -176,6 +176,18 @@ export const resumeHomeSequence = (startIndex: number = 1) => {
             onNextClick: () => {
               const btn = document.querySelector('#btn-create-game') as HTMLButtonElement;
               if (btn) btn.click();
+            },
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 1) {
+                  clearInterval(checkInterval); return;
+                }
+                if (document.querySelector('#game-type-selector')) {
+                  clearInterval(checkInterval);
+                  if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                  setTimeout(() => import('./createGameSequence').then(m => m.playCreateGameSequence(0)), 200);
+                }
+              }, 200);
             }
           }
         },

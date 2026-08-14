@@ -3,7 +3,6 @@ import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
 import { useDialog } from './useDialog';
-import { useTutorial } from './useTutorial';
 import { useI18n } from 'vue-i18n';
 
 let projectorWindow: Window | null = null;
@@ -59,6 +58,7 @@ export function useGameSession() {
     }
 
     const game = await animatorService.createGame(gameType.value, gameSettings.value);
+    
     gameId.value = game.gameId;
     gameSecret.value = game.secret;
     status.value = 'waiting';
@@ -237,8 +237,7 @@ export function useGameSession() {
   };
 
   const endGame = async () => {
-    const { isTutorialActive } = useTutorial();
-    if (isTutorialActive.value || await showConfirm({ title: t('dialogs.stop_game.title'), message: t('dialogs.stop_game.message'), confirmText: t('dialogs.stop_game.confirm'), confirmVariant: "danger" })) {
+    if (await showConfirm({ title: t('dialogs.stop_game.title'), message: t('dialogs.stop_game.message'), confirmText: t('dialogs.stop_game.confirm'), confirmVariant: "danger" })) {
       status.value = 'finished';
       try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
       await animatorService.updateGameState(gameId.value, 'finished');

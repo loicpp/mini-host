@@ -13,19 +13,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import HomeScreen from '../components/control-panel/HomeScreen.vue';
 import { lastGameId } from '../composables/state';
 import { useAuth } from '../composables/useAuth';
 import { useGameSession } from '../composables/useGameSession';
 import { animatorService } from '../services/animatorService';
-import { useTutorial } from '../composables/useTutorial';
 
 const router = useRouter();
 const { logout } = useAuth();
 const { resumeGame } = useGameSession();
-const { resumeHomeSequence } = useTutorial();
 
 const verifiedLastGameId = ref<string | null>(null);
 
@@ -43,8 +41,6 @@ onMounted(async () => {
       console.warn("Impossible de vérifier l'existence de la partie", e);
     }
   }
-  
-  resumeHomeSequence();
 });
 
 const handleResumeGame = async () => {

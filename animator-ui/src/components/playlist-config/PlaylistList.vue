@@ -78,13 +78,8 @@ const emit = defineEmits<{
 const newPlaylistName = ref('');
 const newPlaylistType = ref<'soundcloud' | 'local'>('soundcloud');
 
-import { useTutorial } from '../../composables/useTutorial';
-
-const { advanceTutorialStep } = useTutorial();
-
 const handleCreate = () => {
   emit('create', newPlaylistName.value, newPlaylistType.value);
   newPlaylistName.value = '';
-  advanceTutorialStep();
 };
 </script>

@@ -10,20 +10,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BlindTestConfig from '../components/games/blind-test/BlindTestConfig.vue';
 import { useGameSession } from '../composables/useGameSession';
-import { useTutorial } from '../composables/useTutorial';
 
 const router = useRouter();
 const route = useRoute();
 const { createNewGame, leaveGame } = useGameSession();
-const { playInitBlindTestSequence, tutorialGameId, isTutorialActive } = useTutorial();
-
-onMounted(() => {
-  playInitBlindTestSequence();
-});
 
 const gameType = computed(() => route.params.gameType as string || 'blind_test');
 
@@ -40,13 +34,7 @@ const handleConfigurePlaylists = async () => {
 };
 
 const handleStartGame = async (settings: any) => {
-  if (isTutorialActive.value) {
-    settings.isTutorial = true;
-  }
   const newGameId = await createNewGame(gameType.value, settings);
-  if (isTutorialActive.value) {
-    tutorialGameId.value = newGameId;
-  }
   router.push(`/game/${newGameId}`);
 };
 </script>

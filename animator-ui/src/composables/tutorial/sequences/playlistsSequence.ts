@@ -7,14 +7,8 @@ import { globalPlaylists } from '../../usePlaylists';
 
 const { t } = i18n.global;
 
-export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
+export const playPlaylistsSequence = (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -60,7 +54,7 @@ export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
               }, 100);
             },
             onPrevClick: () => {
-              goBackToSequence(router, '/setup', () => playSetupSequence(router, 1));
+              goBackToSequence('/setup', () => playSetupSequence(1));
             },
             onNextClick: () => {
               const input = document.querySelector('#input-new-playlist') as HTMLInputElement;
@@ -99,6 +93,15 @@ export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
                   clearInterval(interval);
                 }
               }, 100);
+              
+              const btn = document.querySelector('#btn-create-playlist') as HTMLButtonElement;
+              if (btn) {
+                const clickHandler = () => {
+                  btn.removeEventListener('click', clickHandler);
+                  if (tutorialState.driverObj) tutorialState.driverObj.moveNext();
+                };
+                btn.addEventListener('click', clickHandler);
+              }
             },
             onNextClick: () => {
               const btn = document.querySelector('#btn-create-playlist') as HTMLButtonElement;
@@ -162,6 +165,18 @@ export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
             onNextClick: () => {
               const btn = document.querySelector('#div-playlists > div:last-child .btn-edit-playlists') as HTMLButtonElement;
               if (btn) btn.click();
+            },
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 6) {
+                  clearInterval(checkInterval); return;
+                }
+                if (document.querySelector('#track-search-input')) {
+                  clearInterval(checkInterval);
+                  if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                  setTimeout(() => import('./playlistEditorSequence').then(m => m.playPlaylistEditorSequence(1)), 200);
+                }
+              }, 200);
             }
           }
         },

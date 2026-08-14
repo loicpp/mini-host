@@ -6,14 +6,10 @@ import { playHomeSequence } from './homeSequence';
 
 const { t } = i18n.global;
 
-export const playSetupSequence = (router?: any, startIndex: number = 1) => {
+import router from '../../../router';
+
+export const playSetupSequence = (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -38,10 +34,22 @@ export const playSetupSequence = (router?: any, startIndex: number = 1) => {
             align: 'start',
             showButtons: ['next', 'previous'],
             onPrevClick: () => {
-              goBackToSequence(router, '/', () => playHomeSequence(6));
+              goBackToSequence('/', () => playHomeSequence(6));
             },
             onNextClick: () => {
               if (router) router.push('/playlists');
+            },
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 1) {
+                  clearInterval(checkInterval); return;
+                }
+                if (document.querySelector('#input-new-playlist')) {
+                  clearInterval(checkInterval);
+                  if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                  setTimeout(() => import('./playlistsSequence').then(m => m.playPlaylistsSequence(1)), 200);
+                }
+              }, 200);
             }
           }
         },

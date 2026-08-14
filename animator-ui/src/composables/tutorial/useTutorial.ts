@@ -7,7 +7,7 @@ import { playPlaylistsSequence } from './sequences/playlistsSequence';
 import { playPlaylistEditorSequence } from './sequences/playlistEditorSequence';
 import { playCreateGameSequence } from './sequences/createGameSequence';
 import { playInitBlindTestSequence } from './sequences/initBlindTestSequence';
-import { advanceToMusicLaunched, playGameSessionSequence } from './sequences/gameSessionSequence';
+import { playGameSessionSequence } from './sequences/gameSessionSequence';
 
 export function useTutorial() {
   const router = useRouter();
@@ -16,37 +16,6 @@ export function useTutorial() {
     isTutorialActive.value = true;
     tutorialState.playlistCreated = false;
     playHomeSequence();
-  };
-
-
-  const advanceToTrackSelected = () => {
-    if (tutorialState.driverObj && isTutorialActive.value) {
-      if (typeof tutorialState.driverObj.getActiveIndex === 'function' && tutorialState.driverObj.getActiveIndex() === 8) {
-        tutorialState.driverObj.moveNext();
-      } else if (typeof tutorialState.driverObj.getActiveIndex !== 'function') {
-        tutorialState.driverObj.moveNext();
-      }
-    }
-  };
-
-  const advanceToPlayerMenu = () => {
-    if (tutorialState.driverObj && isTutorialActive.value) {
-      if (typeof tutorialState.driverObj.getActiveIndex === 'function' && tutorialState.driverObj.getActiveIndex() === 4) {
-        tutorialState.driverObj.moveNext();
-      } else if (typeof tutorialState.driverObj.getActiveIndex !== 'function') {
-        tutorialState.driverObj.moveNext();
-      }
-    }
-  };
-
-  const advanceToPlayerActions = () => {
-    if (tutorialState.driverObj && isTutorialActive.value) {
-      if (typeof tutorialState.driverObj.getActiveIndex === 'function' && tutorialState.driverObj.getActiveIndex() === 6) {
-        tutorialState.driverObj.moveNext();
-      } else if (typeof tutorialState.driverObj.getActiveIndex !== 'function') {
-        tutorialState.driverObj.moveNext();
-      }
-    }
   };
 
   const exitTutorial = async () => {
@@ -58,30 +27,20 @@ export function useTutorial() {
     router.push('/');
   };
 
-  const advanceTutorialStep = () => {
-    if (tutorialState.driverObj && isTutorialActive.value) {
-      tutorialState.driverObj.moveNext();
-    }
-  };
+
 
   return {
     startTutorial,
     resumeHomeSequence: () => resumeHomeSequence(),
     exitTutorial,
-    playSetupSequence: () => playSetupSequence(router),
-    playPlaylistsSequence: () => playPlaylistsSequence(router),
-    playPlaylistEditorSequence: () => playPlaylistEditorSequence(router),
-    playCreateGameSequence: () => playCreateGameSequence(router),
-    playInitBlindTestSequence: () => playInitBlindTestSequence(router),
-    playGameSessionSequence: () => playGameSessionSequence(router),
+    playSetupSequence: () => playSetupSequence(),
+    playPlaylistsSequence: () => playPlaylistsSequence(),
+    playPlaylistEditorSequence: () => playPlaylistEditorSequence(),
+    playCreateGameSequence: () => playCreateGameSequence(),
+    playInitBlindTestSequence: () => playInitBlindTestSequence(),
+    playGameSessionSequence: () => playGameSessionSequence(),
     isTutorialActive,
-    tutorialGameId,
-
-    advanceToTrackSelected,
-    advanceToMusicLaunched,
-    advanceTutorialStep,
-    advanceToPlayerMenu,
-    advanceToPlayerActions
+    tutorialGameId
   };
 }
 

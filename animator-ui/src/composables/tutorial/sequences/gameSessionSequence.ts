@@ -40,20 +40,14 @@ export const advanceToMusicLaunched = () => {
   }
 };
 
-export const playGameSessionSequence = async (router?: any, startIndex: number = 1) => {
+export const playGameSessionSequence = async (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   
   if (!gameId.value) {
     const unwatch = watch(gameId, async (newVal) => {
       if (newVal) {
         unwatch();
-        await playGameSessionSequence(router);
+        await playGameSessionSequence();
       }
     });
     return;
@@ -103,7 +97,7 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
               if (tutorialState.driverObj) tutorialState.driverObj.destroy();
               tutorialGameId.value = null;
               gameId.value = '';
-              goBackToSequence(router, '/game/create/blind_test', () => playInitBlindTestSequence(router, 9));
+              goBackToSequence('/game/create/blind_test', () => playInitBlindTestSequence(9));
             }
           }
         },
@@ -133,6 +127,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'right',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkModalInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 4) {
+                  clearInterval(checkModalInterval);
+                  return;
+                }
+                if (document.querySelector('#player-list')) {
+                  clearInterval(checkModalInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#players-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -157,6 +163,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkModalInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 6) {
+                  clearInterval(checkModalInterval);
+                  return;
+                }
+                if (document.querySelector('#player-actions-modal')) {
+                  clearInterval(checkModalInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('.player-actions-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -190,6 +208,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkTrackInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 8) {
+                  clearInterval(checkTrackInterval);
+                  return;
+                }
+                if (document.querySelector('.track-item.selected') || selectedTrack.value) {
+                  clearInterval(checkTrackInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const trackBtn = document.querySelector('#track-selection-panel button.track-item') as HTMLButtonElement;
               if (trackBtn) trackBtn.click();
@@ -204,6 +234,19 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkPlayingInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 9) {
+                  clearInterval(checkPlayingInterval);
+                  return;
+                }
+                if (document.querySelector('#player-grid-playing')) {
+                  clearInterval(checkPlayingInterval);
+                  tutorialState.driverObj.moveNext();
+                  advanceToMusicLaunched();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#music-control-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -246,6 +289,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 11) {
+                  clearInterval(checkInterval);
+                  return;
+                }
+                if (!document.querySelector('#auto-correct-btn')) {
+                  clearInterval(checkInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#auto-correct-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -270,6 +325,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 13) {
+                  clearInterval(checkInterval);
+                  return;
+                }
+                if (document.querySelector('#player-rank')) {
+                  clearInterval(checkInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#submit-correction-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -293,6 +360,18 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 15) {
+                  clearInterval(checkInterval);
+                  return;
+                }
+                if (!document.querySelector('#player-rank')) {
+                  clearInterval(checkInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#next-round-btn') as HTMLButtonElement;
               if (btn) btn.click();
@@ -307,6 +386,22 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 16) {
+                  clearInterval(checkInterval);
+                  return;
+                }
+                const confirmBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent?.includes(t('dialogs.stop_game.confirm')));
+                if (confirmBtn) {
+                  confirmBtn.click();
+                }
+                if (document.querySelector('.lucide-refresh-cw')) {
+                  clearInterval(checkInterval);
+                  tutorialState.driverObj.moveNext();
+                }
+              }, 500);
+            },
             onNextClick: () => {
               const btn = document.querySelector('#stop-btn') as HTMLButtonElement;
               if (btn) btn.click();

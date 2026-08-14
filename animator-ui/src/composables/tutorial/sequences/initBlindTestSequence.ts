@@ -6,14 +6,8 @@ import { playCreateGameSequence } from './createGameSequence';
 
 const { t } = i18n.global;
 
-export const playInitBlindTestSequence = (router?: any, startIndex: number = 1) => {
+export const playInitBlindTestSequence = (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -40,7 +34,7 @@ export const playInitBlindTestSequence = (router?: any, startIndex: number = 1) 
             side: 'bottom',
             align: 'start',
             onPrevClick: () => {
-              goBackToSequence(router, '/game/selector', () => playCreateGameSequence(router, 1));
+              goBackToSequence('/game/selector', () => playCreateGameSequence(1));
             },
             onPopoverRender: (popover) => {
               addSkipBtnWithCallback(popover, () => {
@@ -148,6 +142,9 @@ export const playInitBlindTestSequence = (router?: any, startIndex: number = 1) 
             onNextClick: () => {
               const btn = document.querySelector('#start-btn') as HTMLButtonElement;
               if (btn) btn.click();
+              setTimeout(() => {
+                import('./gameSessionSequence').then(m => m.playGameSessionSequence(1));
+              }, 500);
             }
           }
         },

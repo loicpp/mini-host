@@ -6,14 +6,10 @@ import { resumeHomeSequence } from './homeSequence';
 
 const { t } = i18n.global;
 
-export const playCreateGameSequence = (router?: any, startIndex: number = 1) => {
+import router from '../../../router';
+
+export const playCreateGameSequence = (startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
-  if (tutorialState.nextSequenceOverride) {
-    const override = tutorialState.nextSequenceOverride;
-    tutorialState.nextSequenceOverride = undefined;
-    override();
-    return;
-  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -38,10 +34,22 @@ export const playCreateGameSequence = (router?: any, startIndex: number = 1) => 
             align: 'start',
             showButtons: ['next', 'previous'],
             onPrevClick: () => {
-              goBackToSequence(router, '/');
+              goBackToSequence('/', () => resumeHomeSequence(1));
             },
             onNextClick: () => {
               if (router) router.push('/game/create/blind_test');
+            },
+            onPopoverRender: () => {
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 1) {
+                  clearInterval(checkInterval); return;
+                }
+                if (document.querySelector('#input-settings')) {
+                  clearInterval(checkInterval);
+                  if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                  setTimeout(() => import('./initBlindTestSequence').then(m => m.playInitBlindTestSequence(1)), 200);
+                }
+              }, 200);
             }
           }
         },
