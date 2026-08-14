@@ -148,8 +148,14 @@ export function useGameMusic() {
       if (currentStartTime.value) {
         const elapsed = now - currentStartTime.value;
         const total = gameSettings.value.duration * 1000;
-        musicProgress.value = Math.min(100, Math.max(0, (elapsed / total) * 100));
-        musicTimeLeft.value = Math.max(0, Math.ceil((total - elapsed) / 1000));
+        
+        if (elapsed < 0) {
+          musicProgress.value = 0;
+          musicTimeLeft.value = Math.ceil(Math.abs(elapsed) / 1000);
+        } else {
+          musicProgress.value = Math.min(100, Math.max(0, (elapsed / total) * 100));
+          musicTimeLeft.value = Math.max(0, Math.ceil((total - elapsed) / 1000));
+        }
       }
       
       animationFrameId = requestAnimationFrame(loop);

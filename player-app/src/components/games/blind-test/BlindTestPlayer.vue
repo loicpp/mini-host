@@ -140,11 +140,17 @@
               @blur="handleBlur"
               @input="handleSearch"
               @keydown.enter="submitCustomGuess"
+              @beforeinput="handleBeforeInput"
               :placeholder="$t('gameroom.search_placeholder')" 
               autocomplete="off"
               maxlength="100"
               :disabled="timeLeft <= 0"
-              class="w-full pl-12 pr-4 py-3 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#FFBA49] transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+              :class="[
+                'w-full pl-12 pr-4 py-3 bg-muted rounded-xl border-none text-foreground placeholder:text-muted-foreground transition-shadow outline-none font-medium text-lg disabled:opacity-60 disabled:cursor-not-allowed',
+                (isSearchMode && (isBuffering || isDelaying)) 
+                  ? 'opacity-60 ring-2 ring-gray-400 focus:ring-2 focus:ring-gray-400' 
+                  : 'focus:ring-2 focus:ring-[#FFBA49]'
+              ]"
             />
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">🔍</span>
             <div v-if="isSearching" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-muted-foreground border-t-primary rounded-full animate-spin"></div>
@@ -257,6 +263,11 @@ const handleBlur = () => {
 
 const { isBuffering, isDelaying, delayTimeLeft, timeLeft, startTimer, stopTimer } = useGameTimer(getServerTime);
 
+const handleBeforeInput = (e) => {
+  if (isBuffering.value || isDelaying.value) {
+    e.preventDefault();
+  }
+};
 const player = computed(() => {
   return props.game?.players?.[props.playerId];
 });
