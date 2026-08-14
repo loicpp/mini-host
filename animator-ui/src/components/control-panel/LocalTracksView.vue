@@ -28,7 +28,21 @@
         class="flex items-center justify-center gap-2 w-36 px-4 py-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
       >
         <ArrowUpDown class="h-4 w-4 text-muted-foreground shrink-0" />
-        <span class="truncate">{{ sortBy === 'title' ? $t('local_tracks.sort_by_title', 'Titre') : $t('local_tracks.sort_by_artist', 'Artiste') }}</span>
+        <span class="truncate">{{ trackSort === 'title' ? $t('local_tracks.sort_by_title') : $t('local_tracks.sort_by_artist') }}</span>
+      </button>
+      <button 
+        @click="toggleHidePlayed"
+        :title="hidePlayedTracks ? $t('local_tracks.hide_played_title') : $t('local_tracks.show_played_title')"
+        :class="[
+          'flex items-center justify-center gap-2 w-36 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
+          hidePlayedTracks 
+            ? 'bg-gray-100 border border-[rgba(0,0,0,0.1)] text-gray-500 shadow-inner'
+            : 'bg-white border border-[rgba(0,0,0,0.1)] hover:bg-gray-50'
+        ]"
+      >
+        <EyeOff v-if="hidePlayedTracks" class="h-4 w-4 shrink-0" />
+        <Eye v-else class="h-4 w-4 text-muted-foreground shrink-0" />
+        <span class="truncate">{{ hidePlayedTracks ? $t('local_tracks.hide_played') : $t('local_tracks.show_played') }}</span>
       </button>
     </div>
 
@@ -76,9 +90,9 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onUnmounted } from 'vue';
-import { Search, ArrowUpDown, X, Plus } from '@lucide/vue';
+import { Search, ArrowUpDown, X, Plus, Eye, EyeOff } from '@lucide/vue';
 import { Track } from '../../services/music/MusicProvider';
-import { searchQuery } from '../../composables/state';
+import { searchQuery, trackSort, hidePlayedTracks } from '../../composables/state';
 import Fuse from 'fuse.js';
 
 onUnmounted(() => {
@@ -97,14 +111,25 @@ const emit = defineEmits<{
   (e: 'open-temp-track-modal', query: string): void;
 }>();
 
-const sortBy = ref<'title' | 'artist'>('title');
 const trackListContainer = ref<HTMLElement | null>(null);
 const searchInput = ref<HTMLInputElement | null>(null);
 
 import { onMounted } from 'vue';
 
-onMounted(() => {
+onMounted(async () => {
   searchInput.value?.focus();
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/game');
+    const data = await res.json();
+    if (data.sort) {
+      trackSort.value = data.sort;
+    }
+    if (data.hidePlayedTracks !== undefined) {
+      hidePlayedTracks.value = data.hidePlayedTracks;
+    }
+  } catch (e) {
+    console.warn("Could not load sort preference", e);
+  }
 });
 
 const scrollToTrack = (trackId: string) => {
@@ -134,6 +159,10 @@ defineExpose({ scrollToTrack, focusSearch });
 const processedTracks = computed(() => {
   let tracks = [...props.localTracks];
   
+  if (hidePlayedTracks.value) {
+    tracks = tracks.filter(t => !props.playedTracks.includes(t.id || ''));
+  }
+  
   if (searchQuery.value) {
     const q = searchQuery.value;
     
@@ -160,7 +189,7 @@ const processedTracks = computed(() => {
   // (sinon on garde l'ordre de pertinence de Fuse)
   if (!searchQuery.value) {
     tracks.sort((a, b) => {
-      if (sortBy.value === 'title') {
+      if (trackSort.value === 'title') {
         return a.title.localeCompare(b.title);
       } else {
         return a.artist.localeCompare(b.artist);
@@ -194,8 +223,30 @@ const getTrackClasses = (track: Track) => {
   return classes;
 };
 
-const toggleSort = () => {
-  sortBy.value = sortBy.value === 'title' ? 'artist' : 'title';
+const toggleSort = async () => {
+  trackSort.value = trackSort.value === 'title' ? 'artist' : 'title';
+  try {
+    await fetch('http://127.0.0.1:5000/api/game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sort: trackSort.value })
+    });
+  } catch (e) {
+    console.warn("Could not save sort preference", e);
+  }
+};
+
+const toggleHidePlayed = async () => {
+  hidePlayedTracks.value = !hidePlayedTracks.value;
+  try {
+    await fetch('http://127.0.0.1:5000/api/game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hidePlayedTracks: hidePlayedTracks.value })
+    });
+  } catch (e) {
+    console.warn("Could not save hidePlayedTracks preference", e);
+  }
 };
 
 const handleEnterKey = () => {

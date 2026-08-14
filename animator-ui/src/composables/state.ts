@@ -21,6 +21,8 @@ export const searchQuery = ref('');
 export const selectedTrack = ref<Track | null>(null);
 export const localTracks = ref<Track[]>([]);
 export const playedTracks = ref<string[]>([]);
+export const trackSort = ref<'title' | 'artist'>('title');
+export const hidePlayedTracks = ref(false);
 
 export const isProjectorOpen = ref(false);
 export const showDiagnostics = ref(false);

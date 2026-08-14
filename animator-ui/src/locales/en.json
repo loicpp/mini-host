@@ -297,7 +297,11 @@
     "search_temp_title": "Search",
     "search_temp_desc": "Add a temporary track",
     "temporary_track": "Temporary track",
-    "add_temp_track": "Add a temporary track"
+    "add_temp_track": "Add a temporary track",
+    "show_played": "Visible",
+    "hide_played": "Hidden",
+    "show_played_title": "Played tracks are visible. Click to hide them.",
+    "hide_played_title": "Played tracks are hidden. Click to show them."
   },
   "app": {
     "cancel": "Cancel",

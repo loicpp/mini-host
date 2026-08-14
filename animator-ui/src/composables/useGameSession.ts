@@ -1,4 +1,4 @@
-import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints, currentStartTime } from './state';
+import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints, currentStartTime, trackSort, hidePlayedTracks } from './state';
 import { animatorService } from '../services/animatorService';
 import { musicManager } from '../services/music/MusicManager';
 import { Track } from '../services/music/MusicProvider';
@@ -154,6 +154,8 @@ export function useGameSession() {
       const data = await res.json();
       if (data.localTracks) localTracks.value = data.localTracks;
       if (data.playedTracks) playedTracks.value = data.playedTracks;
+      if (data.sort) trackSort.value = data.sort;
+      if (data.hidePlayedTracks !== undefined) hidePlayedTracks.value = data.hidePlayedTracks;
     } catch {
       console.warn("Could not load game.json");
     }

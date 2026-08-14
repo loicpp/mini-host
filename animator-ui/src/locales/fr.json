@@ -297,7 +297,11 @@
     "search_temp_title": "Rechercher",
     "search_temp_desc": "Ajouter une musique temporaire",
     "temporary_track": "Musique temporaire",
-    "add_temp_track": "Ajouter une musique temporaire"
+    "add_temp_track": "Ajouter une musique temporaire",
+    "show_played": "Visibles",
+    "hide_played": "Masquées",
+    "show_played_title": "Les musiques jouées sont visibles. Cliquez pour les masquer.",
+    "hide_played_title": "Les musiques jouées sont masquées. Cliquez pour les afficher."
   },
   "app": {
     "cancel": "Annuler",

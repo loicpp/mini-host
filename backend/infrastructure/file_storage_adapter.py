@@ -75,8 +75,14 @@ class FileStorageAdapter(StoragePort):
 
     def save_game_state(self, state_data: Dict[str, Any]) -> None:
         try:
+            current = self.load_game_state() or {}
+            for k, v in state_data.items():
+                if v is None:
+                    current.pop(k, None)
+                else:
+                    current[k] = v
             with open(os.path.join(self.config_dir, "game.json"), "w") as f:
-                json.dump(state_data, f)
+                json.dump(current, f)
         except Exception:
             pass
 
