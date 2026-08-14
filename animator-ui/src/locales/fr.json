@@ -495,7 +495,7 @@
       },
       "adjust-summary": {
         "title": "Paramètres avancés",
-        "description": "Vous pouvez également paramétrer manuellement votre partie. Cliquez sur cette barre pour ouvrir les paramètres avancés."
+        "description": "Vous pouvez également paramétrer manuellement votre partie. Cette barre affiche un résumé de vos temps de jeu et permet d'ouvrir les paramètres avancés."
       },
       "time-limit": {
         "title": "Temps",

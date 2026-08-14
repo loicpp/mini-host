@@ -1,8 +1,9 @@
 import { driver } from 'driver.js';
 import i18n from '../../../i18n';
 import { tutorialState, isTutorialActive } from '../state';
-import { addSkipBtnWithCallback, moveToNextStep, goBackToSequence } from '../utils';
+import { addSkipBtnWithCallback, moveToNextStep, goBackToSequence, dummyStep, fixTutorialProgress } from '../utils';
 import { playCreateGameSequence } from './createGameSequence';
+import router from '../../../router';
 
 const { t } = i18n.global;
 
@@ -21,10 +22,13 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
       onPrevClick: () => {
         if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
       },
+      onPopoverRender: (popover) => {
+        fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
+      },
       showProgress: true,
       progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
       steps: [
-        { popover: { title: 'dummy', description: '' }, element: 'body' }, // index 0
+        dummyStep,
         {
           element: '#blind-test-main-card',
           disableActiveInteraction: true,
@@ -37,6 +41,7 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
               goBackToSequence('/game/selector', () => playCreateGameSequence(1));
             },
             onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
               addSkipBtnWithCallback(popover, () => {
                 const target = document.querySelector('#mode-text-card') as HTMLElement;
                 if (target) {
@@ -69,7 +74,8 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
               const btn = document.querySelector('#mode-text-card') as HTMLButtonElement;
               if (btn) btn.click();
             },
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
               moveToNextStep('#mode-text-card');
             }
           }
@@ -86,6 +92,7 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
         },
         {
           element: '#adjust-summary-bar',
+          disableActiveInteraction: true,
           popover: {
             title: t('tutorial.initBlindTestSequence.adjust-summary.title'),
             description: t('tutorial.initBlindTestSequence.adjust-summary.description'),
@@ -93,11 +100,15 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
             align: 'start',
             showButtons: ['next', 'previous'],
             onNextClick: () => {
-              const btn = document.querySelector('#adjust-summary-bar') as HTMLButtonElement;
-              if (btn) btn.click();
+              const slidersPanel = document.querySelector('#sliders-panel') as HTMLElement;
+              if (slidersPanel && !slidersPanel.offsetParent) {
+                const btn = document.querySelector('#adjust-summary-bar') as HTMLButtonElement;
+                if (btn) btn.click();
+              }
+              if (tutorialState.driverObj) tutorialState.driverObj.moveNext();
             },
-            onPopoverRender: () => {
-              moveToNextStep('#adjust-summary-bar');
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
             }
           }
         },
@@ -142,13 +153,23 @@ export const playInitBlindTestSequence = (startIndex: number = 1) => {
             onNextClick: () => {
               const btn = document.querySelector('#start-btn') as HTMLButtonElement;
               if (btn) btn.click();
-              setTimeout(() => {
-                import('./gameSessionSequence').then(m => m.playGameSessionSequence(1));
-              }, 500);
+            },
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
+              const checkInterval = setInterval(() => {
+                if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 9) {
+                  clearInterval(checkInterval); return;
+                }
+                if (router && router.currentRoute.value.name === 'GameSession') {
+                  clearInterval(checkInterval);
+                  if (tutorialState.driverObj) tutorialState.driverObj.destroy();
+                  setTimeout(() => import('./gameSessionSequence').then(m => m.playGameSessionSequence(1)), 200);
+                }
+              }, 200);
             }
           }
         },
-        { popover: { title: 'dummy', description: '' }, element: 'body' } // index 10
+        dummyStep
       ]
     });
     tutorialState.driverObj.drive(startIndex);

@@ -1,7 +1,7 @@
 import { driver } from 'driver.js';
 import i18n from '../../../i18n';
 import { tutorialState, isTutorialActive } from '../state';
-import { goBackToSequence } from '../utils';
+import { goBackToSequence, dummyStep, fixTutorialProgress } from '../utils';
 import { resumeHomeSequence } from './homeSequence';
 
 const { t } = i18n.global;
@@ -23,8 +23,11 @@ export const playCreateGameSequence = (startIndex: number = 1) => {
       onPrevClick: () => {
         if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
       },
+      onPopoverRender: (popover) => {
+        fixTutorialProgress(popover, tutorialState.driverObj);
+      },
       steps: [
-        { popover: { title: 'dummy', description: '' }, element: 'body' }, // index 0
+        dummyStep,
         {
           element: '#game-type-selector',
           popover: {
@@ -39,7 +42,8 @@ export const playCreateGameSequence = (startIndex: number = 1) => {
             onNextClick: () => {
               if (router) router.push('/game/create/blind_test');
             },
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 1) {
                   clearInterval(checkInterval); return;
@@ -53,7 +57,7 @@ export const playCreateGameSequence = (startIndex: number = 1) => {
             }
           }
         },
-        { popover: { title: 'dummy', description: '' }, element: 'body' } // index 2
+        dummyStep
       ]
     });
     tutorialState.driverObj.drive(startIndex);

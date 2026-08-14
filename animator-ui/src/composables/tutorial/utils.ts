@@ -14,6 +14,19 @@ export const moveToNextStep = (selector: string) => {
   }
 };
 
+export const dummyStep = { popover: { title: 'dummy', description: '' }, element: 'body' };
+
+export const fixTutorialProgress = (popover: any, driverObj: any, currentOffset: number = 1, totalOffset: number = 2) => {
+  const progressEl = popover.wrapper.querySelector('.driver-popover-progress-text');
+  if (progressEl && driverObj) {
+    const current = driverObj.getActiveIndex() + 1 - currentOffset;
+    const total = driverObj.getConfig().steps.length - totalOffset;
+    setTimeout(() => {
+      progressEl.innerText = i18n.global.t('tutorial.progress', { current, total });
+    }, 0);
+  }
+};
+
 export const addSkipBtnWithCallback = (popover: any, callback: () => void) => {
   const wrapper = popover.wrapper as HTMLElement;
   if (wrapper) {

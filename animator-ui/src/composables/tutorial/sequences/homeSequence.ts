@@ -1,10 +1,9 @@
 import { driver } from 'driver.js';
 import i18n from '../../../i18n';
 import { tutorialState, isTutorialActive } from '../state';
-import { addSkipBtnWithCallback } from '../utils';
+import { addSkipBtnWithCallback, dummyStep, fixTutorialProgress } from '../utils';
 
 const { t } = i18n.global;
-const dummyStep = { popover: { title: 'dummy', description: '' }, element: 'body' };
 
 export const playHomeSequence = async (startIndex: number = 0) => {
   if (!isTutorialActive.value) return;
@@ -40,6 +39,9 @@ export const playHomeSequence = async (startIndex: number = 0) => {
         onPrevClick: () => {
           if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
         },
+        onPopoverRender: (popover) => {
+          fixTutorialProgress(popover, tutorialState.driverObj, 0, 1);
+        },
         showProgress: true,
         progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
         steps: [
@@ -50,6 +52,7 @@ export const playHomeSequence = async (startIndex: number = 0) => {
               align: 'start',
               showButtons: ['next'],
               onPopoverRender: (popover) => {
+                fixTutorialProgress(popover, tutorialState.driverObj, 0, 1);
                 if (hasPlaylistsWithTracks) {
                   addSkipBtnWithCallback(popover, () => {
                     tutorialState.playlistCreated = true;
@@ -121,7 +124,8 @@ export const playHomeSequence = async (startIndex: number = 0) => {
                 const btn = document.querySelector('#btn-setup') as HTMLButtonElement;
                 if (btn) btn.click();
               },
-              onPopoverRender: () => {
+              onPopoverRender: (popover) => {
+                fixTutorialProgress(popover, tutorialState.driverObj, 0, 1);
                 const checkInterval = setInterval(() => {
                   if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 6) {
                     clearInterval(checkInterval); return;
@@ -163,6 +167,9 @@ export const resumeHomeSequence = (startIndex: number = 1) => {
           tutorialState.driverObj.movePrevious();
         }
       },
+      onPopoverRender: (popover) => {
+        fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
+      },
       steps: [
         dummyStep,
         {
@@ -177,7 +184,8 @@ export const resumeHomeSequence = (startIndex: number = 1) => {
               const btn = document.querySelector('#btn-create-game') as HTMLButtonElement;
               if (btn) btn.click();
             },
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 2);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 1) {
                   clearInterval(checkInterval); return;
@@ -185,7 +193,7 @@ export const resumeHomeSequence = (startIndex: number = 1) => {
                 if (document.querySelector('#game-type-selector')) {
                   clearInterval(checkInterval);
                   if (tutorialState.driverObj) tutorialState.driverObj.destroy();
-                  setTimeout(() => import('./createGameSequence').then(m => m.playCreateGameSequence(0)), 200);
+                  setTimeout(() => import('./createGameSequence').then(m => m.playCreateGameSequence(1)), 200);
                 }
               }, 200);
             }

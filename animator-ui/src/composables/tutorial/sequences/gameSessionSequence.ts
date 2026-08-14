@@ -4,7 +4,7 @@ import { tutorialState, isTutorialActive, tutorialGameId } from '../state';
 import { watch } from 'vue';
 import { gameId, selectedTrack } from '../../state';
 import { tutorialMockService } from '../../../services/tutorialMockService';
-import { goBackToSequence } from '../utils';
+import { goBackToSequence, dummyStep, fixTutorialProgress } from '../utils';
 import { playInitBlindTestSequence } from './initBlindTestSequence';
 
 const { t } = i18n.global;
@@ -75,10 +75,13 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
       onPrevClick: () => {
         if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
       },
+      onPopoverRender: (popover) => {
+        fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
+      },
       showProgress: true,
       progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
       steps: [
-        { popover: { title: 'dummy', description: '' }, element: 'body' }, // index 0
+        dummyStep,
         {
           popover: {
             title: t('tutorial.gameSessionSequence.step1.title'),
@@ -97,7 +100,16 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
               if (tutorialState.driverObj) tutorialState.driverObj.destroy();
               tutorialGameId.value = null;
               gameId.value = '';
-              goBackToSequence('/game/create/blind_test', () => playInitBlindTestSequence(9));
+              goBackToSequence('/game/create/blind_test', () => {
+                const modeCard = document.querySelector('#mode-text-card') as HTMLButtonElement;
+                if (modeCard) modeCard.click();
+                const slidersPanel = document.querySelector('#sliders-panel') as HTMLElement;
+                if (slidersPanel && !slidersPanel.offsetParent) {
+                  const adjustBar = document.querySelector('#adjust-summary-bar') as HTMLButtonElement;
+                  if (adjustBar) adjustBar.click();
+                }
+                playInitBlindTestSequence(9);
+              });
             }
           }
         },
@@ -127,7 +139,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'right',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkModalInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 4) {
                   clearInterval(checkModalInterval);
@@ -163,7 +176,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkModalInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 6) {
                   clearInterval(checkModalInterval);
@@ -208,7 +222,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkTrackInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 8) {
                   clearInterval(checkTrackInterval);
@@ -234,7 +249,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'left',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkPlayingInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 9) {
                   clearInterval(checkPlayingInterval);
@@ -289,7 +305,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 11) {
                   clearInterval(checkInterval);
@@ -325,7 +342,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 13) {
                   clearInterval(checkInterval);
@@ -360,7 +378,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 15) {
                   clearInterval(checkInterval);
@@ -386,7 +405,8 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
             side: 'top',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const checkInterval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 16) {
                   clearInterval(checkInterval);

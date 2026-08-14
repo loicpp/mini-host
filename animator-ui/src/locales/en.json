@@ -495,7 +495,7 @@
       },
       "adjust-summary": {
         "title": "Advanced settings",
-        "description": "You can also manually configure your game. Click on this bar to open the advanced settings."
+        "description": "You can also manually configure your game. This bar displays a summary of your game times and allows you to open the advanced settings."
       },
       "time-limit": {
         "title": "Time",

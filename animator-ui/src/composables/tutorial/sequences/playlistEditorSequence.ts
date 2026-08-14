@@ -1,7 +1,7 @@
 import { driver } from 'driver.js';
 import i18n from '../../../i18n';
 import { tutorialState, isTutorialActive } from '../state';
-import { goBackToSequence } from '../utils';
+import { goBackToSequence, dummyStep, fixTutorialProgress } from '../utils';
 import { playPlaylistsSequence } from './playlistsSequence';
 import { globalPlaylists } from '../../usePlaylists';
 
@@ -24,10 +24,13 @@ export const playPlaylistEditorSequence = (startIndex: number = 1) => {
       onPrevClick: () => {
         if (tutorialState.driverObj) tutorialState.driverObj.movePrevious();
       },
+      onPopoverRender: (popover) => {
+        fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
+      },
       showProgress: true,
       progressText: t('tutorial.progress', { current: '{{current}}', total: '{{total}}' }),
       steps: [
-        { popover: { title: 'dummy', description: '' }, element: 'body' }, // index 0
+        dummyStep,
         {
           element: '#track-name-input',
           popover: {
@@ -36,7 +39,8 @@ export const playPlaylistEditorSequence = (startIndex: number = 1) => {
             side: 'bottom',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               setTimeout(() => {
                 const input = document.querySelector('#track-search-input') as HTMLInputElement;
                 if (input) {
@@ -81,7 +85,8 @@ export const playPlaylistEditorSequence = (startIndex: number = 1) => {
             side: 'bottom',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const interval = setInterval(() => {
                 if (!isTutorialActive.value || tutorialState.driverObj?.getActiveIndex() !== 2) {
                   clearInterval(interval);
@@ -164,7 +169,8 @@ export const playPlaylistEditorSequence = (startIndex: number = 1) => {
             side: 'bottom',
             align: 'start',
             showButtons: ['next', 'previous'],
-            onPopoverRender: () => {
+            onPopoverRender: (popover) => {
+              fixTutorialProgress(popover, tutorialState.driverObj, 1, 1);
               const lastPlaylist = globalPlaylists.value[globalPlaylists.value.length - 1];
               const initialCount = lastPlaylist ? lastPlaylist.tracks.length : 0;
               const interval = setInterval(() => {
