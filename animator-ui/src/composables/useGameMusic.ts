@@ -19,7 +19,7 @@ let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
 export function useGameMusic() {
   const { t } = useI18n();
   const { showAlert } = useDialog();
-  const { setPlayerBlock, revealResults } = useGamePlayers();
+  const { setPlayerBlock, revealResults, award } = useGamePlayers();
 
   const lastPlayedTrack = computed(() => {
     if (playedTracks.value.length === 0) return null;
@@ -117,6 +117,9 @@ export function useGameMusic() {
     }
   
     if (playerIdToBlock) {
+      if (gameSettings.value.penaltyOnWrongAnswer) {
+        award(playerIdToBlock, -1);
+      }
       await setPlayerBlock(playerIdToBlock, 1);
       await animatorService.clearPlayerGuess(gameId.value, playerIdToBlock);
       await animatorService.clearPressedBuzzer(gameId.value);
