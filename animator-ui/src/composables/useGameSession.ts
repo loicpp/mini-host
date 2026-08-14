@@ -19,7 +19,7 @@ export function useGameSession() {
       let source = 'soundcloud';
       if (t.url && (t.url.includes('youtube') || t.url.includes('youtu.be'))) source = 'youtube';
       
-      let id = t.url;
+      let id = t.id;
       if (source === 'youtube' && t.url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = t.url.match(regExp);
@@ -30,7 +30,7 @@ export function useGameSession() {
       
       return {
         ...t,
-        id: t.id || id || String(Math.random()),
+        id: id || (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10)),
         source: t.source || source
       };
     });
@@ -46,8 +46,7 @@ export function useGameSession() {
         mode: settings.mode,
         allowSuggestions: settings.allowSuggestions ?? true,
         penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false,
-        preset: settings.preset || 'custom',
-        playlist: settings.playlist
+        preset: settings.preset || 'custom'
       };
     }
 
@@ -80,7 +79,7 @@ export function useGameSession() {
       await fetch('http://127.0.0.1:5000/api/game', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value, gameType: gameType.value })
+        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [] })
       });
     } catch {
       console.warn("Could not save game.json");
@@ -122,6 +121,10 @@ export function useGameSession() {
         return false;
       }
 
+      if (gameData.data?.settings) {
+        gameSettings.value = gameData.data.settings;
+      }
+
       if (gameData.data?.settings?.gameType) {
         gameType.value = gameData.data.settings.gameType;
       } else {
@@ -151,12 +154,11 @@ export function useGameSession() {
       const data = await res.json();
       if (data.localTracks) localTracks.value = data.localTracks;
       if (data.playedTracks) playedTracks.value = data.playedTracks;
-      if (data.settings) gameSettings.value = data.settings;
     } catch {
       console.warn("Could not load game.json");
     }
     
-    currentSource.value = (gameSettings.value as any).playlist?.type || 'soundcloud';
+    currentSource.value = localTracks.value.length > 0 ? localTracks.value[0].source || 'soundcloud' : 'soundcloud';
     
     animatorService.listenToPlayers(gameId.value, (newPlayers) => {
       players.value = newPlayers;
@@ -257,9 +259,7 @@ export function useGameSession() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           localTracks: localTracks.value, 
-          playedTracks: playedTracks.value, 
-          settings: gameSettings.value,
-          gameType: gameType.value 
+          playedTracks: playedTracks.value
         })
       });
     } catch (e) {
@@ -287,7 +287,7 @@ export function useGameSession() {
       await fetch('http://127.0.0.1:5000/api/game', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [], settings: gameSettings.value })
+        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [] })
       });
     } catch(e) {
       console.warn("Could not reset game.json", e);

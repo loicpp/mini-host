@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import type { Track as MusicTrack } from '../services/music/MusicProvider';
 import type { Track as PlaylistTrack } from '../types/playlist';
-import { localTracks, playedTracks, gameSettings, gameType } from './state';
+import { localTracks, playedTracks } from './state';
 import { useDialog } from './useDialog';
 import { useTrackCertifier } from './useTrackCertifier';
 import jsmediatags from 'jsmediatags';
@@ -22,9 +22,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           localTracks: localTracks.value, 
-          playedTracks: playedTracks.value, 
-          settings: gameSettings.value, 
-          gameType: gameType.value 
+          playedTracks: playedTracks.value
         })
       });
     } catch (e) {
@@ -44,7 +42,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
   };
   
   const extractSoundCloudId = (url: string): string | null => {
-    if (url.includes("soundcloud.com")) return url;
+    if (url.includes("soundcloud.com")) return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10);
     return null;
   };
 

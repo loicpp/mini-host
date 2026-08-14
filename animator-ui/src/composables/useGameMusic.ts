@@ -72,7 +72,7 @@ export function useGameMusic() {
           await fetch('http://127.0.0.1:5000/api/game', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value, settings: gameSettings.value })
+            body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
           });
         } catch {
           console.warn("Could not save played tracks");
