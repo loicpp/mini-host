@@ -87,6 +87,8 @@
     "playlist_placeholder": "Sélectionnez une playlist...",
     "no_playlist_available": "Aucune playlist disponible. Créez-en une d'abord !",
     "options_title": "Options additionnelles :",
+    "input_mode": "Mode de saisie :",
+    "presets": "Préréglages :",
     "auto_correction_penalty": "Pénalité d'erreur",
     "auto_correction_penalty_short": "Pénalité",
     "auto_correction_penalty_desc": "Perdre des points sur les mauvaises réponses"

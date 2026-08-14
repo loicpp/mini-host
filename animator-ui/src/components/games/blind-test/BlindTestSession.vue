@@ -312,6 +312,7 @@
       <GameSettingsDrawer
         :isOpen="isSettingsDrawerOpen"
         :gameSettings="gameSettings"
+        :isGameOver="status === 'finished'"
         @close="isSettingsDrawerOpen = false"
         @save-settings="handleSaveSettings"
       />

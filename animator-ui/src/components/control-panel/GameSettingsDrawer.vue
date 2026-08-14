@@ -26,9 +26,32 @@
       <!-- Content -->
       <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
         
+        <!-- Game Mode -->
+        <div v-if="isGameOver" class="flex flex-col gap-2">
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.input_mode') }}</h4>
+          <div class="flex gap-2">
+            <button
+              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
+              :class="localSettings.mode === 'buzzer' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
+              @click="localSettings.mode = 'buzzer'"
+            >
+              <Zap class="w-4 h-4 mb-1" />
+              <span class="text-[10px] font-bold">{{ $t('create_game.mode_buzzer_title') }}</span>
+            </button>
+            <button
+              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
+              :class="localSettings.mode === 'text' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
+              @click="localSettings.mode = 'text'"
+            >
+              <Keyboard class="w-4 h-4 mb-1" />
+              <span class="text-[10px] font-bold">{{ $t('create_game.mode_text_title') }}</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Presets -->
         <div class="flex flex-col gap-2">
-          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('sidebar.game_mode') }}</h4>
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.presets') }}</h4>
           <div class="flex gap-2">
             <button
               class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
@@ -161,13 +184,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Lightbulb, AlertTriangle } from '@lucide/vue';
+import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Lightbulb, AlertTriangle, Keyboard } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Slider from '../ui/Slider.vue';
 
 const props = defineProps<{
   isOpen: boolean;
   gameSettings: any;
+  isGameOver?: boolean;
 }>();
 
 const emit = defineEmits<{
