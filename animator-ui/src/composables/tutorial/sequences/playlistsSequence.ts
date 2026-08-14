@@ -9,6 +9,12 @@ const { t } = i18n.global;
 
 export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
+  if (tutorialState.nextSequenceOverride) {
+    const override = tutorialState.nextSequenceOverride;
+    tutorialState.nextSequenceOverride = undefined;
+    override();
+    return;
+  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -54,7 +60,7 @@ export const playPlaylistsSequence = (router?: any, startIndex: number = 1) => {
               }, 100);
             },
             onPrevClick: () => {
-              goBackToSequence(router, '/setup', playSetupSequence, 1);
+              goBackToSequence(router, '/setup', () => playSetupSequence(router, 1));
             },
             onNextClick: () => {
               const input = document.querySelector('#input-new-playlist') as HTMLInputElement;

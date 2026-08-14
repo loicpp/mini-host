@@ -42,6 +42,12 @@ export const advanceToMusicLaunched = () => {
 
 export const playGameSessionSequence = async (router?: any, startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
+  if (tutorialState.nextSequenceOverride) {
+    const override = tutorialState.nextSequenceOverride;
+    tutorialState.nextSequenceOverride = undefined;
+    override();
+    return;
+  }
   
   if (!gameId.value) {
     const unwatch = watch(gameId, async (newVal) => {
@@ -97,7 +103,7 @@ export const playGameSessionSequence = async (router?: any, startIndex: number =
               if (tutorialState.driverObj) tutorialState.driverObj.destroy();
               tutorialGameId.value = null;
               gameId.value = '';
-              goBackToSequence(router, '/create-game', playInitBlindTestSequence, 9);
+              goBackToSequence(router, '/game/create/blind_test', () => playInitBlindTestSequence(router, 9));
             }
           }
         },

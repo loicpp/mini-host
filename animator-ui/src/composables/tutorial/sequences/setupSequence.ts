@@ -8,6 +8,12 @@ const { t } = i18n.global;
 
 export const playSetupSequence = (router?: any, startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
+  if (tutorialState.nextSequenceOverride) {
+    const override = tutorialState.nextSequenceOverride;
+    tutorialState.nextSequenceOverride = undefined;
+    override();
+    return;
+  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -32,7 +38,7 @@ export const playSetupSequence = (router?: any, startIndex: number = 1) => {
             align: 'start',
             showButtons: ['next', 'previous'],
             onPrevClick: () => {
-              goBackToSequence(router, '/', playHomeSequence, 6);
+              goBackToSequence(router, '/', () => playHomeSequence(6));
             },
             onNextClick: () => {
               if (router) router.push('/playlists');

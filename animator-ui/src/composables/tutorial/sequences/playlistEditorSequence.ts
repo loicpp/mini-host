@@ -9,6 +9,12 @@ const { t } = i18n.global;
 
 export const playPlaylistEditorSequence = (router?: any, startIndex: number = 1) => {
   if (!isTutorialActive.value) return;
+  if (tutorialState.nextSequenceOverride) {
+    const override = tutorialState.nextSequenceOverride;
+    tutorialState.nextSequenceOverride = undefined;
+    override();
+    return;
+  }
   setTimeout(() => {
     if (tutorialState.driverObj) {
       tutorialState.driverObj.destroy();
@@ -57,7 +63,7 @@ export const playPlaylistEditorSequence = (router?: any, startIndex: number = 1)
             onPrevClick: () => {
               const backBtn = document.querySelector('#btn-playlist-back') as HTMLButtonElement;
               if (backBtn) backBtn.click();
-              goBackToSequence(router, '/playlists', playPlaylistsSequence, 6);
+              goBackToSequence(router, '/playlists', () => playPlaylistsSequence(router, 6));
             },
             onNextClick: () => {
               const input = document.querySelector('#track-search-input') as HTMLInputElement;
