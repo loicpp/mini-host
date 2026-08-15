@@ -4,45 +4,25 @@ import { usePlayerStore } from '../general/stores/player';
 import { useUiStore } from '../general/stores/ui';
 import { animatorService } from '../../../services/animatorService';
 import { musicManager } from '../../../services/music/MusicManager';
-import { Track } from '../../../services/music/MusicProvider';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 
-const { gameSettings, lastGameId, gameId, gameSecret, status, gameType, nextTrackInfo, currentStartTime } = useGameStore();
-const { currentSource, playedTracks, localTracks, selectedTrack, searchQuery, trackSort, hidePlayedTracks } = useMusicStore();
-const { players, pressedBuzzer, pendingPoints } = usePlayerStore();
-const { isProjectorOpen } = useUiStore();
-
-
-let projectorWindow: Window | null = null;
+import { localBackendService } from '../../../services/localBackendService';
+import { sanitizeTracks } from './trackUtils';
+import { useProjector } from './useProjector';
+import { useGameState } from './useGameState';
 
 export function useGameSession() {
   const { t } = useI18n();
   const { showAlert, showConfirm } = useDialog();
 
-  const sanitizeTracks = (tracks: any[]): Track[] => {
-    return tracks.map(t => {
-      if (t.id && t.source) return t;
-      
-      let source = 'soundcloud';
-      if (t.url && (t.url.includes('youtube') || t.url.includes('youtu.be'))) source = 'youtube';
-      
-      let id = t.id;
-      if (source === 'youtube' && t.url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = t.url.match(regExp);
-        if (match && match[2].length === 11) {
-          id = match[2];
-        }
-      }
-      
-      return {
-        ...t,
-        id: id || (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10)),
-        source: t.source || source
-      };
-    });
-  };
+  const { gameSettings, lastGameId, gameId, gameSecret, status, gameType, nextTrackInfo, currentStartTime } = useGameStore();
+  const { currentSource, playedTracks, localTracks, selectedTrack, searchQuery, trackSort, hidePlayedTracks } = useMusicStore();
+  const { players, pressedBuzzer } = usePlayerStore();
+  const { isProjectorOpen } = useUiStore();
+
+  const { toggleProjector, closeProjector } = useProjector();
+  const { nextRound, endGame, restartGame } = useGameState();
 
   const createNewGame = async (type: string, settings: any) => {
     gameType.value = type;
@@ -84,28 +64,9 @@ export function useGameSession() {
     playedTracks.value = [];
     localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
     
-    try {
-      await fetch('http://127.0.0.1:5000/api/game', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [] })
-      });
-    } catch {
-      console.warn("Could not save game.json");
-    }
-    
-    try {
-      await fetch('http://127.0.0.1:5000/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          lastGameId: game.gameId
-        })
-      });
-      lastGameId.value = game.gameId;
-    } catch {
-      console.warn("Could not save lastGameId to backend");
-    }
+    await localBackendService.saveGame(localTracks.value, []);
+    await localBackendService.saveConfig({ lastGameId: game.gameId });
+    lastGameId.value = game.gameId;
     
     animatorService.listenToPlayers(gameId.value, (newPlayers) => {
       players.value = newPlayers;
@@ -158,15 +119,12 @@ export function useGameSession() {
       status.value = 'waiting';
     }
     
-    try {
-      const res = await fetch('http://127.0.0.1:5000/api/game');
-      const data = await res.json();
+    const data = await localBackendService.loadGame();
+    if (data) {
       if (data.localTracks) localTracks.value = data.localTracks;
       if (data.playedTracks) playedTracks.value = data.playedTracks;
       if (data.sort) trackSort.value = data.sort;
       if (data.hidePlayedTracks !== undefined) hidePlayedTracks.value = data.hidePlayedTracks;
-    } catch {
-      console.warn("Could not load game.json");
     }
     
     currentSource.value = localTracks.value.length > 0 ? localTracks.value[0].source || 'soundcloud' : 'soundcloud';
@@ -207,61 +165,6 @@ export function useGameSession() {
     return false;
   };
 
-  const toggleProjector = async () => {
-    if (!isProjectorOpen.value) {
-      projectorWindow = window.open(`/public?game=${gameId.value}`, 'projectorWindow', 'width=1280,height=720');
-      isProjectorOpen.value = true;
-      
-      if (projectorWindow) {
-        const timer = setInterval(() => {
-          if (projectorWindow?.closed) {
-            clearInterval(timer);
-            isProjectorOpen.value = false;
-            projectorWindow = null;
-          }
-        }, 1000);
-      }
-    } else {
-      if (projectorWindow) {
-        projectorWindow.close();
-        projectorWindow = null;
-      }
-      isProjectorOpen.value = false;
-      await closeProjector();
-    }
-  };
-
-  const closeProjector = async () => {
-    try {
-      await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
-    } catch(e) {
-      console.warn("Could not close projector via API", e);
-    }
-  };
-
-  const nextRound = async () => {
-    status.value = 'waiting';
-    nextTrackInfo.value.answer = '';
-    searchQuery.value = '';
-    pendingPoints.value = {};
-    
-    try {
-      await animatorService.clearPlayerAnswers(gameId.value);
-    } catch {
-      console.warn("Could not clear player answers");
-    }
-    selectedTrack.value = null;
-    await animatorService.updateGameState(gameId.value, 'waiting');
-  };
-
-  const endGame = async () => {
-    if (await showConfirm({ title: t('dialogs.stop_game.title'), message: t('dialogs.stop_game.message'), confirmText: t('dialogs.stop_game.confirm'), confirmVariant: "danger" })) {
-      status.value = 'finished';
-      try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
-      await animatorService.updateGameState(gameId.value, 'finished');
-    }
-  };
-
   const updateGameSettings = async (newSettings: any) => {
     if (!gameId.value) return;
     gameSettings.value = { ...gameSettings.value, ...newSettings };
@@ -272,45 +175,7 @@ export function useGameSession() {
       console.warn("Could not update settings in Firebase", e);
     }
 
-    try {
-      await fetch('http://127.0.0.1:5000/api/game', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          localTracks: localTracks.value, 
-          playedTracks: playedTracks.value
-        })
-      });
-    } catch (e) {
-      console.warn("Could not sync settings to python backend", e);
-    }
-  };
-
-  const restartGame = async () => {
-    status.value = 'waiting';
-    try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
-    nextTrackInfo.value.answer = '';
-    searchQuery.value = '';
-    selectedTrack.value = null;
-    pendingPoints.value = {};
-    
-    try {
-      await animatorService.resetPlayers(gameId.value);
-    } catch {
-      console.warn("Could not reset players");
-    }
-    await animatorService.updateGameState(gameId.value, 'waiting', null);
-    
-    playedTracks.value = [];
-    try {
-      await fetch('http://127.0.0.1:5000/api/game', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks: localTracks.value, playedTracks: [] })
-      });
-    } catch(e) {
-      console.warn("Could not reset game.json", e);
-    }
+    await localBackendService.saveGame(localTracks.value, playedTracks.value);
   };
 
   return {
