@@ -1,4 +1,7 @@
-import { isBackendConnected } from './state';
+import { useUiStore } from './stores/ui';
+
+const { isBackendConnected } = useUiStore();
+
 
 let pingTimeout: ReturnType<typeof setTimeout> | null = null;
 

@@ -1,9 +1,14 @@
 import { computed } from 'vue';
-import { gameId, players, pressedBuzzer, gameSettings, pendingPoints, nextTrackInfo, lastAwardedPoints, status, autoCorrectResults, wasAutoCorrected } from '../general/state';
+import { useGameStore } from '../general/stores/game';
+import { usePlayerStore } from '../general/stores/player';
 import { animatorService } from '../../../services/animatorService';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import Fuse from 'fuse.js';
+
+const { gameId, gameSettings, nextTrackInfo, status } = useGameStore();
+const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
+
 
 export function useGamePlayers() {
   const { t } = useI18n();

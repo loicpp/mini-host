@@ -335,16 +335,21 @@ import PlayersGrid from '../PlayersGrid.vue';
 import TemporaryTrackModal from '../../general/TemporaryTrackModal.vue';
 import GameSettingsDrawer from '../GameSettingsDrawer.vue';
 
-import { 
-  gameId, status, currentSource, isProjectorOpen, searchQuery, nextTrackInfo,
-  localTracks, playedTracks, pressedBuzzer, selectedTrack,
-  gameSettings, musicProgress, musicTimeLeft
-} from '../../../core/domain/general/state';
+import { useGameStore } from '../../../core/domain/general/stores/game';
+import { useMusicStore } from '../../../core/domain/general/stores/music';
+import { useUiStore } from '../../../core/domain/general/stores/ui';
+import { usePlayerStore } from '../../../core/domain/general/stores/player';
 import type { Track } from '../../../services/music/MusicProvider';
 import { useGameSession } from '../../../core/domain/games/useGameSession';
 import { useGamePlayers } from '../../../core/domain/games/useGamePlayers';
 import { useGameMusic } from '../../../core/domain/games/useGameMusic';
 import { onMounted, onUnmounted, nextTick, watch } from 'vue';
+
+const { gameId, status, nextTrackInfo, gameSettings } = useGameStore();
+const { currentSource, searchQuery, localTracks, playedTracks, selectedTrack, musicProgress, musicTimeLeft } = useMusicStore();
+const { isProjectorOpen } = useUiStore();
+const { pressedBuzzer } = usePlayerStore();
+
 
 const { t } = useI18n();
 const router = useRouter();

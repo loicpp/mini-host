@@ -16,10 +16,13 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import HomeScreen from '../components/general/HomeScreen.vue';
-import { lastGameId } from '../core/domain/general/state';
+import { useGameStore } from '../core/domain/general/stores/game';
 import { useAuth } from '../core/domain/general/useAuth';
 import { useGameSession } from '../core/domain/games/useGameSession';
 import { animatorService } from '../services/animatorService';
+
+const { lastGameId } = useGameStore();
+
 
 const router = useRouter();
 const { logout } = useAuth();

@@ -93,8 +93,11 @@
 import { computed, ref } from 'vue';
 import { Check, X } from '@lucide/vue';
 import Card from '../ui/Card.vue';
-import { currentStartTime } from '../../core/domain/general/state';
+import { useGameStore } from '../../core/domain/general/stores/game';
 import { useI18n } from 'vue-i18n';
+
+const { currentStartTime } = useGameStore();
+
 
 const { t } = useI18n();
 

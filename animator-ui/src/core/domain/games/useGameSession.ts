@@ -1,9 +1,18 @@
-import { gameSettings, lastGameId, gameId, gameSecret, status, gameType, currentSource, playedTracks, localTracks, players, pressedBuzzer, isProjectorOpen, selectedTrack, nextTrackInfo, searchQuery, pendingPoints, currentStartTime, trackSort, hidePlayedTracks } from '../general/state';
+import { useGameStore } from '../general/stores/game';
+import { useMusicStore } from '../general/stores/music';
+import { usePlayerStore } from '../general/stores/player';
+import { useUiStore } from '../general/stores/ui';
 import { animatorService } from '../../../services/animatorService';
 import { musicManager } from '../../../services/music/MusicManager';
 import { Track } from '../../../services/music/MusicProvider';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
+
+const { gameSettings, lastGameId, gameId, gameSecret, status, gameType, nextTrackInfo, currentStartTime } = useGameStore();
+const { currentSource, playedTracks, localTracks, selectedTrack, searchQuery, trackSort, hidePlayedTracks } = useMusicStore();
+const { players, pressedBuzzer, pendingPoints } = usePlayerStore();
+const { isProjectorOpen } = useUiStore();
+
 
 let projectorWindow: Window | null = null;
 

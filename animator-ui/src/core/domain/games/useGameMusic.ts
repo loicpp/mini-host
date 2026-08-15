@@ -1,9 +1,7 @@
 import { watch, computed } from 'vue';
-import { 
-  gameId, status, gameSettings, selectedTrack, nextTrackInfo, 
-  playedTracks, localTracks, pressedBuzzer, players, musicProgress, musicTimeLeft,
-  currentStartTime
-} from '../general/state';
+import { useGameStore } from '../general/stores/game';
+import { useMusicStore } from '../general/stores/music';
+import { usePlayerStore } from '../general/stores/player';
 import { animatorService } from '../../../services/animatorService';
 import { musicManager } from '../../../services/music/MusicManager';
 import { Track } from '../../../services/music/MusicProvider';
@@ -11,6 +9,11 @@ import { getServerTime } from '../../../firebase';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import { useGamePlayers } from './useGamePlayers';
+
+const { gameId, status, gameSettings, nextTrackInfo, currentStartTime } = useGameStore();
+const { selectedTrack, playedTracks, localTracks, musicProgress, musicTimeLeft } = useMusicStore();
+const { pressedBuzzer, players } = usePlayerStore();
+
 
 let hasMusicStopped = false;
 let animationFrameId: number | null = null;

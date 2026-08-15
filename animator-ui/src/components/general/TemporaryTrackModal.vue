@@ -33,8 +33,11 @@ import { Search, X } from '@lucide/vue';
 import Modal from '../ui/Modal.vue';
 import TrackAdder from '../setup/playlist/TrackAdder.vue';
 import { useTemporaryTrackEditor } from '../../core/domain/general/useTemporaryTrackEditor';
-import { currentSource } from '../../core/domain/general/state';
+import { useMusicStore } from '../../core/domain/general/stores/music';
 import type { Track } from '../../services/music/MusicProvider';
+
+const { currentSource } = useMusicStore();
+
 
 defineProps<{
   isOpen: boolean;

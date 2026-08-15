@@ -1,10 +1,13 @@
 import { ref } from 'vue';
 import type { Track as MusicTrack } from '../../../services/music/MusicProvider';
 import type { Track as PlaylistTrack } from '../setup/types/playlist';
-import { localTracks, playedTracks } from './state';
+import { useMusicStore } from './stores/music';
 import { useDialog } from './useDialog';
 import { useTrackCertifier } from '../setup/playlists/useTrackCertifier';
 import jsmediatags from 'jsmediatags';
+
+const { localTracks, playedTracks } = useMusicStore();
+
 
 export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => void) {
   const { showAlert } = useDialog();

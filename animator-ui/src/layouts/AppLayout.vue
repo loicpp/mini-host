@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { isBackendConnected, isProjectorOpen } from '../core/domain/general/state';
+import { useUiStore } from '../core/domain/general/stores/ui';
 import { useBackendConnection } from '../core/domain/general/useBackendConnection';
 import { useTutorial } from '../core/domain/tutorial/useTutorial';
 import { useDialog } from '../core/domain/general/useDialog';
@@ -47,6 +47,9 @@ import { XCircle } from '@lucide/vue';
 import { updateService } from '../services/updateService';
 
 import { useGameSession } from '../core/domain/games/useGameSession';
+
+const { isBackendConnected, isProjectorOpen } = useUiStore();
+
 
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
 const { isTutorialActive, exitTutorial } = useTutorial();

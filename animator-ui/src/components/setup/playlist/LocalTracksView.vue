@@ -92,7 +92,7 @@
 import { ref, computed, nextTick, onUnmounted } from 'vue';
 import { Search, ArrowUpDown, X, Plus, Eye, EyeOff } from '@lucide/vue';
 import { Track } from '../../../services/music/MusicProvider';
-import { searchQuery, trackSort, hidePlayedTracks } from '../../../core/domain/general/state';
+import { useMusicStore } from '../../../core/domain/general/stores/music';
 import Fuse from 'fuse.js';
 
 onUnmounted(() => {
@@ -116,6 +116,9 @@ const searchInput = ref<HTMLInputElement | null>(null);
 
 import { onMounted } from 'vue';
 import { useGameData } from '../../../core/domain/games/useGameData';
+
+const { searchQuery, trackSort, hidePlayedTracks } = useMusicStore();
+
 
 const { loadGameData, saveGameData } = useGameData();
 

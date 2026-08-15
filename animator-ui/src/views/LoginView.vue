@@ -10,8 +10,11 @@
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LoginScreen from '../components/general/LoginScreen.vue';
-import { loginError, isLoggedIn } from '../core/domain/general/state';
+import { useAuthStore } from '../core/domain/general/stores/auth';
 import { useAuth } from '../core/domain/general/useAuth';
+
+const { loginError, isLoggedIn } = useAuthStore();
+
 
 const route = useRoute();
 const router = useRouter();

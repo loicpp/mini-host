@@ -2,7 +2,13 @@ import { driver } from 'driver.js';
 import i18n from '../../../../i18n';
 import { tutorialState, isTutorialActive, tutorialGameId } from '../state';
 import { watch } from 'vue';
-import { gameId, selectedTrack, status, playedTracks, pendingPoints, autoCorrectResults, wasAutoCorrected, lastAwardedPoints, nextTrackInfo } from '../../general/state';
+import { useGameStore } from '../../general/stores/game';
+import { useMusicStore } from '../../general/stores/music';
+import { usePlayerStore } from '../../general/stores/player';
+
+const { gameId, status, nextTrackInfo } = useGameStore();
+const { selectedTrack, playedTracks } = useMusicStore();
+const { pendingPoints, autoCorrectResults, wasAutoCorrected, lastAwardedPoints } = usePlayerStore();
 import { tutorialMockService } from '../../../../services/tutorialMockService';
 import { animatorService } from '../../../../services/animatorService';
 import { musicManager } from '../../../../services/music/MusicManager';

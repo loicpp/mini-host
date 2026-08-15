@@ -5,7 +5,10 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 
-import { currentLanguage } from './core/domain/general/state'
+import { useUiStore } from './core/domain/general/stores/ui';
+
+const { currentLanguage } = useUiStore();
+
 
 const initApp = async () => {
   try {

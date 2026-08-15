@@ -1,8 +1,15 @@
-import { email, password, loginError, isLoggedIn, currentLanguage, lastGameId } from './state';
+import { useAuthStore } from './stores/auth';
+import { useUiStore } from './stores/ui';
+import { useGameStore } from './stores/game';
 import { authService } from '../../../services/authService';
 import i18n from '../../../i18n';
 import { useI18n } from 'vue-i18n';
 import { useDialog } from './useDialog';
+
+const { email, password, loginError, isLoggedIn } = useAuthStore();
+const { currentLanguage } = useUiStore();
+const { lastGameId } = useGameStore();
+
 
 export function useAuth() {
   const { t } = useI18n();

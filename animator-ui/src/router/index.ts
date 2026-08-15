@@ -9,7 +9,10 @@ import SettingsView from '../views/SettingsView.vue'
 import DiagnosticsView from '../views/DiagnosticsView.vue'
 import Projector from '../views/Projector.vue'
 
-import { isLoggedIn } from '../core/domain/general/state';
+import { useAuthStore } from '../core/domain/general/stores/auth';
+
+const { isLoggedIn } = useAuthStore();
+
 
 const router = createRouter({
   history: createWebHistory(),
