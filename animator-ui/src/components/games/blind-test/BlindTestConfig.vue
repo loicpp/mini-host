@@ -56,54 +56,28 @@
         :description="$t('create_game.step2_desc')"
       >
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-          <OptionCard 
-            id="preset-normal-card"
-            :title="$t('create_game.quick_mode_normal')" 
-            :description="$t('create_game.normal_desc')" 
-            layout="vertical"
-            :selected="isPresetSelected(0, 15, 15, true, false)"
-            @click="applyPreset(0, 15, 15, true, false)"
-          >
-            <template #icon>
-              <Clock class="w-4 h-4" />
-            </template>
-          </OptionCard>
-
-          <OptionCard 
-            :title="$t('create_game.quick_mode_hard')" 
-            :description="$t('create_game.hard_desc')" 
-            layout="vertical"
-            :selected="isPresetSelected(0, 5, 10, false, true)"
-            @click="applyPreset(0, 5, 10, false, true)"
-          >
-            <template #icon>
-              <Zap class="w-4 h-4" />
-            </template>
-          </OptionCard>
-
-          <OptionCard 
-            :title="$t('create_game.quick_mode_fun')" 
-            :description="$t('create_game.fun_desc')" 
-            layout="vertical"
-            :selected="isPresetSelected(0, 30, 30, true, false)"
-            @click="applyPreset(0, 30, 30, true, false)"
-          >
-            <template #icon>
-              <Smile class="w-4 h-4" />
-            </template>
-          </OptionCard>
-
-          <OptionCard 
-            :title="$t('create_game.quick_mode_peaceful')" 
-            :description="$t('create_game.peaceful_desc')" 
-            layout="vertical"
-            :selected="isPresetSelected(10, 30, 30, true, false)"
-            @click="applyPreset(10, 30, 30, true, false)"
-          >
-            <template #icon>
-              <Leaf class="w-4 h-4" />
-            </template>
-          </OptionCard>
+          <div v-for="preset in allPresets" :key="preset.name" class="relative group h-full">
+            <OptionCard 
+              class="h-full"
+              :id="preset.name === 'normal' ? 'preset-normal-card' : undefined"
+              :title="preset.isCustom ? preset.name : $t(preset.titleKey!)" 
+              :description="preset.isCustom ? '' : $t(preset.descKey!)" 
+              layout="vertical"
+              :selected="isPresetSelected(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
+              @click="applyPreset(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
+            >
+              <template #icon>
+                <component :is="IconMap[preset.icon || 'Star'] || Star" class="w-4 h-4" />
+              </template>
+            </OptionCard>
+            <button v-if="preset.isCustom"
+              @click.stop="deleteCustomPreset(preset.originalIndex!)"
+              class="absolute -top-2 -right-2 bg-red-100 text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-200"
+              title="Supprimer"
+            >
+              <X class="w-3 h-3" />
+            </button>
+          </div>
         </div>
 
         <!-- Summary Bar and Adjustments -->
@@ -205,49 +179,40 @@
           <div id="additional-options" class="flex flex-col gap-1 mt-2">
             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.options_title') }}</h4>
             <div 
-              v-if="settings.mode === 'text'"
-              id="allow-suggestions"
+              v-for="opt in BLIND_TEST_ADDITIONAL_OPTIONS"
+              :key="opt.key"
+              v-show="!opt.requiredMode || settings.mode === opt.requiredMode"
               class="flex items-center justify-between p-3 rounded-xl transition-all hover:bg-gray-50 cursor-pointer" 
-              @click="settings.allowSuggestions = !settings.allowSuggestions"
+              @click="toggleOption(opt.key)"
             >
               <div class="flex items-center gap-2">
-                <Lightbulb class="w-4 h-4 text-gray-400" />
-                <span class="text-sm font-bold text-gray-800">{{ $t('create_game.allow_suggestions') }}</span>
-                <div class="group relative flex items-center">
+                <component :is="opt.icon" class="w-4 h-4 text-gray-400" />
+                <span class="text-sm font-bold text-gray-800">{{ $t(opt.titleKey) }}</span>
+                <div class="group relative flex items-center" v-if="opt.descKey">
                   <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
                   <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
-                    {{ $t('create_game.allow_suggestions_desc') }}
+                    {{ $t(opt.descKey) }}
                     <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
                   </div>
                 </div>
               </div>
               <div 
-                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.allowSuggestions ? 'bg-[#FFBA49]' : 'bg-gray-200']"
+                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings[opt.key as keyof typeof settings] ? 'bg-[#FFBA49]' : 'bg-gray-200']"
               >
-                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.allowSuggestions ? 'translate-x-6' : 'translate-x-0']"></div>
+                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings[opt.key as keyof typeof settings] ? 'translate-x-6' : 'translate-x-0']"></div>
               </div>
             </div>
-            <div 
-              class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
-              @click="settings.penaltyOnWrongAnswer = !settings.penaltyOnWrongAnswer"
+          </div>
+
+          <!-- Save Preset action -->
+          <div class="mt-2 pt-4 border-t border-gray-100 flex justify-end">
+            <button 
+              @click="openPresetModal"
+              class="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#FFBA49] transition-colors group"
             >
-              <div class="flex items-center gap-2">
-                <AlertTriangle class="w-4 h-4 text-gray-400" />
-                <span class="text-sm font-bold text-gray-800">{{ $t('create_game.auto_correction_penalty') }}</span>
-                <div class="group relative flex items-center">
-                  <Info class="w-4 h-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
-                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
-                    {{ $t('create_game.auto_correction_penalty_desc') }}
-                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                  </div>
-                </div>
-              </div>
-              <div 
-                :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', settings.penaltyOnWrongAnswer ? 'bg-[#FFBA49]' : 'bg-gray-200']"
-              >
-                <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', settings.penaltyOnWrongAnswer ? 'translate-x-6' : 'translate-x-0']"></div>
-              </div>
-            </div>
+              <Save class="w-4 h-4 group-hover:scale-110 transition-transform" />
+              {{ $t('create_game.save_preset') || 'Sauvegarder ce preset' }}
+            </button>
           </div>
         </div>
       </StepSection>
@@ -282,12 +247,34 @@
         {{ $t('create_game.start_button') }}
       </Btn>
     </div>
+
+    <!-- Save Preset Modal -->
+    <PresetSaveModal 
+      :show="showPresetModal" 
+      :custom-presets="customPresets"
+      :current-settings="settings"
+      @close="showPresetModal = false"
+      @saved="onPresetsSaved"
+    />
+    <!-- Toast Undo Delete -->
+    <div 
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 transform"
+      :class="toastVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'"
+    >
+      <span class="text-sm font-medium">{{ $t('create_game.preset_deleted') || 'Preset supprimé' }}</span>
+      <button 
+        @click="undoDelete"
+        class="text-[#FFBA49] text-sm font-bold hover:text-white transition-colors uppercase tracking-wide"
+      >
+        {{ $t('create_game.undo') || 'Annuler' }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
-import { Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info, Lightbulb, AlertTriangle } from '@lucide/vue';
+import { Folder, Cloud, Bell, Type, Clock, Zap, Smile, Leaf, Music, Hourglass, ChevronDown, Play, Info, Star, Bookmark, Heart, Coffee, Flame, Shield, X, Save, Ghost, Gamepad2, Trophy, Target, Rocket } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import CustomSelect from '../../ui/CustomSelect.vue';
@@ -295,6 +282,9 @@ import Slider from '../../ui/Slider.vue';
 import OptionCard from '../../ui/OptionCard.vue';
 import StepSection from '../../ui/StepSection.vue';
 import BackButton from '../../ui/BackButton.vue';
+import PresetSaveModal from './PresetSaveModal.vue';
+import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from './blindTestOptions';
+import { DEFAULT_PRESETS } from './blindTestDefaultPresets';
 const { t } = useI18n();
 
 const emit = defineEmits<{
@@ -305,6 +295,26 @@ const emit = defineEmits<{
 
 const showAdjust = ref(false);
 const playlists = ref<any[]>([]);
+
+const customPresets = ref<any[]>([]);
+const showPresetModal = ref(false);
+
+const allPresets = computed(() => {
+  return [
+    ...DEFAULT_PRESETS.map(p => ({
+      ...p,
+      isCustom: false,
+      originalIndex: -1
+    })),
+    ...customPresets.value.map((p, index) => ({
+      ...p,
+      isCustom: true,
+      originalIndex: index
+    }))
+  ];
+});
+
+const IconMap: Record<string, any> = { Clock, Zap, Smile, Leaf, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket };
 
 const playlistOptions = computed(() => {
   return playlists.value.map(pl => ({
@@ -326,7 +336,84 @@ const settings = ref({
   localTracks: [] as any[]
 });
 
+const toggleOption = (key: string) => {
+  if (key === 'allowSuggestions') {
+    settings.value.allowSuggestions = !settings.value.allowSuggestions;
+  } else if (key === 'penaltyOnWrongAnswer') {
+    settings.value.penaltyOnWrongAnswer = !settings.value.penaltyOnWrongAnswer;
+  }
+};
+
+const loadPresets = async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/presets');
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      customPresets.value = data;
+    }
+  } catch(e) {
+    console.warn("Could not load presets", e);
+  }
+};
+
+const savePresetsToBackend = async (presets: any[]) => {
+  try {
+    await fetch('http://127.0.0.1:5000/api/presets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(presets)
+    });
+  } catch(e) {
+    console.error("Could not save presets", e);
+  }
+};
+
+const toastVisible = ref(false);
+const deletedPreset = ref<{ index: number, data: any } | null>(null);
+let toastTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const deleteCustomPreset = async (index: number) => {
+  const data = customPresets.value[index];
+  
+  deletedPreset.value = {
+    index,
+    data
+  };
+  
+  customPresets.value.splice(index, 1);
+  await savePresetsToBackend(customPresets.value);
+  
+  toastVisible.value = true;
+  
+  if (toastTimeout) clearTimeout(toastTimeout);
+  
+  toastTimeout = setTimeout(() => {
+    toastVisible.value = false;
+    deletedPreset.value = null;
+  }, 3000);
+};
+
+const undoDelete = async () => {
+  if (deletedPreset.value) {
+    customPresets.value.splice(deletedPreset.value.index, 0, deletedPreset.value.data);
+    await savePresetsToBackend(customPresets.value);
+    
+    toastVisible.value = false;
+    deletedPreset.value = null;
+    if (toastTimeout) clearTimeout(toastTimeout);
+  }
+};
+
+const onPresetsSaved = (newPresets: any[]) => {
+  customPresets.value = newPresets;
+};
+
+const openPresetModal = () => {
+  showPresetModal.value = true;
+};
+
 onMounted(async () => {
+  loadPresets();
   try {
     const res = await fetch('http://127.0.0.1:5000/api/playlists');
     const data = await res.json();
@@ -385,9 +472,12 @@ watch(() => settings.value.blockDuration, (newVal) => {
 });
 
 watch(() => settings.value.mode, (newMode) => {
-  if (newMode === 'buzzer') {
-    settings.value.allowSuggestions = false;
-  } else {
+  // Apply mode constraints to current options
+  settings.value.allowSuggestions = getExpectedValue('allowSuggestions', settings.value.allowSuggestions, newMode);
+  settings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', settings.value.penaltyOnWrongAnswer, newMode);
+  
+  // Specific business logic when switching to text mode
+  if (newMode === 'text') {
     if (!settings.value.penaltyOnWrongAnswer || settings.value.musicDuration !== 5) {
       settings.value.allowSuggestions = true;
     }
@@ -395,25 +485,20 @@ watch(() => settings.value.mode, (newMode) => {
 });
 
 const isPresetSelected = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
-  const expectedSuggestions = settings.value.mode === 'buzzer' ? false : suggestions;
   return settings.value.blockDuration === block &&
          settings.value.musicDuration === music &&
          settings.value.duration === total &&
-         settings.value.allowSuggestions === expectedSuggestions &&
-         settings.value.penaltyOnWrongAnswer === penalty;
+         settings.value.allowSuggestions === getExpectedValue('allowSuggestions', suggestions, settings.value.mode) &&
+         settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', penalty, settings.value.mode);
 };
 
 const applyPreset = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
   settings.value.blockDuration = block;
   settings.value.musicDuration = music;
   settings.value.duration = total;
-  settings.value.penaltyOnWrongAnswer = penalty;
   
-  if (settings.value.mode === 'text') {
-    settings.value.allowSuggestions = suggestions;
-  } else {
-    settings.value.allowSuggestions = false;
-  }
+  settings.value.allowSuggestions = getExpectedValue('allowSuggestions', suggestions, settings.value.mode);
+  settings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', penalty, settings.value.mode);
 };
 
 const startGame = () => {
@@ -442,19 +527,23 @@ const startGame = () => {
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
   
   const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean) => {
-    const expectedSuggestions = settings.value.mode === 'buzzer' ? false : s;
     return blockDuration === b &&
            musicDuration === m &&
            duration === t &&
-           settings.value.allowSuggestions === expectedSuggestions &&
-           settings.value.penaltyOnWrongAnswer === p;
+           settings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, settings.value.mode) &&
+           settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, settings.value.mode);
   };
   
   let preset = 'custom';
-  if (checkPreset(0, 15, 15, true, false)) preset = 'normal';
-  else if (checkPreset(0, 5, 10, false, true)) preset = 'hard';
-  else if (checkPreset(0, 30, 30, true, false)) preset = 'fun';
-  else if (checkPreset(10, 30, 30, true, false)) preset = 'peaceful';
+  let presetIcon = 'Settings2';
+  
+  for (const p of allPresets.value) {
+    if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer)) {
+      preset = p.name;
+      presetIcon = p.icon || 'Star';
+      break;
+    }
+  }
   
   const finalSettings: any = {
     ...settings.value,
@@ -462,6 +551,7 @@ const startGame = () => {
     musicDuration,
     blockDuration,
     preset,
+    presetIcon,
     playlist: selectedPlaylist
   };
   

@@ -20,6 +20,12 @@ def register_routes(app: Flask, api: AnimatorApi):
             return jsonify(api.save_playlists(request.json))
         return jsonify(api.load_playlists())
 
+    @app.route('/api/presets', methods=['GET', 'POST'])
+    def presets_api():
+        if request.method == 'POST':
+            return jsonify(api.save_presets(request.json))
+        return jsonify(api.load_presets())
+
     @app.route('/api/soundcloud/search', methods=['GET'])
     def soundcloud_search():
         query = request.args.get('q', '')

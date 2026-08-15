@@ -53,3 +53,14 @@ class AnimatorApi:
 
     def load_playlists(self) -> List[Dict[str, Any]]:
         return self.storage_port.load_playlists()
+
+    def save_presets(self, presets_data: List[Dict[str, Any]]) -> Dict[str, str]:
+        for preset in presets_data:
+            name = preset.get('name', '')
+            if len(name) > 10:
+                return {"status": "error", "message": "Le nom du preset ne peut pas dépasser 10 caractères."}
+        self.storage_port.save_presets(presets_data)
+        return {"status": "ok"}
+
+    def load_presets(self) -> List[Dict[str, Any]]:
+        return self.storage_port.load_presets()

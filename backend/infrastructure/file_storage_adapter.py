@@ -95,3 +95,21 @@ class FileStorageAdapter(StoragePort):
         except Exception:
             pass
         return {}
+
+    def save_presets(self, presets_data: List[Dict[str, Any]]) -> None:
+        try:
+            with open(os.path.join(self.config_dir, "presets.json"), "w") as f:
+                json.dump(presets_data, f)
+        except Exception:
+            pass
+
+    def load_presets(self) -> List[Dict[str, Any]]:
+        presets = []
+        try:
+            pl_path = os.path.join(self.config_dir, "presets.json")
+            if os.path.exists(pl_path):
+                with open(pl_path, "r") as f:
+                    presets = json.load(f)
+        except Exception:
+            pass
+        return presets

@@ -51,40 +51,33 @@
 
         <!-- Presets -->
         <div class="flex flex-col gap-2">
-          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.presets') }}</h4>
-          <div class="flex gap-2">
-            <button
-              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
-              :class="localSettings.preset === 'normal' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-              @click="applyPreset('normal', 0, 15, 15, true, false)"
-            >
-              <Clock class="w-4 h-4 mb-1" />
-              <span class="text-[10px] font-bold">{{ $t('create_game.quick_mode_normal') }}</span>
+          <div class="flex items-center justify-between mb-1">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ $t('create_game.presets') }}</h4>
+            <button @click="showPresetModal = true" class="w-5 h-5 rounded-md flex items-center justify-center text-gray-400 hover:text-[#FFBA49] hover:bg-[#FFF8E7] transition-colors">
+              <Plus class="w-4 h-4" />
             </button>
-            <button
-              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
-              :class="localSettings.preset === 'hard' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-              @click="applyPreset('hard', 0, 5, 10, false, true)"
+          </div>
+          <div class="grid grid-cols-4 gap-2">
+            <div 
+              v-for="preset in allPresets" :key="preset.name"
+              class="relative group h-full"
             >
-              <Zap class="w-4 h-4 mb-1" />
-              <span class="text-[10px] font-bold">{{ $t('create_game.quick_mode_hard') }}</span>
-            </button>
-            <button
-              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
-              :class="localSettings.preset === 'fun' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-              @click="applyPreset('fun', 0, 30, 30, true, false)"
-            >
-              <Smile class="w-4 h-4 mb-1" />
-              <span class="text-[10px] font-bold">{{ $t('create_game.quick_mode_fun') }}</span>
-            </button>
-            <button
-              class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
-              :class="localSettings.preset === 'peaceful' ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-              @click="applyPreset('peaceful', 10, 30, 30, true, false)"
-            >
-              <Leaf class="w-4 h-4 mb-1" />
-              <span class="text-[10px] font-bold">{{ $t('create_game.quick_mode_peaceful') }}</span>
-            </button>
+              <button
+                class="w-full h-full flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
+                :class="localSettings.preset === preset.name ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
+                @click="applyPreset(preset.name, preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
+              >
+                <component :is="IconMap[preset.icon || 'Star'] || Star" class="w-4 h-4 mb-1" />
+                <span class="text-[10px] font-bold truncate w-full text-center px-1">{{ preset.isCustom ? preset.name : $t(preset.titleKey!) }}</span>
+              </button>
+              <button v-if="preset.isCustom"
+                @click.stop="deleteCustomPreset(preset.originalIndex!)"
+                class="absolute -top-2 -right-2 bg-red-100 text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-200"
+                title="Supprimer"
+              >
+                <X class="w-3 h-3" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -142,32 +135,20 @@
         <div class="flex flex-col gap-1 mt-2">
           <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.options_title') }}</h4>
           <div 
-            v-if="localSettings.mode === 'text'"
+            v-for="opt in BLIND_TEST_ADDITIONAL_OPTIONS"
+            :key="opt.key"
+            v-show="!opt.requiredMode || localSettings.mode === opt.requiredMode"
             class="flex items-center justify-between p-3 rounded-xl transition-all hover:bg-gray-50 cursor-pointer" 
-            @click="localSettings.allowSuggestions = !localSettings.allowSuggestions"
+            @click="localSettings[opt.key as keyof typeof localSettings] = !localSettings[opt.key as keyof typeof localSettings]"
           >
             <div class="flex items-center gap-2">
-              <Lightbulb class="w-4 h-4 text-gray-400" />
-              <span class="text-sm font-bold text-gray-800">{{ $t('create_game.allow_suggestions') }}</span>
+              <component :is="opt.icon" class="w-4 h-4 text-gray-400" />
+              <span class="text-sm font-bold text-gray-800">{{ $t(opt.titleKey) }}</span>
             </div>
             <div 
-              :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', localSettings.allowSuggestions ? 'bg-[#FFBA49]' : 'bg-gray-200']"
+              :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', localSettings[opt.key as keyof typeof localSettings] ? 'bg-[#FFBA49]' : 'bg-gray-200']"
             >
-              <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', localSettings.allowSuggestions ? 'translate-x-6' : 'translate-x-0']"></div>
-            </div>
-          </div>
-          <div 
-            class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
-            @click="localSettings.penaltyOnWrongAnswer = !localSettings.penaltyOnWrongAnswer"
-          >
-            <div class="flex items-center gap-2">
-              <AlertTriangle class="w-4 h-4 text-gray-400" />
-              <span class="text-sm font-bold text-gray-800">{{ $t('create_game.auto_correction_penalty') }}</span>
-            </div>
-            <div 
-              :class="['w-12 h-6 rounded-full transition-colors duration-300 flex items-center p-0.5 shrink-0', localSettings.penaltyOnWrongAnswer ? 'bg-[#FFBA49]' : 'bg-gray-200']"
-            >
-              <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', localSettings.penaltyOnWrongAnswer ? 'translate-x-6' : 'translate-x-0']"></div>
+              <div :class="['w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300', localSettings[opt.key as keyof typeof localSettings] ? 'translate-x-6' : 'translate-x-0']"></div>
             </div>
           </div>
         </div>
@@ -179,14 +160,39 @@
         <Btn variant="primary" class="flex-1 font-bold" @click="handleSave">Sauvegarder</Btn>
       </div>
     </div>
+    
+    <PresetSaveModal 
+      :show="showPresetModal" 
+      :custom-presets="customPresets"
+      :current-settings="localSettings"
+      @close="showPresetModal = false"
+      @saved="onPresetsSaved"
+    />
+    
+    <!-- Toast Undo Delete -->
+    <div 
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 transform"
+      :class="toastVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'"
+    >
+      <span class="text-sm font-medium">{{ $t('create_game.preset_deleted') || 'Preset supprimé' }}</span>
+      <button 
+        @click="undoDelete"
+        class="text-[#FFBA49] text-sm font-bold hover:text-white transition-colors uppercase tracking-wide"
+      >
+        {{ $t('create_game.undo') || 'Annuler' }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Lightbulb, AlertTriangle, Keyboard } from '@lucide/vue';
+import { ref, watch, onMounted, computed } from 'vue';
+import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Plus, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket, Keyboard } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Slider from '../ui/Slider.vue';
+import PresetSaveModal from '../games/blind-test/PresetSaveModal.vue';
+import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../games/blind-test/blindTestOptions';
+import { DEFAULT_PRESETS } from '../games/blind-test/blindTestDefaultPresets';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -200,6 +206,92 @@ const emit = defineEmits<{
 }>();
 
 const localSettings = ref<any>({});
+const showPresetModal = ref(false);
+const customPresets = ref<any[]>([]);
+
+const allPresets = computed(() => {
+  return [
+    ...DEFAULT_PRESETS.map(p => ({
+      ...p,
+      isCustom: false,
+      originalIndex: -1
+    })),
+    ...customPresets.value.map((p, index) => ({
+      ...p,
+      isCustom: true,
+      originalIndex: index
+    }))
+  ];
+});
+
+const IconMap: Record<string, any> = { Clock, Zap, Smile, Leaf, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket };
+
+const toastVisible = ref(false);
+const deletedPreset = ref<{ index: number, data: any } | null>(null);
+let toastTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const loadPresets = async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/presets');
+    if (res.ok) {
+      customPresets.value = await res.json();
+    }
+  } catch (e) {
+    console.warn("Could not load presets", e);
+  }
+};
+
+const savePresetsToBackend = async (presets: any[]) => {
+  try {
+    await fetch('http://127.0.0.1:5000/api/presets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(presets)
+    });
+  } catch(e) {
+    console.error("Could not save presets", e);
+  }
+};
+
+const deleteCustomPreset = async (index: number) => {
+  const data = customPresets.value[index];
+  
+  deletedPreset.value = {
+    index,
+    data
+  };
+  
+  customPresets.value.splice(index, 1);
+  await savePresetsToBackend(customPresets.value);
+  
+  toastVisible.value = true;
+  
+  if (toastTimeout) clearTimeout(toastTimeout);
+  
+  toastTimeout = setTimeout(() => {
+    toastVisible.value = false;
+    deletedPreset.value = null;
+  }, 3000);
+};
+
+const undoDelete = async () => {
+  if (deletedPreset.value) {
+    customPresets.value.splice(deletedPreset.value.index, 0, deletedPreset.value.data);
+    await savePresetsToBackend(customPresets.value);
+    
+    toastVisible.value = false;
+    deletedPreset.value = null;
+    if (toastTimeout) clearTimeout(toastTimeout);
+  }
+};
+
+const onPresetsSaved = (newPresets: any[]) => {
+  customPresets.value = newPresets;
+};
+
+onMounted(() => {
+  loadPresets();
+});
 
 watch(() => props.isOpen, (newVal) => {
   if (newVal && props.gameSettings) {
@@ -247,27 +339,29 @@ watch(() => localSettings.value.blockDuration, (newVal) => {
   }
 });
 
+watch(() => localSettings.value.mode, (newMode) => {
+  if (newMode) {
+    localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', localSettings.value.allowSuggestions, newMode);
+    localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', localSettings.value.penaltyOnWrongAnswer, newMode);
+  }
+});
+
 const applyPreset = (presetName: string, block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
   localSettings.value.preset = presetName;
   localSettings.value.blockDuration = block;
   localSettings.value.musicDuration = music;
   localSettings.value.duration = total;
-  localSettings.value.penaltyOnWrongAnswer = penalty;
   
-  if (localSettings.value.mode === 'text') {
-    localSettings.value.allowSuggestions = suggestions;
-  } else {
-    localSettings.value.allowSuggestions = false;
-  }
+  localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', suggestions, localSettings.value.mode);
+  localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', penalty, localSettings.value.mode);
 };
 
 const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean) => {
-  const expectedSuggestions = localSettings.value.mode === 'buzzer' ? false : s;
   return localSettings.value.blockDuration === b &&
          localSettings.value.musicDuration === m &&
          localSettings.value.duration === t &&
-         localSettings.value.allowSuggestions === expectedSuggestions &&
-         localSettings.value.penaltyOnWrongAnswer === p;
+         localSettings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, localSettings.value.mode) &&
+         localSettings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, localSettings.value.mode);
 };
 
 // Deep watch on settings to recalculate preset when customized
@@ -280,11 +374,16 @@ watch(
     localSettings.value.penaltyOnWrongAnswer
   ],
   () => {
-    if (checkPreset(0, 15, 15, true, false)) localSettings.value.preset = 'normal';
-    else if (checkPreset(0, 5, 10, false, true)) localSettings.value.preset = 'hard';
-    else if (checkPreset(0, 30, 30, true, false)) localSettings.value.preset = 'fun';
-    else if (checkPreset(10, 30, 30, true, false)) localSettings.value.preset = 'peaceful';
-    else localSettings.value.preset = 'custom';
+    for (const p of allPresets.value) {
+      if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer)) {
+        localSettings.value.preset = p.name;
+        localSettings.value.presetIcon = p.icon || 'Star';
+        return;
+      }
+    }
+    
+    localSettings.value.preset = 'custom';
+    localSettings.value.presetIcon = 'Settings2';
   },
   { deep: true }
 );

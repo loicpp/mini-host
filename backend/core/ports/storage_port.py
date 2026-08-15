@@ -25,3 +25,11 @@ class StoragePort(ABC):
     @abstractmethod
     def load_game_state(self) -> Dict[str, Any]:
         pass
+
+    @abstractmethod
+    def save_presets(self, presets_data: List[Dict[str, Any]]) -> None:
+        pass
+
+    @abstractmethod
+    def load_presets(self) -> List[Dict[str, Any]]:
+        pass

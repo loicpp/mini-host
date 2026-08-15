@@ -68,16 +68,16 @@
             </div>
 
             <!-- Additional options -->
-            <div class="flex flex-wrap gap-3" v-if="(game.data.settings.mode === 'text' && game.data.settings.allowSuggestions) || game.data.settings.penaltyOnWrongAnswer">
-               <div class="flex items-center gap-2 bg-black/20 px-4 py-2.5 rounded-xl border border-white/5 shadow-inner" v-if="game.data.settings.mode === 'text' && game.data.settings.allowSuggestions">
-                 <Lightbulb class="w-5 h-5 text-[#FFBA49]" />
-                 <span class="font-medium text-white/90 text-sm">{{ $t('create_game.allow_suggestions') }}</span>
-               </div>
-               
-               <div class="flex items-center gap-2 bg-black/20 px-4 py-2.5 rounded-xl border border-white/5 shadow-inner" v-if="game.data.settings.penaltyOnWrongAnswer">
-                 <AlertTriangle class="w-5 h-5 text-[#ff4d4d]" /> 
-                 <span class="font-medium text-white/90 text-sm">{{ $t('create_game.auto_correction_penalty') }}</span>
-               </div>
+            <div class="flex flex-wrap gap-3 mt-4">
+              <template v-for="opt in BLIND_TEST_ADDITIONAL_OPTIONS" :key="opt.key">
+                <div 
+                  v-if="game.data.settings[opt.key] && (!opt.requiredMode || game.data.settings.mode === opt.requiredMode)"
+                  class="flex items-center gap-2 bg-black/20 px-4 py-2.5 rounded-xl border border-white/5 shadow-inner"
+                >
+                  <component :is="opt.icon" class="w-5 h-5" :class="opt.projectorIconClass" />
+                  <span class="font-medium text-white/90 text-sm">{{ $t(opt.titleKey) }}</span>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -219,7 +219,8 @@ import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
-import { AlarmClock, PartyPopper, Trophy, Medal, Info, Lightbulb, AlertTriangle, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
+import { AlarmClock, PartyPopper, Trophy, Medal, Info, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../components/games/blind-test/blindTestOptions';
 import QRCode from 'qrcode';
 
 let originalTitle = '';

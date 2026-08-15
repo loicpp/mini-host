@@ -119,12 +119,8 @@
         <div class="flex items-center justify-between">
           <span class="text-gray-600 font-medium flex items-center gap-1.5"><Gamepad2 class="w-3.5 h-3.5 text-gray-400" /> {{ $t('sidebar.game_mode') }}</span>
           <span class="font-bold text-gray-800 flex items-center gap-1.5 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
-            <Clock v-if="gameSettings.preset === 'normal'" class="w-3.5 h-3.5 text-gray-400" />
-            <Zap v-else-if="gameSettings.preset === 'hard'" class="w-3.5 h-3.5 text-gray-400" />
-            <Smile v-else-if="gameSettings.preset === 'fun'" class="w-3.5 h-3.5 text-gray-400" />
-            <Leaf v-else-if="gameSettings.preset === 'peaceful'" class="w-3.5 h-3.5 text-gray-400" />
-            <Settings2 v-else class="w-3.5 h-3.5 text-gray-400" />
-            {{ $t('create_game.quick_mode_' + (gameSettings.preset || 'custom')) }}
+            <component :is="IconMap[gameSettings.presetIcon] || IconMap['Settings2']" class="w-3.5 h-3.5 text-gray-400" />
+            {{ ['normal', 'hard', 'fun', 'peaceful', 'custom'].includes(gameSettings.preset || 'custom') ? $t('create_game.quick_mode_' + (gameSettings.preset || 'custom')) : gameSettings.preset }}
           </span>
         </div>
 
@@ -143,15 +139,17 @@
           </div>
         </div>
 
-        <div v-if="(gameMode === 'text' && gameSettings.allowSuggestions) || gameSettings.penaltyOnWrongAnswer" class="flex flex-wrap gap-2 mt-1 border-t border-gray-100 pt-3">
-          <div v-if="gameMode === 'text' && gameSettings.allowSuggestions" class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 shadow-sm">
-            <Lightbulb class="w-3.5 h-3.5" />
-            {{ $t('create_game.allow_suggestions_short') }}
-          </div>
-          <div v-if="gameSettings.penaltyOnWrongAnswer" class="flex items-center gap-1.5 text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded-full border border-rose-100 shadow-sm">
-            <AlertTriangle class="w-3.5 h-3.5" />
-            {{ $t('create_game.auto_correction_penalty_short') }}
-          </div>
+        <div class="flex flex-wrap gap-2 mt-1 border-t border-gray-100 pt-3">
+          <template v-for="opt in BLIND_TEST_ADDITIONAL_OPTIONS" :key="opt.key">
+            <div 
+              v-if="gameSettings[opt.key as keyof typeof gameSettings] && (!opt.requiredMode || gameMode === opt.requiredMode)"
+              class="flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-full border shadow-sm"
+              :class="opt.sidebarBadgeClass"
+            >
+              <component :is="opt.icon" class="w-3.5 h-3.5" />
+              {{ $t(opt.shortTitleKey) }}
+            </div>
+          </template>
         </div>
       </button>
     </div>
@@ -166,10 +164,16 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Lightbulb, AlertTriangle, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2 } from '@lucide/vue';
+import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket } from '@lucide/vue';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../games/blind-test/blindTestOptions';
 import { Track } from '../../services/music/MusicProvider';
 import Btn from '../ui/Btn.vue';
 import BackButton from '../ui/BackButton.vue';
+
+const IconMap: Record<string, any> = { 
+  Clock, Zap, Smile, Leaf, Settings2, 
+  Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket 
+};
 
 const props = defineProps<{
   status: string;
