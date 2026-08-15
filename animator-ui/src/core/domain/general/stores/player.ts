@@ -1,6 +1,7 @@
 import { ref } from 'vue';
+import { Players } from '../../models/Game';
 
-const players = ref<Record<string, any>>({});
+const players = ref<Players>({});
 const pressedBuzzer = ref<string | null>(null);
 const pendingPoints = ref<Record<string, number>>({});
 const lastAwardedPoints = ref<Record<string, number>>({});

@@ -1,12 +1,13 @@
 import { GameRepository } from '../core/ports/GameRepository';
 import { FirebaseGameRepository } from '../infrastructure/FirebaseGameRepository';
+import { GameSettings, TrackInfo, GameStatus, Players } from '../core/domain/models/Game';
 
 // Injection de dépendance basique pour ce service
 const gameRepo: GameRepository = new FirebaseGameRepository();
 
 export const animatorService = {
 
-  async createGame(gameType: string, settings: any = {}) {
+  async createGame(gameType: string, settings: GameSettings = {}) {
     return gameRepo.createGame(gameType, settings);
   },
 
@@ -14,19 +15,19 @@ export const animatorService = {
     return gameRepo.getGame(gameId);
   },
 
-  async updateGameState(gameId: string, status: string, trackInfo: any = null) {
+  async updateGameState(gameId: string, status: GameStatus, trackInfo: TrackInfo | null = null) {
     return gameRepo.updateGameState(gameId, status, trackInfo);
   },
 
-  async updateGameSettings(gameId: string, settings: any) {
+  async updateGameSettings(gameId: string, settings: GameSettings) {
     return gameRepo.updateGameSettings(gameId, settings);
   },
 
-  listenToPlayers(gameId: string, callback: (players: any) => void) {
+  listenToPlayers(gameId: string, callback: (players: Players) => void) {
     return gameRepo.listenToPlayers(gameId, callback);
   },
 
-  listenToPressedBuzzer(gameId: string, callback: (buzzer: any) => void) {
+  listenToPressedBuzzer(gameId: string, callback: (buzzer: string | null) => void) {
     return gameRepo.listenToPressedBuzzer(gameId, callback);
   },
 

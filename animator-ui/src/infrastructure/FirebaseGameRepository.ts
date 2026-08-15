@@ -1,9 +1,10 @@
 import { db, auth } from '../firebase';
 import { ref, set, get, onValue, update, remove } from "firebase/database";
 import { GameRepository } from '../core/ports/GameRepository';
+import { GameSettings, TrackInfo, GameStatus, Players } from '../core/domain/models/Game';
 
 export class FirebaseGameRepository implements GameRepository {
-  async createGame(gameType: string, settings: any = {}) {
+  async createGame(gameType: string, settings: GameSettings = {}) {
     const user = auth.currentUser;
     const gameId = Math.random().toString(36).substring(2, 6).toUpperCase();
     const secret = Math.random().toString(36).substring(2, 10);
@@ -34,7 +35,7 @@ export class FirebaseGameRepository implements GameRepository {
     return null;
   }
 
-  async updateGameState(gameId: string, status: string, trackInfo: any = null) {
+  async updateGameState(gameId: string, status: GameStatus, trackInfo: TrackInfo | null = null) {
     const updates: any = { 'data/status': status };
     if (trackInfo) {
       if (trackInfo.startTime) updates['data/startTime'] = trackInfo.startTime;
@@ -44,19 +45,19 @@ export class FirebaseGameRepository implements GameRepository {
     await update(gameRef, updates);
   }
 
-  async updateGameSettings(gameId: string, settings: any) {
+  async updateGameSettings(gameId: string, settings: GameSettings) {
     const gameRef = ref(db, `games/${gameId}`);
     await update(gameRef, { 'data/settings': settings });
   }
 
-  listenToPlayers(gameId: string, callback: (players: any) => void) {
+  listenToPlayers(gameId: string, callback: (players: Players) => void) {
     const playersRef = ref(db, `games/${gameId}/players`);
     return onValue(playersRef, (snapshot) => {
       callback(snapshot.val() || {});
     });
   }
 
-  listenToPressedBuzzer(gameId: string, callback: (buzzer: any) => void) {
+  listenToPressedBuzzer(gameId: string, callback: (buzzer: string | null) => void) {
     const buzzerRef = ref(db, `games/${gameId}/pressedBuzzer`);
     return onValue(buzzerRef, (snapshot) => {
       callback(snapshot.val() || null);

@@ -32,7 +32,7 @@ export function useGamePlayers() {
       result[id] = {
         ...p,
         currentGuess: guess,
-        hasAnswered: !!guess && (!!guess.title || !!guess.artist || (typeof guess === 'string' && guess.length > 0)),
+        hasAnswered: !!guess && ((typeof guess === 'object' && (!!guess.title || !!guess.artist)) || (typeof guess === 'string' && guess.length > 0)),
         score: (p.score || 0) + (pendingPoints.value[id] || 0),
         pendingPoints: pendingPoints.value[id] || 0,
         autoCorrectResult: autoCorrectResults.value[id]
@@ -176,7 +176,7 @@ export function useGamePlayers() {
     
     for (const id in players.value) {
       const guess = players.value[id]?.currentGuess;
-      if (guess && guess.title) {
+      if (guess && typeof guess === 'object' && guess.title) {
         const queries = [guess.title];
         if (guess.artist) {
           queries.push(`${guess.title} - ${guess.artist}`);

@@ -11,6 +11,7 @@ import { localBackendService } from '../../../services/localBackendService';
 import { sanitizeTracks } from './trackUtils';
 import { useProjector } from './useProjector';
 import { useGameState } from './useGameState';
+import { GameSettings } from '../models/Game';
 
 export function useGameSession() {
   const { t } = useI18n();
@@ -24,7 +25,7 @@ export function useGameSession() {
   const { toggleProjector, closeProjector } = useProjector();
   const { nextRound, endGame, restartGame } = useGameState();
 
-  const createNewGame = async (type: string, settings: any) => {
+  const createNewGame = async (type: string, settings: GameSettings) => {
     gameType.value = type;
     if (settings) {
       gameSettings.value = {
@@ -165,7 +166,7 @@ export function useGameSession() {
     return false;
   };
 
-  const updateGameSettings = async (newSettings: any) => {
+  const updateGameSettings = async (newSettings: Partial<GameSettings>) => {
     if (!gameId.value) return;
     gameSettings.value = { ...gameSettings.value, ...newSettings };
     

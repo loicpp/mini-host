@@ -20,6 +20,7 @@ const { mockRepoInstance } = vi.hoisted(() => {
       createGame: vi.fn().mockResolvedValue({ gameId: 'TEST', secret: 'abc' }),
       getGame: vi.fn().mockResolvedValue({ status: 'playing' }),
       updateGameState: vi.fn(),
+      updateGameSettings: vi.fn(),
       listenToPlayers: vi.fn(),
       listenToPressedBuzzer: vi.fn(),
       clearPlayerGuess: vi.fn(),
@@ -30,7 +31,8 @@ const { mockRepoInstance } = vi.hoisted(() => {
       decrementBlockedTurns: vi.fn(),
       resetPlayers: vi.fn(),
       removePlayer: vi.fn(),
-      setPlayerBlock: vi.fn()
+      setPlayerBlock: vi.fn(),
+      updateRanks: vi.fn()
     }
   };
 });
@@ -64,7 +66,7 @@ describe('animatorService & authService', () => {
   it('getGame - delegates to repository', async () => {
     const result = await animatorService.getGame('GAME_1');
     expect(mockRepoInstance.getGame).toHaveBeenCalledWith('GAME_1');
-    expect(result.status).toBe('playing');
+    expect(result?.status).toBe('playing');
   });
 
   it('updateGameState - delegates to repository', async () => {
