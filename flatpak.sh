@@ -41,7 +41,7 @@ echo "==> Génération des sources Python hors-ligne..."
 # On crée un requirements sans les paquets de tests (pytest) qui causent des problèmes et sont inutiles en prod
 grep -v "pytest" backend/requirements.txt > flatpak/requirements-prod.txt
 # On génère le python-deps.json basé sur les dépendances de prod
-python3 flatpak/flatpak-pip-generator.py --output flatpak/python-deps -r flatpak/requirements-prod.txt
+python3 flatpak/flatpak-pip-generator.py --runtime org.freedesktop.Sdk//25.08 --prefer-wheels pygame-ce --output flatpak/python-deps -r flatpak/requirements-prod.txt
 
 echo "==> Configuration de Flathub..."
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
