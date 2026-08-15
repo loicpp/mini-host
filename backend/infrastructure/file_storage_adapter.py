@@ -92,8 +92,8 @@ class FileStorageAdapter(StoragePort):
             if os.path.exists(path):
                 with open(path, "r") as f:
                     return json.load(f)
-        except Exception:
-            pass
+        except Exception as e:
+            return {"error": str(e), "corrupted": True}
         return {}
 
     def save_presets(self, presets_data: List[Dict[str, Any]]) -> None:

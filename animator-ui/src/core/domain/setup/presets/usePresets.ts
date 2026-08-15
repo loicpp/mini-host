@@ -5,7 +5,14 @@ export function usePresets() {
     try {
       const res = await fetch(`${BASE_URL}/presets`);
       if (!res.ok) throw new Error('Failed to load presets');
-      return await res.json();
+      const data = await res.json();
+      
+      // Ensure missing additional options are defaulted to false
+      return data.map((preset: any) => ({
+        ...preset,
+        allowSuggestions: preset.allowSuggestions ?? false,
+        penaltyOnWrongAnswer: preset.penaltyOnWrongAnswer ?? false
+      }));
     } catch (e) {
       console.warn('Could not load presets', e);
       return [];

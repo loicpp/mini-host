@@ -94,8 +94,21 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
     }
     
     const trackToAdd = { ...newTrack.value, id, url };
-    if (source === 'soundcloud' && !trackToAdd.isCertified) {
-      await autoCertifyTrack(trackToAdd);
+
+    if (source === 'soundcloud') {
+      try {
+        const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`);
+        if (!res.ok) {
+          await showAlert({ title: t('dialogs.invalid_url.title'), message: t('dialogs.launch_error.track_not_found') });
+          return;
+        }
+      } catch (_err) {
+        // ignore network errors
+      }
+
+      if (!trackToAdd.isCertified) {
+        await autoCertifyTrack(trackToAdd);
+      }
     }
     
     selectedPlaylist.value.tracks.unshift({

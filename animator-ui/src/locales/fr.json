@@ -371,7 +371,9 @@
     },
     "launch_error": {
       "title": "Erreur lors du lancement",
-      "message": "Erreur lors du lancement : {err}"
+      "message": "Erreur lors du lancement : {err}",
+      "missing_info": "Les informations de la musique (ID ou source) sont manquantes. Veuillez modifier la playlist pour corriger ce problème.",
+      "track_not_found": "La musique n'existe pas ou n'est plus disponible sur SoundCloud."
     },
     "exit_tutorial": {
       "title": "Quitter le tutoriel ?",

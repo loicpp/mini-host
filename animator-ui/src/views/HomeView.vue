@@ -20,9 +20,9 @@ import { useGameStore } from '../core/domain/general/stores/game';
 import { useAuth } from '../core/domain/general/useAuth';
 import { useGameSession } from '../core/domain/games/useGameSession';
 import { animatorService } from '../services/animatorService';
+import { localBackendService } from '../services/localBackendService';
 
 const { lastGameId } = useGameStore();
-
 
 const router = useRouter();
 const { logout } = useAuth();
@@ -34,7 +34,9 @@ onMounted(async () => {
   if (lastGameId.value) {
     try {
       const gameData = await animatorService.getGame(lastGameId.value);
-      if (!gameData) {
+      const localData = await localBackendService.loadGame();
+      
+      if (!gameData || (localData && localData.corrupted)) {
         lastGameId.value = null;
         localStorage.removeItem('minihost_last_game');
       } else {

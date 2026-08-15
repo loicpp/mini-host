@@ -93,8 +93,21 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
     }
     
     const trackToAdd = { ...tempNewTrack.value, id, url };
-    if (source === 'soundcloud' && !trackToAdd.isCertified) {
-      await autoCertifyTrack(trackToAdd as any);
+
+    if (source === 'soundcloud') {
+      try {
+        const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`);
+        if (!res.ok) {
+          await showAlert({ title: 'Lien invalide', message: "La musique n'existe pas ou n'est plus disponible sur SoundCloud." });
+          return;
+        }
+      } catch (_err) {
+        // ignore network errors
+      }
+
+      if (!trackToAdd.isCertified) {
+        await autoCertifyTrack(trackToAdd as any);
+      }
     }
     
     localTracks.value.unshift({

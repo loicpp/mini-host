@@ -371,7 +371,9 @@
     },
     "launch_error": {
       "title": "Launch error",
-      "message": "Launch error: {err}"
+      "message": "Launch error: {err}",
+      "missing_info": "Track information (ID or source) is missing. Please edit the playlist to fix this issue.",
+      "track_not_found": "The track does not exist or is no longer available on SoundCloud."
     },
     "exit_tutorial": {
       "title": "Exit tutorial?",

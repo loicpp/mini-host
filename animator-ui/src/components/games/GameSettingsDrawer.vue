@@ -284,6 +284,12 @@ onMounted(() => {
   loadPresets();
 });
 
+watch(() => props.gameSettings, (newVal) => {
+  if (newVal) {
+    localSettings.value = JSON.parse(JSON.stringify(newVal));
+  }
+}, { immediate: true, deep: true });
+
 watch(() => props.isOpen, (newVal) => {
   if (newVal && props.gameSettings) {
     localSettings.value = JSON.parse(JSON.stringify(props.gameSettings));

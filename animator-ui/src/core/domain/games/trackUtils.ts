@@ -18,7 +18,7 @@ export const sanitizeTracks = (tracks: any[]): Track[] => {
     
     return {
       ...t,
-      id: id || (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10)),
+      id: id || t.url || (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10)),
       source: t.source || source
     };
   });

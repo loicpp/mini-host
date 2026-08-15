@@ -48,6 +48,26 @@ export function useGameMusic() {
     if (!selectedTrack.value) return;
     
     try {
+      const hasValidUrl = !!selectedTrack.value.url || selectedTrack.value.id.startsWith('http') || selectedTrack.value.id.startsWith('/');
+      if (!hasValidUrl || !selectedTrack.value.source) {
+        throw new Error(t('dialogs.launch_error.missing_info'));
+      }
+
+      if (selectedTrack.value.source === 'soundcloud') {
+        const checkUrl = selectedTrack.value.url || selectedTrack.value.id;
+        try {
+          const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(checkUrl)}`);
+          if (!res.ok) {
+            throw new Error(t('dialogs.launch_error.track_not_found'));
+          }
+        } catch (err: any) {
+          if (err.message === t('dialogs.launch_error.track_not_found')) {
+            throw err;
+          }
+          // If fetch fails (network error, cors blocked), we ignore and try to play anyway.
+        }
+      }
+
       if (typeof musicManager.activate === 'function') {
         musicManager.activate().catch(() => console.warn("Activate error"));
       }
