@@ -46,10 +46,13 @@ import { useI18n } from 'vue-i18n';
 import { XCircle } from '@lucide/vue';
 import { updateService } from '../services/updateService';
 
+import { useGameSession } from '../composables/useGameSession';
+
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
 const { isTutorialActive, exitTutorial } = useTutorial();
 const { showConfirm } = useDialog();
 const { t } = useI18n();
+const { closeProjector } = useGameSession();
 
 const handleExitClick = async () => {
   const confirmed = await showConfirm({
@@ -69,11 +72,7 @@ onMounted(() => {
   
   window.addEventListener('projector-closed-native', async () => {
     isProjectorOpen.value = false;
-    try {
-      await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
-    } catch(e) {
-      console.warn(e);
-    }
+    await closeProjector();
   });
 
   checkUpdates();

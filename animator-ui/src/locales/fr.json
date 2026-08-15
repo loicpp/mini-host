@@ -379,6 +379,7 @@
     }
   },
   "tutorial": {
+    "prompt_message": "Le tutoriel peut être fait pour apprendre à naviguer sur le site.",
     "buttons": {
       "next": "Suivant",
       "prev": "Précédent",

@@ -115,20 +115,20 @@ const trackListContainer = ref<HTMLElement | null>(null);
 const searchInput = ref<HTMLInputElement | null>(null);
 
 import { onMounted } from 'vue';
+import { useGameData } from '../../composables/useGameData';
+
+const { loadGameData, saveGameData } = useGameData();
 
 onMounted(async () => {
   searchInput.value?.focus();
-  try {
-    const res = await fetch('http://127.0.0.1:5000/api/game');
-    const data = await res.json();
+  const data = await loadGameData();
+  if (data) {
     if (data.sort) {
       trackSort.value = data.sort;
     }
     if (data.hidePlayedTracks !== undefined) {
       hidePlayedTracks.value = data.hidePlayedTracks;
     }
-  } catch (e) {
-    console.warn("Could not load sort preference", e);
   }
 });
 
@@ -225,28 +225,12 @@ const getTrackClasses = (track: Track) => {
 
 const toggleSort = async () => {
   trackSort.value = trackSort.value === 'title' ? 'artist' : 'title';
-  try {
-    await fetch('http://127.0.0.1:5000/api/game', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sort: trackSort.value })
-    });
-  } catch (e) {
-    console.warn("Could not save sort preference", e);
-  }
+  await saveGameData({ sort: trackSort.value });
 };
 
 const toggleHidePlayed = async () => {
   hidePlayedTracks.value = !hidePlayedTracks.value;
-  try {
-    await fetch('http://127.0.0.1:5000/api/game', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hidePlayedTracks: hidePlayedTracks.value })
-    });
-  } catch (e) {
-    console.warn("Could not save hidePlayedTracks preference", e);
-  }
+  await saveGameData({ hidePlayedTracks: hidePlayedTracks.value });
 };
 
 const handleEnterKey = () => {

@@ -64,23 +64,61 @@
     </div>
 
     <!-- Tutorial Floating Button -->
-    <button 
-      v-if="!isTutorialActive"
-      @click="startTutorial"
-      class="fixed bottom-6 right-6 z-[50] w-14 h-14 bg-gradient-to-tr from-blue-500 to-cyan-400 text-white rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 group"
-      :title="$t('tutorial.buttons.launch')"
-    >
-      <HelpCircle class="w-7 h-7" />
-    </button>
+    <div v-if="!isTutorialActive" class="fixed bottom-6 right-6 z-[50] flex flex-col items-end">
+      
+      <!-- Arrow & Message -->
+      <div v-if="showTutorialPrompt" class="mb-2 mr-2 flex flex-col items-end animate-bounce">
+        <div class="bg-[#FFBA49] text-[#3F4739] p-3 rounded-xl shadow-lg max-w-[200px] text-sm font-bold text-center mb-2 border border-[#f0aa30]">
+          {{ $t('tutorial.prompt_message') }}
+        </div>
+        <svg width="88" height="60" viewBox="0 0 88 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.5 8C6.5 22.5 15 43 28.5 56M31.7154 44L28.5 56L14 52.1147" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Button -->
+      <button 
+        @click="handleStartTutorial"
+        class="w-14 h-14 bg-gradient-to-tr from-blue-500 to-cyan-400 text-white rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 group"
+        :title="$t('tutorial.buttons.launch')"
+      >
+        <HelpCircle class="w-7 h-7" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { Settings, Zap, RefreshCw, Database, Activity, ChevronRight, HelpCircle } from '@lucide/vue';
 import MenuActionBtn from '../ui/MenuActionBtn.vue';
 import { useTutorial } from '../../composables/useTutorial';
+import { useConfig } from '../../composables/useConfig';
 
 const { startTutorial, isTutorialActive } = useTutorial();
+const { loadConfig, markTutorialAsSeen } = useConfig();
+const showTutorialPrompt = ref(false);
+
+onMounted(async () => {
+  try {
+    const config = await loadConfig();
+    if (config && !config.hasSeenTutorial) {
+      showTutorialPrompt.value = true;
+    }
+  } catch (e) {
+    console.warn("Could not check tutorial state from config", e);
+  }
+});
+
+const handleStartTutorial = async () => {
+  startTutorial();
+  showTutorialPrompt.value = false;
+  try {
+    await markTutorialAsSeen();
+  } catch (e) {
+    console.warn("Could not save tutorial state to config", e);
+  }
+};
 
 defineProps<{
   lastGameId: string | null;

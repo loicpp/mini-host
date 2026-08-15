@@ -80,6 +80,8 @@ import Btn from '../../ui/Btn.vue';
 import OptionCard from '../../ui/OptionCard.vue';
 import { Star, Bookmark, Heart, Zap, Coffee, Flame, Shield, X, Ghost, Gamepad2, Trophy, Target, Rocket } from '@lucide/vue';
 
+import { usePresets } from '../../../composables/usePresets';
+
 const { t } = useI18n();
 
 const props = defineProps<{
@@ -92,6 +94,8 @@ const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'saved', newPresets: any[]): void;
 }>();
+
+const { savePresets: savePresetsToApi } = usePresets();
 
 const presetName = ref('');
 const presetIcon = ref('Star');
@@ -116,15 +120,7 @@ const closeModal = () => {
 };
 
 const savePresetsToBackend = async (presets: any[]) => {
-  try {
-    await fetch('http://127.0.0.1:5000/api/presets', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(presets)
-    });
-  } catch(e) {
-    console.error("Could not save presets", e);
-  }
+  await savePresetsToApi(presets);
 };
 
 const saveCustomPreset = async () => {

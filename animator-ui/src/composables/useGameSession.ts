@@ -218,6 +218,15 @@ export function useGameSession() {
         projectorWindow = null;
       }
       isProjectorOpen.value = false;
+      await closeProjector();
+    }
+  };
+
+  const closeProjector = async () => {
+    try {
+      await fetch('http://127.0.0.1:5000/api/projector/close', { method: 'POST' });
+    } catch(e) {
+      console.warn("Could not close projector via API", e);
     }
   };
 
@@ -301,6 +310,7 @@ export function useGameSession() {
     leaveGame,
     deleteAndLeaveGame,
     toggleProjector,
+    closeProjector,
     nextRound,
     endGame,
     restartGame,

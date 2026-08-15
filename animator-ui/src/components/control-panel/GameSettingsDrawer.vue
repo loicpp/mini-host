@@ -193,6 +193,7 @@ import Slider from '../ui/Slider.vue';
 import PresetSaveModal from '../games/blind-test/PresetSaveModal.vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../games/blind-test/blindTestOptions';
 import { DEFAULT_PRESETS } from '../games/blind-test/blindTestDefaultPresets';
+import { usePresets } from '../../composables/usePresets';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -230,27 +231,17 @@ const toastVisible = ref(false);
 const deletedPreset = ref<{ index: number, data: any } | null>(null);
 let toastTimeout: ReturnType<typeof setTimeout> | null = null;
 
+const { loadPresets: loadPresetsFromApi, savePresets: savePresetsToApi } = usePresets();
+
 const loadPresets = async () => {
-  try {
-    const res = await fetch('http://127.0.0.1:5000/api/presets');
-    if (res.ok) {
-      customPresets.value = await res.json();
-    }
-  } catch (e) {
-    console.warn("Could not load presets", e);
+  const presets = await loadPresetsFromApi();
+  if (presets) {
+    customPresets.value = presets;
   }
 };
 
 const savePresetsToBackend = async (presets: any[]) => {
-  try {
-    await fetch('http://127.0.0.1:5000/api/presets', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(presets)
-    });
-  } catch(e) {
-    console.error("Could not save presets", e);
-  }
+  await savePresetsToApi(presets);
 };
 
 const deleteCustomPreset = async (index: number) => {

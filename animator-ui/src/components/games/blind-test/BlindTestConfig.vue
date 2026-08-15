@@ -285,6 +285,9 @@ import BackButton from '../../ui/BackButton.vue';
 import PresetSaveModal from './PresetSaveModal.vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from './blindTestOptions';
 import { DEFAULT_PRESETS } from './blindTestDefaultPresets';
+import { usePresets } from '../../../composables/usePresets';
+import { usePlaylists } from '../../../composables/usePlaylists';
+
 const { t } = useI18n();
 
 const emit = defineEmits<{
@@ -293,8 +296,10 @@ const emit = defineEmits<{
   (e: 'configure-playlists'): void;
 }>();
 
+const { loadPresets: loadPresetsFromApi, savePresets: savePresetsToApi } = usePresets();
+const { playlists, loadPlaylists: loadPlaylistsFromApi } = usePlaylists();
+
 const showAdjust = ref(false);
-const playlists = ref<any[]>([]);
 
 const customPresets = ref<any[]>([]);
 const showPresetModal = ref(false);
@@ -345,27 +350,14 @@ const toggleOption = (key: string) => {
 };
 
 const loadPresets = async () => {
-  try {
-    const res = await fetch('http://127.0.0.1:5000/api/presets');
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      customPresets.value = data;
-    }
-  } catch(e) {
-    console.warn("Could not load presets", e);
+  const data = await loadPresetsFromApi();
+  if (Array.isArray(data)) {
+    customPresets.value = data;
   }
 };
 
 const savePresetsToBackend = async (presets: any[]) => {
-  try {
-    await fetch('http://127.0.0.1:5000/api/presets', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(presets)
-    });
-  } catch(e) {
-    console.error("Could not save presets", e);
-  }
+  await savePresetsToApi(presets);
 };
 
 const toastVisible = ref(false);
@@ -414,21 +406,9 @@ const openPresetModal = () => {
 
 onMounted(async () => {
   loadPresets();
-  try {
-    const res = await fetch('http://127.0.0.1:5000/api/playlists');
-    const data = await res.json();
-    let loadedPlaylists = [];
-    if (Array.isArray(data)) {
-      loadedPlaylists = data;
-    } else if (data.playlists) {
-      loadedPlaylists = data.playlists;
-    }
-    playlists.value = loadedPlaylists;
-    if (loadedPlaylists.length > 0) {
-      settings.value.playlistId = loadedPlaylists[0].id;
-    }
-  } catch(e) {
-    console.warn("Could not load playlists for game creation", e);
+  await loadPlaylistsFromApi();
+  if (playlists.value.length > 0) {
+    settings.value.playlistId = playlists.value[0].id;
   }
 });
 

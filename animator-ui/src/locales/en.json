@@ -379,6 +379,7 @@
     }
   },
   "tutorial": {
+    "prompt_message": "The tutorial can be done to learn how to navigate the site.",
     "buttons": {
       "next": "Next",
       "prev": "Previous",
