@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import SetupSelectorScreen from '../components/control-panel/SetupSelectorScreen.vue';
+import SetupSelectorScreen from '../components/setup/SetupSelectorScreen.vue';
 
 const router = useRouter();
 

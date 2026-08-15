@@ -5,7 +5,7 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 
-import { currentLanguage } from './composables/state'
+import { currentLanguage } from './core/domain/general/state'
 
 const initApp = async () => {
   try {

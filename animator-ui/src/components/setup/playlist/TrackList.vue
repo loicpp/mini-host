@@ -95,7 +95,7 @@ import { PlayCircle, BadgeCheck, Edit3, Play, Square, Trash2 } from '@lucide/vue
 import Btn from '../../ui/Btn.vue';
 import TextInput from '../../ui/TextInput.vue';
 import { Track } from '../../../core/domain/setup/types/playlist';
-import { useTrackSearch } from '../../../composables/useTrackSearch';
+import { useTrackSearch } from '../../../core/domain/setup/playlists/useTrackSearch';
 
 const props = defineProps<{
   tracks: Track[];

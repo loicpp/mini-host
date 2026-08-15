@@ -80,7 +80,7 @@ import Btn from '../../ui/Btn.vue';
 import OptionCard from '../../ui/OptionCard.vue';
 import { Star, Bookmark, Heart, Zap, Coffee, Flame, Shield, X, Ghost, Gamepad2, Trophy, Target, Rocket } from '@lucide/vue';
 
-import { usePresets } from '../../../composables/usePresets';
+import { usePresets } from '../../../core/domain/setup/presets/usePresets';
 
 const { t } = useI18n();
 

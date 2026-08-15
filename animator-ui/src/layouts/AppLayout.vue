@@ -38,15 +38,15 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { isBackendConnected, isProjectorOpen } from '../composables/state';
-import { useBackendConnection } from '../composables/useBackendConnection';
-import { useTutorial } from '../composables/useTutorial';
-import { useDialog } from '../composables/useDialog';
+import { isBackendConnected, isProjectorOpen } from '../core/domain/general/state';
+import { useBackendConnection } from '../core/domain/general/useBackendConnection';
+import { useTutorial } from '../core/domain/tutorial/useTutorial';
+import { useDialog } from '../core/domain/general/useDialog';
 import { useI18n } from 'vue-i18n';
 import { XCircle } from '@lucide/vue';
 import { updateService } from '../services/updateService';
 
-import { useGameSession } from '../composables/useGameSession';
+import { useGameSession } from '../core/domain/games/useGameSession';
 
 const { startConnectionMonitor, stopConnectionMonitor } = useBackendConnection();
 const { isTutorialActive, exitTutorial } = useTutorial();

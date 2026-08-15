@@ -9,9 +9,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import LoginScreen from '../components/control-panel/LoginScreen.vue';
-import { loginError } from '../composables/state';
-import { useAuth } from '../composables/useAuth';
+import LoginScreen from '../components/general/LoginScreen.vue';
+import { loginError, isLoggedIn } from '../core/domain/general/state';
+import { useAuth } from '../core/domain/general/useAuth';
 
 const route = useRoute();
 const router = useRouter();
@@ -21,12 +21,10 @@ onMounted(async () => {
   await attemptAutoLogin();
   if (loginError.value === '' && !loginError.value) {
     // Check if logged in state became true
-    import('../composables/state').then(({ isLoggedIn }) => {
-      if (isLoggedIn.value) {
-        const redirectUrl = (route.query.redirect as string) || '/';
-        router.push(redirectUrl);
-      }
-    });
+    if (isLoggedIn.value) {
+      const redirectUrl = (route.query.redirect as string) || '/';
+      router.push(redirectUrl);
+    }
   }
 });
 

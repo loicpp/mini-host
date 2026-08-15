@@ -13,7 +13,7 @@
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BlindTestConfig from '../components/games/blind-test/BlindTestConfig.vue';
-import { useGameSession } from '../composables/useGameSession';
+import { useGameSession } from '../core/domain/games/useGameSession';
 
 const router = useRouter();
 const route = useRoute();

@@ -329,21 +329,21 @@ import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import Badge from '../../ui/Badge.vue';
 import Modal from '../../ui/Modal.vue';
-import GameSidebar from '../../control-panel/GameSidebar.vue';
-import LocalTracksView from '../../control-panel/LocalTracksView.vue';
-import PlayersGrid from '../../control-panel/PlayersGrid.vue';
-import TemporaryTrackModal from '../../control-panel/TemporaryTrackModal.vue';
-import GameSettingsDrawer from '../../control-panel/GameSettingsDrawer.vue';
+import GameSidebar from '../GameSidebar.vue';
+import LocalTracksView from '../../setup/playlist/LocalTracksView.vue';
+import PlayersGrid from '../PlayersGrid.vue';
+import TemporaryTrackModal from '../../general/TemporaryTrackModal.vue';
+import GameSettingsDrawer from '../GameSettingsDrawer.vue';
 
 import { 
   gameId, status, currentSource, isProjectorOpen, searchQuery, nextTrackInfo,
   localTracks, playedTracks, pressedBuzzer, selectedTrack,
   gameSettings, musicProgress, musicTimeLeft
-} from '../../../composables/state';
+} from '../../../core/domain/general/state';
 import type { Track } from '../../../services/music/MusicProvider';
-import { useGameSession } from '../../../composables/useGameSession';
-import { useGamePlayers } from '../../../composables/useGamePlayers';
-import { useGameMusic } from '../../../composables/useGameMusic';
+import { useGameSession } from '../../../core/domain/games/useGameSession';
+import { useGamePlayers } from '../../../core/domain/games/useGamePlayers';
+import { useGameMusic } from '../../../core/domain/games/useGameMusic';
 import { onMounted, onUnmounted, nextTick, watch } from 'vue';
 
 const { t } = useI18n();

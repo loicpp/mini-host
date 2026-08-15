@@ -15,10 +15,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import HomeScreen from '../components/control-panel/HomeScreen.vue';
-import { lastGameId } from '../composables/state';
-import { useAuth } from '../composables/useAuth';
-import { useGameSession } from '../composables/useGameSession';
+import HomeScreen from '../components/general/HomeScreen.vue';
+import { lastGameId } from '../core/domain/general/state';
+import { useAuth } from '../core/domain/general/useAuth';
+import { useGameSession } from '../core/domain/games/useGameSession';
 import { animatorService } from '../services/animatorService';
 
 const router = useRouter();

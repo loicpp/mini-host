@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import GameSelectorScreen from '../components/control-panel/GameSelectorScreen.vue';
+import GameSelectorScreen from '../components/games/GameSelectorScreen.vue';
 
 const router = useRouter();
 

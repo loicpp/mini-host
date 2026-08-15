@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import PlaylistScreen from '../components/control-panel/PlaylistScreen.vue';
+import PlaylistScreen from '../components/setup/playlist/PlaylistScreen.vue';
 
 const router = useRouter();
 </script>

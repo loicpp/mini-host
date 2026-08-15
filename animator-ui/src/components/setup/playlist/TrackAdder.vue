@@ -141,8 +141,8 @@ import { PlusCircle, FolderOpen, FileAudio, FolderPlus, BadgeCheck, XCircle, X, 
 import Btn from '../../ui/Btn.vue';
 import TextInput from '../../ui/TextInput.vue';
 import { Track } from '../../../core/domain/setup/types/playlist';
-import { useTrackSearch } from '../../../composables/useTrackSearch';
-import { useTrackCertifier } from '../../../composables/useTrackCertifier';
+import { useTrackSearch } from '../../../core/domain/setup/playlists/useTrackSearch';
+import { useTrackCertifier } from '../../../core/domain/setup/playlists/useTrackCertifier';
 
 const props = defineProps<{
   playlistType?: 'soundcloud' | 'local';

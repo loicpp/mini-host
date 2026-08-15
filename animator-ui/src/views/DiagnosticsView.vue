@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import DiagnosticsModal from '../components/control-panel/DiagnosticsModal.vue';
+import DiagnosticsModal from '../components/diagnostics/DiagnosticsModal.vue';
 
 const router = useRouter();
 </script>

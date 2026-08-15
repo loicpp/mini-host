@@ -31,7 +31,7 @@
 import { TriangleAlert, Info } from '@lucide/vue';
 import Modal from './Modal.vue';
 import Btn from './Btn.vue';
-import { useDialog } from '../../composables/useDialog';
+import { useDialog } from '../../core/domain/general/useDialog';
 import { onMounted, onUnmounted } from 'vue';
 
 const { isOpen, options, handleConfirm, handleCancel } = useDialog();

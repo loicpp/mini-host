@@ -12,9 +12,9 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import SettingsScreen from '../components/control-panel/SettingsScreen.vue';
-import { currentLanguage } from '../composables/state';
-import { useAuth } from '../composables/useAuth';
+import SettingsScreen from '../components/general/SettingsScreen.vue';
+import { currentLanguage } from '../core/domain/general/state';
+import { useAuth } from '../core/domain/general/useAuth';
 
 const router = useRouter();
 const { logout, saveSettings, updateLanguage } = useAuth();

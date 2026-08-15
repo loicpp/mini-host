@@ -9,7 +9,7 @@ import SettingsView from '../views/SettingsView.vue'
 import DiagnosticsView from '../views/DiagnosticsView.vue'
 import Projector from '../views/Projector.vue'
 
-import { isLoggedIn } from '../composables/state';
+import { isLoggedIn } from '../core/domain/general/state';
 
 const router = createRouter({
   history: createWebHistory(),
