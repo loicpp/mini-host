@@ -193,113 +193,20 @@
         </div>
       </div>
 
-      <!-- Players Modal -->
-      <Modal v-if="isPlayersModalOpen" @close="isPlayersModalOpen = false" maxW="max-w-2xl">
-        <div id="player-list" class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-[#fff6e0] rounded-xl flex items-center justify-center shadow-sm">
-                <Users class="w-5 h-5 text-[#FFBA49]" />
-              </div>
-              <h2 class="text-2xl font-bold text-primary">{{ $t('control_panel.manage_players') }}</h2>
-            </div>
-            <button id="players-modal-close-btn" @click="isPlayersModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
-          </div>
-          
-          <div class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2">
-            <div v-if="sortedPlayersList.length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
-              {{ $t('control_panel.no_players_connected') }}
-            </div>
-            <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex items-center justify-between gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
-              <div class="flex items-center gap-2 flex-1 overflow-hidden">
-                <span class="font-bold text-primary text-lg truncate">{{ player.name || $t('control_panel.anonymous') }}</span>
-                <Badge v-if="player.blockedTurns === -1" color="red" class="shrink-0">{{ $t('control_panel.blocked_permanent') }}</Badge>
-                <Badge v-else-if="player.blockedTurns > 0" color="red" class="shrink-0">{{ $t('control_panel.blocked_turns', { turns: player.blockedTurns }) }}</Badge>
-              </div>
-              
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="font-black text-[#FFBA49] tabular-nums text-lg mr-2">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
-                
-                <button 
-                  class="player-actions-btn w-9 h-9 rounded-xl flex items-center justify-center text-gray-600 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200/60 disabled:hover:text-gray-600"
-                  :title="$t('control_panel.actions')"
-                  @click="openPlayerActionsModal(player)"
-                  :disabled="status === 'finished'"
-                >
-                  <Settings class="w-4 h-4" />
-                </button>
 
-                <button 
-                  class="w-9 h-9 rounded-xl flex items-center justify-center text-red-600 bg-red-100 hover:bg-red-200 hover:text-red-700 transition-colors"
-                  :title="$t('control_panel.remove')"
-                  @click="removePlayer(player.id)"
-                >
-                  <UserMinus class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex justify-end mt-6">
-            <Btn variant="dark" size="md" @click="isPlayersModalOpen = false">{{ $t('control_panel.close') }}</Btn>
-          </div>
-        </div>
-      </Modal>
+      <!-- Modals -->
+      <PlayersModal 
+        :isOpen="isPlayersModalOpen" 
+        @close="isPlayersModalOpen = false" 
+        @open-actions="openPlayerActionsModal" 
+      />
 
-      <!-- Player Actions Modal -->
-      <Modal v-if="isPlayerActionsModalOpen" @close="isPlayerActionsModalOpen = false" maxW="max-w-md">
-        <div id="player-actions-modal" class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center shadow-sm">
-                <Settings class="w-5 h-5 text-gray-600" />
-              </div>
-              <h2 class="text-xl font-bold text-primary">{{ $t('control_panel.actions') }} - {{ selectedPlayerForActions?.name }}</h2>
-            </div>
-            <button @click="isPlayerActionsModalOpen = false" class="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors"><X class="w-5 h-5" /></button>
-          </div>
-          
-          <div class="flex flex-col gap-6">
-            <!-- Points Section -->
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider m-0">{{ $t('control_panel.adjust_points') }}</p>
-                <span class="font-black text-[#FFBA49] tabular-nums bg-amber-50 px-2 py-1 rounded-md">{{ (selectedPlayerForActions?.score || 0) + tempScoreAdjustment }} {{ $t('gameroom.pts') }}</span>
-              </div>
-              <div class="grid grid-cols-6 gap-2">
-                <Btn variant="danger" @click="handleTempPoints(-2)">-2</Btn>
-                <Btn variant="danger" @click="handleTempPoints(-1)">-1</Btn>
-                <Btn variant="danger" @click="handleTempPoints(-0.5)">-0.5</Btn>
-                <Btn variant="success" @click="handleTempPoints(0.5)">+0.5</Btn>
-                <Btn variant="success" @click="handleTempPoints(1)">+1</Btn>
-                <Btn variant="success" @click="handleTempPoints(2)">+2</Btn>
-              </div>
-            </div>
-
-            <hr class="border-[rgba(0,0,0,0.08)] m-0" />
-
-            <div>
-              <p class="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider m-0">{{ $t('control_panel.suspend_participation') }}</p>
-              
-              <div v-if="showUnblockOnly">
-                <Btn variant="success" className="w-full justify-center font-bold" @click="showUnblockOnly = false; tempBlockedTurns = 0">
-                  {{ $t('control_panel.lift_suspension') }}
-                </Btn>
-              </div>
-              <div v-else class="grid grid-cols-3 gap-2">
-                <Btn :variant="tempBlockedTurns === 1 ? 'dark-gray' : 'soft'" @click="tempBlockedTurns = tempBlockedTurns === 1 ? 0 : 1">{{ $t('control_panel.one_turn') }}</Btn>
-                <Btn :variant="tempBlockedTurns === 3 ? 'dark-gray' : 'soft'" @click="tempBlockedTurns = tempBlockedTurns === 3 ? 0 : 3">{{ $t('control_panel.three_turns') }}</Btn>
-                <Btn :variant="tempBlockedTurns === -1 ? 'black' : 'gray-medium'" @click="tempBlockedTurns = tempBlockedTurns === -1 ? 0 : -1">{{ $t('control_panel.permanently') }}</Btn>
-              </div>
-            </div>
-
-            <div class="flex justify-end mt-2 gap-3">
-              <Btn id="player-actions-cancel-btn" variant="gray" @click="isPlayerActionsModalOpen = false">{{ $t('app.cancel') }}</Btn>
-              <Btn variant="primary" :disabled="!hasUnsavedChanges" @click="savePlayerActions">{{ $t('settings.save') }}</Btn>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <PlayerActionsModal 
+        ref="playerActionsModalRef"
+        :isOpen="isPlayerActionsModalOpen" 
+        :player="selectedPlayerForActions"
+        @close="isPlayerActionsModalOpen = false"
+      />
 
       <!-- Modale Ajout de Musique Temporaire -->
       <TemporaryTrackModal 
@@ -323,17 +230,18 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { Users, X, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, Settings, UserMinus, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
+import { Users, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 
 import Btn from '../../ui/Btn.vue';
 import Badge from '../../ui/Badge.vue';
-import Modal from '../../ui/Modal.vue';
 import GameSidebar from '../GameSidebar.vue';
 import LocalTracksView from '../../setup/playlist/LocalTracksView.vue';
 import PlayersGrid from '../PlayersGrid.vue';
 import TemporaryTrackModal from '../../general/TemporaryTrackModal.vue';
 import GameSettingsDrawer from '../GameSettingsDrawer.vue';
+import PlayersModal from './modals/PlayersModal.vue';
+import PlayerActionsModal from './modals/PlayerActionsModal.vue';
 
 import { useGameStore } from '../../../core/domain/general/stores/game';
 import { useMusicStore } from '../../../core/domain/general/stores/music';
@@ -343,7 +251,8 @@ import type { Track } from '../../../services/music/MusicProvider';
 import { useGameSession } from '../../../core/domain/games/useGameSession';
 import { useGamePlayers } from '../../../core/domain/games/useGamePlayers';
 import { useGameMusic } from '../../../core/domain/games/useGameMusic';
-import { onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { useGameKeyboardShortcuts } from '../../../core/domain/games/useGameKeyboardShortcuts';
+import { nextTick, watch } from 'vue';
 
 const { gameId, status, nextTrackInfo, gameSettings } = useGameStore();
 const { currentSource, searchQuery, localTracks, playedTracks, selectedTrack, musicProgress, musicTimeLeft } = useMusicStore();
@@ -356,8 +265,8 @@ const router = useRouter();
 
 const { leaveGame, deleteAndLeaveGame, toggleProjector, nextRound, endGame, restartGame, updateGameSettings } = useGameSession();
 const { 
-  displayedPlayers, sortedPlayersList, playersRoundResults, hasBuzzed, 
-  award, revealResults, autoCorrect, correctBuzzer, removePlayer, setPlayerBlock, addPointsManually
+  displayedPlayers, playersRoundResults, hasBuzzed, 
+  award, revealResults, autoCorrect, correctBuzzer
 } = useGamePlayers();
 const { lastPlayedTrack, selectTrack, playMusic, stopMusic, resumeMusic } = useGameMusic();
 
@@ -370,111 +279,12 @@ const handleSaveSettings = async (newSettings: any) => {
   isSettingsDrawerOpen.value = false;
 };
 
-const handleKeydown = (e: KeyboardEvent) => {
-  const target = e.target as HTMLElement;
-  const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
-
-  if (e.key === 'Escape') {
-    if (isSettingsDrawerOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      isSettingsDrawerOpen.value = false;
-      return;
-    } else if (isPlayerActionsModalOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      isPlayerActionsModalOpen.value = false;
-      return;
-    } else if (isPlayersModalOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      isPlayersModalOpen.value = false;
-      return;
-    } else if (isTempTrackModalOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      isTempTrackModalOpen.value = false;
-      return;
-    }
-  }
-
-  if (e.key === 'Enter') {
-    if (isPlayerActionsModalOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      savePlayerActions();
-      return;
-    } else if (isPlayersModalOpen.value) {
-      e.preventDefault();
-      e.stopPropagation();
-      isPlayersModalOpen.value = false;
-      return;
-    }
-  }
-
-  if (e.shiftKey && (e.key === 'P' || e.key === 'p')) {
-    e.preventDefault();
-    toggleProjector();
-    return;
-  }
-
-  if (isInput) return;
-
-  if (e.key === ' ' || e.key === 'Spacebar') {
-    if (target.tagName === 'BUTTON' && status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
-      // Allow native spacebar to click the currently focused button
-    } else {
-      e.preventDefault();
-      if (status.value === 'waiting') {
-        if (selectedTrack.value) handlePlayMusic();
-      } else if (status.value === 'playing') {
-        stopMusic();
-      } else if (status.value === 'reviewing') {
-        if (!(gameSettings.value.mode === 'buzzer' && hasBuzzed.value)) {
-          handleRevealResults();
-        }
-      } else if (status.value === 'results') {
-        handleNextRound();
-      }
-    }
-  } else if (e.key === 'Enter') {
-    if (status.value === 'reviewing') {
-      if (gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
-        // If native focus is not on a button, force correct (valider)
-        if (target.tagName !== 'BUTTON') {
-          e.preventDefault();
-          correctBuzzer();
-        }
-      } else if (gameSettings.value.mode === 'text') {
-        e.preventDefault();
-        handleAutoCorrect();
-      }
-    } else if (status.value === 'waiting') {
-      if (selectedTrack.value) {
-        e.preventDefault();
-        handleSelectTrack(null);
-      }
-    }
-  } else if (e.key === 'ArrowUp') {
-    if (status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
-      e.preventDefault();
-      gameSidebarRef.value?.rejectBuzzerBtn?.btnRef?.focus();
-    }
-  } else if (e.key === 'ArrowDown') {
-    if (status.value === 'reviewing' && gameSettings.value.mode === 'buzzer' && hasBuzzed.value) {
-      e.preventDefault();
-      gameSidebarRef.value?.validateBuzzerBtn?.btnRef?.focus();
-    }
-  }
-};
-
-watch([() => status.value, () => hasBuzzed.value], ([newStatus, newBuzzed]) => {
-  if (newStatus === 'reviewing' && newBuzzed && gameSettings.value.mode === 'buzzer') {
-    setTimeout(() => {
-      gameSidebarRef.value?.validateBuzzerBtn?.btnRef?.focus();
-    }, 100);
-  }
-});
+const isPlayersModalOpen = ref(false);
+const isPlayerActionsModalOpen = ref(false);
+const isTempTrackModalOpen = ref(false);
+const tempSearchQuery = ref('');
+const selectedPlayerForActions = ref<any>(null);
+const playerActionsModalRef = ref<any>(null);
 
 const handleSelectTrack = async (track: any) => {
   selectTrack(track);
@@ -518,22 +328,36 @@ const handleEndGame = async () => {
   await endGame();
 };
 
-onMounted(async () => {
-  window.addEventListener('keydown', handleKeydown);
+useGameKeyboardShortcuts(
+  {
+    isSettingsDrawerOpen,
+    isPlayerActionsModalOpen,
+    isPlayersModalOpen,
+    isTempTrackModalOpen
+  },
+  {
+    savePlayerActions: () => playerActionsModalRef.value?.savePlayerActions(),
+    toggleProjector,
+    handlePlayMusic,
+    stopMusic,
+    handleRevealResults,
+    handleNextRound,
+    correctBuzzer,
+    handleAutoCorrect,
+    handleSelectTrack
+  },
+  gameSidebarRef
+);
+
+watch([() => status.value, () => hasBuzzed.value], ([newStatus, newBuzzed]) => {
+  if (newStatus === 'reviewing' && newBuzzed && gameSettings.value.mode === 'buzzer') {
+    setTimeout(() => {
+      gameSidebarRef.value?.validateBuzzerBtn?.btnRef?.focus();
+    }, 100);
+  }
 });
 
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown);
-});
 
-const isPlayersModalOpen = ref(false);
-const isPlayerActionsModalOpen = ref(false);
-const isTempTrackModalOpen = ref(false);
-const tempSearchQuery = ref('');
-const selectedPlayerForActions = ref<any>(null);
-const tempScoreAdjustment = ref(0);
-const tempBlockedTurns = ref(0);
-const showUnblockOnly = ref(false);
 
 const localTracksViewRef = ref<any>(null);
 
@@ -556,37 +380,7 @@ const openPlayersModal = () => {
 
 const openPlayerActionsModal = (player: any) => {
   selectedPlayerForActions.value = player;
-  tempScoreAdjustment.value = 0;
-  tempBlockedTurns.value = player.blockedTurns || 0;
-  showUnblockOnly.value = !!player.blockedTurns;
   isPlayerActionsModalOpen.value = true;
-};
-
-const hasUnsavedChanges = computed(() => {
-  if (!selectedPlayerForActions.value) return false;
-  const initialBlockedTurns = selectedPlayerForActions.value.blockedTurns || 0;
-  return tempScoreAdjustment.value !== 0 || tempBlockedTurns.value !== initialBlockedTurns;
-});
-
-const handleTempPoints = (points: number) => {
-  const currentScore = selectedPlayerForActions.value?.score || 0;
-  let newTotal = currentScore + tempScoreAdjustment.value + points;
-  if (newTotal < 0) {
-    newTotal = 0;
-  }
-  tempScoreAdjustment.value = newTotal - currentScore;
-};
-
-const savePlayerActions = async () => {
-  if (selectedPlayerForActions.value) {
-    if (tempScoreAdjustment.value !== 0) {
-      await addPointsManually(selectedPlayerForActions.value.id, tempScoreAdjustment.value);
-    }
-    if (tempBlockedTurns.value !== (selectedPlayerForActions.value.blockedTurns || 0)) {
-      await setPlayerBlock(selectedPlayerForActions.value.id, tempBlockedTurns.value);
-    }
-  }
-  isPlayerActionsModalOpen.value = false;
 };
 
 const statusDisplay = computed(() => {
