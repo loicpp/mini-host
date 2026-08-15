@@ -127,7 +127,7 @@ onMounted(async () => {
   const data = await loadGameData();
   if (data) {
     if (data.sort) {
-      trackSort.value = data.sort;
+      trackSort.value = data.sort as 'title' | 'artist';
     }
     if (data.hidePlayedTracks !== undefined) {
       hidePlayedTracks.value = data.hidePlayedTracks;

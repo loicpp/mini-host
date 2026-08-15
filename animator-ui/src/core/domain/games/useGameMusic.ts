@@ -9,6 +9,7 @@ import { getServerTime } from '../../../firebase';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import { useGamePlayers } from './useGamePlayers';
+import { localBackendService } from '../../../services/localBackendService';
 
 const { gameId, status, gameSettings, nextTrackInfo, currentStartTime } = useGameStore();
 const { selectedTrack, playedTracks, localTracks, musicProgress, musicTimeLeft } = useMusicStore();
@@ -71,15 +72,7 @@ export function useGameMusic() {
       
       if (!playedTracks.value.includes(selectedTrack.value.id)) {
         playedTracks.value.push(selectedTrack.value.id);
-        try {
-          await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })
-          });
-        } catch {
-          console.warn("Could not save played tracks");
-        }
+        await localBackendService.saveGameData({ playedTracks: playedTracks.value });
       }
       
       const timeToWait = startTime - getServerTime();

@@ -64,7 +64,7 @@ export function useGameSession() {
     playedTracks.value = [];
     localTracks.value = (settings && settings.playlist) ? sanitizeTracks(settings.playlist.tracks) : [];
     
-    await localBackendService.saveGame(localTracks.value, []);
+    await localBackendService.saveGameData({ localTracks: localTracks.value, playedTracks: [] });
     await localBackendService.saveConfig({ lastGameId: game.gameId });
     lastGameId.value = game.gameId;
     
@@ -123,7 +123,7 @@ export function useGameSession() {
     if (data) {
       if (data.localTracks) localTracks.value = data.localTracks;
       if (data.playedTracks) playedTracks.value = data.playedTracks;
-      if (data.sort) trackSort.value = data.sort;
+      if (data.sort) trackSort.value = data.sort as 'title' | 'artist';
       if (data.hidePlayedTracks !== undefined) hidePlayedTracks.value = data.hidePlayedTracks;
     }
     
@@ -175,7 +175,7 @@ export function useGameSession() {
       console.warn("Could not update settings in Firebase", e);
     }
 
-    await localBackendService.saveGame(localTracks.value, playedTracks.value);
+    await localBackendService.saveGameData({ localTracks: localTracks.value, playedTracks: playedTracks.value });
   };
 
   return {

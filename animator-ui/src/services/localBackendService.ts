@@ -1,14 +1,17 @@
-import { Track } from './music/MusicProvider';
+import { LocalGameRepository, LocalGameData } from '../core/ports/LocalGameRepository';
+
 
 const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
-export const localBackendService = {
-  async saveGame(localTracks: Track[], playedTracks: string[] = []) {
+export type { LocalGameData };
+
+export const localBackendService: LocalGameRepository = {
+  async saveGameData(data: Partial<LocalGameData>) {
     try {
       await fetch(`${BASE_URL}/game`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ localTracks, playedTracks })
+        body: JSON.stringify(data)
       });
     } catch (e) {
       console.warn("Could not save game to local backend", e);

@@ -11,7 +11,7 @@ export function useGameState() {
   const { t } = useI18n();
   const { showConfirm } = useDialog();
   const { gameId, status, nextTrackInfo } = useGameStore();
-  const { selectedTrack, searchQuery, playedTracks, localTracks } = useMusicStore();
+  const { selectedTrack, searchQuery, playedTracks } = useMusicStore();
   const { pendingPoints } = usePlayerStore();
 
   const nextRound = async () => {
@@ -53,7 +53,7 @@ export function useGameState() {
     await animatorService.updateGameState(gameId.value, 'waiting', null);
     
     playedTracks.value = [];
-    await localBackendService.saveGame(localTracks.value, []);
+    await localBackendService.saveGameData({ playedTracks: [] });
   };
 
   return {
