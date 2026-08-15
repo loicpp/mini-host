@@ -8,6 +8,7 @@ import jsmediatags from 'jsmediatags';
 
 const { localTracks, playedTracks } = useMusicStore();
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => void) {
   const { showAlert } = useDialog();
@@ -20,7 +21,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
 
   const syncGameSession = async () => {
     try {
-      await fetch('http://127.0.0.1:5000/api/game', {
+      await fetch(`${BASE_URL}/game`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -153,7 +154,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
 
   const addTempLocalFile = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/dialog/file');
+      const res = await fetch(`${BASE_URL}/dialog/file`);
       const paths = await res.json();
       if (Array.isArray(paths) && paths.length > 0) {
         const path = paths[0];
@@ -164,7 +165,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
         let artist = "Artiste Inconnu";
         
         try {
-          const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+          const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
           const tags = await readTagsFromUrl(streamUrl);
           if (tags) {
             if (tags.title) title = tags.title;
@@ -182,7 +183,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
 
   const addTempLocalFolder = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/dialog/folder');
+      const res = await fetch(`${BASE_URL}/dialog/folder`);
       const paths = await res.json();
       if (Array.isArray(paths) && paths.length > 0) {
         let addedCount = 0;
@@ -195,7 +196,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
           let artist = "Artiste Inconnu";
           
           try {
-            const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+            const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
             const tags = await readTagsFromUrl(streamUrl);
             if (tags) {
               if (tags.title) title = tags.title;

@@ -6,6 +6,8 @@ import { useTrackCertifier } from './useTrackCertifier';
 
 export const globalPlaylists = ref<Playlist[]>([]);
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export function usePlaylists() {
   const { showConfirm, showAlert } = useDialog();
   const { t } = useI18n();
@@ -16,7 +18,7 @@ export function usePlaylists() {
 
   const loadPlaylists = async () => {
     try {
-      const configRes = await fetch('http://127.0.0.1:5000/api/playlists');
+      const configRes = await fetch(`${BASE_URL}/playlists`);
       const data = await configRes.json();
       if (Array.isArray(data)) {
         playlists.value = data;
@@ -30,7 +32,7 @@ export function usePlaylists() {
 
   const saveToConfig = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/playlists', {
+      const res = await fetch(`${BASE_URL}/playlists`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(playlists.value)
@@ -69,7 +71,7 @@ export function usePlaylists() {
     
     isGenerating.value = true;
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/playlists/generate', {
+      const res = await fetch(`${BASE_URL}/playlists/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

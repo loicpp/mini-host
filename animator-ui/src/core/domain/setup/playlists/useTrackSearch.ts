@@ -22,7 +22,7 @@ export function useTrackSearch() {
     searchTimeout.value = setTimeout(async () => {
       if (playlistType === 'soundcloud') {
         try {
-          const res = await fetch(`http://127.0.0.1:5000/api/soundcloud/search?q=${encodeURIComponent(searchQuery.value)}`);
+          const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/soundcloud/search?q=${encodeURIComponent(searchQuery.value)}`);
           const data = await res.json();
           suggestions.value = data;
         } catch (e) {

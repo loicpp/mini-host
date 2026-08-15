@@ -1,6 +1,6 @@
 import { Track } from './music/MusicProvider';
 
-const BASE_URL = 'http://127.0.0.1:5000/api';
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export const localBackendService = {
   async saveGame(localTracks: Track[], playedTracks: string[] = []) {

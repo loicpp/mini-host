@@ -9,16 +9,17 @@ import { useUiStore } from './core/domain/general/stores/ui';
 
 const { currentLanguage } = useUiStore();
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 const initApp = async () => {
   try {
-    const configRes = await fetch('http://127.0.0.1:5000/api/config');
+    const configRes = await fetch(`${BASE_URL}/config`);
     const config = await configRes.json();
     if (config && config.language) {
       i18n.global.locale.value = config.language as any;
       currentLanguage.value = config.language;
     } else {
-      await fetch('http://127.0.0.1:5000/api/config', {
+      await fetch(`${BASE_URL}/config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language: i18n.global.locale.value })

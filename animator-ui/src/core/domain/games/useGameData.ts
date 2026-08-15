@@ -1,7 +1,9 @@
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export function useGameData() {
   const loadGameData = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/game');
+      const res = await fetch(`${BASE_URL}/game`);
       if (!res.ok) throw new Error('Failed to load game data');
       return await res.json();
     } catch (e) {
@@ -12,7 +14,7 @@ export function useGameData() {
 
   const saveGameData = async (data: any) => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/game', {
+      const res = await fetch(`${BASE_URL}/game`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

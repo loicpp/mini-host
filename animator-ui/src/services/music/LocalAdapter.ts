@@ -1,5 +1,7 @@
 import { MusicProvider, Track } from './MusicProvider';
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export class LocalAdapter implements MusicProvider {
   readonly name = 'local';
   private audio: HTMLAudioElement | null = null;
@@ -17,7 +19,7 @@ export class LocalAdapter implements MusicProvider {
 
   async preload(trackId: string): Promise<void> {
     if (!this.audio) return;
-    const url = trackId.startsWith('http') ? trackId : `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    const url = trackId.startsWith('http') ? trackId : `${BASE_URL}/stream?path=${encodeURIComponent(trackId)}`;
     if (this.audio.src === url) return;
     
     this.audio.src = url;
@@ -27,7 +29,7 @@ export class LocalAdapter implements MusicProvider {
   async play(trackId: string, delayMs: number = 0): Promise<void> {
     if (!this.audio) throw new Error("Audio player not initialized");
     
-    const url = trackId.startsWith('http') ? trackId : `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(trackId)}`;
+    const url = trackId.startsWith('http') ? trackId : `${BASE_URL}/stream?path=${encodeURIComponent(trackId)}`;
     if (this.audio.src !== url) {
       this.audio.src = url;
       this.audio.load();

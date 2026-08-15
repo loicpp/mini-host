@@ -219,7 +219,7 @@ export const playPlaylistEditorSequence = (startIndex: number = 1) => {
                 const lastPlaylist = globalPlaylists.value[globalPlaylists.value.length - 1];
                 if (lastPlaylist && lastPlaylist.tracks && lastPlaylist.tracks.length > 0) {
                   lastPlaylist.tracks.pop();
-                  await fetch('http://127.0.0.1:5000/api/playlists', {
+                  await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/playlists`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(globalPlaylists.value)

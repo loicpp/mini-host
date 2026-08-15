@@ -8,7 +8,7 @@ let pingTimeout: ReturnType<typeof setTimeout> | null = null;
 export function useBackendConnection() {
   const checkBackendConnection = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/test_connection');
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/test_connection`);
       isBackendConnected.value = res.ok;
     } catch (e) {
       console.warn(e);

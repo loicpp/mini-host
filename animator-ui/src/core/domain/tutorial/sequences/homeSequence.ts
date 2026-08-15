@@ -12,7 +12,7 @@ export const playHomeSequence = async (startIndex: number = 0) => {
 
   let hasPlaylistsWithTracks = false;
   try {
-    const res = await fetch('http://127.0.0.1:5000/api/playlists');
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/playlists`);
     if (res.ok) {
       const data = await res.json();
       let loadedPlaylists = [];

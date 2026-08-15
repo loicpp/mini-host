@@ -91,7 +91,7 @@ export const playGameSessionSequence = async (startIndex: number = 1) => {
               // UNDO Game Creation
               if (gameId.value) {
                 try {
-                  await fetch(`http://127.0.0.1:5000/api/games/${gameId.value}`, { method: 'DELETE' });
+                  await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/games/${gameId.value}`, { method: 'DELETE' });
                 } catch (e) {
                   console.error("Failed to delete game for tutorial:", e);
                 }

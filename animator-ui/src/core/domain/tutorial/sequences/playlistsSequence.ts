@@ -128,7 +128,7 @@ export const playPlaylistsSequence = (startIndex: number = 1) => {
               try {
                 if (globalPlaylists.value.length > 0) {
                   globalPlaylists.value.pop();
-                  await fetch('http://127.0.0.1:5000/api/playlists', {
+                  await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/playlists`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(globalPlaylists.value)

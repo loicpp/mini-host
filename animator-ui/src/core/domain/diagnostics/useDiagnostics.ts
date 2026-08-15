@@ -8,6 +8,8 @@ import { ref as dbRef, set, onValue, off } from 'firebase/database';
 import QRCode from 'qrcode';
 import { useConfig } from '../general/useConfig';
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export function useDiagnostics() {
   const { t } = useI18n();
   const { loadConfig, saveConfig } = useConfig();
@@ -87,7 +89,7 @@ export function useDiagnostics() {
     // Step 3: Backend
     await setStepRunning(2);
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/test_connection');
+      const res = await fetch(`${BASE_URL}/test_connection`);
       if (!res.ok) throw new Error(t('diagnostics.backend_unavailable'));
       steps.value[2].status = 'success';
       steps.value[2].message = t('diagnostics.backend_ok');
@@ -113,7 +115,7 @@ export function useDiagnostics() {
     // Step 5: Last.fm (Playlists Generator)
     await setStepRunning(4);
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/playlists/generate', {
+      const res = await fetch(`${BASE_URL}/playlists/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ theme: 'test', limit: 1 })

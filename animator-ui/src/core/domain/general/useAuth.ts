@@ -10,6 +10,7 @@ const { email, password, loginError, isLoggedIn } = useAuthStore();
 const { currentLanguage } = useUiStore();
 const { lastGameId } = useGameStore();
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export function useAuth() {
   const { t } = useI18n();
@@ -23,7 +24,7 @@ export function useAuth() {
         isLoggedIn.value = true;
         
         // Charger uniquement les variables non-sensibles depuis l'API locale
-        const configRes = await fetch('http://127.0.0.1:5000/api/config');
+        const configRes = await fetch(`${BASE_URL}/config`);
         const config = await configRes.json();
         if (config && config.lastGameId) {
           lastGameId.value = config.lastGameId;
@@ -43,7 +44,7 @@ export function useAuth() {
       isLoggedIn.value = true;
       
       try {
-        const configRes = await fetch('http://127.0.0.1:5000/api/config');
+        const configRes = await fetch(`${BASE_URL}/config`);
         const config = await configRes.json();
         
         if (config.lastGameId) {
@@ -81,7 +82,7 @@ export function useAuth() {
 
   const saveSettings = async () => {
     try {
-      await fetch('http://127.0.0.1:5000/api/config', {
+      await fetch(`${BASE_URL}/config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language: currentLanguage.value })

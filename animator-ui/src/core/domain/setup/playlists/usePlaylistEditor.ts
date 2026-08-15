@@ -6,6 +6,8 @@ import { useI18n } from 'vue-i18n';
 import jsmediatags from 'jsmediatags';
 import { useTrackCertifier } from './useTrackCertifier';
 
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
   const { showAlert } = useDialog();
   const { t } = useI18n();
@@ -153,7 +155,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
   const addLocalTrackFileFirst = async () => {
     if (!selectedPlaylist.value) return;
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/dialog/file');
+      const res = await fetch(`${BASE_URL}/dialog/file`);
       const paths = await res.json();
       if (Array.isArray(paths) && paths.length > 0) {
         const path = paths[0];
@@ -165,7 +167,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
         let artist = "Artiste Inconnu";
         
         try {
-          const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+          const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
           const tags = await readTagsFromUrl(streamUrl);
           if (tags) {
             if (tags.title) title = tags.title;
@@ -205,7 +207,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       let artist = "Artiste Inconnu";
       
       try {
-        const streamUrl = `http://127.0.0.1:5000/api/stream?path=${encodeURIComponent(path)}`;
+        const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
         const tags = await readTagsFromUrl(streamUrl);
         if (tags) {
           if (tags.title) title = tags.title;
@@ -243,7 +245,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
 
   const addLocalFolder = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/dialog/folder');
+      const res = await fetch(`${BASE_URL}/dialog/folder`);
       const paths = await res.json();
       if (Array.isArray(paths) && paths.length > 0) {
         await addLocalPaths(paths);

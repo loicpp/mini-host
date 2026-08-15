@@ -72,7 +72,7 @@ export function useGameMusic() {
       if (!playedTracks.value.includes(selectedTrack.value.id)) {
         playedTracks.value.push(selectedTrack.value.id);
         try {
-          await fetch('http://127.0.0.1:5000/api/game', {
+          await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ localTracks: localTracks.value, playedTracks: playedTracks.value })

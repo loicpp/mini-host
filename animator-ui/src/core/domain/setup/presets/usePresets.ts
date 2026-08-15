@@ -1,7 +1,9 @@
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+
 export function usePresets() {
   const loadPresets = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/presets');
+      const res = await fetch(`${BASE_URL}/presets`);
       if (!res.ok) throw new Error('Failed to load presets');
       return await res.json();
     } catch (e) {
@@ -12,7 +14,7 @@ export function usePresets() {
 
   const savePresets = async (presets: any) => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/presets', {
+      const res = await fetch(`${BASE_URL}/presets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(presets)
