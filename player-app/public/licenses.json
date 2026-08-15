@@ -1151,7 +1151,7 @@
     "licenses": "MIT",
     "repository": "https://github.com/ai/nanoid",
     "publisher": "Andrey Sitnik",
-    "version": "3.3.16",
+    "version": "3.3.18",
     "language": "JavaScript/TypeScript"
   },
   "p-limit": {

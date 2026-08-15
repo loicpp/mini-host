@@ -918,7 +918,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **License**: Apache-2.0
 - **Ecosystem**: Python
 
-### nanoid (v3.3.16)
+### nanoid (v3.3.18)
 - **License**: MIT
 - **Author/Publisher**: Andrey Sitnik
 - **Repository**: https://github.com/ai/nanoid
