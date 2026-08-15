@@ -60,13 +60,13 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import { Edit3 } from '@lucide/vue';
-import Btn from '../ui/Btn.vue';
-import BackButton from '../ui/BackButton.vue';
-import Badge from '../ui/Badge.vue';
-import TextInput from '../ui/TextInput.vue';
+import Btn from '../../ui/Btn.vue';
+import BackButton from '../../ui/BackButton.vue';
+import Badge from '../../ui/Badge.vue';
+import TextInput from '../../ui/TextInput.vue';
 import TrackAdder from './TrackAdder.vue';
 import TrackList from './TrackList.vue';
-import { Playlist, Track } from '../../types/playlist';
+import { Playlist, Track } from '../../../core/domain/setup/types/playlist';
 
 const props = defineProps<{
   playlist: Playlist;

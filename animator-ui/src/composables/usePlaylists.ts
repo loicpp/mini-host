@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { Playlist } from '../types/playlist';
+import { Playlist } from '../core/domain/setup/types/playlist';
 import { useDialog } from './useDialog';
 import { useI18n } from 'vue-i18n';
 import { useTrackCertifier } from './useTrackCertifier';

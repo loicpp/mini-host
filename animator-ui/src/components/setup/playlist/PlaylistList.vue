@@ -59,10 +59,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Plus, Wand2, Edit3, Trash2 } from '@lucide/vue';
-import Btn from '../ui/Btn.vue';
-import CustomSelect from '../ui/CustomSelect.vue';
-import TextInput from '../ui/TextInput.vue';
-import { Playlist } from '../../types/playlist';
+import Btn from '../../ui/Btn.vue';
+import CustomSelect from '../../ui/CustomSelect.vue';
+import TextInput from '../../ui/TextInput.vue';
+import { Playlist } from '../../../core/domain/setup/types/playlist';
 
 defineProps<{
   playlists: Playlist[];

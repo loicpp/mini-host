@@ -165,7 +165,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket } from '@lucide/vue';
-import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../games/blind-test/blindTestOptions';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../../core/domain/blind-test/types/blindTestOptions';
 import { Track } from '../../services/music/MusicProvider';
 import Btn from '../ui/Btn.vue';
 import BackButton from '../ui/BackButton.vue';

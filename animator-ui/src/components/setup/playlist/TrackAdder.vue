@@ -138,11 +138,11 @@
 <script setup lang="ts">
 import { ref, nextTick, watch, onMounted } from 'vue';
 import { PlusCircle, FolderOpen, FileAudio, FolderPlus, BadgeCheck, XCircle, X, Edit3, Plus } from '@lucide/vue';
-import Btn from '../ui/Btn.vue';
-import TextInput from '../ui/TextInput.vue';
-import { Track } from '../../types/playlist';
-import { useTrackSearch } from '../../composables/useTrackSearch';
-import { useTrackCertifier } from '../../composables/useTrackCertifier';
+import Btn from '../../ui/Btn.vue';
+import TextInput from '../../ui/TextInput.vue';
+import { Track } from '../../../core/domain/setup/types/playlist';
+import { useTrackSearch } from '../../../composables/useTrackSearch';
+import { useTrackCertifier } from '../../../composables/useTrackCertifier';
 
 const props = defineProps<{
   playlistType?: 'soundcloud' | 'local';

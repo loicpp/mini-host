@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import type { Track as MusicTrack } from '../services/music/MusicProvider';
-import type { Track as PlaylistTrack } from '../types/playlist';
+import type { Track as PlaylistTrack } from '../core/domain/setup/types/playlist';
 import { localTracks, playedTracks } from './state';
 import { useDialog } from './useDialog';
 import { useTrackCertifier } from './useTrackCertifier';

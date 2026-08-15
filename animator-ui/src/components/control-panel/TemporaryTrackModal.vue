@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { Search, X } from '@lucide/vue';
 import Modal from '../ui/Modal.vue';
-import TrackAdder from '../playlist-config/TrackAdder.vue';
+import TrackAdder from '../setup/playlist/TrackAdder.vue';
 import { useTemporaryTrackEditor } from '../../composables/useTemporaryTrackEditor';
 import { currentSource } from '../../composables/state';
 import type { Track } from '../../services/music/MusicProvider';

@@ -92,10 +92,10 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import { PlayCircle, BadgeCheck, Edit3, Play, Square, Trash2 } from '@lucide/vue';
-import Btn from '../ui/Btn.vue';
-import TextInput from '../ui/TextInput.vue';
-import { Track } from '../../types/playlist';
-import { useTrackSearch } from '../../composables/useTrackSearch';
+import Btn from '../../ui/Btn.vue';
+import TextInput from '../../ui/TextInput.vue';
+import { Track } from '../../../core/domain/setup/types/playlist';
+import { useTrackSearch } from '../../../composables/useTrackSearch';
 
 const props = defineProps<{
   tracks: Track[];

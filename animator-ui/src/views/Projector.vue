@@ -220,7 +220,7 @@ import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
 import { AlarmClock, PartyPopper, Trophy, Medal, Info, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
-import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../components/games/blind-test/blindTestOptions';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../core/domain/blind-test/types/blindTestOptions';
 import QRCode from 'qrcode';
 
 let originalTitle = '';

@@ -1,5 +1,3 @@
-import { ref } from 'vue';
-
 export function usePresets() {
   const loadPresets = async () => {
     try {

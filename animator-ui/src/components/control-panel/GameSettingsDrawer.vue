@@ -191,8 +191,8 @@ import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Plus, Star, Boo
 import Btn from '../ui/Btn.vue';
 import Slider from '../ui/Slider.vue';
 import PresetSaveModal from '../games/blind-test/PresetSaveModal.vue';
-import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../games/blind-test/blindTestOptions';
-import { DEFAULT_PRESETS } from '../games/blind-test/blindTestDefaultPresets';
+import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../../core/domain/blind-test/types/blindTestOptions';
+import { DEFAULT_PRESETS } from '../../core/domain/blind-test/types/blindTestDefaultPresets';
 import { usePresets } from '../../composables/usePresets';
 
 const props = defineProps<{

@@ -34,10 +34,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Wand2, Loader2 } from '@lucide/vue';
-import Btn from '../ui/Btn.vue';
-import Modal from '../ui/Modal.vue';
-import Slider from '../ui/Slider.vue';
-import TextInput from '../ui/TextInput.vue';
+import Btn from '../../ui/Btn.vue';
+import Modal from '../../ui/Modal.vue';
+import Slider from '../../ui/Slider.vue';
+import TextInput from '../../ui/TextInput.vue';
 
 const props = defineProps<{
   show: boolean;

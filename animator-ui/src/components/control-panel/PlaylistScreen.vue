@@ -64,14 +64,14 @@
 import { ref, onMounted } from 'vue';
 import { ListMusic } from '@lucide/vue';
 
-import PlaylistList from '../playlist-config/PlaylistList.vue';
-import PlaylistEditor from '../playlist-config/PlaylistEditor.vue';
-import PlaylistGeneratorModal from '../playlist-config/PlaylistGeneratorModal.vue';
+import PlaylistList from '../setup/playlist/PlaylistList.vue';
+import PlaylistEditor from '../setup/playlist/PlaylistEditor.vue';
+import PlaylistGeneratorModal from '../setup/playlist/PlaylistGeneratorModal.vue';
 import BackButton from '../ui/BackButton.vue';
 
 import { usePlaylists } from '../../composables/usePlaylists';
 import { usePlaylistEditor } from '../../composables/usePlaylistEditor';
-import { Playlist, Track } from '../../types/playlist';
+import { Playlist, Track } from '../../core/domain/setup/types/playlist';
 
 const emit = defineEmits<{
   (e: 'back'): void;

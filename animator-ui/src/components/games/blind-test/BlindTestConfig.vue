@@ -283,8 +283,8 @@ import OptionCard from '../../ui/OptionCard.vue';
 import StepSection from '../../ui/StepSection.vue';
 import BackButton from '../../ui/BackButton.vue';
 import PresetSaveModal from './PresetSaveModal.vue';
-import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from './blindTestOptions';
-import { DEFAULT_PRESETS } from './blindTestDefaultPresets';
+import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../../../core/domain/blind-test/types/blindTestOptions';
+import { DEFAULT_PRESETS } from '../../../core/domain/blind-test/types/blindTestDefaultPresets';
 import { usePresets } from '../../../composables/usePresets';
 import { usePlaylists } from '../../../composables/usePlaylists';
 
