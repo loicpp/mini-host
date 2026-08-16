@@ -18,6 +18,8 @@
   "gameroom": {
     "pts": "pts",
     "blocked_title": "You are blocked",
+    "excluded_title": "You are excluded",
+    "excluded_subtitle": "You have been excluded from the game.",
     "blocked_forever": "The host blocked your answers indefinitely.",
     "blocked_turn": "You are blocked until the end of this turn.",
     "blocked_turns": "You cannot play for {n} turn(s).",

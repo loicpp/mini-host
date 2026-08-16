@@ -12,6 +12,7 @@ export interface Player {
   blockedTurns?: number;
   rank?: number;
   rankChange?: number;
+  excluded?: boolean;
   [key: string]: any;
 }
 
@@ -26,6 +27,7 @@ export interface GameSettings {
   allowSuggestions?: boolean;
   penaltyOnWrongAnswer?: boolean;
   blockPlayerOnWrongAnswer?: boolean;
+  playerExclusion?: boolean;
   preset?: string;
   playlist?: any;
   [key: string]: any;

@@ -67,6 +67,10 @@ export const animatorService = {
     return gameRepo.setPlayerBlock(gameId, playerId, turns);
   },
 
+  async setPlayerExclusion(gameId: string, playerId: string, excluded: boolean) {
+    return gameRepo.setPlayerExclusion(gameId, playerId, excluded);
+  },
+
   async updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>) {
     return gameRepo.updateRanks(gameId, lastAwardedPoints);
   }

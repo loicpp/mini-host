@@ -144,6 +144,11 @@ export class FirebaseGameRepository implements GameRepository {
     await update(playerRef, { blockedTurns: turns });
   }
 
+  async setPlayerExclusion(gameId: string, playerId: string, excluded: boolean) {
+    const playerRef = ref(db, `games/${gameId}/players/${playerId}`);
+    await update(playerRef, { excluded: excluded });
+  }
+
   async updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>) {
     const playersRef = ref(db, `games/${gameId}/players`);
     const snapshot = await get(playersRef);

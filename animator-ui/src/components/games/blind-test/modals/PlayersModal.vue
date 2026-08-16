@@ -19,8 +19,9 @@
         </div>
         <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex items-center justify-between gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
           <div class="flex items-center gap-2 flex-1 overflow-hidden">
-            <span class="font-bold text-primary text-lg truncate">{{ player.name || $t('control_panel.anonymous') }}</span>
-            <Badge v-if="player.blockedTurns === -1" color="red" class="shrink-0">{{ $t('control_panel.blocked_permanent') }}</Badge>
+            <span class="font-bold text-primary text-lg truncate" :class="{'line-through opacity-50': player.excluded}">{{ player.name || $t('control_panel.anonymous') }}</span>
+            <Badge v-if="player.excluded" color="purple" class="shrink-0">{{ $t('control_panel.excluded') }}</Badge>
+            <Badge v-else-if="player.blockedTurns === -1" color="red" class="shrink-0">{{ $t('control_panel.blocked_permanent') }}</Badge>
             <Badge v-else-if="player.blockedTurns > 0" color="red" class="shrink-0">{{ $t('control_panel.blocked_turns', { turns: player.blockedTurns }) }}</Badge>
           </div>
           

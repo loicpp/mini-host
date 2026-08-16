@@ -1,4 +1,4 @@
-import { Lightbulb, AlertTriangle, Ban, Timer } from '@lucide/vue';
+import { Lightbulb, AlertTriangle, Ban, Timer, UserX } from '@lucide/vue';
 
 export interface BlindTestOption {
   key: string;
@@ -60,11 +60,24 @@ export const speedPointsOption: BlindTestOption = {
   projectorIconClass: 'text-amber-400'
 };
 
+export const playerExclusionOption: BlindTestOption = {
+  key: 'playerExclusion',
+  icon: UserX,
+  titleKey: 'create_game.player_exclusion',
+  shortTitleKey: 'create_game.player_exclusion_short',
+  descKey: 'create_game.player_exclusion_desc',
+  requiredMode: null,
+  fallbackValue: false,
+  sidebarBadgeClass: 'text-purple-500 bg-purple-50 border-purple-100',
+  projectorIconClass: 'text-purple-400'
+};
+
 export const BLIND_TEST_ADDITIONAL_OPTIONS = [
   allowSuggestionsOption,
   penaltyOnWrongAnswerOption,
   blockPlayerOnWrongAnswerOption,
-  speedPointsOption
+  speedPointsOption,
+  playerExclusionOption
 ];
 
 export const getExpectedValue = (optionKey: string, presetValue: any, currentMode: string) => {

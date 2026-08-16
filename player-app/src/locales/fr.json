@@ -18,6 +18,8 @@
   "gameroom": {
     "pts": "pts",
     "blocked_title": "Vous êtes bloqué",
+    "excluded_title": "Vous êtes exclu",
+    "excluded_subtitle": "Vous avez été exclu de la partie.",
     "blocked_forever": "L'animateur a bloqué vos réponses pour une durée indéterminée.",
     "blocked_turn": "Vous êtes bloqué jusqu'à la fin de ce tour.",
     "blocked_turns": "Vous ne pouvez pas jouer pendant {n} tour(s).",

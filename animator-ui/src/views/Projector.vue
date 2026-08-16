@@ -85,9 +85,9 @@
         <h1 class="text-6xl font-black text-white mb-6">{{ $t('projector.get_ready') }}</h1>
         
         <div class="w-full">
-          <h3 class="text-white/80 text-2xl mb-4 font-medium">{{ $t('projector.players_present') }} ({{ Object.keys(game.players || {}).length }})</h3>
+          <h3 class="text-white/80 text-2xl mb-4 font-medium">{{ $t('projector.players_present') }} ({{ allPlayersSorted.length }})</h3>
           <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
-            <span v-for="(player, id) in game.players" :key="id" class="bg-white/15 px-6 py-3 rounded-full text-2xl font-bold backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
+            <span v-for="player in allPlayersSorted" :key="player.id" class="bg-white/15 px-6 py-3 rounded-full text-2xl font-bold backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
               {{ player.name }}
             </span>
           </div>
@@ -277,10 +277,15 @@ watchEffect(async () => {
 
 const allPlayersSorted = computed(() => {
   if (!game.value || !game.value.players) return [];
-  const p = Object.keys(game.value?.players).map(id => ({
-    id,
-    ...game.value?.players[id]
-  }));
+  const p = Object.keys(game.value?.players)
+    .filter(id => {
+      const player = game.value?.players[id];
+      return player.role !== 'animator' && player.role !== 'projector' && !player.excluded;
+    })
+    .map(id => ({
+      id,
+      ...game.value?.players[id]
+    }));
   return p.sort((a, b) => {
     const scoreDiff = (b.score || 0) - (a.score || 0);
     if (scoreDiff !== 0) return scoreDiff;

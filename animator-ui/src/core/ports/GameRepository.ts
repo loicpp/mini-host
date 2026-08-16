@@ -16,5 +16,6 @@ export interface GameRepository {
   resetPlayers(gameId: string): Promise<void>;
   removePlayer(gameId: string, playerId: string): Promise<void>;
   setPlayerBlock(gameId: string, playerId: string, turns: number): Promise<void>;
+  setPlayerExclusion(gameId: string, playerId: string, excluded: boolean): Promise<void>;
   updateRanks(gameId: string, lastAwardedPoints?: Record<string, number>): Promise<void>;
 }

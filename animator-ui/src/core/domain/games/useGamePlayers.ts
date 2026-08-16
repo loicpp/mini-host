@@ -28,7 +28,7 @@ export function useGamePlayers() {
   const { t } = useI18n();
   const { showConfirm } = useDialog();
 
-  const displayedPlayers = computed(() => {
+  const allDisplayedPlayers = computed(() => {
     const result: Record<string, any> = {};
     for (const id in players.value) {
       const p = players.value[id];
@@ -55,9 +55,19 @@ export function useGamePlayers() {
     return result;
   });
 
+  const displayedPlayers = computed(() => {
+    const result: Record<string, any> = {};
+    for (const id in allDisplayedPlayers.value) {
+      if (!allDisplayedPlayers.value[id].excluded) {
+        result[id] = allDisplayedPlayers.value[id];
+      }
+    }
+    return result;
+  });
+
   const sortedPlayersList = computed(() => {
-    return Object.keys(displayedPlayers.value)
-      .map(id => ({ id, ...displayedPlayers.value[id] }))
+    return Object.keys(allDisplayedPlayers.value)
+      .map(id => ({ id, ...allDisplayedPlayers.value[id] }))
       .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   });
 
@@ -65,7 +75,7 @@ export function useGamePlayers() {
     const rawPlayers = [];
     for (const id in players.value) {
       const p = players.value[id];
-      if (p.role === 'animator' || p.role === 'projector') continue;
+      if (p.role === 'animator' || p.role === 'projector' || p.excluded) continue;
       
       const pointsGained = lastAwardedPoints.value[id] || 0;
       const currentScore = p.score || 0;
@@ -286,6 +296,16 @@ export function useGamePlayers() {
     }
   };
 
+  const togglePlayerExclusion = async (playerId: string) => {
+    try {
+      const currentPlayer = players.value[playerId];
+      if (!currentPlayer) return;
+      await animatorService.setPlayerExclusion(gameId.value, playerId, !currentPlayer.excluded);
+    } catch(e) {
+      console.error("Impossible de modifier l'exclusion du joueur:", e);
+    }
+  };
+
   return {
     displayedPlayers,
     sortedPlayersList,
@@ -299,6 +319,7 @@ export function useGamePlayers() {
     correctBuzzer,
     removePlayer,
     setPlayerBlock,
-    addPointsManually
+    addPointsManually,
+    togglePlayerExclusion
   };
 }

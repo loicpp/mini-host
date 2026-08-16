@@ -47,6 +47,15 @@
           </div>
         </div>
 
+        <hr class="border-[rgba(0,0,0,0.08)] m-0" />
+
+        <div>
+          <p class="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider m-0">{{ $t('control_panel.player_exclusion') }}</p>
+          <Btn :variant="tempExcluded ? 'danger' : 'soft'" className="w-full justify-center font-bold" @click="tempExcluded = !tempExcluded">
+            {{ tempExcluded ? $t('control_panel.unexclude_player') : $t('control_panel.exclude_player') }}
+          </Btn>
+        </div>
+
         <div class="flex justify-end mt-2 gap-3">
           <Btn id="player-actions-cancel-btn" variant="gray" @click="$emit('close')">{{ $t('app.cancel') }}</Btn>
           <Btn variant="primary" :disabled="!hasUnsavedChanges" @click="savePlayerActions">{{ $t('settings.save') }}</Btn>
@@ -73,16 +82,18 @@ const emit = defineEmits<{
   (e: 'save'): void; // Optional if we want parent to react
 }>();
 
-const { addPointsManually, setPlayerBlock } = useGamePlayers();
+const { addPointsManually, setPlayerBlock, togglePlayerExclusion } = useGamePlayers();
 
 const tempScoreAdjustment = ref(0);
 const tempBlockedTurns = ref(0);
+const tempExcluded = ref(false);
 const showUnblockOnly = ref(false);
 
 watch(() => props.isOpen, (newVal) => {
   if (newVal && props.player) {
     tempScoreAdjustment.value = 0;
     tempBlockedTurns.value = props.player.blockedTurns || 0;
+    tempExcluded.value = props.player.excluded || false;
     showUnblockOnly.value = !!props.player.blockedTurns;
   }
 });
@@ -90,7 +101,8 @@ watch(() => props.isOpen, (newVal) => {
 const hasUnsavedChanges = computed(() => {
   if (!props.player) return false;
   const initialBlockedTurns = props.player.blockedTurns || 0;
-  return tempScoreAdjustment.value !== 0 || tempBlockedTurns.value !== initialBlockedTurns;
+  const initialExcluded = props.player.excluded || false;
+  return tempScoreAdjustment.value !== 0 || tempBlockedTurns.value !== initialBlockedTurns || tempExcluded.value !== initialExcluded;
 });
 
 const handleTempPoints = (points: number) => {
@@ -110,6 +122,9 @@ const savePlayerActions = async () => {
     }
     if (tempBlockedTurns.value !== (props.player.blockedTurns || 0)) {
       await setPlayerBlock(props.player.id, tempBlockedTurns.value);
+    }
+    if (tempExcluded.value !== (props.player.excluded || false)) {
+      await togglePlayerExclusion(props.player.id);
     }
   }
   emit('close');

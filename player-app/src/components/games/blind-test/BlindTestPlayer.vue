@@ -20,7 +20,17 @@
     </div>
 
     <!-- Blocked State -->
-    <template v-if="player?.blockedTurns === -1 || player?.blockedTurns > 0">
+    <template v-if="player?.excluded">
+      <div class="bg-purple-50 border border-purple-200 rounded-2xl p-6 text-center shadow-sm">
+        <div class="w-16 h-16 bg-purple-100 text-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <UserX class="w-8 h-8" />
+        </div>
+        <h3 class="text-purple-600 font-bold text-xl mb-2">{{ $t('gameroom.excluded_title') }}</h3>
+        <p class="text-purple-700 font-medium">{{ $t('gameroom.excluded_subtitle') }}</p>
+      </div>
+    </template>
+    
+    <template v-else-if="player?.blockedTurns === -1 || player?.blockedTurns > 0">
       <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-center shadow-sm">
         <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
           🛑
@@ -193,6 +203,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { UserX } from '@lucide/vue';
 import { itunesService } from '../../../services/itunesService';
 import { getServerTime } from '../../../firebase';
 import { useGameTimer } from '../../../composables/useGameTimer';

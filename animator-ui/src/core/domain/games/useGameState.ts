@@ -10,11 +10,29 @@ import { localBackendService } from '../../../services/localBackendService';
 export function useGameState() {
   const { t } = useI18n();
   const { showConfirm } = useDialog();
-  const { gameId, status, nextTrackInfo } = useGameStore();
+  const { gameId, status, nextTrackInfo, gameSettings } = useGameStore();
   const { selectedTrack, searchQuery, playedTracks } = useMusicStore();
-  const { pendingPoints } = usePlayerStore();
+  const { pendingPoints, players } = usePlayerStore();
 
   const nextRound = async () => {
+    if (gameSettings.value?.playerExclusion && playedTracks.value.length > 0 && playedTracks.value.length % 3 === 0) {
+      const activePlayers = Object.entries(players.value).filter(([, p]: [string, any]) => 
+        p.role !== 'animator' && p.role !== 'projector' && !p.excluded
+      );
+      if (activePlayers.length > 1) {
+        const minScore = Math.min(...activePlayers.map(([, p]: [string, any]) => p.score || 0));
+        const worstPlayers = activePlayers.filter(([, p]: [string, any]) => (p.score || 0) === minScore);
+        if (worstPlayers.length > 0 && worstPlayers.length < activePlayers.length) {
+          const toExclude = worstPlayers[Math.floor(Math.random() * worstPlayers.length)];
+          try {
+            await animatorService.setPlayerExclusion(gameId.value, toExclude[0], true);
+          } catch (e) {
+            console.warn("Could not exclude player", e);
+          }
+        }
+      }
+    }
+
     status.value = 'waiting';
     nextTrackInfo.value.answer = '';
     searchQuery.value = '';
