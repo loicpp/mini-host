@@ -156,8 +156,8 @@
 
       <!-- Footer -->
       <div class="p-6 border-t border-gray-100 shrink-0 bg-gray-50 flex gap-3">
-        <Btn variant="gray" class="flex-1 font-bold" @click="$emit('close')">Annuler</Btn>
-        <Btn variant="primary" class="flex-1 font-bold" @click="handleSave">Sauvegarder</Btn>
+        <Btn variant="gray" class="flex-1 font-bold" @click="$emit('close')">{{ $t('create_game.undo') }}</Btn>
+        <Btn variant="primary" class="flex-1 font-bold" @click="handleSave">{{ $t('create_game.preset_save_btn') }}</Btn>
       </div>
     </div>
     
@@ -174,12 +174,12 @@
       class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 transform"
       :class="toastVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'"
     >
-      <span class="text-sm font-medium">{{ $t('create_game.preset_deleted') || 'Preset supprimé' }}</span>
+      <span class="text-sm font-medium">{{ $t('create_game.preset_deleted') }}</span>
       <button 
         @click="undoDelete"
         class="text-[#FFBA49] text-sm font-bold hover:text-white transition-colors uppercase tracking-wide"
       >
-        {{ $t('create_game.undo') || 'Annuler' }}
+        {{ $t('create_game.undo') }}
       </button>
     </div>
   </div>
