@@ -44,5 +44,9 @@
     "vitest": "^4.1.10",
     "vue-eslint-parser": "^10.4.1",
     "vue-tsc": "^2.2.12"
+  },
+  "allowScripts": {
+    "protobufjs@7.6.5": true,
+    "@firebase/util@1.15.1": true
   }
 }
