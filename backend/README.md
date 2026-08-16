@@ -1,6 +1,6 @@
 # Backend - MiniHost
 
-The backend engine is developed in Python using Flask and PyWebView. It is architected following Clean Architecture and Hexagonal Architecture principles (Ports and Adapters).
+The backend engine is developed in Python using Flask. It is architected following Clean Architecture and Hexagonal Architecture principles (Ports and Adapters), relying on standard web browsers to display the local UI interfaces.
 
 ---
 

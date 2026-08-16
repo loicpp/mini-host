@@ -1,6 +1,6 @@
 # Player App - MiniHost
 
-The web application for players, built with Vue 3, TypeScript, and Vite, designed for hosting on Firebase Hosting.
+The web application for players, built with Vue 3, TypeScript, and Vite. Designed for hosting on Firebase Hosting, it communicates with the Host backend in real-time via Firebase Realtime Database.
 
 ---
 

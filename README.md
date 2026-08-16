@@ -14,8 +14,8 @@ The platform is split into two core components:
 
 The project is organized into 3 main directories (each containing its own dedicated documentation):
 
-- [**`backend/`**](backend/README.md): The core application engine (Python / Flask). Manages local server operations, audio playback (`pygame`), secondary display/projector windows (`pywebview`), and real-time database sync with Firebase. See [backend/README.md](backend/README.md) for backend specific setup and tests.
-- [**`animator-ui/`**](animator-ui/README.md): The Host / Animator control dashboard (Vue 3 + TypeScript + Vite). This web interface is embedded inside the Python backend executable during build. See [animator-ui/README.md](animator-ui/README.md) for details.
+- [**`backend/`**](backend/README.md): The core application engine (Python / Flask). Manages local server operations, audio playback (`pygame`), secondary display/projector windows (opened in the system's web browser), and real-time database sync with Firebase. See [backend/README.md](backend/README.md) for backend specific setup and tests.
+- [**`animator-ui/`**](animator-ui/README.md): The Host / Animator control dashboard (Vue 3 + TypeScript + Vite). This web interface is bundled with the Python backend executable during build and served locally in the default web browser. See [animator-ui/README.md](animator-ui/README.md) for details.
 - [**`player-app/`**](player-app/README.md): The Player mobile/web app (Vue 3 + TypeScript + Vite). Hosted on Firebase Hosting, communicating with Firebase Realtime Database for live interaction. See [player-app/README.md](player-app/README.md) for details.
 
 User configurations, game states, and host playlists are saved locally on the host's machine (e.g., `~/.minihost/blindtest/` or `$XDG_CONFIG_HOME/minihost/blindtest/`).

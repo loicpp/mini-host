@@ -41,7 +41,7 @@ npx vitest run --coverage
 
 ## 📦 Production Compilation
 
-To compile the Animator UI application for packaging inside the Python desktop backend server:
+To compile the Animator UI application to be bundled and served locally by the Python desktop backend server:
 ```bash
 npm run build
 ```
