@@ -104,7 +104,10 @@
     "presets": "Presets:",
     "auto_correction_penalty": "Error Penalty",
     "auto_correction_penalty_short": "Penalty",
-    "auto_correction_penalty_desc": "Lose points on wrong answers"
+    "auto_correction_penalty_desc": "Lose points on wrong answers",
+    "block_player_wrong_answer": "Player blocking",
+    "block_player_wrong_answer_short": "Block",
+    "block_player_wrong_answer_desc": "Block the player until the end of the round on wrong answer"
   },
   "playlists": {
     "quit_edition": "Quit editing",
@@ -168,7 +171,7 @@
     "regie": "Control Panel",
     "play_music": "Play Music",
     "stop_music": "Stop & Review",
-    "wrong_resume": "Wrong, resume (Block)",
+    "wrong_resume": "Wrong, resume",
     "correct_reveal": "Correct (1 pt & Reveal)",
     "nobody_found": "Nobody found it (Reveal)",
     "reveal_results": "Reveal Results",

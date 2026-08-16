@@ -63,8 +63,8 @@
               :title="preset.isCustom ? preset.name : $t(preset.titleKey!)" 
               :description="preset.isCustom ? '' : $t(preset.descKey!)" 
               layout="vertical"
-              :selected="isPresetSelected(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
-              @click="applyPreset(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
+              :selected="isPresetSelected(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer, preset.blockPlayerOnWrongAnswer)"
+              @click="applyPreset(preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer, preset.blockPlayerOnWrongAnswer)"
             >
               <template #icon>
                 <component :is="IconMap[preset.icon || 'Star'] || Star" class="w-4 h-4" />
@@ -284,7 +284,7 @@ import StepSection from '../../ui/StepSection.vue';
 import BackButton from '../../ui/BackButton.vue';
 import PresetSaveModal from './PresetSaveModal.vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../../../core/domain/games/blind-test/types/blindTestOptions';
-import { DEFAULT_PRESETS } from '../../../core/domain/games/blind-test/types/blindTestDefaultPresets';
+import { DEFAULT_PRESETS, BlindTestPreset, normalPreset } from '../../../core/domain/games/blind-test/types/blindTestDefaultPresets';
 import { usePresets } from '../../../core/domain/setup/presets/usePresets';
 import { usePlaylists } from '../../../core/domain/setup/playlists/usePlaylists';
 
@@ -330,23 +330,30 @@ const playlistOptions = computed(() => {
   }));
 });
 
-const settings = ref({
-  blockDuration: 0,
-  musicDuration: 15,
-  duration: 15,
+interface RequiredGameSettings extends BlindTestPreset {
+  mode: string;
+  playlistId: string;
+  localTracks: any[];
+}
+
+const settings = ref<RequiredGameSettings>({
+  name: normalPreset.name,
+  icon: normalPreset.icon,
+  titleKey: normalPreset.titleKey,
+  descKey: normalPreset.descKey,
+  blockDuration: normalPreset.blockDuration ?? 0,
+  musicDuration: normalPreset.musicDuration ?? 15,
+  duration: normalPreset.duration ?? 15,
   mode: 'buzzer',
-  allowSuggestions: false,
-  penaltyOnWrongAnswer: false,
+  allowSuggestions: normalPreset.allowSuggestions ?? true,
+  penaltyOnWrongAnswer: normalPreset.penaltyOnWrongAnswer ?? false,
+  blockPlayerOnWrongAnswer: normalPreset.blockPlayerOnWrongAnswer ?? true,
   playlistId: '',
-  localTracks: [] as any[]
+  localTracks: []
 });
 
 const toggleOption = (key: string) => {
-  if (key === 'allowSuggestions') {
-    settings.value.allowSuggestions = !settings.value.allowSuggestions;
-  } else if (key === 'penaltyOnWrongAnswer') {
-    settings.value.penaltyOnWrongAnswer = !settings.value.penaltyOnWrongAnswer;
-  }
+  (settings.value as any)[key] = !(settings.value as any)[key];
 };
 
 const loadPresets = async () => {
@@ -455,6 +462,7 @@ watch(() => settings.value.mode, (newMode) => {
   // Apply mode constraints to current options
   settings.value.allowSuggestions = getExpectedValue('allowSuggestions', settings.value.allowSuggestions, newMode);
   settings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', settings.value.penaltyOnWrongAnswer, newMode);
+  settings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', settings.value.blockPlayerOnWrongAnswer, newMode);
   
   // Specific business logic when switching to text mode
   if (newMode === 'text') {
@@ -464,21 +472,23 @@ watch(() => settings.value.mode, (newMode) => {
   }
 });
 
-const isPresetSelected = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
+const isPresetSelected = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean, blockPlayer: boolean) => {
   return settings.value.blockDuration === block &&
          settings.value.musicDuration === music &&
          settings.value.duration === total &&
          settings.value.allowSuggestions === getExpectedValue('allowSuggestions', suggestions, settings.value.mode) &&
-         settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', penalty, settings.value.mode);
+         settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', penalty, settings.value.mode) &&
+         settings.value.blockPlayerOnWrongAnswer === getExpectedValue('blockPlayerOnWrongAnswer', blockPlayer, settings.value.mode);
 };
 
-const applyPreset = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
+const applyPreset = (block: number, music: number, total: number, suggestions: boolean, penalty: boolean, blockPlayer: boolean) => {
   settings.value.blockDuration = block;
   settings.value.musicDuration = music;
   settings.value.duration = total;
   
   settings.value.allowSuggestions = getExpectedValue('allowSuggestions', suggestions, settings.value.mode);
   settings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', penalty, settings.value.mode);
+  settings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', blockPlayer, settings.value.mode);
 };
 
 const startGame = () => {
@@ -506,19 +516,20 @@ const startGame = () => {
   
   const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
   
-  const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean) => {
+  const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean, bp: boolean) => {
     return blockDuration === b &&
            musicDuration === m &&
            duration === t &&
-           settings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, settings.value.mode) &&
-           settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, settings.value.mode);
+           settings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, settings.value.mode!) &&
+           settings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, settings.value.mode!) &&
+           settings.value.blockPlayerOnWrongAnswer === getExpectedValue('blockPlayerOnWrongAnswer', bp, settings.value.mode!);
   };
   
   let preset = 'custom';
   let presetIcon = 'Settings2';
   
   for (const p of allPresets.value) {
-    if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer)) {
+    if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer, p.blockPlayerOnWrongAnswer)) {
       preset = p.name;
       presetIcon = p.icon || 'Star';
       break;

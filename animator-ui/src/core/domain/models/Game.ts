@@ -25,6 +25,7 @@ export interface GameSettings {
   mode?: string;
   allowSuggestions?: boolean;
   penaltyOnWrongAnswer?: boolean;
+  blockPlayerOnWrongAnswer?: boolean;
   preset?: string;
   playlist?: any;
   [key: string]: any;

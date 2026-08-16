@@ -35,6 +35,7 @@ export function useGameSession() {
         mode: settings.mode,
         allowSuggestions: settings.allowSuggestions ?? true,
         penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false,
+        blockPlayerOnWrongAnswer: settings.blockPlayerOnWrongAnswer ?? true,
         preset: settings.preset || 'custom'
       };
     }

@@ -104,7 +104,10 @@
     "presets": "Préréglages :",
     "auto_correction_penalty": "Pénalité d'erreur",
     "auto_correction_penalty_short": "Pénalité",
-    "auto_correction_penalty_desc": "Perdre des points sur les mauvaises réponses"
+    "auto_correction_penalty_desc": "Perdre des points sur les mauvaises réponses",
+    "block_player_wrong_answer": "Blocage joueur",
+    "block_player_wrong_answer_short": "Blocage",
+    "block_player_wrong_answer_desc": "Bloquer le joueur jusqu'à la fin du tour en cas de mauvaise réponse"
   },
   "playlists": {
     "quit_edition": "Quitter l'édition",
@@ -168,7 +171,7 @@
     "regie": "Régie",
     "play_music": "Lancer la Musique",
     "stop_music": "Stop & Corriger",
-    "wrong_resume": "Faux, on reprend (Bloquer)",
+    "wrong_resume": "Faux, on reprend",
     "correct_reveal": "Vrai (1 pt & Dévoiler)",
     "nobody_found": "Personne n'a trouvé (Dévoiler)",
     "reveal_results": "Dévoiler les Résultats",

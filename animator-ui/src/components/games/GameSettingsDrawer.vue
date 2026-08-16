@@ -65,7 +65,7 @@
               <button
                 class="w-full h-full flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
                 :class="localSettings.preset === preset.name ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-                @click="applyPreset(preset.name, preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer)"
+                @click="applyPreset(preset.name, preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer, preset.blockPlayerOnWrongAnswer)"
               >
                 <component :is="IconMap[preset.icon || 'Star'] || Star" class="w-4 h-4 mb-1" />
                 <span class="text-[10px] font-bold truncate w-full text-center px-1">{{ preset.isCustom ? preset.name : $t(preset.titleKey!) }}</span>
@@ -340,10 +340,11 @@ watch(() => localSettings.value.mode, (newMode) => {
   if (newMode) {
     localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', localSettings.value.allowSuggestions, newMode);
     localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', localSettings.value.penaltyOnWrongAnswer, newMode);
+    localSettings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', localSettings.value.blockPlayerOnWrongAnswer, newMode);
   }
 });
 
-const applyPreset = (presetName: string, block: number, music: number, total: number, suggestions: boolean, penalty: boolean) => {
+const applyPreset = (presetName: string, block: number, music: number, total: number, suggestions: boolean, penalty: boolean, blockPlayer: boolean) => {
   localSettings.value.preset = presetName;
   localSettings.value.blockDuration = block;
   localSettings.value.musicDuration = music;
@@ -351,14 +352,16 @@ const applyPreset = (presetName: string, block: number, music: number, total: nu
   
   localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', suggestions, localSettings.value.mode);
   localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', penalty, localSettings.value.mode);
+  localSettings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', blockPlayer, localSettings.value.mode);
 };
 
-const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean) => {
+const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean, bp: boolean) => {
   return localSettings.value.blockDuration === b &&
          localSettings.value.musicDuration === m &&
          localSettings.value.duration === t &&
          localSettings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, localSettings.value.mode) &&
-         localSettings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, localSettings.value.mode);
+         localSettings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, localSettings.value.mode) &&
+         localSettings.value.blockPlayerOnWrongAnswer === getExpectedValue('blockPlayerOnWrongAnswer', bp, localSettings.value.mode);
 };
 
 // Deep watch on settings to recalculate preset when customized
@@ -368,11 +371,12 @@ watch(
     localSettings.value.musicDuration,
     localSettings.value.duration,
     localSettings.value.allowSuggestions,
-    localSettings.value.penaltyOnWrongAnswer
+    localSettings.value.penaltyOnWrongAnswer,
+    localSettings.value.blockPlayerOnWrongAnswer
   ],
   () => {
     for (const p of allPresets.value) {
-      if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer)) {
+      if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer, p.blockPlayerOnWrongAnswer)) {
         localSettings.value.preset = p.name;
         localSettings.value.presetIcon = p.icon || 'Star';
         return;

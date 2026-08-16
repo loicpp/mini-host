@@ -146,7 +146,8 @@ const saveCustomPreset = async () => {
     musicDuration: props.currentSettings.musicDuration,
     duration: props.currentSettings.duration,
     allowSuggestions: props.currentSettings.allowSuggestions,
-    penaltyOnWrongAnswer: props.currentSettings.penaltyOnWrongAnswer
+    penaltyOnWrongAnswer: props.currentSettings.penaltyOnWrongAnswer,
+    blockPlayerOnWrongAnswer: props.currentSettings.blockPlayerOnWrongAnswer
   };
 
   if (props.customPresets.length >= 4 && presetToReplace.value === null) {

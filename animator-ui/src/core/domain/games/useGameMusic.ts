@@ -136,7 +136,9 @@ export function useGameMusic() {
       if (gameSettings.value.penaltyOnWrongAnswer) {
         award(playerIdToBlock, -1);
       }
-      await setPlayerBlock(playerIdToBlock, 1);
+      if (gameSettings.value.blockPlayerOnWrongAnswer !== false) {
+        await setPlayerBlock(playerIdToBlock, 1);
+      }
       await animatorService.clearPlayerGuess(gameId.value, playerIdToBlock);
       await animatorService.clearPressedBuzzer(gameId.value);
     }
