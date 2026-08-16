@@ -60,23 +60,52 @@
           @open-temp-track-modal="openTempTrackModal"
         />
 
-        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-4 sm:p-6 rounded-2xl flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-4 shadow-sm w-full overflow-hidden">
-          <h3 class="text-lg sm:text-xl font-bold text-blue-700 m-0 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center max-w-full min-w-0">
-            <span class="shrink-0">🎵 {{ $t('control_panel.expected') }}</span> 
-            <span class="px-3 py-1 sm:px-4 sm:py-2 bg-white rounded-xl border border-blue-200 shadow-sm break-words max-w-full min-w-0">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
-          </h3>
-          <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md shrink-0 whitespace-nowrap" @click="handleAutoCorrect">
-            <Wand2 class="w-4 h-4 mr-2 shrink-0" /> {{ $t('control_panel.auto_correct') }}
-          </Btn>
+        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-4 sm:p-6 rounded-2xl flex flex-wrap items-center justify-between gap-4 sm:gap-6 mb-4 shadow-sm w-full overflow-hidden">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <h3 class="text-lg sm:text-xl font-bold text-blue-700 m-0 flex items-center gap-2 sm:gap-3 max-w-full min-w-0">
+              <span class="shrink-0">🎵 {{ $t('control_panel.expected') }}</span> 
+              <span class="px-3 py-1 sm:px-4 sm:py-2 bg-white rounded-xl border border-blue-200 shadow-sm truncate max-w-full min-w-0">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
+            </h3>
+            <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md shrink-0 whitespace-nowrap ml-2" @click="handleAutoCorrect">
+              <Wand2 class="w-4 h-4 mr-2 shrink-0" /> {{ $t('control_panel.auto_correct') }}
+            </Btn>
+          </div>
+          <div v-if="gameSettings.mode !== 'text'" class="text-xl font-black text-blue-600 font-mono bg-white px-3 py-1 rounded-xl border border-blue-200 shadow-sm shrink-0">
+            {{ musicTimeLeft }}s
+          </div>
         </div>
 
         <PlayersGrid 
           id="player-grid"
-          v-if="status === 'reviewing'"
+          v-if="status === 'reviewing' && gameSettings.mode !== 'buzzer'"
           :players="displayedPlayers"
           :gameMode="gameSettings.mode"
           @award="award"
         />
+
+        <div v-if="status === 'reviewing' && gameSettings.mode === 'buzzer' && pressedBuzzer" class="w-full mb-4">
+          <div class="bg-gradient-to-r from-red-500 to-rose-600 p-[2px] rounded-2xl shadow-lg">
+            <div class="bg-white/95 backdrop-blur-sm rounded-[14px] p-5 flex items-center justify-between gap-6">
+              <div class="flex items-center gap-5">
+                <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 shadow-inner">
+                  <Zap class="w-8 h-8 fill-current animate-pulse" />
+                </div>
+                <div class="flex flex-col text-left">
+                  <div class="flex items-center gap-3 mb-1">
+                    <h2 class="text-2xl font-black text-slate-800 m-0">{{ displayedPlayers[pressedBuzzer]?.name || $t('control_panel.a_player') }}</h2>
+                    <Badge color="red" class="font-bold uppercase tracking-wider text-[10px]">{{ $t('control_panel.buzzed') }}</Badge>
+                  </div>
+                  <p class="text-slate-500 font-medium text-sm m-0">{{ $t('control_panel.buzzer_pause') }}</p>
+                </div>
+              </div>
+              
+              <div class="flex flex-col items-center justify-center bg-slate-50 px-5 py-2 rounded-xl border border-slate-200 shadow-sm shrink-0">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">SCORE</span>
+                <span class="text-2xl font-black text-slate-800 tabular-nums leading-none">{{ displayedPlayers[pressedBuzzer]?.score || 0 }} <span class="text-sm text-slate-400">pts</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div v-if="status === 'playing'" class="flex flex-col gap-6 animate-in fade-in duration-300">
           <div class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm flex flex-col gap-4">
@@ -97,14 +126,6 @@
               <div class="absolute top-0 left-0 h-full bg-[#FFBA49] transition-all duration-100 ease-linear" :style="{ width: musicProgress + '%' }"></div>
               <div v-if="gameSettings.duration > 0" class="absolute top-0 h-full w-1 bg-red-400 z-10 rounded-full" :style="{ left: (gameSettings.musicDuration / gameSettings.duration * 100) + '%' }" title="Coupure du son"></div>
             </div>
-          </div>
-
-          <div v-if="gameSettings.mode === 'buzzer' && pressedBuzzer" class="flex-1 bg-red-50 border-2 border-red-200 p-8 rounded-3xl flex flex-col items-center justify-center text-center shadow-inner animate-in zoom-in-95 duration-200">
-            <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center text-white shadow-xl mb-6 animate-bounce">
-              <Zap class="w-10 h-10 fill-current" />
-            </div>
-            <h2 class="text-4xl font-black text-red-600 mb-2">{{ displayedPlayers[pressedBuzzer]?.name || $t('control_panel.a_player') }} {{ $t('control_panel.buzzed') }}</h2>
-            <p class="text-red-500/80 font-bold text-xl">{{ $t('control_panel.buzzer_pause') }}</p>
           </div>
 
           <div v-if="gameSettings.mode === 'text'" class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
@@ -300,6 +321,8 @@ const handleSelectTrack = async (track: any) => {
 
 const handleGlobalClick = (e: Event) => {
   if (!selectedTrack.value) return;
+  if (status.value !== 'waiting') return;
+  
   const target = e.target as HTMLElement;
   // Ignore clicks on buttons, inputs, links, or specific modals to avoid unwanted deselections
   if (target && target.closest('button, input, a, [role="button"], #player-list')) {

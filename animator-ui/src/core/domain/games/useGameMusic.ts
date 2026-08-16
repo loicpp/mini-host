@@ -19,6 +19,7 @@ const { pressedBuzzer, players } = usePlayerStore();
 let hasMusicStopped = false;
 let animationFrameId: number | null = null;
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
+let pauseTime: number | null = null;
 
 export function useGameMusic() {
   const { t } = useI18n();
@@ -76,6 +77,7 @@ export function useGameMusic() {
       const delay = 3000;
       const startTime = getServerTime() + delay;
       currentStartTime.value = startTime;
+      pauseTime = null;
       
       await animatorService.clearPressedBuzzer(gameId.value);
   
@@ -122,6 +124,7 @@ export function useGameMusic() {
 
   const pauseMusic = async () => {
     await musicManager.pause();
+    pauseTime = getServerTime();
     status.value = 'reviewing';
     await animatorService.updateGameState(gameId.value, 'reviewing');
   };
@@ -143,10 +146,16 @@ export function useGameMusic() {
       await animatorService.clearPressedBuzzer(gameId.value);
     }
     
-    status.value = 'playing';
-    await animatorService.updateGameState(gameId.value, 'playing');
-    
     const now = getServerTime();
+    if (pauseTime && currentStartTime.value) {
+      const pausedDuration = now - pauseTime;
+      currentStartTime.value += pausedDuration;
+      pauseTime = null;
+    }
+
+    status.value = 'playing';
+    await animatorService.updateGameState(gameId.value, 'playing', { startTime: currentStartTime.value, answer: nextTrackInfo.value.answer });
+    
     if (currentStartTime.value && now >= currentStartTime.value + (gameSettings.value.musicDuration * 1000)) {
       hasMusicStopped = true;
     }

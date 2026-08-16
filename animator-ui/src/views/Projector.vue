@@ -94,7 +94,7 @@
         </div>
       </div>
 
-      <div v-else-if="game.data?.status === 'playing'" class="w-full flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'playing' || (game.data?.settings?.mode === 'buzzer' && game.data?.status === 'reviewing')" class="w-full flex flex-col items-center">
         <div v-if="isBuffering" class="flex flex-col items-center">
           <h1 class="text-5xl text-[#FFBA49] font-black mb-8">{{ $t('projector.music_starts_in') }}</h1>
           <div class="text-9xl font-black text-white animate-pulse">{{ bufferTimeLeft }}</div>
@@ -130,11 +130,17 @@
               <span class="w-4 h-4 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span> {{ $t('projector.reflection') }}
             </div>
           </div>
-          <h1 class="text-5xl font-black text-white tracking-wide">{{ $t('projector.your_turn') }}</h1>
+          <div v-if="game.data?.status === 'reviewing' && game.data?.settings?.mode === 'buzzer' && game.pressedBuzzer" class="animate-in zoom-in-95 duration-500 bg-red-500/20 border border-red-500/30 p-6 rounded-3xl flex flex-col items-center justify-center text-center shadow-[0_0_30px_rgba(239,68,68,0.2)] backdrop-blur-md mt-4">
+            <h2 class="text-4xl font-black text-white flex items-center justify-center gap-4 m-0 drop-shadow-md w-full">
+              <Zap class="w-10 h-10 text-[#FFBA49] fill-[#FFBA49] animate-bounce shrink-0" /> 
+              <span>{{ game.players?.[game.pressedBuzzer]?.name || $t('control_panel.a_player') }} {{ $t('control_panel.buzzed') }}</span>
+            </h2>
+          </div>
+          <h1 v-else class="text-5xl font-black text-white tracking-wide">{{ $t('projector.your_turn') }}</h1>
         </div>
       </div>
 
-      <div v-else-if="game.data?.status === 'reviewing'" class="w-full flex flex-col items-center">
+      <div v-else-if="game.data?.status === 'reviewing' && game.data?.settings?.mode !== 'buzzer'" class="w-full flex flex-col items-center">
         <h1 class="text-7xl font-black text-red-400 mb-6 py-4 flex items-center justify-center gap-4">
           <AlarmClock class="w-20 h-20" /> {{ $t('projector.time_up') }}
         </h1>
@@ -219,7 +225,7 @@ import { ref, computed, onMounted, onUnmounted, watch, watchEffect } from 'vue';
 import { db, auth, getServerTime } from '../firebase';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
-import { AlarmClock, PartyPopper, Trophy, Medal, Info, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
+import { AlarmClock, PartyPopper, Trophy, Medal, Info, ChevronUp, ChevronDown, Minus, Zap } from '@lucide/vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../core/domain/games/blind-test/types/blindTestOptions';
 import QRCode from 'qrcode';
 
