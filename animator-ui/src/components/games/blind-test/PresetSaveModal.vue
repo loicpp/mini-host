@@ -81,6 +81,7 @@ import OptionCard from '../../ui/OptionCard.vue';
 import { Star, Bookmark, Heart, Zap, Coffee, Flame, Shield, X, Ghost, Gamepad2, Trophy, Target, Rocket } from '@lucide/vue';
 
 import { usePresets } from '../../../core/domain/setup/presets/usePresets';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../../../core/domain/games/blind-test/types/blindTestOptions';
 
 const { t } = useI18n();
 
@@ -139,16 +140,17 @@ const saveCustomPreset = async () => {
     return;
   }
   
-  const newPreset = {
+  const newPreset: any = {
     name: name,
     icon: presetIcon.value,
     blockDuration: props.currentSettings.blockDuration,
     musicDuration: props.currentSettings.musicDuration,
-    duration: props.currentSettings.duration,
-    allowSuggestions: props.currentSettings.allowSuggestions,
-    penaltyOnWrongAnswer: props.currentSettings.penaltyOnWrongAnswer,
-    blockPlayerOnWrongAnswer: props.currentSettings.blockPlayerOnWrongAnswer
+    duration: props.currentSettings.duration
   };
+
+  BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
+    newPreset[opt.key] = props.currentSettings[opt.key];
+  });
 
   if (props.customPresets.length >= 4 && presetToReplace.value === null) {
     presetError.value = t('create_game.preset_replace_required') || 'Veuillez choisir un preset à remplacer';
