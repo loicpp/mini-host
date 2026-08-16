@@ -83,7 +83,7 @@
 
         <!-- Times -->
         <div class="flex flex-col gap-6">
-          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Temps (en secondes)</h4>
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.time') }}</h4>
           
           <!-- Block duration -->
           <div class="flex flex-col gap-2">

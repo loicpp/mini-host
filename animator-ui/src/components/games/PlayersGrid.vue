@@ -15,9 +15,9 @@
       <Card 
         v-for="player in filteredPlayers" :key="player.id" 
       :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${
-        player.pendingPoints === 1 ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
+        (player.pendingPoints && player.pendingPoints >= 1) ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
         player.pendingPoints === 0.5 ? 'border-amber-400 bg-amber-50/50 shadow-[0_0_15px_rgba(251,191,36,0.3)]' : 
-        player.pendingPoints === -1 ? 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 
+        (player.pendingPoints && player.pendingPoints < 0) ? 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 
         'border-[rgba(0,0,0,0.07)] bg-white'
       }`"
     >
