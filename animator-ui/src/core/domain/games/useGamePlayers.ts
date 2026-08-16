@@ -6,8 +6,22 @@ import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import Fuse from 'fuse.js';
 
-const { gameId, gameSettings, nextTrackInfo, status } = useGameStore();
+const { gameId, gameSettings, nextTrackInfo, status, currentStartTime } = useGameStore();
 const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
+
+export function calculateSpeedPoints(submittedAt: number, currentStartTime: number, T: number): number {
+  if (!submittedAt || !currentStartTime) return 1;
+  const x = (submittedAt - currentStartTime) / 1000;
+  if (x <= 0) return 5;
+  let safeT = T;
+  if (Math.abs(safeT - 2.9) < 0.01) safeT = 2.91;
+  const clampedX = Math.max(0, Math.min(x, safeT));
+  const ratio = clampedX / safeT;
+  const exponent = 1.1 / Math.log(safeT / 2.9);
+  let power = 0;
+  if (ratio > 0) power = Math.pow(ratio, exponent);
+  return Math.ceil(5 * Math.cos((Math.PI / 2) * power));
+}
 
 
 export function useGamePlayers() {
@@ -208,7 +222,11 @@ export function useGamePlayers() {
         autoCorrectResults.value[id] = isCorrect;
         
         if (isCorrect && !pendingPoints.value[id]) {
-          award(id, 1);
+          let points = 1;
+          if (gameSettings.value?.speedPoints && guess?.submittedAt && currentStartTime.value) {
+            points = calculateSpeedPoints(guess.submittedAt, currentStartTime.value, gameSettings.value.duration || 15);
+          }
+          award(id, points);
         } else if (!isCorrect && gameSettings.value?.penaltyOnWrongAnswer && !pendingPoints.value[id]) {
           award(id, -1);
         }

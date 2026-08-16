@@ -11,6 +11,7 @@ export interface BlindTestPreset extends GameSettings {
   allowSuggestions: boolean;
   penaltyOnWrongAnswer: boolean;
   blockPlayerOnWrongAnswer: boolean;
+  speedPoints: boolean;
 }
 
 export const normalPreset: BlindTestPreset = {
@@ -23,7 +24,8 @@ export const normalPreset: BlindTestPreset = {
   duration: 15,
   allowSuggestions: true,
   penaltyOnWrongAnswer: false,
-  blockPlayerOnWrongAnswer: true
+  blockPlayerOnWrongAnswer: true,
+  speedPoints: false
 };
 
 export const hardPreset: BlindTestPreset = {
@@ -36,7 +38,8 @@ export const hardPreset: BlindTestPreset = {
   duration: 10,
   allowSuggestions: false,
   penaltyOnWrongAnswer: true,
-  blockPlayerOnWrongAnswer: true
+  blockPlayerOnWrongAnswer: true,
+  speedPoints: true
 };
 
 export const funPreset: BlindTestPreset = {
@@ -49,7 +52,8 @@ export const funPreset: BlindTestPreset = {
   duration: 30,
   allowSuggestions: true,
   penaltyOnWrongAnswer: false,
-  blockPlayerOnWrongAnswer: true
+  blockPlayerOnWrongAnswer: true,
+  speedPoints: true
 };
 
 export const peacefulPreset: BlindTestPreset = {
@@ -62,7 +66,8 @@ export const peacefulPreset: BlindTestPreset = {
   duration: 30,
   allowSuggestions: true,
   penaltyOnWrongAnswer: false,
-  blockPlayerOnWrongAnswer: false
+  blockPlayerOnWrongAnswer: false,
+  speedPoints: false
 };
 
 export const DEFAULT_PRESETS = [normalPreset, hardPreset, funPreset, peacefulPreset];

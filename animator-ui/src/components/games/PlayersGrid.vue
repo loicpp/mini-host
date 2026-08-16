@@ -54,23 +54,26 @@
       <div class="flex flex-col gap-2 mt-1" v-if="gameMode !== 'buzzer'">
         <div class="flex gap-2 justify-center">
           <button 
-            @click="$emit('award', player.id as string, 1)" 
-            :disabled="player.pendingPoints === 1"
+            @click="$emit('award', player.id as string, getCalculatedPoints(player.currentGuess?.submittedAt))" 
+            :disabled="player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt)"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
-              player.pendingPoints === 1 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 shadow-sm'
-            ]">+1</button>
+              player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt) ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 shadow-sm'
+            ]">
+            {{ $t('players_grid.correct_answer') }}
+            <span v-if="gameMode === 'text' && gameSettings?.speedPoints" class="block text-[10px] opacity-75 mt-0.5 whitespace-nowrap">+{{ getCalculatedPoints(player.currentGuess?.submittedAt) }} {{ $t('gameroom.pts') }}</span>
+          </button>
           <button 
             @click="$emit('award', player.id as string, 0.5)" 
             :disabled="player.pendingPoints === 0.5"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
               player.pendingPoints === 0.5 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-[#fff6e0] text-[#d97706] hover:bg-[#fef3c7] shadow-sm'
-            ]">+0.5</button>
+            ]">{{ $t('players_grid.partial_answer') }}</button>
           <button 
             @click="$emit('award', player.id as string, -1)" 
             :disabled="player.pendingPoints === -1"
             :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
               player.pendingPoints === -1 ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-red-100 text-red-700 hover:bg-red-200 shadow-sm'
-            ]">-1</button>
+            ]">{{ $t('players_grid.wrong_answer') }}</button>
         </div>
         <button 
           @click="$emit('award', player.id as string, 0)" 
@@ -95,10 +98,14 @@ import { Check, X } from '@lucide/vue';
 import Card from '../ui/Card.vue';
 import { useGameStore } from '../../core/domain/general/stores/game';
 import { useI18n } from 'vue-i18n';
+import { calculateSpeedPoints } from '../../core/domain/games/useGamePlayers';
 
-const { currentStartTime } = useGameStore();
+const { currentStartTime, gameSettings } = useGameStore();
 
-
+const getCalculatedPoints = (submittedAt?: number) => {
+  if (props.gameMode !== 'text' || !gameSettings.value?.speedPoints || !submittedAt || !currentStartTime.value) return 1;
+  return calculateSpeedPoints(submittedAt, currentStartTime.value, gameSettings.value.duration || 15);
+};
 const { t } = useI18n();
 
 const props = defineProps<{

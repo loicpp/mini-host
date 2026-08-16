@@ -73,6 +73,9 @@
     "allow_suggestions": "Propositions de saisie",
     "allow_suggestions_short": "Suggestions",
     "allow_suggestions_desc": "Afficher les suggestions pendant la frappe",
+    "speed_points": "Points par rapidité",
+    "speed_points_short": "Rapidité",
+    "speed_points_desc": "Attribue un nombre de points en fonction de la rapidité de réponse du joueur",
     "mode_buzzer": "Buzzer (Le premier qui clique répond)",
     "mode_text": "Saisie de la musique (Chacun tape sa réponse)",
     "tracks": "titres",
@@ -189,7 +192,10 @@
     "submitted_at": "Soumis à {time} secondes",
     "sort_uncorrected": "Prioriser les joueurs non corrigés",
     "correct_detected": "Bonne réponse détectée",
-    "incorrect_detected": "Mauvaise réponse détectée"
+    "incorrect_detected": "Mauvaise réponse détectée",
+    "correct_answer": "Bonne réponse",
+    "partial_answer": "Réponse partielle",
+    "wrong_answer": "Mauvaise réponse"
   },
   "diagnostics": {
     "title": "Diagnostics du Système",

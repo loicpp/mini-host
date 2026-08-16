@@ -73,7 +73,10 @@
     "allow_suggestions": "Input Suggestions",
     "allow_suggestions_short": "Suggestions",
     "allow_suggestions_desc": "Show hints while typing",
-    "mode_buzzer": "Buzzer (First to click answers)",
+    "speed_points": "Speed points",
+    "speed_points_short": "Speed",
+    "speed_points_desc": "Awards points based on the player's response speed",
+    "mode_buzzer": "Buzzer (First to buzz answers)",
     "mode_text": "Text Input (Everyone types their answer)",
     "tracks": "tracks",
     "no_playlist": "You don't have any {type} playlist configured.",
@@ -189,7 +192,10 @@
     "submitted_at": "Submitted at {time} seconds",
     "sort_uncorrected": "Prioritize uncorrected players",
     "correct_detected": "Correct answer detected",
-    "incorrect_detected": "Incorrect answer detected"
+    "incorrect_detected": "Incorrect answer detected",
+    "correct_answer": "Correct answer",
+    "partial_answer": "Partial answer",
+    "wrong_answer": "Wrong answer"
   },
   "diagnostics": {
     "title": "System Diagnostics",

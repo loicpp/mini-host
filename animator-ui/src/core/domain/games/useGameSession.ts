@@ -12,6 +12,7 @@ import { sanitizeTracks } from './trackUtils';
 import { useProjector } from './useProjector';
 import { useGameState } from './useGameState';
 import { GameSettings } from '../models/Game';
+import { BLIND_TEST_ADDITIONAL_OPTIONS } from './blind-test/types/blindTestOptions';
 
 export function useGameSession() {
   const { t } = useI18n();
@@ -28,16 +29,17 @@ export function useGameSession() {
   const createNewGame = async (type: string, settings: GameSettings) => {
     gameType.value = type;
     if (settings) {
-      gameSettings.value = {
+      const baseSettings: any = {
         blockDuration: settings.blockDuration || 0,
         musicDuration: settings.musicDuration || 15,
         duration: settings.duration,
         mode: settings.mode,
-        allowSuggestions: settings.allowSuggestions ?? true,
-        penaltyOnWrongAnswer: settings.penaltyOnWrongAnswer ?? false,
-        blockPlayerOnWrongAnswer: settings.blockPlayerOnWrongAnswer ?? true,
         preset: settings.preset || 'custom'
       };
+      BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
+        baseSettings[opt.key] = settings[opt.key] ?? opt.fallbackValue;
+      });
+      gameSettings.value = baseSettings;
     }
 
     if (lastGameId.value) {

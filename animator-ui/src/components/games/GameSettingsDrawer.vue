@@ -65,7 +65,7 @@
               <button
                 class="w-full h-full flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all"
                 :class="localSettings.preset === preset.name ? 'bg-[#FFBA49] border-[#FFBA49] text-white shadow-md' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'"
-                @click="applyPreset(preset.name, preset.blockDuration, preset.musicDuration, preset.duration, preset.allowSuggestions, preset.penaltyOnWrongAnswer, preset.blockPlayerOnWrongAnswer)"
+                @click="applyPreset(preset)"
               >
                 <component :is="IconMap[preset.icon || 'Star'] || Star" class="w-4 h-4 mb-1" />
                 <span class="text-[10px] font-bold truncate w-full text-center px-1">{{ preset.isCustom ? preset.name : $t(preset.titleKey!) }}</span>
@@ -338,45 +338,50 @@ watch(() => localSettings.value.blockDuration, (newVal) => {
 
 watch(() => localSettings.value.mode, (newMode) => {
   if (newMode) {
-    localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', localSettings.value.allowSuggestions, newMode);
-    localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', localSettings.value.penaltyOnWrongAnswer, newMode);
-    localSettings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', localSettings.value.blockPlayerOnWrongAnswer, newMode);
+    BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
+      localSettings.value[opt.key] = getExpectedValue(opt.key, localSettings.value[opt.key], newMode);
+    });
   }
 });
 
-const applyPreset = (presetName: string, block: number, music: number, total: number, suggestions: boolean, penalty: boolean, blockPlayer: boolean) => {
-  localSettings.value.preset = presetName;
-  localSettings.value.blockDuration = block;
-  localSettings.value.musicDuration = music;
-  localSettings.value.duration = total;
+const applyPreset = (preset: any) => {
+  localSettings.value.preset = preset.name;
+  localSettings.value.blockDuration = preset.blockDuration;
+  localSettings.value.musicDuration = preset.musicDuration;
+  localSettings.value.duration = preset.duration;
   
-  localSettings.value.allowSuggestions = getExpectedValue('allowSuggestions', suggestions, localSettings.value.mode);
-  localSettings.value.penaltyOnWrongAnswer = getExpectedValue('penaltyOnWrongAnswer', penalty, localSettings.value.mode);
-  localSettings.value.blockPlayerOnWrongAnswer = getExpectedValue('blockPlayerOnWrongAnswer', blockPlayer, localSettings.value.mode);
+  BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
+    localSettings.value[opt.key] = getExpectedValue(opt.key, preset[opt.key] ?? false, localSettings.value.mode);
+  });
 };
 
-const checkPreset = (b: number, m: number, t: number, s: boolean, p: boolean, bp: boolean) => {
-  return localSettings.value.blockDuration === b &&
-         localSettings.value.musicDuration === m &&
-         localSettings.value.duration === t &&
-         localSettings.value.allowSuggestions === getExpectedValue('allowSuggestions', s, localSettings.value.mode) &&
-         localSettings.value.penaltyOnWrongAnswer === getExpectedValue('penaltyOnWrongAnswer', p, localSettings.value.mode) &&
-         localSettings.value.blockPlayerOnWrongAnswer === getExpectedValue('blockPlayerOnWrongAnswer', bp, localSettings.value.mode);
+const checkPreset = (preset: any) => {
+  if (localSettings.value.blockDuration !== preset.blockDuration) return false;
+  if (localSettings.value.musicDuration !== preset.musicDuration) return false;
+  if (localSettings.value.duration !== preset.duration) return false;
+  
+  for (const opt of BLIND_TEST_ADDITIONAL_OPTIONS) {
+    if (localSettings.value[opt.key] !== getExpectedValue(opt.key, preset[opt.key] ?? false, localSettings.value.mode)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 // Deep watch on settings to recalculate preset when customized
 watch(
-  () => [
-    localSettings.value.blockDuration,
-    localSettings.value.musicDuration,
-    localSettings.value.duration,
-    localSettings.value.allowSuggestions,
-    localSettings.value.penaltyOnWrongAnswer,
-    localSettings.value.blockPlayerOnWrongAnswer
-  ],
+  () => {
+    const deps = [
+      localSettings.value.blockDuration,
+      localSettings.value.musicDuration,
+      localSettings.value.duration
+    ];
+    BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => deps.push(localSettings.value[opt.key]));
+    return deps;
+  },
   () => {
     for (const p of allPresets.value) {
-      if (checkPreset(p.blockDuration, p.musicDuration, p.duration, p.allowSuggestions, p.penaltyOnWrongAnswer, p.blockPlayerOnWrongAnswer)) {
+      if (checkPreset(p)) {
         localSettings.value.preset = p.name;
         localSettings.value.presetIcon = p.icon || 'Star';
         return;
