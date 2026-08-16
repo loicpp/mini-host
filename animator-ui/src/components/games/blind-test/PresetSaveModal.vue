@@ -2,22 +2,22 @@
   <div v-if="show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click="closeModal">
     <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl flex flex-col gap-4" @click.stop>
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-bold text-gray-900">{{ customPresets.length >= 4 ? (presetToReplace === null ? $t('create_game.preset_replace_title') : $t('create_game.preset_new_title')) : $t('create_game.preset_new_title') }}</h3>
+        <h3 class="text-xl font-bold text-gray-900">{{ customPresetsForMode.length >= 4 ? (presetToReplace === null ? $t('create_game.preset_replace_title', { mode: getModeName }) : $t('create_game.preset_new_title', { mode: getModeName })) : $t('create_game.preset_new_title', { mode: getModeName }) }}</h3>
         <button @click="closeModal" class="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-100">
           <X class="w-5 h-5" />
         </button>
       </div>
       
-      <div v-if="customPresets.length >= 4 && presetToReplace === null" class="flex flex-col gap-4">
+      <div v-if="customPresetsForMode.length >= 4 && presetToReplace === null" class="flex flex-col gap-4">
         <p class="text-sm text-gray-600">{{ $t('create_game.preset_limit_reached') }}</p>
         <div class="grid grid-cols-2 gap-3">
           <OptionCard 
-            v-for="(preset, index) in customPresets" :key="'replace-'+index"
+            v-for="preset in customPresetsForMode" :key="'replace-'+preset.originalIndex"
             :title="preset.name" 
             :description="''" 
             layout="vertical"
             :selected="false"
-            @click="presetToReplace = index"
+            @click="presetToReplace = preset.originalIndex"
           >
             <template #icon>
               <component :is="IconMap[preset.icon] || Star" class="w-4 h-4" />
@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Btn from '../../ui/Btn.vue';
 import OptionCard from '../../ui/OptionCard.vue';
@@ -106,6 +106,18 @@ const showIconPicker = ref(false);
 const availableIcons = ['Star', 'Bookmark', 'Heart', 'Zap', 'Coffee', 'Flame', 'Shield', 'Ghost', 'Gamepad2', 'Trophy', 'Target', 'Rocket'];
 const IconMap: Record<string, any> = { Star, Bookmark, Heart, Zap, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket };
 
+const customPresetsForMode = computed(() => {
+  return props.customPresets
+    .map((p, index) => ({...p, originalIndex: index}))
+    .filter(p => p.mode === props.currentSettings.mode);
+});
+
+const getModeName = computed(() => {
+  return props.currentSettings.mode === 'buzzer' 
+    ? t('create_game.mode_buzzer_title') 
+    : t('create_game.mode_text_title');
+});
+
 watch(() => props.show, (newVal) => {
   if (newVal) {
     presetName.value = '';
@@ -131,8 +143,8 @@ const saveCustomPreset = async () => {
     return;
   }
   
-  const isDuplicate = props.customPresets.some((p, index) => 
-    p.name.toLowerCase() === name.toLowerCase() && index !== presetToReplace.value
+  const isDuplicate = customPresetsForMode.value.some(p => 
+    p.name.toLowerCase() === name.toLowerCase() && p.originalIndex !== presetToReplace.value
   );
   
   if (isDuplicate) {
@@ -143,6 +155,7 @@ const saveCustomPreset = async () => {
   const newPreset: any = {
     name: name,
     icon: presetIcon.value,
+    mode: props.currentSettings.mode,
     blockDuration: props.currentSettings.blockDuration,
     musicDuration: props.currentSettings.musicDuration,
     duration: props.currentSettings.duration
@@ -152,7 +165,7 @@ const saveCustomPreset = async () => {
     newPreset[opt.key] = props.currentSettings[opt.key];
   });
 
-  if (props.customPresets.length >= 4 && presetToReplace.value === null) {
+  if (customPresetsForMode.value.length >= 4 && presetToReplace.value === null) {
     presetError.value = t('create_game.preset_replace_required') || 'Veuillez choisir un preset à remplacer';
     return;
   }

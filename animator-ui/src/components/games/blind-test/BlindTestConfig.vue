@@ -26,7 +26,7 @@
             :description="$t('create_game.mode_buzzer_desc')" 
             layout="horizontal"
             :selected="settings.mode === 'buzzer'"
-            @click="settings.mode = 'buzzer'"
+            @click="changeMode('buzzer')"
           >
             <template #icon>
               <Bell class="w-5 h-5" />
@@ -39,7 +39,7 @@
             :description="$t('create_game.mode_text_desc')" 
             layout="horizontal"
             :selected="settings.mode === 'text'"
-            @click="settings.mode = 'text'"
+            @click="changeMode('text')"
           >
             <template #icon>
               <Type class="w-5 h-5" />
@@ -329,7 +329,7 @@ const allPresets = computed(() => {
       ...p,
       isCustom: true,
       originalIndex: index
-    }))
+    })).filter(p => p.mode === settings.value.mode)
   ];
 });
 
@@ -502,6 +502,13 @@ const isPresetSelected = (preset: any) => {
     }
   }
   return true;
+};
+
+const changeMode = (newMode: string) => {
+  if (settings.value.mode === newMode) return;
+  settings.value.mode = newMode;
+  const normalPreset = DEFAULT_PRESETS.find(p => p.name === 'normal');
+  if (normalPreset) applyPreset(normalPreset);
 };
 
 const applyPreset = (preset: any) => {

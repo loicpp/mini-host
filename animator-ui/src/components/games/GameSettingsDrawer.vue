@@ -221,7 +221,7 @@ const allPresets = computed(() => {
       ...p,
       isCustom: true,
       originalIndex: index
-    }))
+    })).filter(p => p.mode === localSettings.value.mode)
   ];
 });
 
