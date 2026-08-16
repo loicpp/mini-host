@@ -34,7 +34,8 @@ export function useGameSession() {
         musicDuration: settings.musicDuration || 15,
         duration: settings.duration,
         mode: settings.mode,
-        preset: settings.preset || 'custom'
+        preset: settings.preset || 'custom',
+        presetIcon: settings.presetIcon || 'Settings2'
       };
       BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
         baseSettings[opt.key] = settings[opt.key] ?? opt.fallbackValue;

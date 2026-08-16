@@ -255,6 +255,21 @@ const deleteCustomPreset = async (index: number) => {
   customPresets.value.splice(index, 1);
   await savePresetsToBackend(customPresets.value);
   
+  // Recalculate preset since we removed one
+  let found = false;
+  for (const p of allPresets.value) {
+    if (checkPreset(p)) {
+      localSettings.value.preset = p.name;
+      localSettings.value.presetIcon = p.icon || 'Star';
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    localSettings.value.preset = 'custom';
+    localSettings.value.presetIcon = 'Settings2';
+  }
+  
   toastVisible.value = true;
   
   if (toastTimeout) clearTimeout(toastTimeout);
@@ -270,6 +285,15 @@ const undoDelete = async () => {
     customPresets.value.splice(deletedPreset.value.index, 0, deletedPreset.value.data);
     await savePresetsToBackend(customPresets.value);
     
+    // Recalculate preset since we restored one
+    for (const p of allPresets.value) {
+      if (checkPreset(p)) {
+        localSettings.value.preset = p.name;
+        localSettings.value.presetIcon = p.icon || 'Star';
+        break;
+      }
+    }
+    
     toastVisible.value = false;
     deletedPreset.value = null;
     if (toastTimeout) clearTimeout(toastTimeout);
@@ -278,6 +302,15 @@ const undoDelete = async () => {
 
 const onPresetsSaved = (newPresets: any[]) => {
   customPresets.value = newPresets;
+  
+  // Recalculate preset since we just saved a new one
+  for (const p of allPresets.value) {
+    if (checkPreset(p)) {
+      localSettings.value.preset = p.name;
+      localSettings.value.presetIcon = p.icon || 'Star';
+      return;
+    }
+  }
 };
 
 onMounted(() => {
