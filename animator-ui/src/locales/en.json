@@ -60,10 +60,10 @@
     "hard_desc": "No suggestions, auto penalty",
     "fun_desc": "More relaxed",
     "peaceful_desc": "No pressure",
-    "block_short": "Block",
+    "block_short": "Delay",
     "music_short": "Music",
     "thinking_short": "Total",
-    "block_duration": "Initial block time:",
+    "block_duration": "Answer delay :",
     "block_duration_tooltip": "Delay at the beginning of the round where answering is disabled. Ideal to let everyone listen to the music before the first guesses.",
     "music_duration": "Music duration:",
     "music_duration_tooltip": "Duration during which the music is played to the participants.",
@@ -524,7 +524,7 @@
       },
       "time-limit": {
         "title": "Time",
-        "description": "You can adjust the initial block time, the track duration, as well as the total time during which players can answer."
+        "description": "You can adjust the initial delay time, the track duration, as well as the total time during which players can answer."
       },
       "additional-settings": {
         "title": "Additional options",

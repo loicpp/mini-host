@@ -20,8 +20,8 @@ export const allowSuggestionsOption: BlindTestOption = {
   descKey: 'create_game.allow_suggestions_desc',
   requiredMode: 'text',
   fallbackValue: false,
-  sidebarBadgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-100',
-  projectorIconClass: 'text-[#FFBA49]'
+  sidebarBadgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+  projectorIconClass: 'text-emerald-400'
 };
 
 export const penaltyOnWrongAnswerOption: BlindTestOption = {
@@ -32,8 +32,8 @@ export const penaltyOnWrongAnswerOption: BlindTestOption = {
   descKey: 'create_game.auto_correction_penalty_desc',
   requiredMode: null,
   fallbackValue: false,
-  sidebarBadgeClass: 'text-rose-700 bg-rose-50 border-rose-100',
-  projectorIconClass: 'text-[#ff4d4d]'
+  sidebarBadgeClass: 'text-red-600 bg-red-50 border-red-100',
+  projectorIconClass: 'text-red-500'
 };
 
 export const blockPlayerOnWrongAnswerOption: BlindTestOption = {
@@ -44,8 +44,8 @@ export const blockPlayerOnWrongAnswerOption: BlindTestOption = {
   descKey: 'create_game.block_player_wrong_answer_desc',
   requiredMode: 'buzzer',
   fallbackValue: true,
-  sidebarBadgeClass: 'text-orange-700 bg-orange-50 border-orange-100',
-  projectorIconClass: 'text-orange-500'
+  sidebarBadgeClass: 'text-orange-500 bg-orange-50 border-orange-100',
+  projectorIconClass: 'text-orange-400'
 };
 
 export const speedPointsOption: BlindTestOption = {
@@ -56,8 +56,8 @@ export const speedPointsOption: BlindTestOption = {
   descKey: 'create_game.speed_points_desc',
   requiredMode: 'text',
   fallbackValue: false,
-  sidebarBadgeClass: 'text-amber-700 bg-amber-50 border-amber-100',
-  projectorIconClass: 'text-[#FFBA49]'
+  sidebarBadgeClass: 'text-amber-500 bg-amber-50 border-amber-100',
+  projectorIconClass: 'text-amber-400'
 };
 
 export const BLIND_TEST_ADDITIONAL_OPTIONS = [

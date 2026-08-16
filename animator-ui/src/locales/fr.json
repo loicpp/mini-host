@@ -60,10 +60,10 @@
     "hard_desc": "Sans aide, pénalités actives",
     "fun_desc": "Plus détendu",
     "peaceful_desc": "Sans pression",
-    "block_short": "Blocage",
+    "block_short": "Délai",
     "music_short": "Musique",
     "thinking_short": "Total",
-    "block_duration": "Temps de blocage :",
+    "block_duration": "Délai avant réponse :",
     "block_duration_tooltip": "Délai au début de la manche où il est impossible de répondre. Idéal pour laisser tout le monde écouter la musique avant les premières propositions.",
     "music_duration": "Temps de la musique :",
     "music_duration_tooltip": "Durée pendant laquelle la musique est jouée aux participants.",
@@ -512,7 +512,7 @@
       },
       "text-input": {
         "title": "Saisie",
-        "description": "Pour ce tutorial, nous allons utiliser le mode Saisie. Cela permettra aux joueurs de taper leur réponse."
+        "description": "Pour ce tutoriel, nous allons utiliser le mode Saisie. Cela permettra aux joueurs de taper leur réponse."
       },
       "game-settings": {
         "title": "Modes de jeu",
@@ -524,7 +524,7 @@
       },
       "time-limit": {
         "title": "Temps",
-        "description": "Vous pouvez régler le temps de blocage au début, le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre."
+        "description": "Vous pouvez régler le temps de délai au début, le temps de la musique, ainsi que le temps total pendant lequel les joueurs peuvent répondre."
       },
       "additional-settings": {
         "title": "Options supplémentaires",

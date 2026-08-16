@@ -84,25 +84,39 @@
           <!-- Summary Bar -->
         <div 
           id="adjust-summary-bar"
-          class="bg-[#F8F9FA] rounded-xl flex items-center justify-between p-3 px-5 text-sm cursor-pointer hover:bg-gray-100 transition-colors group mt-6"
+          class="bg-[#F8F9FA] rounded-xl flex flex-col p-3 px-5 text-sm cursor-pointer hover:bg-gray-100 transition-colors group mt-6"
           @click="showAdjust = !showAdjust">
-          <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2 text-gray-500">
-              <Clock class="w-4 h-4 text-[#FFBA49]" />
-              <span>{{ $t('create_game.block_short') }} <strong class="text-gray-800 inline-block w-8 text-right">{{ settings.blockDuration }}s</strong></span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+              <div class="flex items-center gap-2 text-gray-500">
+                <Clock class="w-4 h-4 text-[#FFBA49]" />
+                <span>{{ $t('create_game.block_short') }} <strong class="text-gray-800 inline-block w-8 text-right">{{ settings.blockDuration }}s</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-500">
+                <Music class="w-4 h-4 text-[#FFBA49]" />
+                <span>{{ $t('create_game.music_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.musicDuration }}s</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-500">
+                <Hourglass class="w-4 h-4 text-[#FFBA49]" />
+                <span>{{ $t('create_game.thinking_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.duration }}s</strong></span>
+              </div>
             </div>
-            <div class="flex items-center gap-2 text-gray-500">
-              <Music class="w-4 h-4 text-[#FFBA49]" />
-              <span>{{ $t('create_game.music_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.musicDuration }}s</strong></span>
-            </div>
-            <div class="flex items-center gap-2 text-gray-500">
-              <Hourglass class="w-4 h-4 text-[#FFBA49]" />
-              <span>{{ $t('create_game.thinking_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.duration }}s</strong></span>
+            <div class="flex items-center gap-1 font-medium transition-colors text-gray-500 group-hover:text-gray-800">
+              {{ $t('create_game.adjust') }}
+              <ChevronDown class="w-4 h-4 transition-transform duration-300" :class="{'rotate-180': showAdjust}" />
             </div>
           </div>
-          <div class="flex items-center gap-1 font-medium transition-colors text-gray-500 group-hover:text-gray-800">
-            {{ $t('create_game.adjust') }}
-            <ChevronDown class="w-4 h-4 transition-transform duration-300" :class="{'rotate-180': showAdjust}" />
+          
+          <div class="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200" v-if="BLIND_TEST_ADDITIONAL_OPTIONS.some(opt => settings[opt.key as keyof typeof settings] && (!opt.requiredMode || settings.mode === opt.requiredMode))">
+            <template v-for="opt in BLIND_TEST_ADDITIONAL_OPTIONS" :key="opt.key">
+              <div 
+                v-if="settings[opt.key as keyof typeof settings] && (!opt.requiredMode || settings.mode === opt.requiredMode)"
+                class="flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-600 shadow-sm"
+              >
+                <component :is="opt.icon" class="w-3 h-3" :class="opt.sidebarBadgeClass.split(' ')[0]" />
+                {{ $t(opt.shortTitleKey) }}
+              </div>
+            </template>
           </div>
         </div>
 
