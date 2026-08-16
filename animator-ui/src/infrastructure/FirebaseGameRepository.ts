@@ -79,7 +79,7 @@ export class FirebaseGameRepository implements GameRepository {
     const snapshot = await get(playerRef);
     if (snapshot.exists()) {
       const currentScore = snapshot.val().score || 0;
-      await update(playerRef, { score: currentScore + points });
+      await update(playerRef, { score: Math.max(0, currentScore + points) });
     }
   }
 
@@ -129,6 +129,7 @@ export class FirebaseGameRepository implements GameRepository {
         updates[`${playerId}/currentGuess`] = "";
         updates[`${playerId}/score`] = 0;
         updates[`${playerId}/blockedTurns`] = 0;
+        updates[`${playerId}/excluded`] = false;
       });
       await update(playersRef, updates);
     }

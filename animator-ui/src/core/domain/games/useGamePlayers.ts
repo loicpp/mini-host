@@ -130,14 +130,21 @@ export function useGamePlayers() {
   });
 
   const award = (playerId: string, points: number) => {
-    if (points === 0) {
+    let finalPoints = points;
+    const currentScore = players.value[playerId]?.score || 0;
+    
+    if (currentScore + finalPoints < 0) {
+      finalPoints = -currentScore;
+    }
+    
+    if (finalPoints === 0) {
       const newPending = { ...pendingPoints.value };
       delete newPending[playerId];
       pendingPoints.value = newPending;
     } else {
       pendingPoints.value = {
         ...pendingPoints.value,
-        [playerId]: points
+        [playerId]: finalPoints
       };
     }
   };

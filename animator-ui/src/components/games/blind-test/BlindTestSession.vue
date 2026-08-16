@@ -127,29 +127,29 @@
               <div v-if="gameSettings.duration > 0" class="absolute top-0 h-full w-1 bg-red-400 z-10 rounded-full" :style="{ left: (gameSettings.musicDuration / gameSettings.duration * 100) + '%' }" title="Coupure du son"></div>
             </div>
           </div>
+        </div>
 
-          <div v-if="gameSettings.mode === 'text'" class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
-            <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
-              <Users class="w-5 h-5 text-muted-foreground" /> {{ $t('control_panel.players_status') }}
-            </h3>
-            <div id="player-grid-playing" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              <div v-for="player in displayedPlayers" :key="player.id" 
-                   :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors', 
-                            player.blockedTurns && player.blockedTurns !== 0 ? 'bg-red-50 border-red-200' :
-                            player.hasAnswered ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200']">
-                <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0', 
-                              player.blockedTurns && player.blockedTurns !== 0 ? 'bg-red-200 text-red-500' :
-                              player.hasAnswered ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-400']">
-                  <Ban v-if="player.blockedTurns && player.blockedTurns !== 0" class="w-4 h-4" />
-                  <Check v-else-if="player.hasAnswered" class="w-4 h-4" />
-                  <Loader2 v-else class="w-4 h-4 animate-spin" />
-                </div>
-                <span :class="['font-bold truncate', 
-                               player.blockedTurns && player.blockedTurns !== 0 ? 'text-red-700 line-through opacity-70' :
-                               player.hasAnswered ? 'text-emerald-700' : 'text-gray-500']">
-                  {{ player.name }}
-                </span>
+        <div v-if="(status === 'playing' && (gameSettings.mode === 'text' || (gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false))) || (status === 'reviewing' && gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false)" class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm animate-in fade-in duration-300">
+          <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
+            <Users class="w-5 h-5 text-muted-foreground" /> {{ $t('control_panel.players_status') }}
+          </h3>
+          <div id="player-grid-playing" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div v-for="player in displayedPlayers" :key="player.id" 
+                 :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors', 
+                          player.blockedTurns && player.blockedTurns !== 0 ? 'bg-red-50 border-red-200' :
+                          player.hasAnswered ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200']">
+              <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0', 
+                            player.blockedTurns && player.blockedTurns !== 0 ? 'bg-red-200 text-red-500' :
+                            player.hasAnswered ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-400']">
+                <Ban v-if="player.blockedTurns && player.blockedTurns !== 0" class="w-4 h-4" />
+                <Check v-else-if="player.hasAnswered" class="w-4 h-4" />
+                <Loader2 v-else class="w-4 h-4 animate-spin" />
               </div>
+              <span :class="['font-bold truncate', 
+                             player.blockedTurns && player.blockedTurns !== 0 ? 'text-red-700 line-through opacity-70' :
+                             player.hasAnswered ? 'text-emerald-700' : 'text-gray-500']">
+                {{ player.name }}
+              </span>
             </div>
           </div>
         </div>

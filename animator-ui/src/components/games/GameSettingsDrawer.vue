@@ -24,7 +24,7 @@
       </div>
 
       <!-- Content -->
-      <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
+      <div ref="drawerContent" class="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
         
         <!-- Game Mode -->
         <div v-if="isGameOver" class="flex flex-col gap-2">
@@ -186,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed, nextTick } from 'vue';
 import { X, Settings, Clock, Zap, Smile, Leaf, Music, Hourglass, Plus, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Gamepad2, Trophy, Target, Rocket, Keyboard } from '@lucide/vue';
 import Btn from '../ui/Btn.vue';
 import Slider from '../ui/Slider.vue';
@@ -323,9 +323,18 @@ watch(() => props.gameSettings, (newVal) => {
   }
 }, { immediate: true, deep: true });
 
+const drawerContent = ref<HTMLElement | null>(null);
+
 watch(() => props.isOpen, (newVal) => {
-  if (newVal && props.gameSettings) {
-    localSettings.value = JSON.parse(JSON.stringify(props.gameSettings));
+  if (newVal) {
+    if (props.gameSettings) {
+      localSettings.value = JSON.parse(JSON.stringify(props.gameSettings));
+    }
+    nextTick(() => {
+      if (drawerContent.value) {
+        drawerContent.value.scrollTop = 0;
+      }
+    });
   }
 });
 

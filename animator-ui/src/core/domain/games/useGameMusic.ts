@@ -145,6 +145,28 @@ export function useGameMusic() {
       await animatorService.clearPlayerGuess(gameId.value, playerIdToBlock);
       await animatorService.clearPressedBuzzer(gameId.value);
     }
+
+    // Check if all players are blocked after this action
+    let allBlocked = false;
+    if (gameSettings.value.mode === 'buzzer') {
+      const playerIds = Object.keys(players.value).filter(id => {
+        const p = (players.value as Record<string, any>)[id];
+        return p.role !== 'animator' && p.role !== 'projector' && !p.excluded;
+      });
+      
+      if (playerIds.length > 0) {
+        allBlocked = playerIds.every(id => {
+          if (id === playerIdToBlock && gameSettings.value.blockPlayerOnWrongAnswer !== false) return true;
+          const p = (players.value as Record<string, any>)[id];
+          return p.blockedTurns === -1 || p.blockedTurns > 0;
+        });
+      }
+    }
+
+    if (allBlocked) {
+      await revealResults();
+      return;
+    }
     
     const now = getServerTime();
     if (pauseTime && currentStartTime.value) {
@@ -226,8 +248,8 @@ export function useGameMusic() {
   watch(() => players.value, (newPlayers) => {
     if (status.value === 'playing' && newPlayers) {
       const playerIds = Object.keys(newPlayers).filter(id => {
-        const role = (newPlayers as Record<string, any>)[id].role;
-        return role !== 'animator' && role !== 'projector';
+        const p = (newPlayers as Record<string, any>)[id];
+        return p.role !== 'animator' && p.role !== 'projector' && !p.excluded;
       });
       if (playerIds.length > 0) {
         if (gameSettings.value.mode === 'buzzer') {
