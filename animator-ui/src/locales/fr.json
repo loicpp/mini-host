@@ -300,7 +300,6 @@
     "permanently": "Définitivement",
     "lift_suspension": "Lever la suspension",
     "adjust_points": "Ajuster les points :",
-    "blocked_turns": "Bloqué",
     "remove": "Virer",
     "actions": "Actions",
     "close": "Fermer",
@@ -472,7 +471,7 @@
     "playlistEditorSequence": {
       "step1": {
         "title": "Ajouter une musique",
-        "description": "Pour une playlist SoundCloud, Vous pouvez rechercher une musique pour l'ajouter à votre playlist. Saissez le nom de la musique dans ce champ."
+        "description": "Pour une playlist SoundCloud, vous pouvez rechercher une musique pour l'ajouter à votre playlist. Saissez le nom de la musique dans ce champ."
       },
       "step2": {
         "title": "Choisir une musique",
@@ -480,7 +479,7 @@
       },
       "step3": {
         "title": "Vérification iTunes",
-        "description": "Voici la vérification iTunes. Lorsque l'icône est bleue, cela indique que la musique est bien reconnue. Lorsqu'elle est rouge, la musique n'est pas reconnue et cela empêche les suggestions de saisie pour les joueurs de fonctionner avec l'auto-correction. Pour garder les suggestions et l'auto-correction, il faut alors sélectionner une autre version de la musique sur soundcloud ou bien éditer le nom pour trouver une correspondance avec iTunes.\n\nIl est en revanche possible de désactiver les suggestions pour les joueurs lors de parties. Même si les suggestions sont activées, les joueurs peuvent toujours saisir leur réponse manuellement en appuyant sur envoyer sur leur téléphone."
+        "description": "Voici la vérification iTunes. L'icône vous indique si la musique est disponible sur iTunes ou non. Si l'icône est bleue, cela indique que la musique est bien reconnue. Si elle est rouge, la musique n'est pas reconnue. Lorsque la musique n'est pas reconnue, les fonctionnalités de suggestions de saisie pour les joueurs et d'auto-correction ne fonctionneront pas. Pour garder ces fonctionnalités, vous devez sélectionner sur Soundcloud une autre version reconnue de la musique ou bien éditer son nom manuellement pour trouver une correspondance avec iTunes.<br/><br/>Il est en revanche possible de désactiver ces suggestions lors de parties. Pour information, même si les suggestions sont activées, les joueurs peuvent toujours saisir leur réponse manuellement en appuyant sur 'Envoyer' ou 'Entrée' sur leur téléphone."
       },
       "step4": {
         "title": "Url de la musique SoundCloud",
@@ -529,7 +528,7 @@
       },
       "adjust-summary": {
         "title": "Paramètres avancés",
-        "description": "Vous pouvez également paramétrer manuellement votre partie. Cette barre affiche un résumé de vos temps de jeu et permet d'ouvrir les paramètres avancés."
+        "description": "Vous pouvez également paramétrer manuellement votre partie. Cette barre affiche un résumé de vos paramètres et permet d'ouvrir les paramètres avancés."
       },
       "time-limit": {
         "title": "Temps",
@@ -537,7 +536,7 @@
       },
       "additional-settings": {
         "title": "Options supplémentaires",
-        "description": "En dessous, vous avez les options supplémentaires permettant l'activation de fonctionnalitées pour votre partie."
+        "description": "En dessous, vous avez les options supplémentaires permettant l'activation de fonctionnalités pour votre partie."
       },
       "playlist": {
         "title": "Playlist",
@@ -555,11 +554,11 @@
       },
       "step2": {
         "title": "Projecteur",
-        "description": "En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir qu'il faudra présenter sur un second écran. Cette page contiendra le QR Code qui permettra aux joueurs de rejoindre la partie.En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir qu'il faudra présenter sur un second écran. Cette page contiendra le QR Code qui permettra aux joueurs de rejoindre la partie N'hésitez pas à revenir sur cette page régulièrement pendant ce tutoriel car elle se modifie automatiquement !"
+        "description": "En cliquant sur ce bouton, une page nommée projecteur va s'ouvrir. C'est l'interface d'affichage destinée aux joueurs, qu'il faudra présenter sur un second écran. Cette page contiendra notamment le QR Code qui permettra aux joueurs de rejoindre la partie. N'hésitez pas à revenir sur cette page régulièrement pendant ce tutoriel car son affichage se modifie automatiquement !"
       },
       "step3": {
         "title": "État de la partie",
-        "description": "En haut se trouve un indicateur qui affiche l'état actuel de la partie (en attente, en cours, en revue, résultats). Selon l'état de la partie, l'interface se modifie automatiquement pour vous permettre de gérer la partie. De même que pour les joueurs, leur interface se modifie automatiquement selon l'état de la partie."
+        "description": "En haut se trouve un indicateur qui affiche l'état actuel de la partie. Selon l'état de la partie, l'interface se modifie automatiquement pour vous permettre de gérer la partie."
       },
       "step4": {
         "title": "Gestion des joueurs",
@@ -575,7 +574,7 @@
       },
       "step4c": {
         "title": "Menu d'actions",
-        "description": "Vous avez la possibilité d'ajuster manuellement les points du joueur, le suspendre pour un ou plusieurs tours s'il perturbe la partie."
+        "description": "Vous avez la possibilité d'ajuster manuellement les points du joueur, le suspendre pour un ou plusieurs tours ou bien d'exclure un joueur."
       },
       "step5": {
         "title": "Sélection de la piste",
@@ -597,11 +596,11 @@
         "description": "Pour accélerer la correction, vous pouvez utiliser ce bouton pour corriger automatiquement les réponses des joueurs."
       },
       "step10": {
-        "description": "L'auto-correction a été appliquée. Vous voyez ici que Alice a trouvé la musique."
+        "description": "L'auto-correction a été appliquée. Vous voyez ici qu'Alice a trouvé la musique et que Bob a fait une erreur. Alice a donc reçu 1 point et Bob aucun point. L'auto-correction permet deux choses, elle indique sur la musique via l'intermédiaire d'une coche ou d'un croix si la réponse correspond à la musique et elle attribue automatiquement les points. Il est tout à fait possible de modifier l'attribution des points après l'auto-correction."
       },
       "step11": {
         "title": "Dévoiler la correction",
-        "description": "Une fois les points attribuée ou retirée, cliquez ici pour soumettre la correction et dévoiler les résultats aux joueurs."
+        "description": "Une fois les points attribués ou retirés, cliquez ici pour soumettre la correction et dévoiler les résultats aux joueurs."
       },
       "step12": {
         "title": "Classement actualisé",
