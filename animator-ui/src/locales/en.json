@@ -52,23 +52,23 @@
     "step3_title": "Starting playlist",
     "step3_desc": "Select the playlist to use for the game",
     "mode_buzzer_title": "Buzzer",
-    "mode_buzzer_desc": "First to buzz answer",
+    "mode_buzzer_desc": "First to buzz answers",
     "mode_text_title": "Typing",
     "mode_text_desc": "Everyone types their answer.",
     "adjust": "Adjust",
     "normal_desc": "Standard rules",
-    "hard_desc": "No suggestions, auto penalty",
+    "hard_desc": "No help, active penalties",
     "fun_desc": "More relaxed",
     "peaceful_desc": "No pressure",
     "time": "Time",
     "block_short": "Delay",
     "music_short": "Music",
     "thinking_short": "Total",
-    "block_duration": "Answer delay :",
+    "block_duration": "Answer delay:",
     "block_duration_tooltip": "Delay at the beginning of the round where answering is disabled. Ideal to let everyone listen to the music before the first guesses.",
     "music_duration": "Music duration:",
     "music_duration_tooltip": "Duration during which the music is played to the participants.",
-    "total_duration": "Total Duration :",
+    "total_duration": "Total duration:",
     "total_duration_tooltip": "Total duration of the round. It includes the blocking time, the music time, and any silence at the end.",
     "game_mode": "Game mode:",
     "allow_suggestions": "Input Suggestions",
@@ -111,10 +111,10 @@
     "presets": "Presets:",
     "auto_correction_penalty": "Error Penalty",
     "auto_correction_penalty_short": "Penalty",
-    "auto_correction_penalty_desc": "Lose points on wrong answers",
+    "auto_correction_penalty_desc": "Lose points when players answer incorrectly",
     "block_player_wrong_answer": "Player blocking",
     "block_player_wrong_answer_short": "Block",
-    "block_player_wrong_answer_desc": "Block the player until the end of the round on wrong answer"
+    "block_player_wrong_answer_desc": "Block the player until the end of the round on a wrong answer"
   },
   "playlists": {
     "quit_edition": "Quit editing",
@@ -130,9 +130,6 @@
     "delete": "Delete playlist",
     "back": "Back to playlists",
     "editing": "Editing:",
-    "remove": "Remove from playlist",
-    "certified": "Music certified by iTunes",
-    "not_certified": "Music not recognized by iTunes",
     "add_sc": "Add a track (SoundCloud)",
     "sc_url": "Full SoundCloud link",
     "add": "Add",
@@ -142,13 +139,16 @@
     "playlist_empty": "This playlist is empty.",
     "test_duration": "Listening time for testing:",
     "sec": "sec",
+    "remove": "Remove from playlist",
+    "certified": "Music certified by iTunes",
+    "not_certified": "Music not recognized by iTunes",
     "edit_info": "Edit info",
     "ok": "Ok",
     "cancel": "Cancel",
     "testing": "Stop",
     "test": "Test",
     "search_sc_placeholder": "Search on SoundCloud (or type Title - Artist and press Enter)",
-    "cancel_add": "Cancel addition",
+    "cancel_add": "Cancel adding",
     "track_deleted": "Track deleted",
     "duplicate_warning": "This URL or file is already in the playlist. Click again to force add.",
     "generate": "Generate",
@@ -169,7 +169,7 @@
     "submit": "Login"
   },
   "sidebar": {
-    "quit": "Quit",
+    "quit": "Back",
     "playing": "Now playing",
     "played": "played",
     "no_music": "No music",
@@ -187,11 +187,11 @@
     "open_projector": "Open Projector",
     "game_info": "Game Info",
     "response_type": "Response",
-    "game_mode": "Preset"
+    "game_mode": "Mode"
   },
   "players_grid": {
     "no_answer": "No answer",
-    "no_buzzer": "No player buzzed yet.",
+    "no_buzzer": "No player has buzzed yet.",
     "cancel_points": "Cancel",
     "submitted_at": "Submitted at {time} seconds",
     "sort_uncorrected": "Prioritize uncorrected players",
@@ -320,7 +320,7 @@
     "reveal_no_points_confirm": "Yes, reveal"
   },
   "local_tracks": {
-    "no_folder": "No folder loaded. Use the \"Select a folder...\" button on the left.",
+    "no_folder": "No folder selected. Click on ⚙️ to configure your playlists.",
     "search": "Search or add music...",
     "sort_by_title": "Title",
     "sort_by_artist": "Artist",
@@ -479,7 +479,7 @@
       },
       "step3": {
         "title": "iTunes verification",
-        "description": "Here is the iTunes verification. If this icon is not blue but red, the track is not recognized. This prevents typing suggestions from working for players. To keep suggestions, you must select another version of the track on SoundCloud or edit the name to find a match with iTunes.\n\nHowever, it is possible to disable suggestions for players. Even if suggestions are enabled, players can always type their answers manually by pressing send on their phone keyboard."
+        "description": "Here is the iTunes verification. The icon indicates whether the track is available on iTunes or not. If the icon is blue, it indicates that the track is properly recognized. If it is red, the track is not recognized. When the track is not recognized, the input suggestions for players and auto-correction features will not work. To keep these features, you must select another recognized version of the track on SoundCloud or edit its name manually to find a match with iTunes.<br/><br/>However, it is possible to disable these suggestions during games. For your information, even if suggestions are enabled, players can always enter their answer manually by pressing 'Send' or 'Enter' on their phone."
       },
       "step4": {
         "title": "SoundCloud track URL",
@@ -491,7 +491,7 @@
       },
       "step6": {
         "title": "List of tracks",
-        "description": "Once your tracks are added, they will appear here. You can then manage them (edit, delete, etc)."
+        "description": "Once your tracks are added, they will appear here. You can then edit, delete, or test your tracks."
       },
       "step7": {
         "title": "Playlist ready!",
@@ -515,7 +515,7 @@
         "description": "We are now at the game configuration. It is possible here to modify the default settings of the game. The configuration is done in three steps.<br/><br/>If you already know how to configure your game, you can skip directly to the next step by clicking the \"Skip\" button."
       },
       "input-mode": {
-        "title": "Ans wer mode",
+        "title": "Response mode",
         "description": "First step, you are asked to choose the players' answer mode. You can choose here: Buzzer or Typing."
       },
       "text-input": {
@@ -528,11 +528,11 @@
       },
       "adjust-summary": {
         "title": "Advanced settings",
-        "description": "You can also manually configure your game. This bar displays a summary of your game times and allows you to open the advanced settings."
+        "description": "You can also manually configure your game. This bar displays a summary of your settings and allows you to open the advanced settings."
       },
       "time-limit": {
         "title": "Time",
-        "description": "You can adjust the initial delay time, the track duration, as well as the total time during which players can answer."
+        "description": "You can adjust the initial delay time, the music duration, as well as the total time during which players can answer."
       },
       "additional-settings": {
         "title": "Additional options",
@@ -554,11 +554,11 @@
       },
       "step2": {
         "title": "Projector",
-        "description": "By clicking on this button, a page called projector will open. This is a page that must be displayed to players via a second screen. It will display a QR Code at the beginning of the game to allow players to join your game. You can double click on this window to switch the interface to full screen. Feel free to come back to this page regularly during this tutorial as it updates automatically!"
+        "description": "By clicking this button, a page called projector will open. It is the display interface intended for players, which should be presented on a second screen. This page will notably contain the QR Code that will allow players to join the game. Feel free to return to this page regularly during this tutorial as its display changes automatically!"
       },
       "step3": {
         "title": "Game state",
-        "description": "At the top is an indicator that displays the current state of the game (waiting, in progress, reviewing, results). Depending on the state of the game, the interface automatically updates to allow you to manage the game. Similarly for the players, their interface updates automatically depending on the game state."
+        "description": "At the top is an indicator that displays the current state of the game. Depending on the state of the game, the interface changes automatically to allow you to manage the game."
       },
       "step4": {
         "title": "Player management",
@@ -566,7 +566,7 @@
       },
       "player-list": {
         "title": "Players list",
-        "description": "Here is the list of players. You can see their name, their status, and their points. You can also manage them by clicking on the actions button."
+        "description": "Here is the list of players. You can see here each player's name, their current status, as well as their points."
       },
       "step4b": {
         "title": "Player actions",
@@ -574,7 +574,7 @@
       },
       "step4c": {
         "title": "Actions menu",
-        "description": "Here, you can manually adjust the player's points, or suspend them for one or more turns if they disrupt the game. Click Next to close this menu."
+        "description": "You have the ability to manually adjust the player's points, suspend them for one or more rounds, or exclude a player. An excluded player can no longer play but is still present in the game, unlike a kicked player who is completely removed from the game."
       },
       "step5": {
         "title": "Track selection",
@@ -589,14 +589,14 @@
         "description": "When players answer, their status is updated in real time."
       },
       "step8": {
-        "description": "Once all players have answered, the timer automatically stops and their answers appear here. You can then award or remove points."
+        "description": "Once all players have answered, the round is automatically stopped and their answers appear here. You can then award or remove points."
       },
       "step9": {
         "title": "Correction",
         "description": "To speed up the correction, you can use this button to automatically grade players' answers."
       },
       "step10": {
-        "description": "Auto-correction has been applied. You see here that Alice found the track."
+        "description": "Auto-correction has been applied. You see here that Alice found the track and Bob made a mistake. Alice therefore received 1 point and Bob no points. Auto-correction does two things: it indicates on the track via a checkmark or a cross whether the answer matches the track, and it automatically awards points. It is entirely possible to modify the point allocation after auto-correction."
       },
       "step11": {
         "title": "Reveal correction",

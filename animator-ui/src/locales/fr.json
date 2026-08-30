@@ -86,7 +86,7 @@
     "no_playlist": "Vous n'avez aucune playlist {type} configurée.",
     "create_first_playlist": "Créer ma première playlist",
     "start_button": "Créer la partie",
-    "custom_presets": "Vos préreglages",
+    "custom_presets": "Vos préréglages",
     "save_preset": "Sauvegarder ce préréglage",
     "preset_name_required": "Nom requis",
     "preset_name_exists": "Un préréglage avec ce nom existe déjà",
@@ -111,10 +111,10 @@
     "presets": "Préréglages :",
     "auto_correction_penalty": "Pénalité d'erreur",
     "auto_correction_penalty_short": "Pénalité",
-    "auto_correction_penalty_desc": "Perdre des points sur les mauvaises réponses",
+    "auto_correction_penalty_desc": "Perte de points sur les mauvaises réponses",
     "block_player_wrong_answer": "Blocage joueur",
     "block_player_wrong_answer_short": "Blocage",
-    "block_player_wrong_answer_desc": "Bloquer le joueur jusqu'à la fin du tour en cas de mauvaise réponse"
+    "block_player_wrong_answer_desc": "Bloque le joueur jusqu'à la fin du tour en cas de mauvaise réponse"
   },
   "playlists": {
     "quit_edition": "Quitter l'édition",
@@ -173,7 +173,7 @@
     "playing": "En cours",
     "played": "jouée(s)",
     "no_music": "Aucune musique",
-    "last_music": "Music précédente",
+    "last_music": "Musique précédente",
     "blind_test": "Blind Test",
     "regie": "Régie",
     "play_music": "Lancer la Musique",
@@ -239,7 +239,7 @@
     "qrcode_error": "Échec de la génération du QR Code",
     "qrcode_invalid": "Données du QR Code invalides",
     "cleanup_ok": "Données temporaires nettoyées",
-    "cleanup_error": "Erreur de nettoyage:",
+    "cleanup_error": "Erreur de nettoyage :",
     "backend_unavailable": "Backend indisponible",
     "loading_track": "Chargement de la piste...",
     "playing_track": "Lecture en cours (3s)...",
@@ -410,7 +410,7 @@
     "progress": "{current} sur {total}",
     "homeSequence": {
       "step1": {
-        "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie. Vous avez la possibilité d'avancer dans le tutoriel à l'aide des flèches de votre clavier ou en cliquant sur les boutons.<br/><br/>Vous pouvez également quitter le tutoriel à tout moment en cliquant sur le bouton \"Quitter le tutoriel\".<br/><br/>Si vous avez déjà créer une playlist, vous pouvez passer directement à la création de votre partie en cliquant sur \"Passer\"."
+        "description": "Bienvenue dans le tutoriel ! Nous allons vous guider pas à pas pour créer votre première playlist et lancer votre première partie. Vous avez la possibilité d'avancer dans le tutoriel à l'aide des flèches de votre clavier ou en cliquant sur les boutons.<br/><br/>Vous pouvez également quitter le tutoriel à tout moment en cliquant sur le bouton \"Quitter le tutoriel\".<br/><br/>Si vous avez déjà créé une playlist, vous pouvez passer directement à la création de votre partie en cliquant sur \"Passer\"."
       },
       "step2": {
         "title": "Accueil",
@@ -422,7 +422,7 @@
       },
       "step4": {
         "title": "Mise en place",
-        "description": "Celui-ci vous permet d'accéder aux données paramétrables pour vos parties. Vous pourrez notemment y gérer vos playlists et vos musiques."
+        "description": "Celui-ci vous permet d'accéder aux données paramétrables pour vos parties. Vous pourrez notamment y gérer vos playlists et vos musiques."
       },
       "step5": {
         "title": "Diagnostics",
@@ -471,7 +471,7 @@
     "playlistEditorSequence": {
       "step1": {
         "title": "Ajouter une musique",
-        "description": "Pour une playlist SoundCloud, vous pouvez rechercher une musique pour l'ajouter à votre playlist. Saissez le nom de la musique dans ce champ."
+        "description": "Pour une playlist SoundCloud, vous pouvez rechercher une musique pour l'ajouter à votre playlist. Saisissez le nom de la musique dans ce champ."
       },
       "step2": {
         "title": "Choisir une musique",
@@ -500,7 +500,7 @@
     },
     "resumeHomeSequence": {
       "step1": {
-        "description": "Maintenant que nous avons créer une playlist. Nous allons pouvoir commencer une partie.\nCliquez ici pour créer une partie !"
+        "description": "Maintenant que nous avons créé une playlist. Nous allons pouvoir commencer une partie.\nCliquez ici pour créer une partie !"
       }
     },
     "createGameSequence": {
@@ -516,7 +516,7 @@
       },
       "input-mode": {
         "title": "Mode de réponse",
-        "description": "Première étape, il vous ait demandé de choisir le mode de réponse des joueurs. Vous pouvez choisir ici : Buzzer ou Saisie."
+        "description": "Première étape, il vous est demandé de choisir le mode de réponse des joueurs. Vous pouvez choisir ici : Buzzer ou Saisie."
       },
       "text-input": {
         "title": "Saisie",
@@ -524,7 +524,7 @@
       },
       "game-settings": {
         "title": "Modes de jeu",
-        "description": "Deuxième étape, il vous ait demandé de choisir le mode de jeu. Vous pouvez utiliser les modes rapides pour configurer votre partie ou bien ajuster les paramètres manuellement."
+        "description": "Deuxième étape, il vous est demandé de choisir le mode de jeu. Vous pouvez utiliser les modes rapides pour configurer votre partie ou bien ajuster les paramètres manuellement."
       },
       "adjust-summary": {
         "title": "Paramètres avancés",
@@ -574,7 +574,7 @@
       },
       "step4c": {
         "title": "Menu d'actions",
-        "description": "Vous avez la possibilité d'ajuster manuellement les points du joueur, le suspendre pour un ou plusieurs tours ou bien d'exclure un joueur."
+        "description": "Vous avez la possibilité d'ajuster manuellement les points du joueur, le suspendre pour un ou plusieurs tours ou bien d'exclure un joueur. Un joueur exclu ne peut plus jouer mais il est toujours présent dans la partie contrairement à un joueur viré qui est complètement retiré de la partie."
       },
       "step5": {
         "title": "Sélection de la piste",
@@ -582,21 +582,21 @@
       },
       "step6": {
         "title": "Lancer la musique",
-        "description": "Une fois votre musique sélectionnée, cliquez ensuite ici pour lancer la musique et laissez vos joueurs répondre."
+        "description": "Une fois votre musique sélectionnée, cliquez ensuite ici pour lancer la musique et laisser vos joueurs répondre."
       },
       "step7": {
         "title": "Liste des réponses",
         "description": "Quand les joueurs répondent, leur statut est mis à jour au fur et à mesure."
       },
       "step8": {
-        "description": "Une fois que tous les joueurs ont répondus, on arrête automatiquement le tour et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
+        "description": "Une fois que tous les joueurs ont répondu, on arrête automatiquement le tour et leurs réponses s'affichent ici. Vous pourrez alors attribuer des points ou en enlever."
       },
       "step9": {
         "title": "Correction",
-        "description": "Pour accélerer la correction, vous pouvez utiliser ce bouton pour corriger automatiquement les réponses des joueurs."
+        "description": "Pour accélérer la correction, vous pouvez utiliser ce bouton pour corriger automatiquement les réponses des joueurs."
       },
       "step10": {
-        "description": "L'auto-correction a été appliquée. Vous voyez ici qu'Alice a trouvé la musique et que Bob a fait une erreur. Alice a donc reçu 1 point et Bob aucun point. L'auto-correction permet deux choses, elle indique sur la musique via l'intermédiaire d'une coche ou d'un croix si la réponse correspond à la musique et elle attribue automatiquement les points. Il est tout à fait possible de modifier l'attribution des points après l'auto-correction."
+        "description": "L'auto-correction a été appliquée. Vous voyez ici qu'Alice a trouvé la musique et que Bob a fait une erreur. Alice a donc reçu 1 point et Bob aucun point. L'auto-correction permet deux choses, elle indique sur la musique via l'intermédiaire d'une coche ou d'une croix si la réponse correspond à la musique et elle attribue automatiquement les points. Il est tout à fait possible de modifier l'attribution des points après l'auto-correction."
       },
       "step11": {
         "title": "Dévoiler la correction",
@@ -604,7 +604,7 @@
       },
       "step12": {
         "title": "Classement actualisé",
-        "description": "Une fois les résultats dévoilés, le classement est mis à jour. Vous pouvez voir ici le classement actuel des joueurs, les mouvements du classement et les points obtenus au cours de la manche.\n\nDans l'exemple ci dessus, Alice a trouvé la musique, elle a gagné 1 point, elle est donc passée devant Bob."
+        "description": "Une fois les résultats dévoilés, le classement est mis à jour. Vous pouvez voir ici le classement actuel des joueurs, les mouvements du classement et les points obtenus au cours de la manche.\n\nDans l'exemple ci-dessus, Alice a trouvé la musique, elle a gagné 1 point, elle est donc passée devant Bob."
       },
       "step13": {
         "title": "Tour suivant",
@@ -616,7 +616,7 @@
       },
       "step16": {
         "title": "Fin du tutoriel",
-        "description": "C'est tout pour l'instant ! Vous pouvez supprimez la partie."
+        "description": "C'est tout pour l'instant ! Vous pouvez supprimer la partie."
       }
     }
   },
