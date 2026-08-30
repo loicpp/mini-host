@@ -18,6 +18,18 @@ class AnimatorApi:
         self.playlist_generator_port = playlist_generator_port
         self.music_manager = MusicManager()
         self.ui_connected = False
+        self.on_language_change_callbacks = []
+        cfg = {}
+        try:
+            loaded = self.load_config()
+            if isinstance(loaded, dict):
+                cfg = loaded
+        except Exception:
+            cfg = {}
+        self.current_language = cfg.get("language", "fr")
+    
+    def register_language_change_callback(self, cb):
+        self.on_language_change_callbacks.append(cb)
     
     def search_soundcloud(self, query: str) -> List[Dict[str, Any]]:
         if self.sc_search_port:
@@ -31,6 +43,15 @@ class AnimatorApi:
         
     def save_config(self, config_data: Dict[str, Any]) -> Dict[str, str]:
         self.storage_port.save_config(config_data)
+        if config_data and "language" in config_data:
+            new_lang = config_data["language"]
+            if new_lang != self.current_language:
+                self.current_language = new_lang
+                for cb in self.on_language_change_callbacks:
+                    try:
+                        cb(self.current_language)
+                    except Exception as e:
+                        print("Error in language callback:", e)
         return {"status": "ok"}
         
     def load_config(self) -> Dict[str, Any]:

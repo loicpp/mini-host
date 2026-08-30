@@ -102,9 +102,9 @@ if __name__ == '__main__':
 
     try:
         import tkinter as tk
+        from core.locales import get_locale
         
         root = tk.Tk()
-        root.title("MiniHost - Serveur")
         root.geometry("400x200")
         
         try:
@@ -120,8 +120,16 @@ if __name__ == '__main__':
         except Exception as e:
             print("Erreur icône:", e)
         
-        lbl = tk.Label(root, text="Le serveur MiniHost est en cours d'exécution.\n\nFermez cette fenêtre pour tout arrêter.", justify="center", padx=20, pady=50)
+        lbl = tk.Label(root, justify="center", padx=20, pady=50)
         lbl.pack(expand=True)
+
+        def update_tk_texts(lang):
+            loc = get_locale(lang)
+            root.title(loc["title"])
+            lbl.config(text=loc["running_tk"])
+
+        update_tk_texts(api.current_language)
+        api.register_language_change_callback(lambda lang: root.after(0, lambda: update_tk_texts(lang)))
         
         def gui_close():
             root.destroy()
@@ -133,10 +141,10 @@ if __name__ == '__main__':
         try:
             import pygame
             import os
+            from core.locales import get_locale
             os.environ['SDL_VIDEO_X11_WMCLASS'] = "com.github.loicpp.MiniHost"
             os.environ['SDL_VIDEODRIVER'] = "x11"
             pygame.init()
-            pygame.display.set_caption("MiniHost - Serveur")
             try:
                 png_path = os.path.join(sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__)), 'favicon.png')
                 if os.path.exists(png_path):
@@ -146,26 +154,38 @@ if __name__ == '__main__':
                 pass
                 
             screen = pygame.display.set_mode((450, 200))
-            screen.fill((30, 30, 30))
-            if pygame.font.get_init():
-                font = pygame.font.SysFont(None, 24)
-                text1 = font.render("Le serveur MiniHost est en cours d'execution.", True, (255, 255, 255))
-                text2 = font.render("Fermez cette fenetre pour tout arreter.", True, (255, 255, 255))
-                screen.blit(text1, (450//2 - text1.get_width()//2, 70))
-                screen.blit(text2, (450//2 - text2.get_width()//2, 110))
-            pygame.display.flip()
+            
+            gui_state = {"displayed_lang": None}
+            def draw_pygame_screen(lang):
+                gui_state["displayed_lang"] = lang
+                loc = get_locale(lang)
+                pygame.display.set_caption(loc["title"])
+                screen.fill((30, 30, 30))
+                if pygame.font.get_init():
+                    font = pygame.font.SysFont(None, 24)
+                    text1 = font.render(loc["running_pg_1"], True, (255, 255, 255))
+                    text2 = font.render(loc["running_pg_2"], True, (255, 255, 255))
+                    screen.blit(text1, (450//2 - text1.get_width()//2, 70))
+                    screen.blit(text2, (450//2 - text2.get_width()//2, 110))
+                pygame.display.flip()
+
+            draw_pygame_screen(api.current_language)
             
             running = True
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
-                pygame.time.wait(200)
+                if gui_state["displayed_lang"] != api.current_language:
+                    draw_pygame_screen(api.current_language)
+                pygame.time.wait(100)
             pygame.quit()
             on_close()
         except Exception:
-            print("MiniHost fonctionne en arrière-plan (mode sans interface graphique).")
-            print("Appuyez sur Entrée ou Ctrl+C dans ce terminal pour arrêter le serveur.")
+            from core.locales import get_locale
+            loc = get_locale(api.current_language)
+            print(loc["headless_running"])
+            print(loc["headless_stop"])
             try:
                 input()
             except KeyboardInterrupt:

@@ -53,12 +53,14 @@ def register_routes(app: Flask, api: AnimatorApi):
         import tkinter as tk
         from tkinter import filedialog
         import glob
+        from core.locales import get_locale
         
         try:
             root = tk.Tk()
             root.withdraw()
             root.attributes('-topmost', True)
-            folder_path = filedialog.askdirectory(parent=root, title="Sélectionnez un dossier de musiques")
+            loc = get_locale(getattr(api, 'current_language', 'fr'))
+            folder_path = filedialog.askdirectory(parent=root, title=loc["dialog_folder_title"])
             root.destroy()
             
             if not folder_path:
@@ -75,15 +77,17 @@ def register_routes(app: Flask, api: AnimatorApi):
     def dialog_file():
         import tkinter as tk
         from tkinter import filedialog
+        from core.locales import get_locale
         
         try:
             root = tk.Tk()
             root.withdraw()
             root.attributes('-topmost', True)
+            loc = get_locale(getattr(api, 'current_language', 'fr'))
             files = filedialog.askopenfilenames(
                 parent=root,
-                title="Sélectionnez des musiques",
-                filetypes=[("Fichiers audio", "*.mp3 *.wav *.ogg")]
+                title=loc["dialog_files_title"],
+                filetypes=[(loc["dialog_audio_files"], "*.mp3 *.wav *.ogg")]
             )
             root.destroy()
             
