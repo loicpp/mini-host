@@ -10,7 +10,7 @@
       </div>
       
       <TrackAdder 
-        :playlistType="currentSource === 'soundcloud' ? 'soundcloud' : 'local'"
+        playlistType="soundcloud"
         :newTrack="tempNewTrack"
         :initialSearchQuery="initialQuery"
         :autofocusSearch="true"
@@ -20,9 +20,6 @@
         @reset-duplicate-warning="tempDuplicateWarning = null"
         @clear="clearTempTrack"
         @add-sc-track="addTempScTrack"
-        @add-local-file="addTempLocalFile"
-        @add-local-folder="addTempLocalFolder"
-        @confirm-local="confirmTempLocalTrack"
       />
     </div>
   </Modal>
@@ -33,11 +30,7 @@ import { Search, X } from '@lucide/vue';
 import Modal from '../ui/Modal.vue';
 import TrackAdder from '../setup/playlist/TrackAdder.vue';
 import { useTemporaryTrackEditor } from '../../core/domain/general/useTemporaryTrackEditor';
-import { useMusicStore } from '../../core/domain/general/stores/music';
 import type { Track } from '../../services/music/MusicProvider';
-
-const { currentSource } = useMusicStore();
-
 
 defineProps<{
   isOpen: boolean;
@@ -50,8 +43,7 @@ const emit = defineEmits<{
 }>();
 
 const {
-  tempNewTrack, tempDuplicateWarning, clearTempTrack, addTempScTrack,
-  addTempLocalFile, addTempLocalFolder, confirmTempLocalTrack
+  tempNewTrack, tempDuplicateWarning, clearTempTrack, addTempScTrack
 } = useTemporaryTrackEditor((track) => {
   emit('close');
   emit('track-added', track);

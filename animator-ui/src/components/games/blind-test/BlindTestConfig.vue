@@ -306,6 +306,7 @@ import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../../../core/d
 import { DEFAULT_PRESETS, BlindTestPreset, normalPreset } from '../../../core/domain/games/blind-test/types/blindTestDefaultPresets';
 import { usePresets } from '../../../core/domain/setup/presets/usePresets';
 import { usePlaylists } from '../../../core/domain/setup/playlists/usePlaylists';
+import { Playlist, Track } from '../../../core/domain/setup/types/playlist';
 
 const { t } = useI18n();
 
@@ -382,19 +383,64 @@ const selectedPlaylists = computed(() => {
   return playlists.value.filter(p => settings.value.playlistIds.includes(p.id));
 });
 
-const totalSelectedTracksCount = computed(() => {
-  const seen = new Set<string>();
-  let count = 0;
-  for (const pl of selectedPlaylists.value) {
+const normalizeTrackKey = (track: { title?: string; artist?: string; url?: string; id?: string }) => {
+  const cleanTitle = (track.title || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\(.*?\)/g, '')
+    .replace(/\[.*?\]/g, '')
+    .replace(/[^a-z0-9]/g, '')
+    .trim();
+
+  const cleanArtist = (track.artist || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\(.*?\)/g, '')
+    .replace(/\[.*?\]/g, '')
+    .replace(/artiste inconnu/g, '')
+    .replace(/unknown artist/g, '')
+    .replace(/[^a-z0-9]/g, '')
+    .trim();
+
+  return { cleanTitle, cleanArtist };
+};
+
+const isDuplicateTrack = (t1: Track, t2: Track): boolean => {
+  if (t1.url && t2.url && t1.url === t2.url) return true;
+  if (t1.id && t2.id && t1.id === t2.id) return true;
+
+  const k1 = normalizeTrackKey(t1);
+  const k2 = normalizeTrackKey(t2);
+
+  if (k1.cleanTitle && k1.cleanTitle === k2.cleanTitle) {
+    if (k1.cleanArtist && k2.cleanArtist) {
+      return k1.cleanArtist === k2.cleanArtist;
+    }
+    return true;
+  }
+
+  return false;
+};
+
+const getCombinedUniqueTracks = (playlistsToCombine: Playlist[]): Track[] => {
+  const combinedTracks: Track[] = [];
+
+  for (const pl of playlistsToCombine) {
     for (const track of pl.tracks) {
-      const key = track.id || track.url;
-      if (!seen.has(key)) {
-        seen.add(key);
-        count++;
+      const alreadyExists = combinedTracks.some(existing => isDuplicateTrack(existing, track));
+      if (!alreadyExists) {
+        combinedTracks.push(track);
       }
     }
   }
-  return count;
+
+  return combinedTracks;
+};
+
+const totalSelectedTracksCount = computed(() => {
+  return getCombinedUniqueTracks(selectedPlaylists.value).length;
 });
 
 const toggleOption = (key: string) => {
@@ -573,18 +619,7 @@ const startGame = () => {
   }
   
   const selectedPls = selectedPlaylists.value;
-  
-  const seenTracks = new Set<string>();
-  const combinedTracks: any[] = [];
-  for (const pl of selectedPls) {
-    for (const track of pl.tracks) {
-      const key = track.id || track.url;
-      if (!seenTracks.has(key)) {
-        seenTracks.add(key);
-        combinedTracks.push(track);
-      }
-    }
-  }
+  const combinedTracks = getCombinedUniqueTracks(selectedPls);
 
   const combinedPlaylist = selectedPls.length > 0 ? {
     id: selectedPls.map(p => p.id).join('+'),

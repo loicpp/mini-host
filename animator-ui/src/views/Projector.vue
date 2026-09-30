@@ -152,7 +152,7 @@
           <PartyPopper class="w-16 h-16" /> {{ $t('projector.results') }}
         </h1>
         <div class="bg-white/10 p-10 rounded-3xl mb-12 border-2 border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.3)] w-full">
-          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ game.answer || $t('projector.unknown_answer') }}</h2>
+          <h2 class="text-5xl font-bold text-white m-0 leading-tight">{{ displayedAnswer || $t('projector.unknown_answer') }}</h2>
         </div>
         <div class="w-full">
           <p class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.leaderboard') }}</p>
@@ -273,6 +273,17 @@ watchEffect(async () => {
   } else {
     qrCodeUrl.value = '';
   }
+});
+
+const displayedAnswer = computed(() => {
+  const raw = game.value?.answer;
+  if (!raw) return '';
+  return raw
+    .replace(/\s*-\s*artiste inconnu\s*$/i, '')
+    .replace(/\s*-\s*unknown artist\s*$/i, '')
+    .replace(/^artiste inconnu\s*-\s*/i, '')
+    .replace(/^unknown artist\s*-\s*/i, '')
+    .trim();
 });
 
 const allPlayersSorted = computed(() => {
