@@ -12,7 +12,7 @@ export const itunesService = {
       if (!data.results) return [];
 
       // Extract unique combinations of track and artist
-      const results: {title: string, artist: string, coverUrl: string}[] = [];
+      const results: {title: string, artist: string, year?: number, coverUrl: string}[] = [];
       const seen = new Set();
       
       for (const item of data.results) {
@@ -22,9 +22,15 @@ export const itunesService = {
         
         if (!seen.has(key)) {
           seen.add(key);
+          const parsedYear = item.releaseDate && typeof item.releaseDate === 'string'
+            ? parseInt(item.releaseDate.substring(0, 4), 10)
+            : undefined;
+          const year = parsedYear && !isNaN(parsedYear) ? parsedYear : undefined;
+
           results.push({
             title,
             artist,
+            year,
             coverUrl: item.artworkUrl60 || item.artworkUrl100
           });
         }

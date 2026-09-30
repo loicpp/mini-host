@@ -19,7 +19,7 @@ export function useGameSession() {
   const { showAlert, showConfirm } = useDialog();
 
   const { gameSettings, lastGameId, gameId, gameSecret, status, gameType, nextTrackInfo, currentStartTime } = useGameStore();
-  const { currentSource, playedTracks, localTracks, selectedTrack, searchQuery, trackSort, hidePlayedTracks } = useMusicStore();
+  const { currentSource, playedTracks, localTracks, selectedTrack, searchQuery, trackSort, sortDirection, hidePlayedTracks } = useMusicStore();
   const { players, pressedBuzzer } = usePlayerStore();
   const { isProjectorOpen } = useUiStore();
 
@@ -128,7 +128,8 @@ export function useGameSession() {
     if (data) {
       if (data.localTracks) localTracks.value = data.localTracks;
       if (data.playedTracks) playedTracks.value = data.playedTracks;
-      if (data.sort) trackSort.value = data.sort as 'title' | 'artist';
+      if (data.sort) trackSort.value = data.sort as any;
+      if (data.sortDirection) sortDirection.value = data.sortDirection;
       if (data.hidePlayedTracks !== undefined) hidePlayedTracks.value = data.hidePlayedTracks;
     }
     

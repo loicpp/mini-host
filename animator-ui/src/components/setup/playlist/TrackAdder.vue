@@ -37,7 +37,7 @@
             <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-muted" />
             <div class="flex flex-col min-w-0">
               <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
-              <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
+              <span class="text-xs text-muted-foreground truncate">{{ item.artist }}<template v-if="item.year"> - {{ item.year }}</template></span>
             </div>
           </li>
       </ul>
@@ -64,7 +64,7 @@
                     <XCircle class="w-4 h-4 text-red-500 fill-red-50" />
                   </span>
               </strong>
-              <span v-if="newTrack.artist" class="text-sm truncate" :class="playlistType === 'local' ? 'text-amber-700' : 'text-blue-700'">{{ newTrack.artist }}</span>
+              <span v-if="newTrack.artist || newTrack.year" class="text-sm truncate" :class="playlistType === 'local' ? 'text-amber-700' : 'text-blue-700'">{{ newTrack.artist }}<template v-if="newTrack.year">{{ newTrack.artist ? ' - ' : '' }}{{ newTrack.year }}</template></span>
           </div>
           
           <div v-else class="flex-1 min-w-0 mr-4 relative z-50">
@@ -94,7 +94,7 @@
                     <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-8 h-8 rounded-md object-cover flex-shrink-0 bg-muted" />
                     <div class="flex flex-col min-w-0">
                       <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
-                      <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
+                      <span class="text-xs text-muted-foreground truncate">{{ item.artist }}<template v-if="item.year"> - {{ item.year }}</template></span>
                     </div>
                   </li>
               </ul>
@@ -268,8 +268,8 @@ const applyCustomSearch = () => {
   clearSearch();
 };
 
-const selectSuggestion = async (item: {title: string, artist: string, url?: string}) => {
-  let updatedTrack = { ...props.newTrack, title: item.title, artist: item.artist, isCertified: false };
+const selectSuggestion = async (item: {title: string, artist: string, year?: number, url?: string}) => {
+  let updatedTrack = { ...props.newTrack, title: item.title, artist: item.artist, year: item.year, isCertified: false };
   if (item.url) {
     updatedTrack.url = item.url;
   }
@@ -294,8 +294,8 @@ const startEdit = async () => {
   editInput.value?.focus();
 };
 
-const selectSuggestionForEdit = (item: {title: string, artist: string}) => {
-  emit('update:newTrack', { ...props.newTrack, title: item.title, artist: item.artist, isCertified: true });
+const selectSuggestionForEdit = (item: {title: string, artist: string, year?: number}) => {
+  emit('update:newTrack', { ...props.newTrack, title: item.title, artist: item.artist, year: item.year, isCertified: true });
   isEditingTrack.value = false;
   clearSearch();
 };

@@ -2,6 +2,7 @@ export interface Track {
   id: string;
   title: string;
   artist: string;
+  year?: number;
   duration: number; // in milliseconds
   source: 'local' | 'soundcloud';
   url?: string;

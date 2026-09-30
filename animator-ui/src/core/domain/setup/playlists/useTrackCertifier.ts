@@ -1,7 +1,7 @@
 import { itunesService } from '../../../../services/itunesService';
 
 export function useTrackCertifier() {
-  const autoCertifyTrack = async (trackData: {title: string, artist: string, isCertified?: boolean}) => {
+  const autoCertifyTrack = async (trackData: {title: string, artist: string, year?: number, isCertified?: boolean}) => {
     console.log("Try to auto-certify track:", trackData);
     if (trackData.isCertified) return trackData;
     const rawTitle = trackData.title.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
@@ -29,6 +29,9 @@ export function useTrackCertifier() {
           if (titleMatch && artistMatch) {
             trackData.title = item.title;
             trackData.artist = item.artist;
+            if (item.year) {
+              trackData.year = item.year;
+            }
             trackData.isCertified = true;
             break; 
           }

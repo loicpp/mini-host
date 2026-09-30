@@ -4,6 +4,7 @@ export interface LocalGameData {
   localTracks: Track[];
   playedTracks: string[];
   sort?: string;
+  sortDirection?: 'asc' | 'desc';
   hidePlayedTracks?: boolean;
   corrupted?: boolean;
   error?: string;

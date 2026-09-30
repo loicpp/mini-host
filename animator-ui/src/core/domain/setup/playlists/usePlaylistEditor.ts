@@ -63,7 +63,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
   };
 
   const clearSelectedTrack = () => {
-    newTrack.value = { title: '', artist: '', url: '', isCertified: false };
+    newTrack.value = { title: '', artist: '', year: undefined, url: '', isCertified: false };
     duplicateWarning.value = null;
     forceAdd.value = false;
     pendingLocalPath.value = null;
@@ -115,6 +115,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       id: trackToAdd.id,
       title: trackToAdd.title.trim() || 'Titre Inconnu',
       artist: trackToAdd.artist.trim() || 'Artiste Inconnu',
+      year: trackToAdd.year,
       url: trackToAdd.url,
       source: source as any,
       isCertified: trackToAdd.isCertified
@@ -124,13 +125,22 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
     await savePlaylistsCallback();
   };
 
-  const readTagsFromUrl = (url: string): Promise<{title: string, artist: string} | null> => {
+  const readTagsFromUrl = (url: string): Promise<{title?: string, artist?: string, year?: number} | null> => {
     return new Promise((resolve) => {
       jsmediatags.read(url, {
         onSuccess: (tag: any) => {
+          let year: number | undefined;
+          const rawYear = tag.tags?.year || tag.tags?.TYER?.data || tag.tags?.TDRC?.data || tag.tags?.date;
+          if (rawYear) {
+            const match = String(rawYear).match(/\b(19\d{2}|20\d{2})\b/);
+            if (match) {
+              year = parseInt(match[0], 10);
+            }
+          }
           resolve({
-            title: tag.tags.title,
-            artist: tag.tags.artist
+            title: tag.tags?.title,
+            artist: tag.tags?.artist,
+            year
           });
         },
         onError: () => {
@@ -156,6 +166,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       id: pendingLocalPath.value,
       title: newTrack.value.title.trim() || 'Titre Inconnu',
       artist: newTrack.value.artist.trim() || 'Artiste Inconnu',
+      year: newTrack.value.year,
       url: pendingLocalPath.value,
       source: 'local',
       isCertified: newTrack.value.isCertified
@@ -178,6 +189,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
         
         let title = nameWithoutExt;
         let artist = "Artiste Inconnu";
+        let year: number | undefined;
         
         try {
           const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
@@ -185,21 +197,26 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
           if (tags) {
             if (tags.title) title = tags.title;
             if (tags.artist) artist = tags.artist;
+            if (tags.year) year = tags.year;
           }
         } catch (_e) {
           console.warn("Could not extract ID3 tags from file:", _e);
         }
         
-        newTrack.value = {
-          title,
-          artist,
-          url: path,
-          source: 'local',
-          isCertified: false
-        };
         pendingLocalPath.value = path;
         
-        await autoCertifyTrack(newTrack.value as any);
+        const trackWithMeta = {
+          title,
+          artist,
+          year,
+          url: path,
+          source: 'local' as const,
+          isCertified: false
+        };
+        newTrack.value = { ...trackWithMeta };
+        
+        const certified = await autoCertifyTrack({ ...trackWithMeta });
+        newTrack.value = { ...trackWithMeta, ...certified };
       }
     } catch (_e) {
       console.error("Error opening file dialog", _e);
@@ -218,6 +235,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
       
       let title = nameWithoutExt;
       let artist = "Artiste Inconnu";
+      let year: number | undefined;
       
       try {
         const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
@@ -225,6 +243,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
         if (tags) {
           if (tags.title) title = tags.title;
           if (tags.artist) artist = tags.artist;
+          if (tags.year) year = tags.year;
         }
       } catch (_e) {
         console.warn("Could not read tags for", path);
@@ -234,6 +253,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
         id: path,
         title: title.trim() || 'Titre Inconnu',
         artist: artist.trim() || 'Artiste Inconnu',
+        year,
         url: path,
         source: 'local' as const,
         isCertified: false
@@ -380,6 +400,7 @@ export function usePlaylistEditor(savePlaylistsCallback: () => Promise<void>) {
     testTrack,
     stopTest,
     clearSelectedTrack,
-    clearToast
+    clearToast,
+    readTagsFromUrl
   };
 }

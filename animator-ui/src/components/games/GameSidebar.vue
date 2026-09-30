@@ -14,7 +14,7 @@
           <template v-if="selectedTrack || lastPlayedTrack">
             <div :class="['transition-all duration-500', status === 'playing' ? 'blur-[6px] opacity-30 group-hover:blur-none group-hover:opacity-100 select-none' : '']">
               <div class="font-bold truncate">{{ (selectedTrack || lastPlayedTrack)?.title }}</div>
-              <div class="text-sm opacity-80 truncate">{{ (selectedTrack || lastPlayedTrack)?.artist }}</div>
+              <div class="text-sm opacity-80 truncate">{{ (selectedTrack || lastPlayedTrack)?.artist }}<template v-if="(selectedTrack || lastPlayedTrack)?.year"> - {{ (selectedTrack || lastPlayedTrack)?.year }}</template></div>
             </div>
             
             <div v-if="status === 'playing'" class="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none">
@@ -42,7 +42,7 @@
           </div>
           <div class="bg-gray-50 text-gray-700 p-4 rounded-xl shadow-sm border border-gray-100">
             <div class="font-bold truncate">{{ lastPlayedTrack.title }}</div>
-            <div class="text-sm opacity-80 truncate">{{ lastPlayedTrack.artist }}</div>
+            <div class="text-sm opacity-80 truncate">{{ lastPlayedTrack.artist }}<template v-if="lastPlayedTrack.year"> - {{ lastPlayedTrack.year }}</template></div>
           </div>
         </template>
         <template v-else>

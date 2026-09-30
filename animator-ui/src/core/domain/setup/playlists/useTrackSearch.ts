@@ -3,7 +3,7 @@ import { itunesService } from '../../../../services/itunesService';
 
 export function useTrackSearch() {
   const searchQuery = ref('');
-  const suggestions = ref<{title: string, artist: string, coverUrl: string, url?: string}[]>([]);
+  const suggestions = ref<{title: string, artist: string, year?: number, coverUrl: string, url?: string}[]>([]);
   const isSearching = ref(false);
   const searchTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 

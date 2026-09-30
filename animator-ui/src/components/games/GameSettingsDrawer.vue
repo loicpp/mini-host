@@ -27,7 +27,7 @@
       <div ref="drawerContent" class="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
         
         <!-- Game Mode -->
-        <div v-if="isGameOver" class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2">
           <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{{ $t('create_game.input_mode') }}</h4>
           <div class="flex gap-2">
             <button

@@ -63,7 +63,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
   };
 
   const clearTempTrack = () => {
-    tempNewTrack.value = { title: '', artist: '', url: '', isCertified: false };
+    tempNewTrack.value = { title: '', artist: '', year: undefined, url: '', isCertified: false };
     tempDuplicateWarning.value = null;
     forceAdd.value = false;
     pendingLocalPath.value = null;
@@ -114,6 +114,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
       id: trackToAdd.id,
       title: trackToAdd.title.trim() || 'Titre Inconnu',
       artist: trackToAdd.artist.trim() || 'Artiste Inconnu',
+      year: trackToAdd.year,
       url: trackToAdd.url,
       duration: 0,
       source: source as any,
@@ -127,10 +128,20 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
     onTrackAdded(newTrack);
   };
 
-  const readTagsFromUrl = (url: string): Promise<{title: string, artist: string} | null> => {
+  const readTagsFromUrl = (url: string): Promise<{title?: string, artist?: string, year?: number} | null> => {
     return new Promise((resolve) => {
       jsmediatags.read(url, {
-        onSuccess: (tag: any) => resolve({ title: tag.tags.title, artist: tag.tags.artist }),
+        onSuccess: (tag: any) => {
+          let year: number | undefined;
+          const rawYear = tag.tags?.year || tag.tags?.TYER?.data || tag.tags?.TDRC?.data || tag.tags?.date;
+          if (rawYear) {
+            const match = String(rawYear).match(/\b(19\d{2}|20\d{2})\b/);
+            if (match) {
+              year = parseInt(match[0], 10);
+            }
+          }
+          resolve({ title: tag.tags?.title, artist: tag.tags?.artist, year });
+        },
         onError: () => resolve(null)
       });
     });
@@ -152,6 +163,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
       id: pendingLocalPath.value,
       title: tempNewTrack.value.title.trim() || 'Titre Inconnu',
       artist: tempNewTrack.value.artist.trim() || 'Artiste Inconnu',
+      year: tempNewTrack.value.year,
       url: pendingLocalPath.value,
       duration: 0,
       source: 'local',
@@ -176,6 +188,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
         
         let title = nameWithoutExt;
         let artist = "Artiste Inconnu";
+        let year: number | undefined;
         
         try {
           const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
@@ -183,13 +196,24 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
           if (tags) {
             if (tags.title) title = tags.title;
             if (tags.artist) artist = tags.artist;
+            if (tags.year) year = tags.year;
           }
         } catch (_e) { console.warn("Could not read tags"); }
         
-        tempNewTrack.value = { title, artist, url: path, isCertified: false };
         pendingLocalPath.value = path;
         
-        await autoCertifyTrack(tempNewTrack.value as any);
+        const trackWithMeta = {
+          title,
+          artist,
+          year,
+          url: path,
+          source: 'local' as const,
+          isCertified: false
+        };
+        tempNewTrack.value = { ...trackWithMeta };
+        
+        const certified = await autoCertifyTrack({ ...trackWithMeta });
+        tempNewTrack.value = { ...trackWithMeta, ...certified };
       }
     } catch (_e) { console.error("Error opening file dialog", _e); }
   };
@@ -207,6 +231,7 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
           
           let title = nameWithoutExt;
           let artist = "Artiste Inconnu";
+          let year: number | undefined;
           
           try {
             const streamUrl = `${BASE_URL}/stream?path=${encodeURIComponent(path)}`;
@@ -214,11 +239,13 @@ export function useTemporaryTrackEditor(onTrackAdded: (track: MusicTrack) => voi
             if (tags) {
               if (tags.title) title = tags.title;
               if (tags.artist) artist = tags.artist;
+              if (tags.year) year = tags.year;
             }
           } catch (_e) { console.warn("Could not read tags"); }
           
           let newTrackData = {
             id: path, title: title.trim() || 'Titre Inconnu', artist: artist.trim() || 'Artiste Inconnu',
+            year,
             url: path, duration: 0, source: 'local' as const, isCertified: false, isTemporary: true
           };
           

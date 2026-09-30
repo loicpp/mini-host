@@ -1,12 +1,16 @@
 import { ref } from 'vue';
 import { Track } from '../../../../services/music/MusicProvider';
 
+export type TrackSortOption = 'artist' | 'title' | 'year' | 'playlist';
+export type SortDirection = 'asc' | 'desc';
+
 const currentSource = ref('soundcloud');
 const searchQuery = ref('');
 const selectedTrack = ref<Track | null>(null);
 const localTracks = ref<Track[]>([]);
 const playedTracks = ref<string[]>([]);
-const trackSort = ref<'title' | 'artist'>('title');
+const trackSort = ref<TrackSortOption>('artist');
+const sortDirection = ref<SortDirection>('asc');
 const hidePlayedTracks = ref(false);
 const musicProgress = ref(0);
 const musicTimeLeft = ref(0);
@@ -19,6 +23,7 @@ export function useMusicStore() {
     localTracks,
     playedTracks,
     trackSort,
+    sortDirection,
     hidePlayedTracks,
     musicProgress,
     musicTimeLeft,

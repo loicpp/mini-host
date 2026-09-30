@@ -238,14 +238,19 @@
         :title="$t('create_game.step3_title')" 
         :description="$t('create_game.step3_desc')"
       >
-        <div v-if="playlists.length > 0" class="w-full">
+        <div v-if="playlists.length > 0" class="w-full flex flex-col gap-2">
           <CustomSelect 
-            v-model="settings.playlistId"
+            v-model="settings.playlistIds"
             :options="playlistOptions"
             :placeholder="$t('create_game.playlist_placeholder')"
+            :multiple="true"
             placement="top"
             class="bg-[#F8F9FA]"
           />
+          <div v-if="selectedPlaylists.length > 0" class="flex items-center justify-between text-xs text-muted-foreground font-medium px-1">
+            <span>{{ selectedPlaylists.length }} {{ selectedPlaylists.length > 1 ? $t('create_game.selected_playlists') : $t('create_game.selected_playlist') }}</span>
+            <span>{{ totalSelectedTracksCount }} {{ $t('create_game.total_tracks') }}</span>
+          </div>
         </div>
         <div v-else class="bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col gap-3">
           <p class="text-amber-800 text-sm font-medium text-center">{{ $t('create_game.no_playlist_available') }}</p>
@@ -256,7 +261,7 @@
 
     <!-- Create Button -->
     <div class="w-full max-w-2xl mt-4 pb-4">
-      <Btn id="start-btn" variant="primary" size="lg" className="w-full font-bold text-lg h-14 rounded-2xl shadow-md flex items-center justify-center gap-2" @click="startGame" :disabled="playlists.length === 0">
+      <Btn id="start-btn" variant="primary" size="lg" className="w-full font-bold text-lg h-14 rounded-2xl shadow-md flex items-center justify-center gap-2" @click="startGame" :disabled="playlists.length === 0 || !settings.playlistIds || settings.playlistIds.length === 0">
         <Play class="w-5 h-5 fill-current" />
         {{ $t('create_game.start_button') }}
       </Btn>
@@ -347,6 +352,7 @@ const playlistOptions = computed(() => {
 interface RequiredGameSettings extends BlindTestPreset {
   mode: string;
   playlistId: string;
+  playlistIds: string[];
   localTracks: any[];
   [key: string]: any;
 }
@@ -361,6 +367,7 @@ const initialSettings: any = {
   duration: normalPreset.duration ?? 15,
   mode: 'buzzer',
   playlistId: '',
+  playlistIds: [],
   localTracks: []
 };
 
@@ -369,6 +376,26 @@ BLIND_TEST_ADDITIONAL_OPTIONS.forEach(opt => {
 });
 
 const settings = ref<RequiredGameSettings>(initialSettings);
+
+const selectedPlaylists = computed(() => {
+  if (!settings.value.playlistIds) return [];
+  return playlists.value.filter(p => settings.value.playlistIds.includes(p.id));
+});
+
+const totalSelectedTracksCount = computed(() => {
+  const seen = new Set<string>();
+  let count = 0;
+  for (const pl of selectedPlaylists.value) {
+    for (const track of pl.tracks) {
+      const key = track.id || track.url;
+      if (!seen.has(key)) {
+        seen.add(key);
+        count++;
+      }
+    }
+  }
+  return count;
+});
 
 const toggleOption = (key: string) => {
   (settings.value as any)[key] = !(settings.value as any)[key];
@@ -433,6 +460,7 @@ onMounted(async () => {
   loadPresets();
   await loadPlaylistsFromApi();
   if (playlists.value.length > 0) {
+    settings.value.playlistIds = [playlists.value[0].id];
     settings.value.playlistId = playlists.value[0].id;
   }
 });
@@ -544,7 +572,26 @@ const startGame = () => {
     blockDuration = musicDuration;
   }
   
-  const selectedPlaylist = playlists.value.find(p => p.id === settings.value.playlistId) || null;
+  const selectedPls = selectedPlaylists.value;
+  
+  const seenTracks = new Set<string>();
+  const combinedTracks: any[] = [];
+  for (const pl of selectedPls) {
+    for (const track of pl.tracks) {
+      const key = track.id || track.url;
+      if (!seenTracks.has(key)) {
+        seenTracks.add(key);
+        combinedTracks.push(track);
+      }
+    }
+  }
+
+  const combinedPlaylist = selectedPls.length > 0 ? {
+    id: selectedPls.map(p => p.id).join('+'),
+    name: selectedPls.map(p => p.name).join(', '),
+    type: selectedPls[0]?.type || 'local',
+    tracks: combinedTracks
+  } : null;
   
   const checkPreset = (preset: any) => {
     if (blockDuration !== preset.blockDuration) return false;
@@ -577,7 +624,7 @@ const startGame = () => {
     blockDuration,
     preset,
     presetIcon,
-    playlist: selectedPlaylist
+    playlist: combinedPlaylist
   };
   
   emit('start-game', finalSettings);

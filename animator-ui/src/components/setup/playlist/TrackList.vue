@@ -44,7 +44,7 @@
                       <img v-if="item.coverUrl" :src="item.coverUrl" alt="cover" class="w-8 h-8 rounded-md object-cover flex-shrink-0 bg-muted" />
                       <div class="flex flex-col min-w-0">
                         <span class="font-bold text-primary truncate text-sm">{{ item.title }}</span>
-                        <span class="text-xs text-muted-foreground truncate">{{ item.artist }}</span>
+                        <span class="text-xs text-muted-foreground truncate">{{ item.artist }}<template v-if="item.year"> - {{ item.year }}</template></span>
                       </div>
                     </li>
                 </ul>
@@ -67,7 +67,7 @@
                   </span>
                   <Edit3 class="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"/>
                 </div>
-                <span class="text-sm text-muted-foreground truncate w-full font-medium">{{ track.artist }}</span>
+                <span class="text-sm text-muted-foreground truncate w-full font-medium">{{ track.artist }}<template v-if="track.year"> - {{ track.year }}</template></span>
               </div>
               <p class="text-[10px] text-muted-foreground/50 m-0 truncate w-full mt-0.5" :title="track.url" dir="rtl" style="text-align: left;">{{ track.url }}</p>
             </div>
@@ -114,12 +114,12 @@ const emit = defineEmits<{
 const { searchQuery, suggestions, isSearching, handleSearch, handleSearchBlur, clearSearch } = useTrackSearch();
 
 const editingTrackIndex = ref<number | null>(null);
-const editingTrackData = ref<{title: string, artist: string, isCertified?: boolean}>({ title: '', artist: '', isCertified: false });
+const editingTrackData = ref<{title: string, artist: string, year?: number, isCertified?: boolean}>({ title: '', artist: '', isCertified: false });
 const editTrackInput = ref<any>(null);
 
 const startEditTrack = async (index: number, track: Track) => {
   editingTrackIndex.value = index;
-  editingTrackData.value = { title: track.title, artist: track.artist, isCertified: track.isCertified };
+  editingTrackData.value = { title: track.title, artist: track.artist, year: track.year, isCertified: track.isCertified };
   searchQuery.value = `${track.title} - ${track.artist}`;
   suggestions.value = [];
   handleSearch('local');
@@ -135,9 +135,10 @@ const onSearchInput = () => {
   handleSearch('local'); // iTunes search
 };
 
-const selectSuggestion = (item: {title: string, artist: string}) => {
+const selectSuggestion = (item: {title: string, artist: string, year?: number}) => {
   editingTrackData.value.title = item.title;
   editingTrackData.value.artist = item.artist;
+  editingTrackData.value.year = item.year;
   editingTrackData.value.isCertified = true;
   
   // Directly emit the update here to avoid applyCustomEditSearch overwriting it
@@ -147,6 +148,7 @@ const selectSuggestion = (item: {title: string, artist: string}) => {
       ...originalTrack,
       title: editingTrackData.value.title,
       artist: editingTrackData.value.artist,
+      year: editingTrackData.value.year,
       isCertified: editingTrackData.value.isCertified
     });
     editingTrackIndex.value = null;
@@ -181,6 +183,7 @@ const saveEditTrack = () => {
       ...originalTrack,
       title: editingTrackData.value.title,
       artist: editingTrackData.value.artist,
+      year: editingTrackData.value.year,
       isCertified: editingTrackData.value.isCertified
     });
     editingTrackIndex.value = null;

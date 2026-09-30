@@ -3,6 +3,7 @@ export interface Track {
   source?: string;
   title: string;
   artist: string;
+  year?: number;
   url: string;
   isCertified?: boolean;
   isTemporary?: boolean;
