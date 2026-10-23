@@ -9,7 +9,7 @@ import { isInfiniteDuration } from '../models/Game';
 import Fuse from 'fuse.js';
 
 const { gameId, gameSettings, nextTrackInfo, status, currentStartTime } = useGameStore();
-const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
+const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, pendingBonuses, lastAwardedBonuses, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
 const { currentTrackDuration } = useMusicStore();
 
 export function calculateSpeedPoints(submittedAt: number, currentStartTime: number, T: number): number {
@@ -50,8 +50,9 @@ export function useGamePlayers() {
         ...p,
         currentGuess: guess,
         hasAnswered: !!guess && ((typeof guess === 'object' && (!!guess.title || !!guess.artist)) || (typeof guess === 'string' && guess.length > 0)),
-        score: (p.score || 0) + (pendingPoints.value[id] || 0),
+        score: Math.max(0, (p.score || 0) + (pendingPoints.value[id] || 0)),
         pendingPoints: pendingPoints.value[id] || 0,
+        isBonus: !!pendingBonuses.value[id],
         autoCorrectResult: autoCorrectResults.value[id]
       };
     }
@@ -89,7 +90,8 @@ export function useGamePlayers() {
         name: p.name || '',
         score: currentScore,
         previousScore,
-        pointsGained
+        pointsGained,
+        hasBonus: !!lastAwardedBonuses.value[id]
       });
     }
 
@@ -132,34 +134,47 @@ export function useGamePlayers() {
     return !!pressedBuzzer.value;
   });
 
-  const award = (playerId: string, points: number) => {
-    let finalPoints = points;
-    const currentScore = players.value[playerId]?.score || 0;
-    
-    if (currentScore + finalPoints < 0) {
-      finalPoints = -currentScore;
-    }
-    
-    if (finalPoints === 0) {
+  const award = (playerId: string, points: number, isBonus: boolean = false) => {
+    if (points === 0) {
       const newPending = { ...pendingPoints.value };
       delete newPending[playerId];
       pendingPoints.value = newPending;
+
+      const newBonuses = { ...pendingBonuses.value };
+      delete newBonuses[playerId];
+      pendingBonuses.value = newBonuses;
     } else {
       pendingPoints.value = {
         ...pendingPoints.value,
-        [playerId]: finalPoints
+        [playerId]: points
       };
+      if (isBonus) {
+        pendingBonuses.value = {
+          ...pendingBonuses.value,
+          [playerId]: true
+        };
+      } else {
+        const newBonuses = { ...pendingBonuses.value };
+        delete newBonuses[playerId];
+        pendingBonuses.value = newBonuses;
+      }
     }
   };
 
   const applyPendingPoints = async () => {
-    lastAwardedPoints.value = { ...pendingPoints.value };
+    const effectiveAwarded: Record<string, number> = {};
     for (const [playerId, points] of Object.entries(pendingPoints.value)) {
       if (points !== 0) {
+        const currentScore = players.value[playerId]?.score || 0;
+        const actualDiff = Math.max(0, currentScore + points) - currentScore;
+        effectiveAwarded[playerId] = actualDiff;
         await animatorService.awardPoints(gameId.value, playerId, points);
       }
     }
+    lastAwardedPoints.value = effectiveAwarded;
+    lastAwardedBonuses.value = { ...pendingBonuses.value };
     pendingPoints.value = {};
+    pendingBonuses.value = {};
     autoCorrectResults.value = {};
     wasAutoCorrected.value = false;
     await animatorService.updateRanks(gameId.value, lastAwardedPoints.value);
@@ -255,14 +270,14 @@ export function useGamePlayers() {
     }
   };
 
-  const correctBuzzer = async () => {
+  const correctBuzzer = async (points: number = 1, isBonus: boolean = false) => {
     let playerIdToReward = null;
     if (gameSettings.value.mode === 'buzzer' && pressedBuzzer.value) {
       playerIdToReward = pressedBuzzer.value;
     }
     
     if (playerIdToReward) {
-      award(playerIdToReward, 1);
+      award(playerIdToReward, points, isBonus);
     }
     
     await revealResults();

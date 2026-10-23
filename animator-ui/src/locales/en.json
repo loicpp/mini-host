@@ -225,7 +225,8 @@
     "incorrect_detected": "Incorrect answer detected",
     "correct_answer": "Correct answer",
     "partial_answer": "Partial answer",
-    "wrong_answer": "Wrong answer"
+    "wrong_answer": "Wrong answer",
+    "bonus_options": "Bonus options"
   },
   "diagnostics": {
     "title": "System Diagnostics",
@@ -345,7 +346,8 @@
     "reconnecting": "Attempting to reconnect...",
     "reveal_no_points_title": "No points awarded",
     "reveal_no_points_message": "Players have answered but no points were awarded. Do you really want to reveal the results without giving any points?",
-    "reveal_no_points_confirm": "Yes, reveal"
+    "reveal_no_points_confirm": "Yes, reveal",
+    "bonus": "Bonus"
   },
   "local_tracks": {
     "no_folder": "No folder selected. Click on ⚙️ to configure your playlists.",

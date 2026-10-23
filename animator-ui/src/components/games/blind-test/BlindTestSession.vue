@@ -170,6 +170,12 @@
                   <h4 class="font-bold text-lg text-primary m-0">{{ player.name }}</h4>
                   <Badge v-if="player.pointsGained > 0" color="green">+{{ player.pointsGained }}</Badge>
                   <Badge v-else-if="player.pointsGained < 0" color="red">{{ player.pointsGained }}</Badge>
+                  <span 
+                    v-if="player.hasBonus" 
+                    class="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-100 text-purple-700 border border-purple-200 flex items-center gap-1 shadow-xs"
+                  >
+                    <Sparkles class="w-3 h-3 text-purple-500" /> {{ $t('control_panel.bonus') }}
+                  </span>
                 </div>
                 <div class="flex items-center gap-4">
                   <div class="flex items-center gap-1 font-bold text-sm w-12 justify-end" :class="player.rankChange > 0 ? 'text-emerald-500' : player.rankChange < 0 ? 'text-red-500' : 'text-gray-400'">
@@ -251,7 +257,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { Users, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, ChevronUp, ChevronDown, Minus } from '@lucide/vue';
+import { Users, RefreshCw, Square, Wand2, Music, Zap, Check, Loader2, Trophy, Ban, ChevronLeft, Trash2, ChevronUp, ChevronDown, Minus, Sparkles } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 
 import Btn from '../../ui/Btn.vue';

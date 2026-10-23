@@ -14,10 +14,11 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full flex-1 min-h-0 overflow-y-auto pr-2 pb-4">
       <Card 
         v-for="player in filteredPlayers" :key="player.id" 
-      :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${
-        (player.pendingPoints && player.pendingPoints >= 1) ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
+      :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${openBonusPlayerId === player.id ? 'z-20 relative' : 'relative'} ${
+        player.isBonus ? 'border-purple-400 bg-purple-50/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]' :
+        (player.pendingPoints !== undefined && player.pendingPoints >= 1) ? 'border-emerald-400 bg-emerald-50/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 
         player.pendingPoints === 0.5 ? 'border-amber-400 bg-amber-50/50 shadow-[0_0_15px_rgba(251,191,36,0.3)]' : 
-        (player.pendingPoints && player.pendingPoints < 0) ? 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 
+        (player.pendingPoints !== undefined && player.pendingPoints < 0) ? 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 
         'border-[rgba(0,0,0,0.07)] bg-white'
       }`"
     >
@@ -53,15 +54,58 @@
 
       <div class="flex flex-col gap-2 mt-1" v-if="gameMode !== 'buzzer'">
         <div class="flex gap-2 justify-center">
-          <button 
-            @click="$emit('award', player.id as string, getCalculatedPoints(player.currentGuess?.submittedAt))" 
-            :disabled="player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt)"
-            :class="['px-3 py-1.5 rounded-lg font-bold transition-colors text-xs flex-1',
-              player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt) ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 shadow-sm'
-            ]">
-            {{ $t('players_grid.correct_answer') }}
-            <span v-if="gameMode === 'text' && gameSettings?.speedPoints" class="block text-[10px] opacity-75 mt-0.5 whitespace-nowrap">+{{ getCalculatedPoints(player.currentGuess?.submittedAt) }} {{ $t('gameroom.pts') }}</span>
-          </button>
+          <div class="relative flex flex-1">
+            <button 
+              @click="$emit('award', player.id as string, getCalculatedPoints(player.currentGuess?.submittedAt), false)" 
+              :disabled="!player.isBonus && player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt)"
+              :class="['px-2 py-1.5 rounded-l-lg font-bold transition-colors text-xs flex-1 flex flex-col items-center justify-center min-w-0',
+                player.isBonus 
+                  ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' 
+                  : player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt) 
+                    ? 'bg-gray-100 text-gray-400 cursor-default shadow-none' 
+                    : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 shadow-sm'
+              ]">
+              <span class="truncate w-full text-center">{{ player.isBonus ? `+${player.pendingPoints} pts` : $t('players_grid.correct_answer') }}</span>
+              <span v-if="player.isBonus" class="text-[9px] font-bold text-purple-600 uppercase tracking-wider leading-tight">{{ $t('control_panel.bonus') }}</span>
+              <span v-else-if="gameMode === 'text' && gameSettings?.speedPoints" class="block text-[10px] opacity-75 mt-0.5 whitespace-nowrap">+{{ getCalculatedPoints(player.currentGuess?.submittedAt) }} {{ $t('gameroom.pts') }}</span>
+            </button>
+            <button 
+              type="button" 
+              @click.stop="toggleBonusMenu(player.id as string)"
+              :title="$t('players_grid.bonus_options')"
+              :class="['px-1.5 py-1.5 rounded-r-lg font-bold transition-colors text-xs border-l flex items-center justify-center shrink-0 cursor-pointer',
+                player.isBonus 
+                  ? 'bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200' 
+                  : player.pendingPoints === getCalculatedPoints(player.currentGuess?.submittedAt) 
+                    ? 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-200 hover:text-gray-600' 
+                    : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200 shadow-sm'
+              ]">
+              <ChevronDown class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': openBonusPlayerId === player.id }" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div 
+              v-if="openBonusPlayerId === player.id" 
+              class="absolute top-full left-0 mt-1 w-32 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-30 flex flex-col text-xs"
+            >
+              <div class="px-2.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles class="w-3 h-3 text-purple-500" />
+                {{ $t('control_panel.bonus') }}
+              </div>
+              <button 
+                v-for="bonus in [2, 3, 4, 5]" 
+                :key="bonus" 
+                @click.stop="selectBonus(player.id as string, bonus)" 
+                :class="[
+                  'px-3 py-1.5 text-left font-semibold hover:bg-purple-50 hover:text-purple-700 flex items-center justify-between transition-colors cursor-pointer',
+                  (player.isBonus && player.pendingPoints === bonus) ? 'text-purple-700 bg-purple-50 font-bold' : 'text-gray-700'
+                ]"
+              >
+                <span>+{{ bonus }} {{ $t('gameroom.pts') }}</span>
+                <Sparkles v-if="player.isBonus && player.pendingPoints === bonus" class="w-3 h-3 text-purple-500" />
+              </button>
+            </div>
+          </div>
           <button 
             @click="$emit('award', player.id as string, 0.5)" 
             :disabled="player.pendingPoints === 0.5"
@@ -93,8 +137,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Check, X } from '@lucide/vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { Check, X, ChevronDown, Sparkles } from '@lucide/vue';
 import Card from '../ui/Card.vue';
 import { useGameStore } from '../../core/domain/general/stores/game';
 import { useMusicStore } from '../../core/domain/general/stores/music';
@@ -117,9 +161,34 @@ const props = defineProps<{
   gameMode?: string;
 }>();
 
-defineEmits<{
-  (e: 'award', playerId: string, points: number): void;
+const emit = defineEmits<{
+  (e: 'award', playerId: string, points: number, isBonus?: boolean): void;
 }>();
+
+const openBonusPlayerId = ref<string | null>(null);
+
+const toggleBonusMenu = (playerId: string) => {
+  openBonusPlayerId.value = openBonusPlayerId.value === playerId ? null : playerId;
+};
+
+const selectBonus = (playerId: string, bonus: number) => {
+  emit('award', playerId, bonus, true);
+  openBonusPlayerId.value = null;
+};
+
+const handleDocumentClick = () => {
+  if (openBonusPlayerId.value) {
+    openBonusPlayerId.value = null;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleDocumentClick);
+});
 
 const formatTime = (ts: number) => {
   if (!ts) return '';

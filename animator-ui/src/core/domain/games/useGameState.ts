@@ -12,7 +12,7 @@ export function useGameState() {
   const { showConfirm } = useDialog();
   const { gameId, status, nextTrackInfo, gameSettings } = useGameStore();
   const { selectedTrack, searchQuery, playedTracks } = useMusicStore();
-  const { pendingPoints, players } = usePlayerStore();
+  const { pendingPoints, pendingBonuses, lastAwardedBonuses, players } = usePlayerStore();
 
   const nextRound = async () => {
     if (gameSettings.value?.playerExclusion && playedTracks.value.length > 0 && playedTracks.value.length % 3 === 0) {
@@ -37,6 +37,8 @@ export function useGameState() {
     nextTrackInfo.value.answer = '';
     searchQuery.value = '';
     pendingPoints.value = {};
+    pendingBonuses.value = {};
+    lastAwardedBonuses.value = {};
     
     try {
       await animatorService.clearPlayerAnswers(gameId.value);

@@ -73,9 +73,39 @@
           <Btn id="btn-reject-buzzer" ref="rejectBuzzerBtn" variant="ghost" className="w-full font-bold text-blue-600 border border-blue-200 bg-blue-50" @click="$emit('resume-music')">
             <X class="w-4 h-4 mr-2" /> {{ $t('sidebar.wrong_resume') }}
           </Btn>
-          <Btn id="btn-validate-buzzer" ref="validateBuzzerBtn" variant="pink" className="w-full font-bold" @click="$emit('correct-buzzer')">
-            <Check class="w-4 h-4 mr-2" /> {{ $t('sidebar.correct_reveal') }}
-          </Btn>
+          <div class="relative flex w-full">
+            <Btn id="btn-validate-buzzer" ref="validateBuzzerBtn" variant="pink" className="flex-1 font-bold rounded-r-none" @click="handleCorrectBuzzer(1, false)">
+              <Check class="w-4 h-4 mr-2" /> {{ $t('sidebar.correct_reveal') }}
+            </Btn>
+            <button
+              type="button"
+              @click.stop="isBonusDropdownOpen = !isBonusDropdownOpen"
+              :title="$t('players_grid.bonus_options')"
+              class="px-2.5 bg-pink-500 hover:bg-pink-600 active:scale-[0.98] text-white rounded-r-xl border-l border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-sm"
+            >
+              <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isBonusDropdownOpen }" />
+            </button>
+
+            <!-- Dropdown -->
+            <div
+              v-if="isBonusDropdownOpen"
+              class="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-50 flex flex-col text-sm"
+            >
+              <div class="px-3 py-1 text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles class="w-3.5 h-3.5 text-purple-500" />
+                {{ $t('control_panel.bonus') }}
+              </div>
+              <button
+                v-for="bonus in [2, 3, 4, 5]"
+                :key="bonus"
+                @click.stop="handleCorrectBuzzer(bonus, true)"
+                class="px-3 py-2 text-left font-semibold text-gray-700 hover:bg-purple-50 hover:text-purple-700 flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <span>+{{ bonus }} {{ $t('gameroom.pts') }}</span>
+                <span class="text-xs bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full">+{{ bonus }}</span>
+              </button>
+            </div>
+          </div>
         </template>
         <template v-else>
           <Btn id="submit-correction-btn" variant="pink" className="w-full font-bold" @click="$emit('reveal')">
@@ -169,8 +199,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket } from '@lucide/vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket, ChevronDown, Sparkles } from '@lucide/vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../../core/domain/games/blind-test/types/blindTestOptions';
 import { Track } from '../../services/music/MusicProvider';
 import { isInfiniteDuration } from '../../core/domain/models/Game';
@@ -199,8 +229,6 @@ const props = defineProps<{
   playedCount?: number;
 }>();
 
-
-
 const emit = defineEmits<{
   (e: 'leave-game'): void;
   (e: 'configure-playlists'): void;
@@ -210,13 +238,33 @@ const emit = defineEmits<{
   (e: 'reveal'): void;
   (e: 'next-round'): void;
   (e: 'resume-music'): void;
-  (e: 'correct-buzzer'): void;
+  (e: 'correct-buzzer', points?: number, isBonus?: boolean): void;
   (e: 'auto-correct'): void;
   (e: 'load-playlist', tracks: Track[]): void;
   (e: 'update:searchQuery', val: string): void;
   (e: 'update:nextTrackInfo', val: { answer: string }): void;
   (e: 'open-settings'): void;
 }>();
+
+const isBonusDropdownOpen = ref(false);
+const handleCorrectBuzzer = (points: number = 1, isBonus: boolean = false) => {
+  isBonusDropdownOpen.value = false;
+  emit('correct-buzzer', points, isBonus);
+};
+
+const handleSidebarDocClick = () => {
+  if (isBonusDropdownOpen.value) {
+    isBonusDropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleSidebarDocClick);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleSidebarDocClick);
+});
 
 const handleToggleProjector = () => {
   emit('toggle-projector');
