@@ -109,7 +109,12 @@ const updateValue = (e: Event) => {
     // Force input to snap visually if necessary (although opacity is 0)
     ;(e.target as HTMLInputElement).value = closest.toString();
   } else {
-    emit('update:modelValue', val)
+    let finalVal = val;
+    if (props.stepValues && props.stepValues.includes(105) && finalVal > 100) {
+      finalVal = finalVal >= 103 ? 105 : 100;
+      ;(e.target as HTMLInputElement).value = finalVal.toString();
+    }
+    emit('update:modelValue', finalVal)
   }
 }
 </script>

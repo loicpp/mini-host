@@ -90,15 +90,25 @@
             <div class="flex items-center gap-6">
               <div class="flex items-center gap-2 text-gray-500">
                 <Clock class="w-4 h-4 text-[#FFBA49]" />
-                <span>{{ $t('create_game.block_short') }} <strong class="text-gray-800 inline-block w-8 text-right">{{ settings.blockDuration }}s</strong></span>
+                <span class="flex items-center gap-1">{{ $t('create_game.block_short') }} <strong class="text-gray-800 inline-block w-8 text-right">{{ settings.blockDuration }}s</strong></span>
               </div>
               <div class="flex items-center gap-2 text-gray-500">
                 <Music class="w-4 h-4 text-[#FFBA49]" />
-                <span>{{ $t('create_game.music_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.musicDuration }}s</strong></span>
+                <span class="flex items-center gap-1">{{ $t('create_game.music_short') }}
+                  <strong v-if="isInfiniteDuration(settings.musicDuration)" class="inline-flex items-center justify-end w-9 font-black text-xl text-gray-800 leading-none">
+                    ∞
+                  </strong>
+                  <strong v-else class="text-gray-800 inline-block w-9 text-right">{{ settings.musicDuration }}s</strong>
+                </span>
               </div>
               <div class="flex items-center gap-2 text-gray-500">
                 <Hourglass class="w-4 h-4 text-[#FFBA49]" />
-                <span>{{ $t('create_game.thinking_short') }} <strong class="text-gray-800 inline-block w-9 text-right">{{ settings.duration }}s</strong></span>
+                <span class="flex items-center gap-1">{{ $t('create_game.thinking_short') }}
+                  <strong v-if="isInfiniteDuration(settings.duration)" class="inline-flex items-center justify-end w-9 font-black text-xl text-gray-800 leading-none">
+                    ∞
+                  </strong>
+                  <strong v-else class="text-gray-800 inline-block w-9 text-right">{{ settings.duration }}s</strong>
+                </span>
               </div>
             </div>
             <div class="flex items-center gap-1 font-medium transition-colors text-gray-500 group-hover:text-gray-800">
@@ -140,7 +150,7 @@
               <div class="flex-1 px-4">
                 <Slider v-model="settings.blockDuration" :max="30" :stepValues="[0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30]" :allowShiftOverride="true" class="w-full" />
               </div>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
                 <input type="number" v-model.number="settings.blockDuration" min="0" max="30" @blur="settings.blockDuration = Math.min(Math.max(settings.blockDuration || 0, 0), 30)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
                 <span class="text-sm font-bold text-gray-800">s</span>
               </div>
@@ -159,11 +169,22 @@
                 </div>
               </span>
               <div class="flex-1 px-4">
-                <Slider v-model="settings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
+                <Slider v-model="settings.musicDuration" :stepValues="TIME_STEP_VALUES" :allowShiftOverride="true" class="w-full" />
               </div>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="settings.musicDuration" min="1" max="100" @blur="settings.musicDuration = Math.min(Math.max(settings.musicDuration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
-                <span class="text-sm font-bold text-gray-800">s</span>
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
+                <template v-if="isInfiniteDuration(settings.musicDuration)">
+                  <div class="group relative flex items-center justify-end cursor-help h-full pr-1">
+                    <span class="text-2xl font-normal text-gray-800 leading-none select-none">∞</span>
+                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                      {{ $t('create_game.full_track_tooltip') }}
+                      <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <input type="number" v-model.number="settings.musicDuration" min="1" max="100" @blur="settings.musicDuration = Math.min(Math.max(settings.musicDuration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                  <span class="text-sm font-bold text-gray-800">s</span>
+                </template>
               </div>
             </div>
             <!-- Thinking time -->
@@ -180,11 +201,22 @@
                 </div>
               </span>
               <div class="flex-1 px-4">
-                <Slider v-model="settings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
+                <Slider v-model="settings.duration" :stepValues="TIME_STEP_VALUES" :allowShiftOverride="true" class="w-full" />
               </div>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="settings.duration" min="1" max="100" @blur="settings.duration = Math.min(Math.max(settings.duration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
-                <span class="text-sm font-bold text-gray-800">s</span>
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
+                <template v-if="isInfiniteDuration(settings.duration)">
+                  <div class="group relative flex items-center justify-end cursor-help h-full pr-1">
+                    <span class="text-2xl font-normal text-gray-800 leading-none select-none">∞</span>
+                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                      {{ $t('create_game.full_track_tooltip') }}
+                      <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <input type="number" v-model.number="settings.duration" min="1" max="100" @blur="settings.duration = Math.min(Math.max(settings.duration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                  <span class="text-sm font-bold text-gray-800">s</span>
+                </template>
               </div>
             </div>
           </div>
@@ -307,6 +339,7 @@ import { DEFAULT_PRESETS, BlindTestPreset, normalPreset } from '../../../core/do
 import { usePresets } from '../../../core/domain/setup/presets/usePresets';
 import { usePlaylists } from '../../../core/domain/setup/playlists/usePlaylists';
 import { Playlist, Track } from '../../../core/domain/setup/types/playlist';
+import { TIME_STEP_VALUES, isInfiniteDuration } from '../../../core/domain/models/Game';
 
 const { t } = useI18n();
 
@@ -513,7 +546,7 @@ onMounted(async () => {
 
 watch(() => settings.value.musicDuration, (newVal) => {
   if (typeof newVal === 'number') {
-    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    const effectiveVal = Math.min(Math.max(newVal, 1), 105);
     if (newVal !== effectiveVal) {
       settings.value.musicDuration = effectiveVal;
     }
@@ -528,7 +561,7 @@ watch(() => settings.value.musicDuration, (newVal) => {
 
 watch(() => settings.value.duration, (newVal) => {
   if (typeof newVal === 'number') {
-    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    const effectiveVal = Math.min(Math.max(newVal, 1), 105);
     if (newVal !== effectiveVal) {
       settings.value.duration = effectiveVal;
     }

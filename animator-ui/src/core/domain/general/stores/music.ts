@@ -14,6 +14,7 @@ const sortDirection = ref<SortDirection>('asc');
 const hidePlayedTracks = ref(false);
 const musicProgress = ref(0);
 const musicTimeLeft = ref(0);
+const currentTrackDuration = ref<number | null>(null);
 
 export function useMusicStore() {
   return {
@@ -27,5 +28,6 @@ export function useMusicStore() {
     hidePlayedTracks,
     musicProgress,
     musicTimeLeft,
+    currentTrackDuration,
   };
 }

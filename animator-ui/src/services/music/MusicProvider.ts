@@ -55,4 +55,14 @@ export interface MusicProvider {
    * Stops the current track entirely
    */
   stop(): Promise<void>;
+
+  /**
+   * Gets the duration of the current track in ms
+   */
+  getDuration?(): Promise<number>;
+
+  /**
+   * Registers a callback when the track finishes playing
+   */
+  onEnded?(callback: () => void): void;
 }

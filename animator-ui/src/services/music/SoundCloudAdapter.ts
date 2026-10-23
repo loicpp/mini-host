@@ -5,6 +5,7 @@ export class SoundCloudAdapter implements MusicProvider {
 
   private widget: any = null;
   private playTimeout: any = null;
+  private endedCallback: (() => void) | null = null;
 
   async init(): Promise<void> {
     return new Promise((resolve) => {
@@ -32,22 +33,62 @@ export class SoundCloudAdapter implements MusicProvider {
         iframe = document.getElementById('sc-iframe') as HTMLIFrameElement;
       }
 
+      const bindEvents = () => {
+        if (!this.widget) return;
+        this.widget.bind((window as any).SC.Widget.Events.READY, () => {
+          resolve();
+        });
+        this.widget.bind((window as any).SC.Widget.Events.FINISH, () => {
+          if (this.endedCallback) this.endedCallback();
+        });
+      };
+
       if (!document.getElementById('sc-widget-api')) {
         const script = document.createElement('script');
         script.id = 'sc-widget-api';
         script.src = 'https://w.soundcloud.com/player/api.js';
         script.onload = () => {
           this.widget = (window as any).SC.Widget(iframe);
-          this.widget.bind((window as any).SC.Widget.Events.READY, () => {
-            resolve();
-          });
+          bindEvents();
         };
         document.head.appendChild(script);
       } else {
         if (!this.widget) {
-           this.widget = (window as any).SC.Widget(iframe);
+          this.widget = (window as any).SC.Widget(iframe);
         }
-        resolve();
+        bindEvents();
+      }
+    });
+  }
+
+  onEnded(callback: () => void): void {
+    this.endedCallback = callback;
+  }
+
+  async getDuration(): Promise<number> {
+    if (!this.widget) return 0;
+    return new Promise((resolve) => {
+      let resolved = false;
+      const timer = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          resolve(0);
+        }
+      }, 1500);
+      try {
+        this.widget.getDuration((dur: number) => {
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timer);
+            resolve(dur || 0);
+          }
+        });
+      } catch {
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timer);
+          resolve(0);
+        }
       }
     });
   }

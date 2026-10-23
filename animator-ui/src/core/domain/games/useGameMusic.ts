@@ -10,9 +10,10 @@ import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import { useGamePlayers } from './useGamePlayers';
 import { localBackendService } from '../../../services/localBackendService';
+import { isInfiniteDuration } from '../models/Game';
 
 const { gameId, status, gameSettings, nextTrackInfo, currentStartTime } = useGameStore();
-const { selectedTrack, playedTracks, localTracks, musicProgress, musicTimeLeft } = useMusicStore();
+const { selectedTrack, playedTracks, localTracks, musicProgress, musicTimeLeft, currentTrackDuration } = useMusicStore();
 const { pressedBuzzer, players } = usePlayerStore();
 
 
@@ -21,10 +22,24 @@ let animationFrameId: number | null = null;
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
 let pauseTime: number | null = null;
 
+let isEndedListenerSetup = false;
+
 export function useGameMusic() {
   const { t } = useI18n();
   const { showAlert } = useDialog();
   const { setPlayerBlock, revealResults, award } = useGamePlayers();
+
+  if (!isEndedListenerSetup) {
+    isEndedListenerSetup = true;
+    musicManager.onEnded(() => {
+      if (status.value === 'playing') {
+        hasMusicStopped = true;
+        if (isInfiniteDuration(gameSettings.value?.duration)) {
+          stopMusic();
+        }
+      }
+    });
+  }
 
   const lastPlayedTrack = computed(() => {
     if (playedTracks.value.length === 0) return null;
@@ -83,14 +98,34 @@ export function useGameMusic() {
       await animatorService.clearPressedBuzzer(gameId.value);
   
       hasMusicStopped = false;
+
+      // Determine track duration if needed
+      let trackDurMs = (selectedTrack.value.duration && selectedTrack.value.duration > 0) ? selectedTrack.value.duration : 0;
+      if (!trackDurMs) {
+        trackDurMs = await musicManager.getDuration();
+        if (trackDurMs > 0 && selectedTrack.value) {
+          selectedTrack.value.duration = Math.round(trackDurMs);
+        }
+      }
+      const trackDurSec = trackDurMs > 0 ? Math.round(trackDurMs / 1000) : 120;
+
+      const effectiveDuration = isInfiniteDuration(gameSettings.value?.duration) 
+        ? trackDurSec 
+        : (gameSettings.value?.duration || 15);
+
+      const effectiveMusicDuration = isInfiniteDuration(gameSettings.value?.musicDuration)
+        ? trackDurSec
+        : Math.min(gameSettings.value?.musicDuration || effectiveDuration, effectiveDuration);
+
+      currentTrackDuration.value = effectiveDuration;
   
       await animatorService.updateGameState(gameId.value, 'playing', {
         startTime: startTime,
-        duration: gameSettings.value.duration * 1000,
-        musicDuration: gameSettings.value.musicDuration * 1000,
-        blockDuration: (gameSettings.value.blockDuration || 0) * 1000,
+        duration: effectiveDuration * 1000,
+        musicDuration: effectiveMusicDuration * 1000,
+        blockDuration: (gameSettings.value?.blockDuration || 0) * 1000,
         answer: nextTrackInfo.value.answer,
-        mode: gameSettings.value.mode
+        mode: gameSettings.value?.mode
       });
       
       if (!playedTracks.value.includes(selectedTrack.value.id)) {
@@ -179,7 +214,11 @@ export function useGameMusic() {
     status.value = 'playing';
     await animatorService.updateGameState(gameId.value, 'playing', { startTime: currentStartTime.value, answer: nextTrackInfo.value.answer });
     
-    if (currentStartTime.value && now >= currentStartTime.value + (gameSettings.value.musicDuration * 1000)) {
+    const effectiveMusicSec = isInfiniteDuration(gameSettings.value?.musicDuration)
+      ? (currentTrackDuration.value || 120)
+      : (gameSettings.value?.musicDuration || 15);
+
+    if (currentStartTime.value && now >= currentStartTime.value + (effectiveMusicSec * 1000)) {
       hasMusicStopped = true;
     }
     
@@ -197,7 +236,8 @@ export function useGameMusic() {
       const now = getServerTime();
       if (currentStartTime.value) {
         const elapsed = now - currentStartTime.value;
-        const total = gameSettings.value.duration * 1000;
+        const totalSec = currentTrackDuration.value || (isInfiniteDuration(gameSettings.value?.duration) ? 120 : (gameSettings.value?.duration || 15));
+        const total = totalSec * 1000;
         
         if (elapsed < 0) {
           musicProgress.value = 0;
@@ -222,12 +262,17 @@ export function useGameMusic() {
         if (status.value !== 'playing') return;
         const now = getServerTime();
         
-        if (currentStartTime.value && !hasMusicStopped && now >= currentStartTime.value + (gameSettings.value.musicDuration * 1000)) {
+        const effectiveMusicSec = isInfiniteDuration(gameSettings.value?.musicDuration)
+          ? (currentTrackDuration.value || 120)
+          : (gameSettings.value?.musicDuration || 15);
+        const effectiveTotalSec = currentTrackDuration.value || (isInfiniteDuration(gameSettings.value?.duration) ? 120 : (gameSettings.value?.duration || 15));
+
+        if (currentStartTime.value && !hasMusicStopped && now >= currentStartTime.value + (effectiveMusicSec * 1000)) {
           musicManager.pause();
           hasMusicStopped = true;
         }
   
-        if (currentStartTime.value && now >= currentStartTime.value + (gameSettings.value.duration * 1000)) {
+        if (currentStartTime.value && now >= currentStartTime.value + (effectiveTotalSec * 1000)) {
           stopMusic();
         } else {
           autoStopTimer = setTimeout(checkTimer, 500);

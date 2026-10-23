@@ -59,11 +59,17 @@
                 </div>
                 <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner">
                     <div class="text-[#FFBA49] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FFBA49] shadow-[0_0_10px_rgba(255,186,73,0.5)]"></span>{{ $t('projector.music') }}</div>
-                    <div class="text-4xl font-black text-white">{{ game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></div>
+                    <div class="text-4xl font-black text-white">
+                      <span v-if="isInfiniteDuration(game.data.settings.musicDuration)">∞</span>
+                      <template v-else>{{ game.data.settings.musicDuration }}<span class="text-xl text-white/50 ml-1">s</span></template>
+                    </div>
                 </div>
-                <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="game.data.settings.duration > 0">
+                <div class="flex-1 bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center shadow-inner" v-if="game.data.settings.duration > 0 || isInfiniteDuration(game.data.settings.duration)">
                     <div class="text-[#ff4d4d] text-sm font-bold mb-2 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#ff4d4d] shadow-[0_0_10px_rgba(255,77,77,0.5)]"></span>{{ $t('projector.total_time') }}</div>
-                    <div class="text-4xl font-black text-white">{{ game.data.settings.duration }}<span class="text-xl text-white/50 ml-1">s</span></div>
+                    <div class="text-4xl font-black text-white">
+                      <span v-if="isInfiniteDuration(game.data.settings.duration)">∞</span>
+                      <template v-else>{{ game.data.settings.duration }}<span class="text-xl text-white/50 ml-1">s</span></template>
+                    </div>
                 </div>
             </div>
 
@@ -300,6 +306,7 @@ import { ref as dbRef, onValue } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
 import { AlarmClock, PartyPopper, Trophy, Medal, Info, ChevronUp, ChevronDown, Minus, Zap } from '@lucide/vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../core/domain/games/blind-test/types/blindTestOptions';
+import { isInfiniteDuration } from '../core/domain/models/Game';
 import QRCode from 'qrcode';
 
 let originalTitle = '';
@@ -758,13 +765,17 @@ watch([() => game.value?.data?.status, () => allPlayersSorted.value.length], ([n
     clearPodiumTimers();
     podiumStep.value = 'init';
     const data = game.value?.data;
-    if (data && data.startTime && data.settings?.duration) {
-      totalTime.value = data.settings.duration;
-      const mDuration = data.settings.musicDuration || data.settings.duration;
-      const bDuration = data.settings.blockDuration || 0;
+    const effectiveTotalMs = data?.duration || (data?.settings?.duration ? data.settings.duration * 1000 : 0);
+    const effectiveMusicMs = data?.musicDuration || (data?.settings?.musicDuration ? data.settings.musicDuration * 1000 : effectiveTotalMs);
+
+    if (data && data.startTime && effectiveTotalMs > 0) {
+      const dur = Math.ceil(effectiveTotalMs / 1000);
+      const mDuration = Math.ceil(effectiveMusicMs / 1000);
+      const bDuration = data.settings?.blockDuration || 0;
+      totalTime.value = dur;
       musicTotalTime.value = mDuration;
       blockTotalTime.value = bDuration;
-      startTimer(data.startTime, data.settings.duration * 1000, mDuration * 1000);
+      startTimer(data.startTime, effectiveTotalMs, effectiveMusicMs);
     }
   } else if (newStatus === 'finished') {
     if (timerInterval.value) {

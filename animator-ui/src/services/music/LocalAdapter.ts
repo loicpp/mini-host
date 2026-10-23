@@ -6,11 +6,46 @@ export class LocalAdapter implements MusicProvider {
   readonly name = 'local';
   private audio: HTMLAudioElement | null = null;
   private playTimeout: any = null;
+  private endedCallback: (() => void) | null = null;
 
   async init(): Promise<void> {
     if (!this.audio) {
       this.audio = new Audio();
+      this.audio.addEventListener('ended', () => {
+        if (this.endedCallback) this.endedCallback();
+      });
     }
+  }
+
+  onEnded(callback: () => void): void {
+    this.endedCallback = callback;
+  }
+
+  async getDuration(): Promise<number> {
+    if (this.audio && !isNaN(this.audio.duration) && isFinite(this.audio.duration) && this.audio.duration > 0) {
+      return this.audio.duration * 1000;
+    }
+    return new Promise((resolve) => {
+      if (!this.audio) return resolve(0);
+      let timer: any = null;
+      const onLoaded = () => {
+        cleanup();
+        resolve(this.audio && !isNaN(this.audio.duration) && isFinite(this.audio.duration) ? this.audio.duration * 1000 : 0);
+      };
+      const cleanup = () => {
+        if (timer) clearTimeout(timer);
+        this.audio?.removeEventListener('loadedmetadata', onLoaded);
+        this.audio?.removeEventListener('durationchange', onLoaded);
+        this.audio?.removeEventListener('canplay', onLoaded);
+      };
+      this.audio.addEventListener('loadedmetadata', onLoaded);
+      this.audio.addEventListener('durationchange', onLoaded);
+      this.audio.addEventListener('canplay', onLoaded);
+      timer = setTimeout(() => {
+        cleanup();
+        resolve(this.audio && !isNaN(this.audio.duration) && isFinite(this.audio.duration) ? this.audio.duration * 1000 : 0);
+      }, 1500);
+    });
   }
 
   async search(_query: string): Promise<Track[]> {

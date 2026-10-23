@@ -60,13 +60,13 @@
           @open-temp-track-modal="openTempTrackModal"
         />
 
-        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-4 sm:p-6 rounded-2xl flex flex-wrap items-center justify-between gap-4 sm:gap-6 mb-4 shadow-sm w-full overflow-hidden">
-          <div class="flex items-center gap-4 flex-1 min-w-0">
-            <h3 class="text-lg sm:text-xl font-bold text-blue-700 m-0 flex items-center gap-2 sm:gap-3 max-w-full min-w-0">
-              <span class="shrink-0">🎵 {{ $t('control_panel.expected') }}</span> 
-              <span class="px-3 py-1 sm:px-4 sm:py-2 bg-white rounded-xl border border-blue-200 shadow-sm truncate max-w-full min-w-0">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
+        <div v-if="status === 'reviewing'" class="bg-blue-50/50 border border-blue-100 p-4 sm:p-5 rounded-2xl flex items-center justify-between gap-4 shrink-0 shadow-sm w-full">
+          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <h3 class="text-lg sm:text-xl font-bold text-blue-700 m-0 flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+              <span class="shrink-0 flex items-center gap-1.5">🎵 {{ $t('control_panel.expected') }}</span> 
+              <span class="px-3 py-1 sm:px-4 sm:py-1.5 bg-white rounded-xl border border-blue-200 shadow-sm truncate flex-1 min-w-0 text-base sm:text-lg" :title="nextTrackInfo.answer || $t('control_panel.unknown_answer')">{{ nextTrackInfo.answer || $t('control_panel.unknown_answer') }}</span>
             </h3>
-            <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md shrink-0 whitespace-nowrap ml-2" @click="handleAutoCorrect">
+            <Btn id="auto-correct-btn" v-if="gameSettings.mode === 'text'" variant="blue" className="font-bold shadow-md shrink-0 whitespace-nowrap" @click="handleAutoCorrect">
               <Wand2 class="w-4 h-4 mr-2 shrink-0" /> {{ $t('control_panel.auto_correct') }}
             </Btn>
           </div>
@@ -78,6 +78,7 @@
         <PlayersGrid 
           id="player-grid"
           v-if="status === 'reviewing' && gameSettings.mode !== 'buzzer'"
+          class="flex-1 min-h-0"
           :players="displayedPlayers"
           :gameMode="gameSettings.mode"
           @award="award"
@@ -124,7 +125,7 @@
             </div>
             <div class="h-3 bg-gray-100 rounded-full overflow-hidden relative">
               <div class="absolute top-0 left-0 h-full bg-[#FFBA49] transition-all duration-100 ease-linear" :style="{ width: musicProgress + '%' }"></div>
-              <div v-if="gameSettings.duration > 0" class="absolute top-0 h-full w-1 bg-red-400 z-10 rounded-full" :style="{ left: (gameSettings.musicDuration / gameSettings.duration * 100) + '%' }" title="Coupure du son"></div>
+              <div v-if="soundCutoffPercent !== null" class="absolute top-0 h-full w-1 bg-red-400 z-10 rounded-full" :style="{ left: soundCutoffPercent + '%' }" title="Coupure du son"></div>
             </div>
           </div>
         </div>
@@ -272,12 +273,23 @@ import { useGameSession } from '../../../core/domain/games/useGameSession';
 import { useGamePlayers } from '../../../core/domain/games/useGamePlayers';
 import { useGameMusic } from '../../../core/domain/games/useGameMusic';
 import { useGameKeyboardShortcuts } from '../../../core/domain/games/useGameKeyboardShortcuts';
+import { isInfiniteDuration } from '../../../core/domain/models/Game';
 import { nextTick, watch } from 'vue';
 
 const { gameId, status, nextTrackInfo, gameSettings } = useGameStore();
-const { currentSource, searchQuery, localTracks, playedTracks, selectedTrack, musicProgress, musicTimeLeft } = useMusicStore();
+const { currentSource, searchQuery, localTracks, playedTracks, selectedTrack, musicProgress, musicTimeLeft, currentTrackDuration } = useMusicStore();
 const { isProjectorOpen } = useUiStore();
 const { pressedBuzzer } = usePlayerStore();
+
+const soundCutoffPercent = computed(() => {
+  if (isInfiniteDuration(gameSettings.value?.musicDuration)) return null;
+  const totalDuration = isInfiniteDuration(gameSettings.value?.duration)
+    ? (currentTrackDuration.value || 120)
+    : (gameSettings.value?.duration || 15);
+  const musicDuration = gameSettings.value?.musicDuration || 15;
+  if (musicDuration >= totalDuration) return null;
+  return (musicDuration / totalDuration) * 100;
+});
 
 
 const { t } = useI18n();

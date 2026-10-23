@@ -90,6 +90,7 @@
     "music_duration_tooltip": "Durée pendant laquelle la musique est jouée aux participants.",
     "total_duration": "Durée totale :",
     "total_duration_tooltip": "Durée totale de la manche. Elle inclut le temps de blocage, le temps de musique, ainsi que le silence éventuel à la fin.",
+    "full_track_tooltip": "Le morceau sera joué en entier",
     "game_mode": "Mode de jeu :",
     "allow_suggestions": "Propositions de saisie",
     "allow_suggestions_short": "Suggestions",

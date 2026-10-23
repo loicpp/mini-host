@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full flex flex-col gap-4">
-    <div class="flex justify-end w-full" v-if="gameMode !== 'buzzer'">
+  <div class="w-full flex-1 min-h-0 flex flex-col gap-4">
+    <div class="flex justify-end w-full shrink-0" v-if="gameMode !== 'buzzer'">
       <label class="flex items-center cursor-pointer gap-2 select-none group">
         <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">{{ $t('players_grid.sort_uncorrected') }}</span>
         <div class="relative">
@@ -11,7 +11,7 @@
       </label>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-h-[calc(100vh-280px)] overflow-y-auto pr-2 pb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full flex-1 min-h-0 overflow-y-auto pr-2 pb-4">
       <Card 
         v-for="player in filteredPlayers" :key="player.id" 
       :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${
@@ -97,14 +97,18 @@ import { computed, ref } from 'vue';
 import { Check, X } from '@lucide/vue';
 import Card from '../ui/Card.vue';
 import { useGameStore } from '../../core/domain/general/stores/game';
+import { useMusicStore } from '../../core/domain/general/stores/music';
 import { useI18n } from 'vue-i18n';
 import { calculateSpeedPoints } from '../../core/domain/games/useGamePlayers';
+import { isInfiniteDuration } from '../../core/domain/models/Game';
 
 const { currentStartTime, gameSettings } = useGameStore();
+const { currentTrackDuration } = useMusicStore();
 
 const getCalculatedPoints = (submittedAt?: number) => {
   if (props.gameMode !== 'text' || !gameSettings.value?.speedPoints || !submittedAt || !currentStartTime.value) return 1;
-  return calculateSpeedPoints(submittedAt, currentStartTime.value, gameSettings.value.duration || 15);
+  const effectiveT = (isInfiniteDuration(gameSettings.value?.duration) ? currentTrackDuration.value : gameSettings.value?.duration) || 15;
+  return calculateSpeedPoints(submittedAt, currentStartTime.value, effectiveT);
 };
 const { t } = useI18n();
 

@@ -40,6 +40,8 @@ export class FirebaseGameRepository implements GameRepository {
     if (trackInfo) {
       if (trackInfo.startTime) updates['data/startTime'] = trackInfo.startTime;
       if (trackInfo.answer) updates['answer'] = trackInfo.answer;
+      if (trackInfo.duration) updates['data/duration'] = trackInfo.duration;
+      if (trackInfo.musicDuration) updates['data/musicDuration'] = trackInfo.musicDuration;
     }
     const gameRef = ref(db, `games/${gameId}`);
     await update(gameRef, updates);

@@ -69,6 +69,21 @@ class MusicManager {
       await this.currentProvider.stop();
     }
   }
+
+  async getDuration(): Promise<number> {
+    if (this.currentProvider && this.currentProvider.getDuration) {
+      return await this.currentProvider.getDuration();
+    }
+    return 0;
+  }
+
+  onEnded(callback: () => void): void {
+    for (const key of Object.keys(this.providers)) {
+      if (typeof this.providers[key].onEnded === 'function') {
+        this.providers[key].onEnded!(callback);
+      }
+    }
+  }
 }
 
 export const musicManager = new MusicManager();

@@ -129,13 +129,19 @@
             <Clock class="w-3.5 h-3.5 text-gray-400" />
             <span class="font-bold text-xs">{{ gameSettings.blockDuration }}s</span>
           </div>
-          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" title="Durée de la musique">
+          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" :title="isInfiniteDuration(gameSettings.musicDuration) ? $t('create_game.full_track_tooltip') : 'Durée de la musique'">
             <Music class="w-3.5 h-3.5 text-amber-500" />
-            <span class="font-bold text-xs">{{ gameSettings.musicDuration }}s</span>
+            <span class="font-bold text-xs">
+              <span v-if="isInfiniteDuration(gameSettings.musicDuration)" class="text-sm leading-none font-bold">∞</span>
+              <template v-else>{{ gameSettings.musicDuration }}s</template>
+            </span>
           </div>
-          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" title="Temps total">
+          <div class="flex-1 bg-white border border-gray-100 rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm" :title="isInfiniteDuration(gameSettings.duration) ? $t('create_game.full_track_tooltip') : 'Temps total'">
             <Hourglass class="w-3.5 h-3.5 text-blue-500" />
-            <span class="font-bold text-xs">{{ gameSettings.duration }}s</span>
+            <span class="font-bold text-xs">
+              <span v-if="isInfiniteDuration(gameSettings.duration)" class="text-sm leading-none font-bold">∞</span>
+              <template v-else>{{ gameSettings.duration }}s</template>
+            </span>
           </div>
         </div>
 
@@ -167,6 +173,7 @@ import { ref, watch } from 'vue';
 import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket } from '@lucide/vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../../core/domain/games/blind-test/types/blindTestOptions';
 import { Track } from '../../services/music/MusicProvider';
+import { isInfiniteDuration } from '../../core/domain/models/Game';
 import Btn from '../ui/Btn.vue';
 import BackButton from '../ui/BackButton.vue';
 

@@ -92,7 +92,7 @@
                 <Clock class="w-4 h-4 text-gray-400 shrink-0" />
                 {{ $t('create_game.block_duration') }}
               </span>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
                 <input type="number" v-model.number="localSettings.blockDuration" min="0" max="30" @blur="localSettings.blockDuration = Math.min(Math.max(localSettings.blockDuration || 0, 0), 30)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
                 <span class="text-sm font-bold text-gray-800">s</span>
               </div>
@@ -107,12 +107,23 @@
                 <Music class="w-4 h-4 text-gray-400 shrink-0" />
                 {{ $t('create_game.music_duration') }}
               </span>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="localSettings.musicDuration" min="1" max="100" @blur="localSettings.musicDuration = Math.min(Math.max(localSettings.musicDuration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
-                <span class="text-sm font-bold text-gray-800">s</span>
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
+                <template v-if="isInfiniteDuration(localSettings.musicDuration)">
+                  <div class="group relative flex items-center justify-end cursor-help h-full pr-1">
+                    <span class="text-2xl font-normal text-gray-800 leading-none select-none">∞</span>
+                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                      {{ $t('create_game.full_track_tooltip') }}
+                      <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <input type="number" v-model.number="localSettings.musicDuration" min="1" max="100" @blur="localSettings.musicDuration = Math.min(Math.max(localSettings.musicDuration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                  <span class="text-sm font-bold text-gray-800">s</span>
+                </template>
               </div>
             </div>
-            <Slider v-model="localSettings.musicDuration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
+            <Slider v-model="localSettings.musicDuration" :stepValues="TIME_STEP_VALUES" :allowShiftOverride="true" class="w-full" />
           </div>
 
           <!-- Thinking time -->
@@ -122,12 +133,23 @@
                 <Hourglass class="w-4 h-4 text-gray-400 shrink-0" />
                 {{ $t('create_game.total_duration') }}
               </span>
-              <div class="flex items-center justify-end w-16 shrink-0 gap-1">
-                <input type="number" v-model.number="localSettings.duration" min="1" max="100" @blur="localSettings.duration = Math.min(Math.max(localSettings.duration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
-                <span class="text-sm font-bold text-gray-800">s</span>
+              <div class="flex items-center justify-end w-16 h-7 shrink-0 gap-1">
+                <template v-if="isInfiniteDuration(localSettings.duration)">
+                  <div class="group relative flex items-center justify-end cursor-help h-full pr-1">
+                    <span class="text-2xl font-normal text-gray-800 leading-none select-none">∞</span>
+                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-center pointer-events-none font-normal shadow-xl">
+                      {{ $t('create_game.full_track_tooltip') }}
+                      <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <input type="number" v-model.number="localSettings.duration" min="1" max="100" @blur="localSettings.duration = Math.min(Math.max(localSettings.duration || 1, 1), 100)" class="w-10 text-right bg-transparent border-b-2 border-transparent hover:border-[#FFBA49]/50 focus:border-[#FFBA49] outline-none font-bold text-gray-800 text-sm p-0 m-0 transition-colors no-spinners" />
+                  <span class="text-sm font-bold text-gray-800">s</span>
+                </template>
               </div>
             </div>
-            <Slider v-model="localSettings.duration" :stepValues="[1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]" :allowShiftOverride="true" class="w-full" />
+            <Slider v-model="localSettings.duration" :stepValues="TIME_STEP_VALUES" :allowShiftOverride="true" class="w-full" />
           </div>
         </div>
 
@@ -193,6 +215,7 @@ import Slider from '../ui/Slider.vue';
 import PresetSaveModal from '../games/blind-test/PresetSaveModal.vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS, getExpectedValue } from '../../core/domain/games/blind-test/types/blindTestOptions';
 import { DEFAULT_PRESETS } from '../../core/domain/games/blind-test/types/blindTestDefaultPresets';
+import { TIME_STEP_VALUES, isInfiniteDuration } from '../../core/domain/models/Game';
 import { usePresets } from '../../core/domain/setup/presets/usePresets';
 
 const props = defineProps<{
@@ -340,7 +363,7 @@ watch(() => props.isOpen, (newVal) => {
 // Constraints Logic
 watch(() => localSettings.value.musicDuration, (newVal) => {
   if (typeof newVal === 'number') {
-    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    const effectiveVal = Math.min(Math.max(newVal, 1), 105);
     if (newVal !== effectiveVal) {
       localSettings.value.musicDuration = effectiveVal;
     }
@@ -355,7 +378,7 @@ watch(() => localSettings.value.musicDuration, (newVal) => {
 
 watch(() => localSettings.value.duration, (newVal) => {
   if (typeof newVal === 'number') {
-    const effectiveVal = Math.min(Math.max(newVal, 1), 100);
+    const effectiveVal = Math.min(Math.max(newVal, 1), 105);
     if (newVal !== effectiveVal) {
       localSettings.value.duration = effectiveVal;
     }

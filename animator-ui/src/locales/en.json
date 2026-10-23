@@ -90,6 +90,7 @@
     "music_duration_tooltip": "Duration during which the music is played to the participants.",
     "total_duration": "Total duration:",
     "total_duration_tooltip": "Total duration of the round. It includes the blocking time, the music time, and any silence at the end.",
+    "full_track_tooltip": "The track will be played entirely",
     "game_mode": "Game mode:",
     "allow_suggestions": "Input Suggestions",
     "allow_suggestions_short": "Suggestions",

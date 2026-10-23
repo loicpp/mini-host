@@ -287,7 +287,7 @@ const playerRank = computed(() => {
   return player.value?.rank || null;
 });
 
-watch(() => [props.game?.status, props.game?.startTime, props.game?.settings?.duration], ([newStatus, newStartTime, newDuration], oldVals) => {
+watch(() => [props.game?.status, props.game?.startTime, props.game?.duration, props.game?.settings?.duration], ([newStatus, newStartTime, newTrackDuration, newDuration], oldVals) => {
   const oldStatus = oldVals ? oldVals[0] : undefined;
 
   if (newStatus === 'playing') {
@@ -306,8 +306,9 @@ watch(() => [props.game?.status, props.game?.startTime, props.game?.settings?.du
     
     const startTime = newStartTime;
     const settings = props.game?.settings;
-    if (startTime && newDuration) {
-      startTimer(startTime, newDuration * 1000, (settings?.blockDuration || 0) * 1000);
+    const effectiveDurationMs = newTrackDuration || (newDuration ? newDuration * 1000 : 0);
+    if (startTime && effectiveDurationMs > 0) {
+      startTimer(startTime, effectiveDurationMs, (settings?.blockDuration || 0) * 1000);
     }
   } else if (newStatus !== 'playing') {
     stopTimer();

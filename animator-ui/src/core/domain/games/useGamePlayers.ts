@@ -4,10 +4,13 @@ import { usePlayerStore } from '../general/stores/player';
 import { animatorService } from '../../../services/animatorService';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
+import { useMusicStore } from '../general/stores/music';
+import { isInfiniteDuration } from '../models/Game';
 import Fuse from 'fuse.js';
 
 const { gameId, gameSettings, nextTrackInfo, status, currentStartTime } = useGameStore();
 const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
+const { currentTrackDuration } = useMusicStore();
 
 export function calculateSpeedPoints(submittedAt: number, currentStartTime: number, T: number): number {
   if (!submittedAt || !currentStartTime) return 1;
@@ -241,7 +244,8 @@ export function useGamePlayers() {
         if (isCorrect && !pendingPoints.value[id]) {
           let points = 1;
           if (gameSettings.value?.speedPoints && guess?.submittedAt && currentStartTime.value) {
-            points = calculateSpeedPoints(guess.submittedAt, currentStartTime.value, gameSettings.value.duration || 15);
+            const effectiveT = (isInfiniteDuration(gameSettings.value?.duration) ? currentTrackDuration.value : gameSettings.value?.duration) || 15;
+            points = calculateSpeedPoints(guess.submittedAt, currentStartTime.value, effectiveT);
           }
           award(id, points);
         } else if (!isCorrect && gameSettings.value?.penaltyOnWrongAnswer && !pendingPoints.value[id]) {
