@@ -113,3 +113,28 @@ class FileStorageAdapter(StoragePort):
         except Exception:
             pass
         return presets
+
+    def save_history_entry(self, entry: Dict[str, Any]) -> None:
+        try:
+            history_path = os.path.join(self.config_dir, "history.jsonl")
+            with open(history_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except Exception:
+            pass
+
+    def load_history(self) -> List[Dict[str, Any]]:
+        entries = []
+        try:
+            history_path = os.path.join(self.config_dir, "history.jsonl")
+            if os.path.exists(history_path):
+                with open(history_path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line:
+                            try:
+                                entries.append(json.loads(line))
+                            except Exception:
+                                pass
+        except Exception:
+            pass
+        return entries

@@ -4,6 +4,7 @@
       :lastGameId="verifiedLastGameId || ''"
       @open-settings="router.push('/settings')"
       @open-setup="router.push('/setup')"
+      @open-history="router.push('/history')"
       @create-game="router.push('/game/selector')"
       @resume-game="handleResumeGame"
       @run-diagnostics="router.push('/diagnostics')"

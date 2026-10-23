@@ -33,3 +33,11 @@ class StoragePort(ABC):
     @abstractmethod
     def load_presets(self) -> List[Dict[str, Any]]:
         pass
+
+    @abstractmethod
+    def save_history_entry(self, entry: Dict[str, Any]) -> None:
+        pass
+
+    @abstractmethod
+    def load_history(self) -> List[Dict[str, Any]]:
+        pass

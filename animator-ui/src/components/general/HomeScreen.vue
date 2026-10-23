@@ -42,6 +42,16 @@
         <template #icon><Database class="w-5 h-5" /></template>
       </MenuActionBtn>
 
+      <!-- btn: Historique -->
+      <MenuActionBtn 
+        id="btn-history"
+        :title="$t('home.history')"
+        colorClass="bg-amber-50 text-amber-600"
+        @click="$emit('open-history')"
+      >
+        <template #icon><History class="w-5 h-5" /></template>
+      </MenuActionBtn>
+
       <!-- btn 4: Diagnostics -->
       <MenuActionBtn 
         id="btn-diagnostics"
@@ -90,7 +100,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { Settings, Zap, RefreshCw, Database, Activity, ChevronRight, HelpCircle } from '@lucide/vue';
+import { Settings, Zap, RefreshCw, Database, Activity, ChevronRight, HelpCircle, History } from '@lucide/vue';
 import MenuActionBtn from '../ui/MenuActionBtn.vue';
 import { useTutorial } from '../../core/domain/tutorial/useTutorial';
 import { useConfig } from '../../core/domain/general/useConfig';
@@ -128,6 +138,7 @@ defineEmits<{
   (e: 'create-game'): void;
   (e: 'resume-game'): void;
   (e: 'open-setup'): void;
+  (e: 'open-history'): void;
   (e: 'run-diagnostics'): void;
   (e: 'open-settings'): void;
 }>();

@@ -46,6 +46,12 @@ def register_routes(app: Flask, api: AnimatorApi):
             return jsonify(api.save_game_state(request.json))
         return jsonify(api.load_game_state())
 
+    @app.route('/api/history', methods=['GET', 'POST'])
+    def history_api():
+        if request.method == 'POST':
+            return jsonify(api.save_history_entry(request.json or {}))
+        return jsonify(api.load_history())
+
 
 
     @app.route('/api/dialog/folder')

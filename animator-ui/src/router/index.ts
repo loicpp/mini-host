@@ -32,6 +32,7 @@ const router = createRouter({
         { path: 'game/create/:gameType', name: 'CreateGame', component: CreateGameView },
         { path: 'game/:id', name: 'GameSession', component: GameSessionView },
         { path: 'playlists', name: 'Playlists', component: PlaylistConfigView },
+        { path: 'history', name: 'History', component: () => import('../views/HistoryView.vue') },
         { path: 'settings', name: 'Settings', component: SettingsView },
         { path: 'diagnostics', name: 'Diagnostics', component: DiagnosticsView }
       ],

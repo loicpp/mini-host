@@ -51,6 +51,37 @@ export function useGameState() {
     if (await showConfirm({ title: t('dialogs.stop_game.title'), message: t('dialogs.stop_game.message'), confirmText: t('dialogs.stop_game.confirm'), confirmVariant: "danger" })) {
       status.value = 'finished';
       try { await musicManager.stop(); } catch { console.warn("Could not stop music"); }
+
+      try {
+        const activePlayers = Object.entries(players.value || {})
+          .filter(([, p]: [string, any]) => p && p.role !== 'animator' && p.role !== 'projector')
+          .map(([id, p]: [string, any]) => ({
+            id,
+            name: p.name || '',
+            score: p.score || 0
+          }));
+
+        if (activePlayers.length > 0) {
+          const sorted = activePlayers.sort((a, b) => {
+            const diff = (b.score || 0) - (a.score || 0);
+            if (diff !== 0) return diff;
+            return a.name.localeCompare(b.name);
+          });
+
+          await localBackendService.saveHistoryEntry({
+            id: gameId.value,
+            endedAt: new Date().toISOString(),
+            players: sorted.map((p, idx) => ({
+              position: idx + 1,
+              name: p.name,
+              score: p.score
+            }))
+          });
+        }
+      } catch (err) {
+        console.warn("Could not save game history", err);
+      }
+
       await animatorService.updateGameState(gameId.value, 'finished');
     }
   };

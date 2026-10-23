@@ -85,3 +85,14 @@ class AnimatorApi:
 
     def load_presets(self) -> List[Dict[str, Any]]:
         return self.storage_port.load_presets()
+
+    def save_history_entry(self, entry: Dict[str, Any]) -> Dict[str, str]:
+        players = entry.get("players", [])
+        if not players:
+            return {"status": "ignored", "message": "No players in game"}
+        self.storage_port.save_history_entry(entry)
+        return {"status": "ok"}
+
+    def load_history(self) -> List[Dict[str, Any]]:
+        entries = self.storage_port.load_history()
+        return sorted(entries, key=lambda e: e.get("endedAt", ""), reverse=True)
