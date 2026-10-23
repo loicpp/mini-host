@@ -275,7 +275,9 @@
     "unknown_answer": "Unknown Answer",
     "leaderboard": "Leaderboard:",
     "podium": "Final Podium",
-    "rest_of_leaderboard": "Rest of the leaderboard:"
+    "rest_of_leaderboard": "Rest of the leaderboard:",
+    "revealing_ranks": "Revealing the leaderboard...",
+    "skip_animation": "Skip animation"
   },
   "control_panel": {
     "players": "players",

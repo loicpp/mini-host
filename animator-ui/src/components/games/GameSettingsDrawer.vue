@@ -198,7 +198,6 @@ import { usePresets } from '../../core/domain/setup/presets/usePresets';
 const props = defineProps<{
   isOpen: boolean;
   gameSettings: any;
-  isGameOver?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -414,6 +413,7 @@ const checkPreset = (preset: any) => {
 watch(
   () => {
     const deps = [
+      localSettings.value.mode,
       localSettings.value.blockDuration,
       localSettings.value.musicDuration,
       localSettings.value.duration

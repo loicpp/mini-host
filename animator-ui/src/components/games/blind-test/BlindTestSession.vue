@@ -129,13 +129,13 @@
           </div>
         </div>
 
-        <div v-if="(status === 'playing' && (gameSettings.mode === 'text' || (gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false))) || (status === 'reviewing' && gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false)" class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm animate-in fade-in duration-300">
+        <div v-if="(status === 'playing' && (gameSettings.mode === 'text' || (gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false))) || (status === 'reviewing' && gameSettings.mode === 'buzzer' && gameSettings.blockPlayerOnWrongAnswer !== false)" class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm animate-in fade-in duration-300">
           <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
             <Users class="w-5 h-5 text-muted-foreground" /> {{ $t('control_panel.players_status') }}
           </h3>
-          <div id="player-grid-playing" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div id="player-grid-playing" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[calc(100vh-320px)] overflow-y-auto pr-2">
             <div v-for="player in displayedPlayers" :key="player.id" 
-                 :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors', 
+                 :class="['p-3 rounded-xl border flex items-center gap-3 transition-colors shrink-0', 
                           player.blockedTurns && player.blockedTurns !== 0 ? 'bg-red-50 border-red-200' :
                           player.hasAnswered ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200']">
               <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0', 
@@ -155,13 +155,13 @@
         </div>
 
         <div v-if="status === 'results'" class="flex flex-col gap-6 animate-in fade-in duration-300">
-          <div class="flex-1 bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
+          <div class="bg-white p-6 rounded-3xl border border-[rgba(0,0,0,0.06)] shadow-sm">
             <h3 class="font-bold text-primary mb-6 flex items-center gap-2">
               <Trophy class="w-5 h-5 text-yellow-500" /> {{ $t('control_panel.round_results') }}
             </h3>
             
-            <div id="player-rank" class="grid gap-3">
-              <div v-for="player in playersRoundResults" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]">
+            <div id="player-rank" class="grid gap-3 max-h-[calc(100vh-280px)] overflow-y-auto pr-2">
+              <div v-for="player in playersRoundResults" :key="player.id" class="flex items-center gap-4 p-4 rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#f5f6fa] shrink-0">
                 <div class="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm font-bold text-gray-700 border border-gray-200">
                   {{ player.currentRank }}
                 </div>
@@ -240,7 +240,6 @@
       <GameSettingsDrawer
         :isOpen="isSettingsDrawerOpen"
         :gameSettings="gameSettings"
-        :isGameOver="status === 'finished'"
         @close="isSettingsDrawerOpen = false"
         @save-settings="handleSaveSettings"
       />

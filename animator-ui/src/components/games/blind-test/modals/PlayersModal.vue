@@ -13,11 +13,11 @@
         </button>
       </div>
       
-      <div class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2">
+      <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2">
         <div v-if="sortedPlayersList.length === 0" class="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground font-medium italic">
           {{ $t('control_panel.no_players_connected') }}
         </div>
-        <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex items-center justify-between gap-3', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
+        <div v-for="player in sortedPlayersList" :key="player.id" :class="['rounded-xl border p-4 flex items-center justify-between gap-3 shrink-0', player.blockedTurns ? 'border-red-200 bg-red-50/50' : 'border-[rgba(0,0,0,0.08)] bg-[#f5f6fa]']">
           <div class="flex items-center gap-2 flex-1 overflow-hidden">
             <span class="font-bold text-primary text-lg truncate" :class="{'line-through opacity-50': player.excluded}">{{ player.name || $t('control_panel.anonymous') }}</span>
             <Badge v-if="player.excluded" color="purple" class="shrink-0">{{ $t('control_panel.excluded') }}</Badge>

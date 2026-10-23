@@ -179,43 +179,116 @@
         </div>
       </div>
       
-      <div v-else-if="game.data?.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center">
-        <h1 class="text-7xl font-black text-emerald-400 mb-16 flex items-center justify-center gap-6">
-          <Trophy class="w-20 h-20" /> {{ $t('projector.podium') }} <Trophy class="w-20 h-20" />
-        </h1>
-        
-        <div class="flex justify-center items-end gap-6 mb-16 h-[40vh] w-full px-8">
-          <div v-for="player in topThreePlayers" :key="player.id" :class="[
-            'bg-white/10 rounded-t-3xl flex flex-col items-center pt-6 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] relative w-1/3 animate-in fade-in slide-in-from-bottom-8',
-            player.rank === 1 ? 'h-full border-t-[6px] border-[#ffd700] bg-gradient-to-t from-[#ffd700]/10 to-[#ffd700]/30 z-30' :
-            player.rank === 2 ? 'h-[75%] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
-            'h-[55%] border-t-[6px] border-[#cd7f32] bg-gradient-to-t from-[#cd7f32]/10 to-[#cd7f32]/30 z-10'
-          ]">
-            <div class="mb-3 py-4 flex justify-center w-full">
-              <Medal :class="[
-                'w-16 h-16',
-                player.rank === 1 ? 'text-[#ffd700] fill-[#ffd700]/30' : 
-                player.rank === 2 ? 'text-[#e0e0e0] fill-[#e0e0e0]/30' : 
-                'text-[#cd7f32] fill-[#cd7f32]/30'
-              ]" stroke-width="2" />
-            </div>
-            <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
-            <div class="text-2xl text-white/80 mt-3 font-medium">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</div>
+      <div v-else-if="game.data?.status === 'finished'" class="w-full max-w-5xl flex flex-col items-center relative h-[780px] justify-start pt-2">
+        <!-- Phase 1 : Révélation progressive du classement du bas vers le haut (du dernier jusqu'au 4ème) -->
+        <div 
+          v-if="podiumStep === 'revealing_leaderboard' || podiumStep === 'dismissing_leaderboard'" 
+          :class="[
+            'w-full max-w-5xl flex flex-col items-center transition-all duration-800 ease-in',
+            podiumStep === 'dismissing_leaderboard' ? 'translate-y-[950px] opacity-0' : 'translate-y-0 opacity-100'
+          ]"
+        >
+          <h1 class="text-6xl font-black text-emerald-400 mb-4 flex items-center justify-center gap-4 shrink-0">
+            <Trophy class="w-16 h-16 text-[#FFBA49]" /> {{ $t('projector.leaderboard') }} <Trophy class="w-16 h-16 text-[#FFBA49]" />
+          </h1>
+          <p class="text-2xl text-white/70 mb-2 font-medium animate-pulse shrink-0">
+            {{ $t('projector.revealing_ranks') }}
+          </p>
+
+          <div class="w-[1040px] max-w-full h-[500px] flex flex-col items-center justify-start overflow-hidden px-10 pt-14">
+            <TransitionGroup 
+              name="reveal-list" 
+              tag="div" 
+              class="w-full flex flex-col items-center gap-3"
+            >
+              <div 
+                v-for="player in revealedPlayersList" 
+                :key="player.id"
+                :class="[
+                  'flex justify-between items-center rounded-2xl backdrop-blur-md transition-all duration-500 ease-out shrink-0',
+                  (spotlightedPlayerId === player.id && isSpotlightActive)
+                    ? 'w-[880px] h-[90px] px-10 bg-gradient-to-r from-amber-500/40 via-yellow-500/25 to-amber-500/40 border-2 border-[#FFBA49] shadow-[0_0_40px_rgba(255,186,73,0.55)] ring-2 ring-[#FFBA49]/50 z-10'
+                    : 'w-[760px] h-[68px] px-8 bg-white/10 border border-white/15 shadow-none ring-0'
+                ]"
+              >
+                <div class="flex items-center gap-6 transition-all duration-500">
+                  <span 
+                    :class="[
+                      'font-black transition-all duration-500 text-left',
+                      (spotlightedPlayerId === player.id && isSpotlightActive)
+                        ? 'text-[#FFBA49] text-5xl w-24' 
+                        : 'text-[#FFBA49]/80 text-2xl w-20'
+                    ]"
+                  >
+                    #{{ player.rank }}
+                  </span>
+                  <span 
+                    :class="[
+                      'transition-all duration-500 truncate',
+                      (spotlightedPlayerId === player.id && isSpotlightActive)
+                        ? 'font-black text-white text-3xl max-w-[500px]' 
+                        : 'font-semibold text-white/95 text-2xl max-w-[440px]'
+                    ]"
+                  >
+                    {{ player.name }}
+                  </span>
+                </div>
+                <span 
+                  :class="[
+                    'font-black tabular-nums transition-all duration-500',
+                    (spotlightedPlayerId === player.id && isSpotlightActive)
+                      ? 'text-[#FFBA49] text-3xl' 
+                      : 'text-emerald-400 text-2xl'
+                  ]"
+                >
+                  {{ player.score || 0 }} {{ $t('gameroom.pts') }}
+                </span>
+              </div>
+            </TransitionGroup>
           </div>
         </div>
-        
-        <div class="w-full max-w-3xl" v-if="otherPlayers.length > 0">
-          <h3 class="text-2xl text-white/70 mb-6 font-medium text-left px-4">{{ $t('projector.rest_of_leaderboard') }}</h3>
-          <ul class="flex flex-col gap-3 w-full m-0 p-0">
-            <li v-for="(player, index) in otherPlayers" :key="player.id" class="flex justify-between items-center bg-white/10 px-8 py-4 rounded-2xl text-2xl backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2">
-              <span class="font-bold text-white/50 w-16 text-left">#{{ index + 4 }}</span>
-              <span class="flex-1 text-left font-medium">{{ player.name }}</span>
-              <span class="font-bold text-emerald-400">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</span>
-            </li>
-          </ul>
+
+        <!-- Phase 2 : Podium final uniquement -->
+        <div v-else class="w-full flex flex-col items-center animate-in fade-in duration-700">
+          <h1 class="text-7xl font-black text-emerald-400 mb-12 flex items-center justify-center gap-6">
+            <Trophy class="w-20 h-20 text-[#ffd700]" /> {{ $t('projector.podium') }} <Trophy class="w-20 h-20 text-[#ffd700]" />
+          </h1>
+          
+          <div class="flex justify-center items-end gap-6 mb-12 w-full px-8 h-[440px] overflow-hidden">
+            <div 
+              v-for="player in topThreePlayers" 
+              :key="player.id" 
+              :class="[
+                'rounded-t-3xl flex flex-col items-center pt-6 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] relative w-1/3 transition-transform duration-1000 ease-out',
+                player.rank === 1 ? 'h-[420px] border-t-[6px] border-[#ffd700] bg-gradient-to-t from-[#ffd700]/10 to-[#ffd700]/30 z-30' :
+                player.rank === 2 ? 'h-[350px] border-t-[6px] border-[#c0c0c0] bg-gradient-to-t from-[#c0c0c0]/10 to-[#c0c0c0]/30 z-20' :
+                'h-[280px] border-t-[6px] border-[#cd7f32] bg-gradient-to-t from-[#cd7f32]/10 to-[#cd7f32]/30 z-10',
+                stepRaised[player.rank] ? 'translate-y-0' : 'translate-y-[500px]'
+              ]"
+            >
+              <div 
+                :class="[
+                  'flex flex-col items-center w-full transition-all duration-500 ease-out',
+                  contentRevealed[player.rank] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                ]"
+              >
+                <div class="mb-2 py-2 flex justify-center w-full">
+                  <Medal :class="[
+                    'w-16 h-16',
+                    player.rank === 1 ? 'text-[#ffd700] fill-[#ffd700]/30' : 
+                    player.rank === 2 ? 'text-[#e0e0e0] fill-[#e0e0e0]/30' : 
+                    'text-[#cd7f32] fill-[#cd7f32]/30'
+                  ]" stroke-width="2" />
+                </div>
+                <div class="text-4xl font-bold text-white text-center break-words px-4 w-full">{{ player.name }}</div>
+                <div class="text-lg text-white/80 mt-2 font-medium">{{ player.score || 0 }} {{ $t('gameroom.pts') }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
+      <canvas ref="confettiCanvasRef" width="1920" height="1080" class="absolute inset-0 pointer-events-none z-50"></canvas>
     </div>
   </div>
 </template>
@@ -312,7 +385,307 @@ const topThreePlayers = computed(() => {
   if (top.length > 2) result.push({ ...top[2], rank: 3 });
   return result;
 });
-const otherPlayers = computed(() => allPlayersSorted.value.slice(3, 5));
+type PodiumStep = 'init' | 'revealing_leaderboard' | 'dismissing_leaderboard' | 'revealing_bronze' | 'revealing_silver' | 'revealing_gold' | 'completed';
+
+const podiumStep = ref<PodiumStep>('init');
+const revealedPlayersList = ref<Array<{ id: string; name: string; score: number; rank: number }>>([]);
+const spotlightedPlayerId = ref<string | null>(null);
+const isSpotlightActive = ref(false);
+const podiumTimeouts = ref<ReturnType<typeof setTimeout>[]>([]);
+const stepRaised = ref<{ [rank: number]: boolean }>({ 1: false, 2: false, 3: false });
+const contentRevealed = ref<{ [rank: number]: boolean }>({ 1: false, 2: false, 3: false });
+
+interface ConfettiParticle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  width: number;
+  height: number;
+  color: string;
+  rotation: number;
+  rotationSpeed: number;
+  opacity: number;
+  decay: number;
+  isCircle: boolean;
+}
+
+const confettiCanvasRef = ref<HTMLCanvasElement | null>(null);
+let confettiAnimId: number | null = null;
+let confettiParticles: ConfettiParticle[] = [];
+
+const CONFETTI_COLORS = [
+  '#FFD700', // Gold
+  '#FFBA49', // Amber
+  '#FF4D4D', // Red
+  '#00D2FF', // Cyan
+  '#34D399', // Emerald
+  '#A78BFA', // Purple
+  '#F472B6', // Pink
+  '#FFFFFF'  // White
+];
+
+const launchConfetti = () => {
+  if (!confettiCanvasRef.value) return;
+  const canvas = confettiCanvasRef.value;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const addBurst = (originX: number, originY: number, count = 80, spreadX = 22, minVy = 14, maxVy = 26) => {
+    for (let i = 0; i < count; i++) {
+      confettiParticles.push({
+        x: originX + (Math.random() - 0.5) * 40,
+        y: originY + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * spreadX,
+        vy: -(Math.random() * (maxVy - minVy) + minVy),
+        width: Math.random() * 8 + 8,
+        height: Math.random() * 12 + 10,
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.25,
+        opacity: 1,
+        decay: Math.random() * 0.005 + 0.004,
+        isCircle: Math.random() > 0.75
+      });
+    }
+  };
+
+  // Burst 1 : Centre (au-dessus du podium du 1er)
+  addBurst(960, 680, 90, 26, 16, 28);
+
+  // Burst 2 : Canon gauche après 150ms
+  const t1 = setTimeout(() => {
+    addBurst(400, 750, 60, 20, 14, 25);
+  }, 150);
+  podiumTimeouts.value.push(t1);
+
+  // Burst 3 : Canon droit après 300ms
+  const t2 = setTimeout(() => {
+    addBurst(1520, 750, 60, 20, 14, 25);
+  }, 300);
+  podiumTimeouts.value.push(t2);
+
+  // Burst 4 : Finale au centre après 500ms
+  const t3 = setTimeout(() => {
+    addBurst(960, 650, 70, 24, 15, 27);
+  }, 500);
+  podiumTimeouts.value.push(t3);
+
+  if (confettiAnimId) {
+    cancelAnimationFrame(confettiAnimId);
+  }
+
+  const animate = () => {
+    if (!confettiCanvasRef.value) return;
+    const c = confettiCanvasRef.value;
+    const context = c.getContext('2d');
+    if (!context) return;
+
+    context.clearRect(0, 0, 1920, 1080);
+
+    for (let i = confettiParticles.length - 1; i >= 0; i--) {
+      const p = confettiParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.45; // gravité
+      p.vx *= 0.985; // frottement
+      p.rotation += p.rotationSpeed;
+      p.opacity -= p.decay;
+
+      if (p.opacity <= 0 || p.y > 1150) {
+        confettiParticles.splice(i, 1);
+        continue;
+      }
+
+      context.save();
+      context.translate(p.x, p.y);
+      context.rotate(p.rotation);
+      context.globalAlpha = Math.max(0, p.opacity);
+      context.fillStyle = p.color;
+
+      if (p.isCircle) {
+        context.beginPath();
+        context.arc(0, 0, p.width / 2, 0, Math.PI * 2);
+        context.fill();
+      } else {
+        context.fillRect(-p.width / 2, -p.height / 2, p.width, p.height);
+      }
+      context.restore();
+    }
+
+    if (confettiParticles.length > 0) {
+      confettiAnimId = requestAnimationFrame(animate);
+    } else {
+      context.clearRect(0, 0, 1920, 1080);
+      confettiAnimId = null;
+    }
+  };
+
+  confettiAnimId = requestAnimationFrame(animate);
+};
+
+const stopConfetti = () => {
+  if (confettiAnimId) {
+    cancelAnimationFrame(confettiAnimId);
+    confettiAnimId = null;
+  }
+  confettiParticles = [];
+  if (confettiCanvasRef.value) {
+    const ctx = confettiCanvasRef.value.getContext('2d');
+    if (ctx) ctx.clearRect(0, 0, 1920, 1080);
+  }
+};
+
+const clearPodiumTimers = () => {
+  podiumTimeouts.value.forEach(t => clearTimeout(t));
+  podiumTimeouts.value = [];
+  revealedPlayersList.value = [];
+  spotlightedPlayerId.value = null;
+  isSpotlightActive.value = false;
+  stopConfetti();
+};
+
+const skipPodiumAnimation = () => {
+  clearPodiumTimers();
+  stepRaised.value = { 1: true, 2: true, 3: true };
+  contentRevealed.value = { 1: true, 2: true, 3: true };
+  podiumStep.value = 'completed';
+};
+
+const revealPodiumSteps = (players: any[]) => {
+  podiumStep.value = 'revealing_bronze';
+
+  const hasRank3 = players.length >= 3;
+  const hasRank2 = players.length >= 2;
+  const hasRank1 = players.length >= 1;
+
+  let delay = 400;
+
+  // 1. 3ème place (Bronze)
+  if (hasRank3) {
+    const t1 = setTimeout(() => {
+      stepRaised.value[3] = true;
+    }, delay);
+    podiumTimeouts.value.push(t1);
+
+    delay += 1000; // La marche arrive en position haute
+    const t2 = setTimeout(() => {
+      contentRevealed.value[3] = true;
+    }, delay);
+    podiumTimeouts.value.push(t2);
+
+    delay += 1400; // Pause pour apprécier le 3ème
+  }
+
+  // 2. 2ème place (Argent)
+  if (hasRank2) {
+    const t3 = setTimeout(() => {
+      stepRaised.value[2] = true;
+    }, delay);
+    podiumTimeouts.value.push(t3);
+
+    delay += 1000; // La marche arrive en position haute
+    const t4 = setTimeout(() => {
+      contentRevealed.value[2] = true;
+    }, delay);
+    podiumTimeouts.value.push(t4);
+
+    delay += 1400; // Pause pour apprécier le 2ème
+  }
+
+  // 3. 1ère place (Or)
+  if (hasRank1) {
+    const t5 = setTimeout(() => {
+      stepRaised.value[1] = true;
+    }, delay);
+    podiumTimeouts.value.push(t5);
+
+    delay += 1100; // La marche arrive en position haute
+    const t6 = setTimeout(() => {
+      contentRevealed.value[1] = true;
+      launchConfetti();
+    }, delay);
+    podiumTimeouts.value.push(t6);
+
+    delay += 800;
+    const t7 = setTimeout(() => {
+      podiumStep.value = 'completed';
+    }, delay);
+    podiumTimeouts.value.push(t7);
+  } else {
+    podiumStep.value = 'completed';
+  }
+};
+
+const startPodiumSequence = () => {
+  clearPodiumTimers();
+  stepRaised.value = { 1: false, 2: false, 3: false };
+  contentRevealed.value = { 1: false, 2: false, 3: false };
+
+  const players = allPlayersSorted.value;
+  if (!players || players.length === 0) {
+    podiumStep.value = 'completed';
+    return;
+  }
+
+  const lowerPlayers = players.slice(3);
+
+  if (lowerPlayers.length > 0) {
+    podiumStep.value = 'revealing_leaderboard';
+    const fromBottomToTop = [...lowerPlayers].map((p, idx) => ({
+      ...p,
+      rank: idx + 4
+    })).reverse();
+    
+    // Rythme dynamique d'affichage :
+    // Le joueur apparaît en haut de la liste (max 5 affichés simultanément),
+    // est mis en valeur en grand (spotlight), puis revient à la taille standard.
+    // Quand un 6ème joueur arrive, le plus ancien en bas disparaît.
+    const count = fromBottomToTop.length;
+    const spotlightDuration = count > 6 ? 750 : 950;
+    const settleDuration = count > 6 ? 350 : 450;
+    const stepDuration = spotlightDuration + settleDuration;
+
+    let delay = 400;
+
+    fromBottomToTop.forEach((player) => {
+      // 1. Ajouter le joueur en tête de liste (max 5) et activer le spotlight
+      const timerSpotlight = setTimeout(() => {
+        revealedPlayersList.value = [player, ...revealedPlayersList.value].slice(0, 5);
+        spotlightedPlayerId.value = player.id;
+        isSpotlightActive.value = true;
+      }, delay);
+      podiumTimeouts.value.push(timerSpotlight);
+
+      // 2. Le joueur revient en douceur à la taille standard
+      const timerSettle = setTimeout(() => {
+        isSpotlightActive.value = false;
+      }, delay + spotlightDuration);
+      podiumTimeouts.value.push(timerSettle);
+
+      delay += stepDuration;
+    });
+
+    // 3. Pause pour observer le classement final (du 4ème et suivants)
+    delay += 1200;
+    const dismissTimer = setTimeout(() => {
+      podiumStep.value = 'dismissing_leaderboard';
+    }, delay);
+    podiumTimeouts.value.push(dismissTimer);
+
+    // 4. Passage au podium une fois la descente de l'écran terminée (800ms)
+    delay += 850;
+    const transitionTimer = setTimeout(() => {
+      revealedPlayersList.value = [];
+      spotlightedPlayerId.value = null;
+      isSpotlightActive.value = false;
+      revealPodiumSteps(players);
+    }, delay);
+    podiumTimeouts.value.push(transitionTimer);
+  } else {
+    revealPodiumSteps(players);
+  }
+};
 
 const dashOffsetTotal = computed(() => {
   const c = Math.PI * (45 * 2);
@@ -378,8 +751,12 @@ onMounted(async () => {
   });
 });
 
-watch(() => game.value?.data?.status, (newStatus) => {
+let lastFinishedState = false;
+watch([() => game.value?.data?.status, () => allPlayersSorted.value.length], ([newStatus, playersCount]) => {
   if (newStatus === 'playing') {
+    lastFinishedState = false;
+    clearPodiumTimers();
+    podiumStep.value = 'init';
     const data = game.value?.data;
     if (data && data.startTime && data.settings?.duration) {
       totalTime.value = data.settings.duration;
@@ -389,7 +766,19 @@ watch(() => game.value?.data?.status, (newStatus) => {
       blockTotalTime.value = bDuration;
       startTimer(data.startTime, data.settings.duration * 1000, mDuration * 1000);
     }
+  } else if (newStatus === 'finished') {
+    if (timerInterval.value) {
+      clearInterval(timerInterval.value);
+      timerInterval.value = null;
+    }
+    if (!lastFinishedState && Number(playersCount) > 0) {
+      lastFinishedState = true;
+      startPodiumSequence();
+    }
   } else {
+    lastFinishedState = false;
+    clearPodiumTimers();
+    podiumStep.value = 'init';
     if (timerInterval.value) {
       clearInterval(timerInterval.value);
       timerInterval.value = null;
@@ -445,6 +834,10 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'F11') {
     event.preventDefault();
     toggleFullscreen();
+  } else if (event.key === ' ' || event.key === 'Escape' || event.key === 'Enter') {
+    if (game.value?.data?.status === 'finished' && podiumStep.value !== 'completed') {
+      skipPodiumAnimation();
+    }
   }
 };
 
@@ -454,6 +847,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  clearPodiumTimers();
   window.removeEventListener('keydown', handleKeyDown);
   window.removeEventListener('resize', handleResize);
   document.title = originalTitle;
@@ -463,5 +857,25 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style scoped>
+.reveal-list-enter-active {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-list-leave-active {
+  transition: all 0.4s ease-out;
+}
+.reveal-list-enter-from {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+}
+.reveal-list-leave-to {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+}
+.reveal-list-move {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>
 
 

@@ -11,7 +11,7 @@
       </label>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-h-[calc(100vh-280px)] overflow-y-auto pr-2 pb-4">
       <Card 
         v-for="player in filteredPlayers" :key="player.id" 
       :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${
