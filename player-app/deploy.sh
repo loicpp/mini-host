@@ -1,11 +1,7 @@
 #!/bin/bash
-echo "==> Deploying Player App to Firebase Hosting..."
+# Script de déploiement multi-version de player-app sur Firebase Hosting
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "--> Building Vue application..."
-npm install
-npm run build
+python3 "$ROOT_DIR/tools/deploy_player.py" "$@"
 
-echo "--> Deploying to Firebase Hosting..."
-npx firebase deploy --only hosting
-
-echo "==> Deployment Complete!"

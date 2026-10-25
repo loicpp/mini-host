@@ -1,12 +1,4 @@
 @echo off
-echo ==^> Deploying Player App to Firebase Hosting...
+rem Script de déploiement multi-version de player-app sur Firebase Hosting
+python "%~dp0..\tools\deploy_player.py" %*
 
-echo --^> Building Vue application...
-call npm install
-call npm run build
-
-echo --^> Deploying to Firebase Hosting...
-call npx firebase deploy --only hosting
-
-echo ==^> Deployment Complete!
-pause

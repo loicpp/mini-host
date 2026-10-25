@@ -23,9 +23,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: player-app
       - name: Inject Environment Variables
         run: |
           VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           cat <<EOF > .env.production
           VITE_APP_VERSION=$VERSION
           VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}
@@ -38,7 +46,7 @@ jobs:
           EOF
         shell: bash
       - name: Deploy Player App
-        run: bash deploy.sh
+        run: bash deploy.sh --version "$VERSION"
         working-directory: player-app
         env:
           # Assurez-vous d'ajouter ce secret dans les Settings > Secrets de votre dépôt GitHub

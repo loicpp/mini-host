@@ -337,7 +337,8 @@ const musicTotalTime = ref(15);
 const blockTotalTime = ref(0);
 const timerInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
-const baseUrl = "https://minihostapp-1.web.app"; 
+const playerVersion = import.meta.env.VITE_PLAYER_APP_VERSION || import.meta.env.VITE_APP_VERSION || (import.meta.env.DEV ? 'dev' : '');
+const baseUrl = playerVersion ? `https://minihostapp-1.web.app/${playerVersion}` : "https://minihostapp-1.web.app"; 
 
 const qrCodeUrl = ref('');
 
