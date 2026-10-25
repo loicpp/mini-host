@@ -34,6 +34,12 @@ vi.mock('../../../services/music/MusicManager', () => ({
   }
 }));
 
+vi.mock('../../../firebase', () => ({
+  getServerTime: vi.fn().mockReturnValue(1000),
+  db: {},
+  auth: {}
+}));
+
 vi.mock('../../../services/animatorService', () => ({
   animatorService: {
     clearPressedBuzzer: vi.fn().mockResolvedValue(undefined),
