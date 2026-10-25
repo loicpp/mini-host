@@ -349,6 +349,13 @@ const handleGlobalClick = (e: Event) => {
 };
 
 const handlePlayMusic = async () => {
+  if (!selectedTrack.value) {
+    if (!localTracks.value || localTracks.value.length === 0) return;
+    const unplayed = localTracks.value.filter(t => !playedTracks.value.includes(t.id));
+    const pool = unplayed.length > 0 ? unplayed : localTracks.value;
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    await handleSelectTrack(pool[randomIndex]);
+  }
   playMusic();
 };
 

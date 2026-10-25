@@ -28,7 +28,7 @@ export function useGameKeyboardShortcuts(
   gameSidebarRef: Ref<any>
 ) {
   const { status, gameSettings } = useGameStore();
-  const { selectedTrack } = useMusicStore();
+  const { selectedTrack, localTracks } = useMusicStore();
   const { hasBuzzed } = useGamePlayers();
 
   const handleKeydown = (e: KeyboardEvent) => {
@@ -87,7 +87,9 @@ export function useGameKeyboardShortcuts(
       } else {
         e.preventDefault();
         if (status.value === 'waiting') {
-          if (selectedTrack.value) actions.handlePlayMusic();
+          if (selectedTrack.value || (localTracks.value && localTracks.value.length > 0)) {
+            actions.handlePlayMusic();
+          }
         } else if (status.value === 'playing') {
           actions.stopMusic();
         } else if (status.value === 'reviewing') {

@@ -11,7 +11,7 @@
       </label>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full flex-1 min-h-0 overflow-y-auto pr-2 pb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full content-start flex-1 min-h-0 overflow-y-auto pr-2 pb-4">
       <Card 
         v-for="player in filteredPlayers" :key="player.id" 
       :className="`p-4 flex flex-col gap-3 transition-all duration-300 border-2 ${openBonusPlayerId === player.id ? 'z-20 relative' : 'relative'} ${

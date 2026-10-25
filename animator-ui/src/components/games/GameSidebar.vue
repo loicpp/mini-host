@@ -57,8 +57,16 @@
 
     <div class="h-[120px] flex flex-col justify-center shrink-0 w-full">
       <div class="flex flex-col gap-4 w-full" v-if="status === 'waiting'">
-        <Btn id="music-control-btn" variant="blue" className="w-full font-bold" @click="$emit('play')" :disabled="!selectedTrack">
-          <Play class="w-5 h-5 mr-2" /> {{ $t('sidebar.play_music') }}
+        <Btn 
+          id="music-control-btn" 
+          variant="blue" 
+          className="w-full font-bold" 
+          @click="$emit('play')" 
+          :disabled="!selectedTrack && (!localTracks || localTracks.length === 0)"
+        >
+          <Shuffle v-if="!selectedTrack" class="w-5 h-5 mr-2" />
+          <Play v-else class="w-5 h-5 mr-2" />
+          {{ selectedTrack ? $t('sidebar.play_music') : $t('sidebar.play_random_music') }}
         </Btn>
       </div>
 
@@ -200,7 +208,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
-import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket, ChevronDown, Sparkles } from '@lucide/vue';
+import { Monitor, Play, Square, X, Check, ChevronRight, EyeOff, Eye, Bell, Type, Clock, Music, Hourglass, Zap, Smile, Leaf, Settings2, Info, MessageSquare, Gamepad2, Star, Bookmark, Heart, Coffee, Flame, Shield, Ghost, Trophy, Target, Rocket, ChevronDown, Sparkles, Shuffle } from '@lucide/vue';
 import { BLIND_TEST_ADDITIONAL_OPTIONS } from '../../core/domain/games/blind-test/types/blindTestOptions';
 import { Track } from '../../services/music/MusicProvider';
 import { isInfiniteDuration } from '../../core/domain/models/Game';

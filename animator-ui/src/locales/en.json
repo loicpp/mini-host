@@ -203,6 +203,7 @@
     "blind_test": "Blind Test",
     "regie": "Control Panel",
     "play_music": "Play Music",
+    "play_random_music": "Play Random Music",
     "stop_music": "Stop & Review",
     "wrong_resume": "Wrong, resume",
     "correct_reveal": "Correct (1 pt & Reveal)",

@@ -5,12 +5,13 @@ import { animatorService } from '../../../services/animatorService';
 import { useDialog } from '../general/useDialog';
 import { useI18n } from 'vue-i18n';
 import { useMusicStore } from '../general/stores/music';
+import { musicManager } from '../../../services/music/MusicManager';
 import { isInfiniteDuration } from '../models/Game';
 import Fuse from 'fuse.js';
 
 const { gameId, gameSettings, nextTrackInfo, status, currentStartTime } = useGameStore();
 const { players, pressedBuzzer, pendingPoints, lastAwardedPoints, pendingBonuses, lastAwardedBonuses, autoCorrectResults, wasAutoCorrected } = usePlayerStore();
-const { currentTrackDuration } = useMusicStore();
+const { currentTrackDuration, selectedTrack, trackEnded } = useMusicStore();
 
 export function calculateSpeedPoints(submittedAt: number, currentStartTime: number, T: number): number {
   if (!submittedAt || !currentStartTime) return 1;
@@ -206,6 +207,9 @@ export function useGamePlayers() {
     }
 
     status.value = 'results';
+    if (!trackEnded.value && selectedTrack.value) {
+      musicManager.resume().catch((e: any) => console.warn("Could not resume music on results", e));
+    }
     await applyPendingPoints();
     await animatorService.clearPressedBuzzer(gameId.value);
     await animatorService.updateGameState(gameId.value, 'results');

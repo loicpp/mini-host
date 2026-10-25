@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.hoisted(() => {
   globalThis.localStorage = {
@@ -56,7 +56,7 @@ vi.mock('../../../components/ui/dialog/useDialog', () => ({
   })
 }));
 
-import { nextTick } from 'vue';
+import { nextTick, effectScope, type EffectScope } from 'vue';
 import { useGameMusic } from './useGameMusic';
 import { useGameState } from './useGameState';
 import { useGameStore } from '../general/stores/game';
@@ -66,58 +66,72 @@ import { musicManager } from '../../../services/music/MusicManager';
 describe('useGameMusic & useGameState music resumption on results', () => {
   const { status, gameSettings, gameId } = useGameStore();
   const { selectedTrack } = useMusicStore();
+  let scope: EffectScope;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    scope = effectScope();
     gameId.value = 'TEST_GAME';
     status.value = 'waiting';
     gameSettings.value = { mode: 'text', duration: 30, musicDuration: 15 };
     selectedTrack.value = null;
   });
 
+  afterEach(() => {
+    scope.stop();
+  });
+
   it('nextRound stops the music via musicManager.stop()', async () => {
-    const { nextRound } = useGameState();
-    await nextRound();
-    expect(musicManager.stop).toHaveBeenCalledTimes(1);
-    expect(status.value).toBe('waiting');
+    await scope.run(async () => {
+      const { nextRound } = useGameState();
+      await nextRound();
+      expect(musicManager.stop).toHaveBeenCalledTimes(1);
+      expect(status.value).toBe('waiting');
+    });
   });
 
   it('stopMusic pauses the music via musicManager.pause() rather than resetting it with stop()', async () => {
-    const { stopMusic } = useGameMusic();
-    status.value = 'playing';
-    await stopMusic();
-    expect(musicManager.pause).toHaveBeenCalledTimes(1);
-    expect(musicManager.stop).not.toHaveBeenCalled();
-    expect(status.value).toBe('reviewing');
+    await scope.run(async () => {
+      const { stopMusic } = useGameMusic();
+      status.value = 'playing';
+      await stopMusic();
+      expect(musicManager.pause).toHaveBeenCalledTimes(1);
+      expect(musicManager.stop).not.toHaveBeenCalled();
+      expect(status.value).toBe('reviewing');
+    });
   });
 
   it('resumes music when transitioning to results status if track has not ended', async () => {
-    useGameMusic(); // initialize watcher
-    selectedTrack.value = { id: 'track-1', title: 'Song', artist: 'Artist', duration: 30000, source: 'local' };
+    await scope.run(async () => {
+      useGameMusic(); // initialize watcher
+      selectedTrack.value = { id: 'track-1', title: 'Song', artist: 'Artist', duration: 30000, source: 'local' };
 
-    status.value = 'playing';
-    await nextTick();
+      status.value = 'playing';
+      await nextTick();
 
-    status.value = 'reviewing';
-    await nextTick();
-    expect(musicManager.resume).not.toHaveBeenCalled();
+      status.value = 'reviewing';
+      await nextTick();
+      expect(musicManager.resume).not.toHaveBeenCalled();
 
-    status.value = 'results';
-    await nextTick();
-    expect(musicManager.resume).toHaveBeenCalledTimes(1);
+      status.value = 'results';
+      await nextTick();
+      expect(musicManager.resume).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('does not resume music when transitioning to results status if track has already ended', async () => {
-    useGameMusic();
-    selectedTrack.value = { id: 'track-2', title: 'Song 2', artist: 'Artist', duration: 30000, source: 'local' };
+    await scope.run(async () => {
+      useGameMusic();
+      selectedTrack.value = { id: 'track-2', title: 'Song 2', artist: 'Artist', duration: 30000, source: 'local' };
 
-    // Trigger onEnded
-    if (capturedOnEnded) {
-      capturedOnEnded();
-    }
+      // Trigger onEnded
+      if (capturedOnEnded) {
+        capturedOnEnded();
+      }
 
-    status.value = 'results';
-    await nextTick();
-    expect(musicManager.resume).not.toHaveBeenCalled();
+      status.value = 'results';
+      await nextTick();
+      expect(musicManager.resume).not.toHaveBeenCalled();
+    });
   });
 });

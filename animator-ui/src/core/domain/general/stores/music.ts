@@ -15,6 +15,7 @@ const hidePlayedTracks = ref(false);
 const musicProgress = ref(0);
 const musicTimeLeft = ref(0);
 const currentTrackDuration = ref<number | null>(null);
+const trackEnded = ref(false);
 
 export function useMusicStore() {
   return {
@@ -29,5 +30,6 @@ export function useMusicStore() {
     musicProgress,
     musicTimeLeft,
     currentTrackDuration,
+    trackEnded,
   };
 }

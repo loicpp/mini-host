@@ -203,6 +203,7 @@
     "blind_test": "Blind Test",
     "regie": "Régie",
     "play_music": "Lancer la Musique",
+    "play_random_music": "Lecture aléatoire",
     "stop_music": "Stop & Corriger",
     "wrong_resume": "Faux, on reprend",
     "correct_reveal": "Vrai (1 pt & Dévoiler)",
