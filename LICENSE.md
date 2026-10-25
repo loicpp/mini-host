@@ -52,265 +52,265 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/babel/babel
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/ai (v2.13.1)
+### @firebase/ai (v2.16.0)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/analytics (v0.10.22)
+### @firebase/analytics (v0.10.25)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/analytics-compat (v0.2.28)
+### @firebase/analytics-compat (v0.2.31)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/analytics-types (v0.8.4)
+### @firebase/analytics-types (v0.8.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app (v0.15.0)
+### @firebase/app (v0.16.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-check (v0.12.0)
+### @firebase/app-check (v0.13.1)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-check-compat (v0.4.5)
+### @firebase/app-check-compat (v0.4.7)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-check-interop-types (v0.3.4)
+### @firebase/app-check-interop-types (v0.3.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-check-types (v0.5.4)
+### @firebase/app-check-types (v0.5.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-compat (v0.5.14)
+### @firebase/app-compat (v0.5.18)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/app-types (v0.9.5)
+### @firebase/app-types (v0.9.6)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/auth (v1.13.3)
+### @firebase/auth (v1.13.6)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/auth-compat (v0.6.8)
+### @firebase/auth-compat (v0.6.11)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/auth-interop-types (v0.2.5)
+### @firebase/auth-interop-types (v0.2.6)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/auth-types (v0.13.1)
+### @firebase/auth-types (v0.13.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/component (v0.7.3)
+### @firebase/component (v0.7.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/data-connect (v0.7.1)
+### @firebase/data-connect (v0.7.4)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/database (v1.1.3)
+### @firebase/database (v1.1.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/database-compat (v2.1.4)
+### @firebase/database-compat (v2.1.7)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/database-types (v1.0.20)
+### @firebase/database-types (v1.0.22)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/firestore (v4.16.0)
+### @firebase/firestore (v4.17.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/firestore-compat (v0.4.11)
+### @firebase/firestore-compat (v0.4.14)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/firestore-types (v3.0.4)
+### @firebase/firestore-types (v3.0.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/functions (v0.13.5)
+### @firebase/functions (v0.14.0)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/functions-compat (v0.4.5)
+### @firebase/functions-compat (v0.5.0)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/functions-types (v0.6.4)
+### @firebase/functions-types (v0.6.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/installations (v0.6.22)
+### @firebase/installations (v0.6.24)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/installations-compat (v0.2.22)
+### @firebase/installations-compat (v0.2.24)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/installations-types (v0.5.4)
+### @firebase/installations-types (v0.5.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/logger (v0.5.1)
+### @firebase/logger (v0.5.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/messaging (v0.13.0)
+### @firebase/messaging (v0.13.3)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/messaging-compat (v0.2.27)
+### @firebase/messaging-compat (v0.2.30)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/messaging-interop-types (v0.2.5)
+### @firebase/messaging-interop-types (v0.2.6)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/performance (v0.7.12)
+### @firebase/performance (v0.7.14)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/performance-compat (v0.2.25)
+### @firebase/performance-compat (v0.2.27)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/performance-types (v0.2.4)
+### @firebase/performance-types (v0.2.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/remote-config (v0.8.5)
+### @firebase/remote-config (v0.9.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/remote-config-compat (v0.2.26)
+### @firebase/remote-config-compat (v0.2.29)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/remote-config-types (v0.5.1)
+### @firebase/remote-config-types (v0.5.2)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/storage (v0.14.3)
+### @firebase/storage (v0.14.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/storage-compat (v0.4.3)
+### @firebase/storage-compat (v0.4.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/storage-types (v0.8.4)
+### @firebase/storage-types (v0.8.5)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/util (v1.15.1)
+### @firebase/util (v1.15.3)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
 - **Ecosystem**: JavaScript/TypeScript
 
-### @firebase/webchannel-wrapper (v1.0.6)
+### @firebase/webchannel-wrapper (v1.0.7)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
@@ -388,7 +388,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/lucide-icons/lucide
 - **Ecosystem**: JavaScript/TypeScript
 
-### @oxc-project/types (v0.138.0)
+### @oxc-project/types (v0.155.0)
 - **License**: MIT
 - **Author/Publisher**: Boshen and oxc contributors
 - **Repository**: https://github.com/oxc-project/oxc
@@ -448,12 +448,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/protobufjs/protobuf.js
 - **Ecosystem**: JavaScript/TypeScript
 
-### @rolldown/binding-linux-x64-gnu (v1.1.4)
-- **License**: MIT
-- **Repository**: https://github.com/rolldown/rolldown
-- **Ecosystem**: JavaScript/TypeScript
-
-### @rolldown/binding-linux-x64-musl (v1.1.4)
+### @rolldown/binding-linux-x64-gnu (v1.2.15)
 - **License**: MIT
 - **Repository**: https://github.com/rolldown/rolldown
 - **Ecosystem**: JavaScript/TypeScript
@@ -719,7 +714,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/sindresorhus/find-up
 - **Ecosystem**: JavaScript/TypeScript
 
-### firebase (v12.15.0)
+### firebase (v12.19.0)
 - **License**: Apache-2.0
 - **Author/Publisher**: Firebase
 - **Repository**: https://github.com/firebase/firebase-js-sdk
@@ -918,7 +913,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **License**: Apache-2.0
 - **Ecosystem**: Python
 
-### nanoid (v3.3.18)
+### nanoid (v3.3.20)
 - **License**: MIT
 - **Author/Publisher**: Andrey Sitnik
 - **Repository**: https://github.com/ai/nanoid
@@ -958,7 +953,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/alexeyraspopov/picocolors
 - **Ecosystem**: JavaScript/TypeScript
 
-### picomatch (v4.0.5)
+### picomatch (v4.0.7)
 - **License**: MIT
 - **Author/Publisher**: Jon Schlinkert
 - **Repository**: https://github.com/micromatch/picomatch
@@ -981,7 +976,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/lukeapage/pngjs
 - **Ecosystem**: JavaScript/TypeScript
 
-### postcss (v8.5.25)
+### postcss (v8.5.31)
 - **License**: MIT
 - **Author/Publisher**: Andrey Sitnik
 - **Repository**: https://github.com/postcss/postcss
@@ -995,7 +990,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **License**: 3-Clause BSD License
 - **Ecosystem**: Python
 
-### protobufjs (v7.6.5)
+### protobufjs (v7.6.6)
 - **License**: BSD-3-Clause
 - **Author/Publisher**: Daniel Wirtz
 - **Repository**: https://github.com/protobufjs/protobuf.js
@@ -1095,9 +1090,9 @@ This software uses the following open source libraries. We warmly thank their au
 - **License**: MIT License
 - **Ecosystem**: Python
 
-### re2js (v0.4.3)
+### re2js (v2.9.0)
 - **License**: MIT
-- **Author/Publisher**: Alexey Vasiliev
+- **Author/Publisher**: Oleksii Vasyliev
 - **Repository**: https://github.com/le0pard/re2js
 - **Ecosystem**: JavaScript/TypeScript
 
@@ -1121,7 +1116,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/yargs/require-main-filename
 - **Ecosystem**: JavaScript/TypeScript
 
-### rolldown (v1.1.4)
+### rolldown (v1.2.15)
 - **License**: MIT
 - **Repository**: https://github.com/rolldown/rolldown
 - **Ecosystem**: JavaScript/TypeScript
@@ -1138,7 +1133,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **Repository**: https://github.com/yargs/set-blocking
 - **Ecosystem**: JavaScript/TypeScript
 
-### source-map-js (v1.2.1)
+### source-map-js (v1.2.2)
 - **License**: BSD-3-Clause
 - **Author/Publisher**: Valentin 7rulnik Semirulnik
 - **Repository**: https://github.com/7rulnik/source-map-js
@@ -1202,7 +1197,7 @@ This software uses the following open source libraries. We warmly thank their au
 - **License**: MIT
 - **Ecosystem**: Python
 
-### vite (v8.1.3)
+### vite (v8.3.5)
 - **License**: MIT
 - **Author/Publisher**: Evan You
 - **Repository**: https://github.com/vitejs/vite
