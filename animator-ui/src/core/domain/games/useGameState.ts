@@ -15,6 +15,12 @@ export function useGameState() {
   const { pendingPoints, pendingBonuses, lastAwardedBonuses, players } = usePlayerStore();
 
   const nextRound = async () => {
+    try {
+      await musicManager.stop();
+    } catch (e) {
+      console.warn("Could not stop music on next round", e);
+    }
+
     if (gameSettings.value?.playerExclusion && playedTracks.value.length > 0 && playedTracks.value.length % 3 === 0) {
       const activePlayers = Object.entries(players.value).filter(([, p]: [string, any]) => 
         p.role !== 'animator' && p.role !== 'projector' && !p.excluded

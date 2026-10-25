@@ -18,11 +18,13 @@ const { pressedBuzzer, players } = usePlayerStore();
 
 
 let hasMusicStopped = false;
+let trackEnded = false;
 let animationFrameId: number | null = null;
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
 let pauseTime: number | null = null;
 
 let isEndedListenerSetup = false;
+let isWatchersSetup = false;
 
 export function useGameMusic() {
   const { t } = useI18n();
@@ -32,8 +34,9 @@ export function useGameMusic() {
   if (!isEndedListenerSetup) {
     isEndedListenerSetup = true;
     musicManager.onEnded(() => {
+      trackEnded = true;
+      hasMusicStopped = true;
       if (status.value === 'playing') {
-        hasMusicStopped = true;
         if (isInfiniteDuration(gameSettings.value?.duration)) {
           stopMusic();
         }
@@ -98,6 +101,7 @@ export function useGameMusic() {
       await animatorService.clearPressedBuzzer(gameId.value);
   
       hasMusicStopped = false;
+      trackEnded = false;
 
       // Determine track duration if needed
       let trackDurMs = (selectedTrack.value.duration && selectedTrack.value.duration > 0) ? selectedTrack.value.duration : 0;
@@ -149,7 +153,7 @@ export function useGameMusic() {
   };
 
   const stopMusic = async () => {
-    await musicManager.stop();
+    await musicManager.pause();
     if (gameSettings.value.mode === 'buzzer' && !pressedBuzzer.value) {
       await revealResults();
     } else {
@@ -228,7 +232,7 @@ export function useGameMusic() {
   };
 
   const startProgressLoop = () => {
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    if (animationFrameId && typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(animationFrameId);
     
     const loop = () => {
       if (status.value !== 'playing') return;
@@ -248,78 +252,90 @@ export function useGameMusic() {
         }
       }
       
-      animationFrameId = requestAnimationFrame(loop);
+      if (typeof requestAnimationFrame !== 'undefined') {
+        animationFrameId = requestAnimationFrame(loop);
+      }
     };
     
     loop();
   };
 
-  watch(() => status.value, (newStatus) => {
-    if (newStatus === 'playing') {
-      startProgressLoop();
-      if (autoStopTimer) clearTimeout(autoStopTimer);
-      const checkTimer = () => {
-        if (status.value !== 'playing') return;
-        const now = getServerTime();
-        
-        const effectiveMusicSec = isInfiniteDuration(gameSettings.value?.musicDuration)
-          ? (currentTrackDuration.value || 120)
-          : (gameSettings.value?.musicDuration || 15);
-        const effectiveTotalSec = currentTrackDuration.value || (isInfiniteDuration(gameSettings.value?.duration) ? 120 : (gameSettings.value?.duration || 15));
+  if (!isWatchersSetup) {
+    isWatchersSetup = true;
 
-        if (currentStartTime.value && !hasMusicStopped && now >= currentStartTime.value + (effectiveMusicSec * 1000)) {
-          musicManager.pause();
-          hasMusicStopped = true;
-        }
-  
-        if (currentStartTime.value && now >= currentStartTime.value + (effectiveTotalSec * 1000)) {
-          stopMusic();
-        } else {
-          autoStopTimer = setTimeout(checkTimer, 500);
-        }
-      };
-      checkTimer();
-    } else {
-      if (autoStopTimer) clearTimeout(autoStopTimer);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    }
-  });
-  
-  watch(() => pressedBuzzer.value, (newBuzzer) => {
-    if (status.value === 'playing' && newBuzzer && gameSettings.value.mode === 'buzzer') {
-      pauseMusic();
-    }
-  });
-  
-  watch(() => players.value, (newPlayers) => {
-    if (status.value === 'playing' && newPlayers) {
-      const playerIds = Object.keys(newPlayers).filter(id => {
-        const p = (newPlayers as Record<string, any>)[id];
-        return p.role !== 'animator' && p.role !== 'projector' && !p.excluded;
-      });
-      if (playerIds.length > 0) {
-        if (gameSettings.value.mode === 'buzzer') {
-          const allBlocked = playerIds.every(id => {
-            const p = (newPlayers as Record<string, any>)[id];
-            return p.blockedTurns === -1 || p.blockedTurns > 0;
-          });
-          if (allBlocked) {
-            stopMusic();
+    watch(() => status.value, (newStatus) => {
+      if (newStatus === 'playing') {
+        startProgressLoop();
+        if (autoStopTimer) clearTimeout(autoStopTimer);
+        const checkTimer = () => {
+          if (status.value !== 'playing') return;
+          const now = getServerTime();
+          
+          const effectiveMusicSec = isInfiniteDuration(gameSettings.value?.musicDuration)
+            ? (currentTrackDuration.value || 120)
+            : (gameSettings.value?.musicDuration || 15);
+          const effectiveTotalSec = currentTrackDuration.value || (isInfiniteDuration(gameSettings.value?.duration) ? 120 : (gameSettings.value?.duration || 15));
+
+          if (currentStartTime.value && !hasMusicStopped && now >= currentStartTime.value + (effectiveMusicSec * 1000)) {
+            musicManager.pause();
+            hasMusicStopped = true;
           }
-        } else {
-          const allSubmitted = playerIds.every(id => {
-            const p = (newPlayers as Record<string, any>)[id];
-            const isBlocked = p.blockedTurns === -1 || p.blockedTurns > 0;
-            const hasGuess = !!p.currentGuess && (!!p.currentGuess.title || !!p.currentGuess.artist || typeof p.currentGuess === 'string' && p.currentGuess.length > 0);
-            return isBlocked || hasGuess;
-          });
-          if (allSubmitted) {
+    
+          if (currentStartTime.value && now >= currentStartTime.value + (effectiveTotalSec * 1000)) {
             stopMusic();
+          } else {
+            autoStopTimer = setTimeout(checkTimer, 500);
+          }
+        };
+        checkTimer();
+      } else if (newStatus === 'results') {
+        if (autoStopTimer) clearTimeout(autoStopTimer);
+        if (animationFrameId && typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(animationFrameId);
+        if (!trackEnded && selectedTrack.value) {
+          musicManager.resume().catch((e: any) => console.warn("Could not resume music on results", e));
+        }
+      } else {
+        if (autoStopTimer) clearTimeout(autoStopTimer);
+        if (animationFrameId && typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(animationFrameId);
+      }
+    });
+    
+    watch(() => pressedBuzzer.value, (newBuzzer) => {
+      if (status.value === 'playing' && newBuzzer && gameSettings.value.mode === 'buzzer') {
+        pauseMusic();
+      }
+    });
+    
+    watch(() => players.value, (newPlayers) => {
+      if (status.value === 'playing' && newPlayers) {
+        const playerIds = Object.keys(newPlayers).filter(id => {
+          const p = (newPlayers as Record<string, any>)[id];
+          return p.role !== 'animator' && p.role !== 'projector' && !p.excluded;
+        });
+        if (playerIds.length > 0) {
+          if (gameSettings.value.mode === 'buzzer') {
+            const allBlocked = playerIds.every(id => {
+              const p = (newPlayers as Record<string, any>)[id];
+              return p.blockedTurns === -1 || p.blockedTurns > 0;
+            });
+            if (allBlocked) {
+              stopMusic();
+            }
+          } else {
+            const allSubmitted = playerIds.every(id => {
+              const p = (newPlayers as Record<string, any>)[id];
+              const isBlocked = p.blockedTurns === -1 || p.blockedTurns > 0;
+              const hasGuess = !!p.currentGuess && (!!p.currentGuess.title || !!p.currentGuess.artist || typeof p.currentGuess === 'string' && p.currentGuess.length > 0);
+              return isBlocked || hasGuess;
+            });
+            if (allSubmitted) {
+              stopMusic();
+            }
           }
         }
       }
-    }
-  }, { deep: true });
+    }, { deep: true });
+  }
 
   return {
     lastPlayedTrack,

@@ -98,7 +98,7 @@ export class LocalAdapter implements MusicProvider {
 
   async resume(): Promise<void> {
     if (this.audio) {
-      this.audio.play();
+      this.audio.play().catch((err) => console.warn("Local audio resume failed", err));
     }
   }
 

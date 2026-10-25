@@ -304,7 +304,7 @@
   "control_panel": {
     "players": "joueurs",
     "restart": "Recommencer",
-    "stop": "Arrêter",
+    "stop": "Arrêter la partie",
     "expected": "Attendu :",
     "unknown_answer": "Réponse inconnue",
     "auto_correct": "Auto-correction",

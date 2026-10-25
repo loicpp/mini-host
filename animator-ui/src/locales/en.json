@@ -304,7 +304,7 @@
   "control_panel": {
     "players": "players",
     "restart": "Restart",
-    "stop": "Stop",
+    "stop": "End the game",
     "expected": "Expected:",
     "unknown_answer": "Unknown Answer",
     "auto_correct": "Auto-correct",
