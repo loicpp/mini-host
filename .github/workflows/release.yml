@@ -9,9 +9,83 @@ permissions:
   contents: write
 
 jobs:
+  ci-player-app:
+    name: Validate Player App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: player-app
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: player-app/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type-Check
+        run: npm run type-check
+      - name: Run Tests
+        run: npx vitest run
+
+  ci-animator-ui:
+    name: Validate Animator UI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: animator-ui
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: animator-ui/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type-Check
+        run: npm run type-check
+      - name: Run Tests
+        run: npx vitest run
+
+  ci-backend:
+    name: Validate Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pytest pytest-cov pytest-mock
+      - name: Lint with flake8
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Run Tests
+        run: |
+          export PYTHONPATH=.
+          pytest tests/
+
   deploy-player:
     name: Deploy Player App to Firebase
-    needs: [build-linux, build-windows]
+    needs: [ci-player-app, ci-animator-ui, ci-backend, build-linux, build-windows]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -59,6 +133,7 @@ jobs:
 
   build-linux:
     name: Build Linux Executable
+    needs: [ci-player-app, ci-animator-ui, ci-backend]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
@@ -106,6 +181,7 @@ jobs:
 
   build-windows:
     name: Build Windows Executable
+    needs: [ci-player-app, ci-animator-ui, ci-backend]
     runs-on: windows-latest
     steps:
       - name: Checkout Code

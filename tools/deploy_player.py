@@ -16,6 +16,7 @@ FIREBASE_JSON_PATH = PLAYER_DIR / "firebase.json"
 CONFIG_PATH = PLAYER_DIR / "hosting-config.json"
 REMOTE_HOSTING_URL = "https://minihostapp-1.web.app"
 MANIFEST_FILENAME = "versions-manifest.json"
+MAX_RETAINED_VERSIONS = 3
 
 def log(msg, emoji="ℹ️"):
     print(f"{emoji} {msg}")
@@ -76,12 +77,21 @@ def pull_remote_versions(target_version=None, delete_versions=None):
     active_versions = manifest.get("active_versions", [])
     files_map = manifest.get("files", {})
 
+    # Politique de rétention : conserver jusqu'à MAX_RETAINED_VERSIONS versions stables (+ target_version et dev)
+    semver_active = [v for v in active_versions if v != "dev" and v not in delete_versions]
+    semver_active.sort(key=semver_sort_key, reverse=True)
+    limit = MAX_RETAINED_VERSIONS - (1 if target_version and target_version != "dev" and target_version not in semver_active else 0)
+    allowed_semver = set(semver_active[:max(1, limit)])
+
     for ver in active_versions:
         if ver == target_version:
             log(f"La version {ver} est la version cible en cours de compilation, pas besoin de la télécharger.", "⏩")
             continue
         if ver in delete_versions:
             log(f"La version {ver} est marquée pour suppression, elle ne sera pas téléchargée.", "🗑️")
+            continue
+        if ver != "dev" and ver not in allowed_semver:
+            log(f"La version {ver} est obsolète (rétention max : {MAX_RETAINED_VERSIONS} versions stables), suppression automatique.", "🗑️")
             continue
 
         ver_files = files_map.get(ver, [])

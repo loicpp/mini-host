@@ -5,7 +5,6 @@ import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
-sys.path.insert(0, str(ROOT_DIR / "tools"))
 
 def get_latest_git_tag():
     print("Synchronisation des tags avec le dépôt distant...")
@@ -128,35 +127,6 @@ def main():
                 sys.exit(0)
     except ValueError:
         pass
-
-    # Option de suppression d'anciennes versions sur Firebase Hosting
-    delete_versions = []
-    try:
-        from deploy_player import get_remote_manifest
-        manifest = get_remote_manifest()
-        if manifest and manifest.get("active_versions"):
-            active = manifest.get("active_versions")
-            print(f"\nVersions actuellement actives sur Firebase Hosting : {', '.join(active)}")
-            del_input = input("Souhaitez-vous supprimer une ou plusieurs versions obsolètes ? (séparez par des espaces, ou Entrée pour ignorer) : ").strip()
-            if del_input:
-                delete_versions = [v.strip().lstrip('v') for v in del_input.split() if v.strip()]
-                print(f"Versions sélectionnées pour suppression dans la pipeline : {', '.join(delete_versions)}")
-                # Enregistrer dans player-app/hosting-config.json pour la pipeline CI
-                import json
-                config_path = ROOT_DIR / "player-app" / "hosting-config.json"
-                config = {}
-                if config_path.exists():
-                    try:
-                        with open(config_path, "r", encoding="utf-8") as f:
-                            config = json.load(f)
-                    except Exception:
-                        pass
-                config["deleted_versions"] = delete_versions
-                with open(config_path, "w", encoding="utf-8") as f:
-                    json.dump(config, f, indent=2)
-                subprocess.run(['git', 'add', str(config_path)], check=True, cwd=ROOT_DIR)
-    except Exception as e:
-        print(f"⚠️ Impossible de vérifier les versions distantes : {e}")
 
     confirm = input(f"\nVoulez-vous lancer la release pour la version v{new_v} ? (y/N) : ").strip().lower()
     if confirm not in ['y', 'yes', 'o', 'oui']:
